@@ -39,7 +39,7 @@ jobs:
       - uses: guardian/actions-riff-raff@v2
         with:
           app: recipes-backend
-          configPath: "cdk.out/riff-raff.yaml"
+          configPath: "cdk/cdk.out/riff-raff.yaml"
           contentDirectories: |
             cfn-eu-west-1-content-api-recipes-backend:
               - cdk/cdk.out
