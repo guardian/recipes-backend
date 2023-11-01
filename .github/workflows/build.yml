@@ -1,0 +1,45 @@
+name: Build on PR
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+      checks: write
+      issues: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-1
+          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+      - uses: guardian/actions-riff-raff@v2
+        with:
+          app: recipes-backend
+          configPath: "cdk.out/riff-raff.yaml"
+          contentDirectories: |
+            cfn-eu-west-1-content-api-recipes-backend:
+              - cdk/cdk.out
