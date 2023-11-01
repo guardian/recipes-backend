@@ -45,6 +45,21 @@
 					"codeCoverage": true
 				}
 			}
+		},
+    "update": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "cdk/jest.config.ts",
+        "updateSnapshot": true,
+				"passWithNoTests": true
+			},
+			"configurations": {
+				"ci": {
+					"ci": true,
+					"codeCoverage": true
+				}
+			}
 		}
 	},
 	"tags": []
