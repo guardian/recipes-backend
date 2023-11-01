@@ -1,5 +1,6 @@
 import type { GuStack } from "@guardian/cdk/lib/constructs/core";
 import { RemovalPolicy } from "aws-cdk-lib";
+import { Effect, PolicyStatement, User } from "aws-cdk-lib/aws-iam";
 import { Bucket, type IBucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
 
@@ -17,9 +18,16 @@ export class StaticServing extends Construct {
       bucketName: `recipes-backend${maybePreview}-static-${scope.stage.toLowerCase()}`,
       enforceSSL: true,
       removalPolicy: RemovalPolicy.DESTROY,
-      autoDeleteObjects: true,
-      publicReadAccess: true,     //TODO: we will set up authenticated CDN access once initial POC is done
     });
 
+    const cdnReadUser = new User(this, "cdnRead", {
+      userName: `recipes-api-cdn${maybePreview}-${scope.stage}`,
+    });
+
+    cdnReadUser.addToPolicy(new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: ["s3:GetObject"],
+      resources: [this.staticBucket.bucketArn + '/*'],
+    }));
   }
 }

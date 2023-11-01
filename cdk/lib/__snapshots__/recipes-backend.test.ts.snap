@@ -6,120 +6,70 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     "gu:cdk:constructs": [],
     "gu:cdk:version": "TEST",
   },
-  "Parameters": {
-    "AssetParametersb7f33614a69548d6bafe224d751a7ef238cde19097415e553fe8b63a4c8fd8a6ArtifactHash7E7F1011": {
-      "Description": "Artifact hash for asset "b7f33614a69548d6bafe224d751a7ef238cde19097415e553fe8b63a4c8fd8a6"",
-      "Type": "String",
-    },
-    "AssetParametersb7f33614a69548d6bafe224d751a7ef238cde19097415e553fe8b63a4c8fd8a6S3Bucket003C01C0": {
-      "Description": "S3 bucket for asset "b7f33614a69548d6bafe224d751a7ef238cde19097415e553fe8b63a4c8fd8a6"",
-      "Type": "String",
-    },
-    "AssetParametersb7f33614a69548d6bafe224d751a7ef238cde19097415e553fe8b63a4c8fd8a6S3VersionKey63B90A34": {
-      "Description": "S3 key for asset version "b7f33614a69548d6bafe224d751a7ef238cde19097415e553fe8b63a4c8fd8a6"",
-      "Type": "String",
-    },
-  },
   "Resources": {
-    "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
-      "DependsOn": [
-        "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
-      ],
+    "staticcdnRead42C381A5": {
       "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Ref": "AssetParametersb7f33614a69548d6bafe224d751a7ef238cde19097415e553fe8b63a4c8fd8a6S3Bucket003C01C0",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
           },
-          "S3Key": {
-            "Fn::Join": [
-              "",
-              [
-                {
-                  "Fn::Select": [
-                    0,
-                    {
-                      "Fn::Split": [
-                        "||",
-                        {
-                          "Ref": "AssetParametersb7f33614a69548d6bafe224d751a7ef238cde19097415e553fe8b63a4c8fd8a6S3VersionKey63B90A34",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  "Fn::Select": [
-                    1,
-                    {
-                      "Fn::Split": [
-                        "||",
-                        {
-                          "Ref": "AssetParametersb7f33614a69548d6bafe224d751a7ef238cde19097415e553fe8b63a4c8fd8a6S3VersionKey63B90A34",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-api",
           },
-        },
-        "Description": {
-          "Fn::Join": [
-            "",
-            [
-              "Lambda function for auto-deleting objects in ",
-              {
-                "Ref": "staticstaticServing53194089",
-              },
-              " S3 bucket.",
-            ],
-          ],
-        },
-        "Handler": "index.handler",
-        "MemorySize": 128,
-        "Role": {
-          "Fn::GetAtt": [
-            "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 900,
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "UserName": "recipes-api-cdn-TEST",
       },
-      "Type": "AWS::Lambda::Function",
+      "Type": "AWS::IAM::User",
     },
-    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+    "staticcdnReadDefaultPolicy5DF868F9": {
       "Properties": {
-        "AssumeRolePolicyDocument": {
+        "PolicyDocument": {
           "Statement": [
             {
-              "Action": "sts:AssumeRole",
+              "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "staticstaticServing53194089",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
+        "PolicyName": "staticcdnReadDefaultPolicy5DF868F9",
+        "Users": [
           {
-            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+            "Ref": "staticcdnRead42C381A5",
           },
         ],
       },
-      "Type": "AWS::IAM::Role",
+      "Type": "AWS::IAM::Policy",
     },
     "staticstaticServing53194089": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "BucketName": "recipes-backend-static-test",
         "Tags": [
-          {
-            "Key": "aws-cdk:auto-delete-objects",
-            "Value": "true",
-          },
           {
             "Key": "gu:cdk:version",
             "Value": "TEST",
@@ -141,25 +91,6 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Delete",
     },
-    "staticstaticServingAutoDeleteObjectsCustomResource901DD148": {
-      "DeletionPolicy": "Delete",
-      "DependsOn": [
-        "staticstaticServingPolicyC6F5921B",
-      ],
-      "Properties": {
-        "BucketName": {
-          "Ref": "staticstaticServing53194089",
-        },
-        "ServiceToken": {
-          "Fn::GetAtt": [
-            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "Custom::S3AutoDeleteObjects",
-      "UpdateReplacePolicy": "Delete",
-    },
     "staticstaticServingPolicyC6F5921B": {
       "Properties": {
         "Bucket": {
@@ -177,66 +108,6 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
               "Effect": "Deny",
               "Principal": {
                 "AWS": "*",
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "staticstaticServing53194089",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "staticstaticServing53194089",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": "*",
-              },
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    {
-                      "Fn::GetAtt": [
-                        "staticstaticServing53194089",
-                        "Arn",
-                      ],
-                    },
-                    "/*",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "s3:PutBucketPolicy",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-              ],
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::GetAtt": [
-                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
-                    "Arn",
-                  ],
-                },
               },
               "Resource": [
                 {
