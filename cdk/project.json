@@ -11,6 +11,13 @@
         "cwd": "cdk/"
       }
     },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["cdk synth --path-metadata false --version-reporting false"],
+        "cwd": "cdk/"
+      }
+    },
     "diff": {
       "executor": "nx:run-commands",
       "options": {
@@ -18,38 +25,6 @@
         "cwd": "cdk/"
       }
     },
-		"build": {
-			"executor": "@nx/esbuild:esbuild",
-			"outputs": ["{options.outputPath}"],
-			"defaultConfiguration": "production",
-			"options": {
-				"platform": "node",
-				"outputPath": "dist/cdk",
-				"format": ["cjs"],
-				"bundle": false,
-				"main": "cdk/src/main.ts",
-				"tsConfig": "cdk/tsconfig.app.json",
-				"assets": ["cdk/src/assets"],
-				"generatePackageJson": true,
-				"esbuildOptions": {
-					"sourcemap": true,
-					"outExtension": {
-						".js": ".js"
-					}
-				}
-			},
-			"configurations": {
-				"development": {},
-				"production": {
-					"esbuildOptions": {
-						"sourcemap": false,
-						"outExtension": {
-							".js": ".js"
-						}
-					}
-				}
-			}
-		},
 		"lint": {
 			"executor": "@nx/eslint:lint",
 			"outputs": ["{options.outputFile}"],

@@ -35,7 +35,6 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
-      - run: npm run synth
 
       - uses: guardian/actions-riff-raff@v2
         with:
