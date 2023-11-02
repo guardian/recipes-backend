@@ -5,6 +5,7 @@ import { GuStack } from "@guardian/cdk/lib/constructs/core";
 // import { Duration, type App } from "aws-cdk-lib";
 // import { Runtime } from "aws-cdk-lib/aws-lambda";
 import type { App } from "aws-cdk-lib";
+import { DataStore } from "./datastore";
 import { StaticServing } from "./static-serving";
 
 export class RecipesBackend extends GuStack {
@@ -14,6 +15,8 @@ export class RecipesBackend extends GuStack {
     //const app = this.app ?? "recipes-backend";
 
     new StaticServing(this, "static");
+
+    new DataStore(this, "store");
 
     //TODO - this is how we can simply connect to an existing kinesis stream. But we have nothing to
     //connect to it yet! - this will be uncommented once we do.

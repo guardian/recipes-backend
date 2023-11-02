@@ -138,6 +138,84 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       },
       "Type": "AWS::S3::BucketPolicy",
     },
+    "storeRecipeTableC3AD84B7": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "capiArticleId",
+            "AttributeType": "S",
+          },
+          {
+            "AttributeName": "recipeUID",
+            "AttributeType": "S",
+          },
+          {
+            "AttributeName": "lastUpdated",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "idxArticleLastUpdated",
+            "KeySchema": [
+              {
+                "AttributeName": "capiArticleId",
+                "KeyType": "HASH",
+              },
+              {
+                "AttributeName": "lastUpdated",
+                "KeyType": "RANGE",
+              },
+            ],
+            "Projection": {
+              "NonKeyAttributes": [
+                "recipeVersion",
+              ],
+              "ProjectionType": "INCLUDE",
+            },
+          },
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "capiArticleId",
+            "KeyType": "HASH",
+          },
+          {
+            "AttributeName": "recipeUID",
+            "KeyType": "RANGE",
+          },
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true,
+        },
+        "SSESpecification": {
+          "SSEEnabled": true,
+        },
+        "TableName": "recipes-backend-indexstore-TEST",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-api",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Retain",
+    },
   },
 }
 `;
