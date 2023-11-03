@@ -7,11 +7,11 @@ import {RecipeIndexEntryFromDynamo} from "./models";
 type DynamoRecord =  Record<string, AttributeValue>;
 
 interface DataPage {
-  ExclusiveStartKey: DynamoRecord;
+  ExclusiveStartKey?: DynamoRecord;
   recipes: RecipeIndexEntry[];
 }
 
-async function retrieveIndexPage(client: DynamoDBClient, ExclusiveStartKey : DynamoRecord): Promise<DataPage>
+async function retrieveIndexPage(client: DynamoDBClient, ExclusiveStartKey? : DynamoRecord): Promise<DataPage>
 {
   const req = new ScanCommand({
     ExclusiveStartKey,
@@ -27,13 +27,13 @@ async function retrieveIndexPage(client: DynamoDBClient, ExclusiveStartKey : Dyn
 }
 
 export async function retrieveIndexData(client: DynamoDBClient) : Promise<RecipeIndex> {
-   let nextKey: DynamoRecord;
+   let nextKey: DynamoRecord|undefined = undefined;
    const recipes: RecipeIndexEntry[] = [];
+
    do {
       const page = await retrieveIndexPage(client, nextKey);
       nextKey = page.ExclusiveStartKey;
       recipes.push(...page.recipes);
-     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- nextKey is nullable
     } while (nextKey);
 
    return {schemaVersion: 1, recipes, lastUpdated: new Date()}
