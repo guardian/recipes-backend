@@ -60,7 +60,7 @@ export interface RecipeIndexEntry {
 export function RecipeIndexEntryFromDynamo(raw:Record<string, AttributeValue>): RecipeIndexEntry {
   return {
     sha: raw["recipeVersion"].S ?? "",
-    uid: raw["recipeUid"].S ?? "",
+    uid: raw["recipeUID"].S ?? "",
   }
 }
 
