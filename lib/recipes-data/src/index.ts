@@ -1,1 +1,1 @@
-export * from './lib/lib-recipes-data';
+export * from './lib/models';

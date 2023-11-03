@@ -1,17 +1,16 @@
 import type { AttributeValue} from "@aws-sdk/client-dynamodb";
 import { BatchWriteItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {v4 as uuid} from "uuid";
-import type { RecipeIndexEntry} from "./models";
-import { RecipeIndexEntryToDynamo } from "./models";
+import { type RecipeDatabaseEntry, RecipeDatabaseEntryToDynamo} from "@recipes-api/lib/recipes-data";
 
 const tableName = process.env["TABLE_NAME"];
 const client = new DynamoDBClient();
 const limit = 30000;
 
-function createRecord(count:number):RecipeIndexEntry[] {
+function createRecord(count:number):RecipeDatabaseEntry[] {
   const now = new Date();
 
-  const out:RecipeIndexEntry[] = [];
+  const out:RecipeDatabaseEntry[] = [];
 
   for(let i=0;i<count;i++) {
     out.push({
@@ -50,7 +49,7 @@ if(!tableName || tableName=="") {
 let recipes = 0;
 while(recipes < limit) {
   const countForArticle = Math.ceil(Math.random() * 5);
-  const dataToPush = createRecord(countForArticle).map(RecipeIndexEntryToDynamo);
+  const dataToPush = createRecord(countForArticle).map(RecipeDatabaseEntryToDynamo);
 
   await batchWrite(dataToPush);
   recipes += countForArticle;
