@@ -7,7 +7,7 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["zip ../test-indexbuild-lambda.zip *"],
+        "commands": ["zip -r ../test-indexbuild-lambda.zip *"],
         "cwd": "dist/lambda/test-indexbuild"
       },
       "dependsOn": [
@@ -25,7 +25,7 @@
 				"platform": "node",
 				"outputPath": "dist/lambda/test-indexbuild",
 				"format": ["cjs"],
-				"bundle": false,
+				"bundle": true,
 				"main": "lambda/test-indexbuild/src/main.ts",
 				"tsConfig": "lambda/test-indexbuild/tsconfig.app.json",
 				"generatePackageJson": true,
