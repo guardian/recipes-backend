@@ -4,10 +4,10 @@ import {GuStack} from "@guardian/cdk/lib/constructs/core";
 // import { StreamRetry } from "@guardian/cdk/lib/utils/lambda";
 import {GuLambdaFunction} from "@guardian/cdk/lib/constructs/lambda";
 import {type App, Duration} from "aws-cdk-lib";
+import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
 import {DataStore} from "./datastore";
 import {StaticServing} from "./static-serving";
-import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 
 export class RecipesBackend extends GuStack {
   constructor(scope: App, id: string, props: GuStackProps) {
@@ -23,6 +23,10 @@ export class RecipesBackend extends GuStack {
       app: "recipes-backend-testindex",
       handler: "main.handler",
       timeout: Duration.seconds(60),
+      environment: {
+        INDEX_TABLE: store.table.tableName,
+        LAST_UPDATED_INDEX: store.lastUpdatedIndexName,
+      },
       initialPolicy: [
         new PolicyStatement({
           effect: Effect.ALLOW,

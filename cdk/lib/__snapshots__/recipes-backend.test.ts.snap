@@ -244,6 +244,10 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
         "Environment": {
           "Variables": {
             "APP": "recipes-backend-testindex",
+            "INDEX_TABLE": {
+              "Ref": "storeRecipeTableC3AD84B7",
+            },
+            "LAST_UPDATED_INDEX": "idxArticleLastUpdated",
             "STACK": "content-api",
             "STAGE": "TEST",
           },

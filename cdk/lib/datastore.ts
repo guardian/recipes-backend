@@ -4,6 +4,7 @@ import { Construct } from "constructs";
 
 export class DataStore extends Construct {
   table: ITable;
+  lastUpdatedIndexName: string;
 
   constructor(scope:GuStack, id:string) {
     super(scope, id);
@@ -25,6 +26,8 @@ export class DataStore extends Construct {
       encryption: TableEncryption.AWS_MANAGED,
     });
 
+    this.lastUpdatedIndexName = "idxArticleLastUpdated";
+
     table.addGlobalSecondaryIndex({
       partitionKey: {
         name: "capiArticleId",
@@ -35,7 +38,7 @@ export class DataStore extends Construct {
         type: AttributeType.STRING,
       },
       projectionType: ProjectionType.INCLUDE,
-      indexName: "idxArticleLastUpdated",
+      indexName: this.lastUpdatedIndexName,
       nonKeyAttributes: ["recipeVersion"]   //recipeVersion corresponds to `Current SHA` in the document
     });
 
