@@ -1,22 +1,41 @@
-import type { GuStackProps } from "@guardian/cdk/lib/constructs/core";
-import { GuStack } from "@guardian/cdk/lib/constructs/core";
+import type {GuStackProps} from "@guardian/cdk/lib/constructs/core";
+import {GuStack} from "@guardian/cdk/lib/constructs/core";
 // import {GuKinesisLambdaExperimental} from "@guardian/cdk/lib/experimental/patterns";
 // import { StreamRetry } from "@guardian/cdk/lib/utils/lambda";
-// import { Duration, type App } from "aws-cdk-lib";
-// import { Runtime } from "aws-cdk-lib/aws-lambda";
-import type { App } from "aws-cdk-lib";
-import { DataStore } from "./datastore";
-import { StaticServing } from "./static-serving";
+import {GuLambdaFunction} from "@guardian/cdk/lib/constructs/lambda";
+import {type App, Duration} from "aws-cdk-lib";
+import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
+import {DataStore} from "./datastore";
+import {StaticServing} from "./static-serving";
+import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 
 export class RecipesBackend extends GuStack {
   constructor(scope: App, id: string, props: GuStackProps) {
     super(scope, id, props);
 
-    //const app = this.app ?? "recipes-backend";
+    const serving = new StaticServing(this, "static");
+    const store = new DataStore(this, "store");
 
-    new StaticServing(this, "static");
-
-    new DataStore(this, "store");
+    new GuLambdaFunction(this, "testIndexLambda", {
+      fileName: "test-indexbuild-lambda.zip",
+      runtime: Runtime.NODEJS_18_X,
+      architecture: Architecture.ARM_64,
+      app: "recipes-backend-testindex",
+      handler: "main.handler",
+      timeout: Duration.seconds(60),
+      initialPolicy: [
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["s3:PutObject", "s3:DeleteObject"],
+          resources: [serving.staticBucket.bucketArn + "/*"]
+        }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["dynamodb:Scan", "dynamodb:Query"],
+          resources: [store.table.tableArn, store.table.tableArn + "/index/*"]
+        })
+      ]
+    });
 
     //TODO - this is how we can simply connect to an existing kinesis stream. But we have nothing to
     //connect to it yet! - this will be uncommented once we do.
