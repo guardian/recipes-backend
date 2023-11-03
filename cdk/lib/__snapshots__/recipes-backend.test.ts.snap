@@ -6,5 +6,138 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     "gu:cdk:constructs": [],
     "gu:cdk:version": "TEST",
   },
+  "Resources": {
+    "staticcdnRead42C381A5": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-api",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "UserName": "recipes-api-cdn-TEST",
+      },
+      "Type": "AWS::IAM::User",
+    },
+    "staticcdnReadDefaultPolicy5DF868F9": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "staticstaticServing53194089",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "staticcdnReadDefaultPolicy5DF868F9",
+        "Users": [
+          {
+            "Ref": "staticcdnRead42C381A5",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "staticstaticServing53194089": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "BucketName": "recipes-backend-static-test",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-api",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "staticstaticServingPolicyC6F5921B": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "staticstaticServing53194089",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "staticstaticServing53194089",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "staticstaticServing53194089",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+  },
 }
 `;

@@ -26,20 +26,21 @@ jobs:
           node-version-file: .nvmrc
           cache: 'npm'
 
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: eu-west-1
-          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
-
       - run: npm ci
       - run: npm run lint
       - run: npm test
       - run: npm run build
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-1
+          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
 
       - uses: guardian/actions-riff-raff@v2
         with:
           projectName: Content Platforms::recipes-backend
           configPath: "cdk/cdk.out/riff-raff.yaml"
           contentDirectories: |
-            cfn-eu-west-1-content-api-recipes-backend:
-              - cdk/cdk.out
+            cdk.out:
+              - cdk/cdk.out/RecipesBackend-euwest-1-CODE.template.json
+              - cdk/cdk.out/RecipesBackend-euwest-1-PROD.template.json
