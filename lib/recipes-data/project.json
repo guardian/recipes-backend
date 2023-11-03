@@ -1,0 +1,30 @@
+{
+	"name": "lib-recipes-data",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "lib/recipes-data/src",
+	"projectType": "library",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["lib/recipes-data/**/*.ts"]
+			}
+		},
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "lib/recipes-data/jest.config.ts",
+				"passWithNoTests": true
+			},
+			"configurations": {
+				"ci": {
+					"ci": true,
+					"codeCoverage": true
+				}
+			}
+		}
+	},
+	"tags": []
+}
