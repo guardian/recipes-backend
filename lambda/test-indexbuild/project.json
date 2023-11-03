@@ -23,12 +23,14 @@
 			"defaultConfiguration": "production",
 			"options": {
 				"platform": "node",
+        "external": ["@aws-sdk/*"],
 				"outputPath": "dist/lambda/test-indexbuild",
 				"format": ["cjs"],
 				"bundle": true,
 				"main": "lambda/test-indexbuild/src/main.ts",
 				"tsConfig": "lambda/test-indexbuild/tsconfig.app.json",
 				"generatePackageJson": true,
+        "thirdParty": true,
 				"esbuildOptions": {
 					"sourcemap": true,
 					"outExtension": {
@@ -39,6 +41,7 @@
 			"configurations": {
 				"development": {},
 				"production": {
+          "minify": true,
 					"esbuildOptions": {
 						"sourcemap": false,
 						"outExtension": {
