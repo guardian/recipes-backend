@@ -1,66 +1,80 @@
 {
-	"name": "cdk",
-	"$schema": "../node_modules/nx/schemas/project-schema.json",
-	"sourceRoot": "cdk/src",
-	"projectType": "application",
-	"targets": {
+  "name": "cdk",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "cdk/src",
+  "projectType": "application",
+  "targets": {
     "synth": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["cdk synth --path-metadata false --version-reporting false"],
+        "commands": [
+          "cdk synth --path-metadata false --version-reporting false"
+        ],
         "cwd": "cdk/"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["cdk synth --path-metadata false --version-reporting false"],
+        "commands": [
+          "cdk synth --path-metadata false --version-reporting false"
+        ],
         "cwd": "cdk/"
       }
     },
     "diff": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["cdk diff --path-metadata false --version-reporting false"],
+        "commands": [
+          "cdk diff --path-metadata false --version-reporting false"
+        ],
         "cwd": "cdk/"
       }
     },
-		"lint": {
-			"executor": "@nx/eslint:lint",
-			"outputs": ["{options.outputFile}"],
-			"options": {
-				"lintFilePatterns": ["cdk/**/*.ts"]
-			}
-		},
-		"test": {
-			"executor": "@nx/jest:jest",
-			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-			"options": {
-				"jestConfig": "cdk/jest.config.ts",
-				"passWithNoTests": true
-			},
-			"configurations": {
-				"ci": {
-					"ci": true,
-					"codeCoverage": true
-				}
-			}
-		},
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "cdk/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "cdk/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
     "update": {
-			"executor": "@nx/jest:jest",
-			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-			"options": {
-				"jestConfig": "cdk/jest.config.ts",
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "cdk/jest.config.ts",
         "updateSnapshot": true,
-				"passWithNoTests": true
-			},
-			"configurations": {
-				"ci": {
-					"ci": true,
-					"codeCoverage": true
-				}
-			}
-		}
-	},
-	"tags": []
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
 }

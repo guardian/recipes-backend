@@ -1,78 +1,78 @@
 {
-	"name": "tools/fill-db",
-	"$schema": "../../node_modules/nx/schemas/project-schema.json",
-	"sourceRoot": "tools/fill-db/src",
-	"projectType": "application",
-	"targets": {
-		"build": {
-			"executor": "@nx/esbuild:esbuild",
-			"outputs": ["{options.outputPath}"],
-			"defaultConfiguration": "production",
-			"options": {
-				"platform": "node",
-				"outputPath": "dist/tools/fill-db",
-				"format": ["esm"],
-        "external": ["./node_modules/*"],
-				"bundle": true,
-				"main": "tools/fill-db/src/main.ts",
-				"tsConfig": "tools/fill-db/tsconfig.app.json",
-				"assets": ["tools/fill-db/src/assets"],
-				"generatePackageJson": true,
-				"esbuildOptions": {
-					"sourcemap": true,
-					"outExtension": {
-						".js": ".js"
-					}
-				}
-			},
-			"configurations": {
-				"development": {},
-				"production": {
-					"esbuildOptions": {
-						"sourcemap": false,
-						"outExtension": {
-							".js": ".js"
-						}
-					}
-				}
-			}
-		},
-		"serve": {
-			"executor": "@nx/js:node",
-			"defaultConfiguration": "development",
-			"options": {
-				"buildTarget": "tools/fill-db:build"
-			},
-			"configurations": {
-				"development": {
-					"buildTarget": "tools/fill-db:build:development"
-				},
-				"production": {
-					"buildTarget": "tools/fill-db:build:production"
-				}
-			}
-		},
-		"lint": {
-			"executor": "@nx/eslint:lint",
-			"outputs": ["{options.outputFile}"],
-			"options": {
-				"lintFilePatterns": ["tools/fill-db/**/*.ts"]
-			}
-		},
-		"test": {
-			"executor": "@nx/jest:jest",
-			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-			"options": {
-				"jestConfig": "tools/fill-db/jest.config.ts",
-				"passWithNoTests": true
-			},
-			"configurations": {
-				"ci": {
-					"ci": true,
-					"codeCoverage": true
-				}
-			}
-		}
-	},
-	"tags": []
+  "name": "tools-fill-db",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "tools/fill-db/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "platform": "node",
+        "outputPath": "dist/tools/fill-db",
+        "format": [
+          "esm"
+        ],
+        "external": [
+          "./node_modules/*"
+        ],
+        "bundle": true,
+        "main": "tools/fill-db/src/main.ts",
+        "tsConfig": "tools/fill-db/tsconfig.app.json",
+        "assets": [
+          "tools/fill-db/src/assets"
+        ],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "sourcemap": true,
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "esbuildOptions": {
+            "sourcemap": false,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "tsConfig": "tools/fill-db/tsconfig.app.json",
+      "options": {
+        "lintFilePatterns": [
+          "tools/fill-db/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "tools/fill-db/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
 }

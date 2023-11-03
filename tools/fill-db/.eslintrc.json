@@ -1,6 +1,5 @@
 {
 	"extends": ["../../.eslintrc.json"],
-	"ignorePatterns": ["!**/*"],
 	"overrides": [
 		{
 			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -8,6 +7,9 @@
 		},
 		{
 			"files": ["*.ts", "*.tsx"],
+      "parserOptions": {
+        "project": ["tools/fill-db/tsconfig.app.json"]
+      },
 			"rules": {}
 		},
 		{

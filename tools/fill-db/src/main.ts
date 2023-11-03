@@ -1,7 +1,8 @@
-import { AttributeValue, BatchWriteItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { RecipeIndexEntry, RecipeIndexEntryToDynamo } from "./models";
+import type { AttributeValue} from "@aws-sdk/client-dynamodb";
+import { BatchWriteItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {v4 as uuid} from "uuid";
-import formatISO from "date-fns/formatISO";
+import type { RecipeIndexEntry} from "./models";
+import { RecipeIndexEntryToDynamo } from "./models";
 
 const tableName = process.env["TABLE_NAME"];
 const client = new DynamoDBClient();
@@ -10,12 +11,13 @@ const limit = 30000;
 function createRecord(count:number):RecipeIndexEntry[] {
   const now = new Date();
 
-  let out:RecipeIndexEntry[] = [];
+  const out:RecipeIndexEntry[] = [];
 
   for(let i=0;i<count;i++) {
     out.push({
       capiArticleId: `path/to/fake/recipe/${now.valueOf()}`,
-      recipeUID: uuid(),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- uuid() is untyped so we must cast it here
+      recipeUID: uuid() as string,
       lastUpdated: now,
       recipeVersion: Math.random().toString(36).slice(-10)
     });
@@ -24,9 +26,9 @@ function createRecord(count:number):RecipeIndexEntry[] {
   return out;
 }
 
-async function batchWrite(records:Record<string, AttributeValue>[]) {
+async function batchWrite(records:Array<Record<string, AttributeValue>>) {
   const RequestItems = {};
-  RequestItems[tableName] = records.map(Item=>({
+  RequestItems[tableName as string] = records.map(Item=>({
     PutRequest: {
       Item,
     }

@@ -1,6 +1,6 @@
-import { AttributeValue } from "@aws-sdk/client-dynamodb";
-import parseISO from "date-fns/parseISO";
+import type { AttributeValue } from "@aws-sdk/client-dynamodb";
 import formatISO from "date-fns/formatISO";
+import parseISO from "date-fns/parseISO";
 
 interface RecipeIndexEntry {
   capiArticleId: string;
@@ -11,10 +11,10 @@ interface RecipeIndexEntry {
 
 export function RecipeIndexEntryFromDynamo(raw: Record<string, AttributeValue>): RecipeIndexEntry {
   return {
-    capiArticleId: raw["capiArticleId"].S,
-    recipeUID: raw["recipeUID"].S,
-    lastUpdated: parseISO(raw["lastUpdated"].S),
-    recipeVersion: raw["recipeVersion"].S,
+    capiArticleId: raw["capiArticleId"].S ?? "",
+    recipeUID: raw["recipeUID"].S ?? "",
+    lastUpdated: raw["lastUpdated"].S ? parseISO(raw["lastUpdated"].S) : new Date(1970, 0, 0),
+    recipeVersion: raw["recipeVersion"].S ?? "",
   };
 }
 

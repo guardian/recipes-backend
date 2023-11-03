@@ -1,6 +1,6 @@
 {
   "root": true,
-  "ignorePatterns": ["**/*"],
+  "ignorePatterns": ["**/*.config.ts"],
   "plugins": ["@nx"],
   "overrides": [
     {
