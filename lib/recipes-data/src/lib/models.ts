@@ -45,7 +45,7 @@ export function RecipeDatabaseEntryToDynamo(ent: RecipeDatabaseEntry): Record<st
 /**
  * RecipeIndexEntry is a subset of the database model that is used to generate the client-facing index.
  */
-interface RecipeIndexEntry {
+export interface RecipeIndexEntry {
   sha: string;
   uid: string;
 }
