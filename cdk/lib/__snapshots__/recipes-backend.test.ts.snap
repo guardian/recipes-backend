@@ -16,7 +16,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/recipes-api",
+            "Value": "guardian/recipes-backend",
           },
           {
             "Key": "Stack",
@@ -76,7 +76,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/recipes-api",
+            "Value": "guardian/recipes-backend",
           },
           {
             "Key": "Stack",
@@ -201,7 +201,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/recipes-api",
+            "Value": "guardian/recipes-backend",
           },
           {
             "Key": "Stack",
