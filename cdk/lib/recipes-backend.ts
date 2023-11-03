@@ -24,6 +24,7 @@ export class RecipesBackend extends GuStack {
       handler: "main.handler",
       timeout: Duration.seconds(60),
       environment: {
+        STATIC_BUCKET: serving.staticBucket.bucketName,
         INDEX_TABLE: store.table.tableName,
         LAST_UPDATED_INDEX: store.lastUpdatedIndexName,
       },

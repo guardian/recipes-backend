@@ -1,6 +1,5 @@
 import type { AttributeValue } from "@aws-sdk/client-dynamodb";
-import formatISO from "date-fns/formatISO";
-import parseISO from "date-fns/parseISO";
+import {formatISO, parseISO} from "date-fns";
 
 /**
  * RecipeIndexEntry represents a whole data record from the dynamo table containing the up-to-date index data.

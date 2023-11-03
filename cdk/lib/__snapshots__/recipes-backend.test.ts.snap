@@ -250,6 +250,9 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
             "LAST_UPDATED_INDEX": "idxArticleLastUpdated",
             "STACK": "content-api",
             "STAGE": "TEST",
+            "STATIC_BUCKET": {
+              "Ref": "staticstaticServing53194089",
+            },
           },
         },
         "Handler": "main.handler",
