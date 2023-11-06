@@ -1,5 +1,6 @@
 import {DynamoDBClient} from "@aws-sdk/client-dynamodb";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+// eslint-disable-next-line import/no-unresolved -- this works from root tsconfig but eslint keeps complaining :-(
 import { type RecipeIndex, retrieveIndexData } from "@recipes-api/lib/recipes-data";
 import type { Handler } from "aws-lambda";
 import { StaticBucketName as Bucket } from "./config";
