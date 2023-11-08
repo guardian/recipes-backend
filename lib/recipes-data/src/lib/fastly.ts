@@ -1,7 +1,8 @@
 //This file is based on https://github.com/guardian/fastly-cache-purger/blob/5b718fd827acf2eabb94884d9df59645999fc2f5/src/main/scala/com/gu/fastly/Lambda.scala#L162
 //with reference to https://developer.fastly.com/reference/api/purging/ and https://docs.fastly.com/en/guides/authenticating-api-purge-requests
 import fetch from "node-fetch";
-import {ContentPrefix, DebugLogsEnabled, MaximumRetries, RetryDelaySeconds} from "./config";
+import {ContentPrefix, DebugLogsEnabled, MaximumRetries} from "./config";
+import {awaitableDelay} from "./utils";
 
 /** From the fastly docs at https://docs.fastly.com/en/fundamentals/what-is-purging:
  *
@@ -75,10 +76,6 @@ export async function sendFastlyPurgeRequest(contentPath:string, apiKey:string, 
       console.error(`Unable to purge ${contentPath}, Fastly returned ${response.status}: ${content}`);
       throw new FastlyError(`Fastly returned ${response.status}`);
   }
-}
-
-async function awaitableDelay():Promise<void> {
-  return new Promise((resolve)=>setTimeout(resolve, RetryDelaySeconds*1000));
 }
 
 /**
