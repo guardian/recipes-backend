@@ -16,10 +16,10 @@ import {awaitableDelay} from "./utils";
   */
 export type PurgeType = "hard"|"soft";
 
-const leadingSlash = /^\//;
-const trainingSlash = /\/$/;
+const leadingSlash = /^\/+/;
+const trainingSlash = /\/+$/;
 
-class FastlyError extends Error {
+export class FastlyError extends Error {
 
 }
 
