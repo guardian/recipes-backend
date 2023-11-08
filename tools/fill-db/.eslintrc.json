@@ -1,0 +1,20 @@
+{
+	"extends": ["../../.eslintrc.json"],
+	"overrides": [
+		{
+			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+			"rules": {}
+		},
+		{
+			"files": ["*.ts", "*.tsx"],
+      "parserOptions": {
+        "project": ["tools/fill-db/tsconfig.app.json"]
+      },
+			"rules": {}
+		},
+		{
+			"files": ["*.js", "*.jsx"],
+			"rules": {}
+		}
+	]
+}
