@@ -1,4 +1,5 @@
 import {EventType} from "@guardian/content-api-models/crier/event/v1/eventType";
+import {ItemType} from "@guardian/content-api-models/crier/event/v1/itemType";
 import type {KinesisStreamHandler, KinesisStreamRecord} from "aws-lambda";
 import {deserializeEvent} from "./deserialize";
 import {handleDeletedContent, handleTakedown} from "./takedown_processor";
@@ -6,9 +7,12 @@ import {handleContentUpdate, handleContentUpdateRetrievable} from "./update_proc
 
 const filterProductionMonitoring:boolean = process.env["FILTER_PRODUCTION_MONITORING"] ? process.env["FILTER_PRODUCTION_MONITORING"].toLowerCase() =="yes" : false;
 
-async function processRecord(r:KinesisStreamRecord) {
+export async function processRecord(r:KinesisStreamRecord) {
   try {
     const evt = deserializeEvent(r.kinesis.data);
+
+    //we're only interested in content updates
+    if(evt.itemType!=ItemType.CONTENT) return null;
 
     console.log(`DEBUG Received event of type ${evt.eventType} for item of type ${evt.itemType}`);
     switch(evt.eventType) {
@@ -41,7 +45,5 @@ async function processRecord(r:KinesisStreamRecord) {
 }
 
 export const handler:KinesisStreamHandler = async (event) => {
-  const recordsToPush = await Promise.all(event.Records.map((r)=>processRecord(r)))
-  console.log("DEBUG Results were ", recordsToPush);
-  console.log("All done!");
+  await Promise.all(event.Records.map((r)=>processRecord(r)))
 }
