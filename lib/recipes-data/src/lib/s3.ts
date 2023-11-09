@@ -81,7 +81,7 @@ export async function removeRecipeContent(recipe: RecipeReference, attempt?: num
       return;
     } else if(err instanceof S3ServiceException) {
       console.warn(`Unable to delete from S3 on attempt ${realAttempt}: `, err);
-      if(realAttempt < MaximumRetries) {
+      if(realAttempt <= MaximumRetries) {
         await awaitableDelay();
         return publishRecipeContent(recipe, realAttempt+1);
       } else {
