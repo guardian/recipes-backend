@@ -49,6 +49,9 @@
       "jest.config.js"
     ]
   },
+  "optionalDependencies": {
+    "@nx/nx-linux-x64-gnu": "17.0.2"
+  },
   "devDependencies": {
     "@guardian/cdk": "52.0.0",
     "@guardian/eslint-config-typescript": "7.0.0",

@@ -1,6 +1,7 @@
 import * as process from "process";
 import {DeleteObjectCommand, NoSuchKey, PutObjectCommand, S3Client, S3ServiceException} from "@aws-sdk/client-s3";
-import {StaticBucketName as Bucket, MaximumRetries} from "./config";
+import {StaticBucketName as Bucket, FastlyApiKey, MaximumRetries} from "./config";
+import {sendFastlyPurgeRequestWithRetries} from "./fastly";
 import {awaitableDelay} from "./utils";
 
 const s3Client = new S3Client({region: process.env["AWS_REGION"]});
@@ -24,7 +25,6 @@ interface RecipeReference {
 export async function publishRecipeContent(recipe: RecipeReference, attempt?: number):Promise<void>
 {
   const realAttempt = attempt ?? 1;
-
   if(!recipe.checksum) {
     throw new Error("publishRecipeContent: Cannot output recipe data without a checksum");
   }
@@ -43,7 +43,7 @@ export async function publishRecipeContent(recipe: RecipeReference, attempt?: nu
   try {
     await s3Client.send(req);
     //TODO - check if "hard" or "soft" purging is the right option here
-    //await sendFastlyPurgeRequest(Key, FastlyApiKey, "hard");
+    await sendFastlyPurgeRequestWithRetries(Key, FastlyApiKey ?? "", "hard");
   } catch(err) {
     if (err instanceof S3ServiceException) {
       console.warn(`Unable to write to S3 on attempt ${realAttempt}: `, err);
@@ -71,7 +71,7 @@ export async function removeRecipeContent(recipeSHA: string, attempt?: number): 
 
   try {
     await s3Client.send(req);
-    //await sendFastlyPurgeRequest(Key, FastlyApiKey, "hard");
+    await sendFastlyPurgeRequestWithRetries(Key, FastlyApiKey ?? "", "hard");
   } catch(err) {
     if(err instanceof NoSuchKey) {
       console.log(`removeRecipeContent: No recipe existed at version ${recipeSHA} so I could not remove it.`);
