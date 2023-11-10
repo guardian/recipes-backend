@@ -56,10 +56,10 @@ export async function sendFastlyPurgeRequest(contentPath:string, apiKey:string, 
     "Accept": "application/json",
   };
 
-  const headers = purgeType=="hard" ? {
+  const headers = purgeType=="hard" ? baseHeaders: {
     "Fastly-Soft-Purge": "1",
     ...baseHeaders
-  } : baseHeaders;
+  };
 
   if(DebugLogsEnabled) console.debug("urlToPurge is ", urlToPurge);
   const response = await fetch(urlToPurge, {

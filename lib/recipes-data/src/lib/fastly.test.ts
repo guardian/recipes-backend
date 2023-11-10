@@ -16,7 +16,7 @@ describe("sendFastlyPurgeRequest", ()=>{
     jest.resetAllMocks();
   });
 
-  it("should POST to the Fastly API with the right URL and headers", async ()=>{
+  it("should POST to the Fastly API with the right URL and headers, using soft-purge at the default", async ()=>{
     const fakeData = JSON.stringify({id: "1234xyz", status: "ok"});
     //@ts-ignore
     fetch.mockReturnValue(Promise.resolve({
@@ -24,6 +24,30 @@ describe("sendFastlyPurgeRequest", ()=>{
       status: 200,
     }))
     await sendFastlyPurgeRequest("/path/to/content","fake-key");
+
+    //@ts-ignore
+    expect(fetch.mock.calls.length).toEqual(1);
+    //@ts-ignore
+    expect(fetch.mock.calls[0][0]).toEqual("https://api.fastly.com/purge/cdn.content.location/path/to/content");
+    //@ts-ignore
+    expect(fetch.mock.calls[0][1]).toEqual({
+      headers: {
+        Accept: "application/json",
+        "FASTLY-KEY": "fake-key",
+        "Fastly-Soft-Purge": "1",
+      },
+      method: "POST"
+    });
+  });
+
+  it("should POST to the Fastly API with the right URL and headers, when hard-purge is requested", async ()=>{
+    const fakeData = JSON.stringify({id: "1234xyz", status: "ok"});
+    //@ts-ignore
+    fetch.mockReturnValue(Promise.resolve({
+      text: ()=>Promise.resolve(fakeData),
+      status: 200,
+    }))
+    await sendFastlyPurgeRequest("/path/to/content","fake-key", "hard");
 
     //@ts-ignore
     expect(fetch.mock.calls.length).toEqual(1);
@@ -57,7 +81,8 @@ describe("sendFastlyPurgeRequest", ()=>{
     expect(fetch.mock.calls[0][1]).toEqual({
       headers: {
         Accept: "application/json",
-        "FASTLY-KEY": "fake-key"
+        "FASTLY-KEY": "fake-key",
+        "Fastly-Soft-Purge": "1",
       },
       method: "POST"
     });
