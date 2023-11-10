@@ -46,3 +46,5 @@ jobs:
               - cdk/cdk.out/RecipesBackend-euwest-1-PROD.template.json
             recipes-backend-testindex:
               - dist/lambda/test-indexbuild-lambda.zip
+            recipes-responder:
+              - dist/lambda/recipes-responder.zip

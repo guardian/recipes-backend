@@ -19,10 +19,10 @@
 			"@recipes-api/lib/recipes-data": ["lib/recipes-data/src/index.ts"]
 		}
 	},
-  "references": [
-    {
-      "path": "./lambda/test-indexbuild/tsconfig.json",
-    }
-  ],
+	"references": [
+		{
+			"path": "./lambda/test-indexbuild/tsconfig.json"
+		}
+	],
 	"exclude": ["node_modules", "tmp"]
 }

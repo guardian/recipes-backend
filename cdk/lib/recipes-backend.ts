@@ -1,8 +1,8 @@
 import type {GuStackProps} from "@guardian/cdk/lib/constructs/core";
-import {GuStack} from "@guardian/cdk/lib/constructs/core";
-// import {GuKinesisLambdaExperimental} from "@guardian/cdk/lib/experimental/patterns";
-// import { StreamRetry } from "@guardian/cdk/lib/utils/lambda";
+import { GuStack} from "@guardian/cdk/lib/constructs/core";
 import {GuLambdaFunction} from "@guardian/cdk/lib/constructs/lambda";
+import {GuKinesisLambdaExperimental} from "@guardian/cdk/lib/experimental/patterns";
+import {StreamRetry} from "@guardian/cdk/lib/utils/lambda";
 import {type App, Duration} from "aws-cdk-lib";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
@@ -42,23 +42,29 @@ export class RecipesBackend extends GuStack {
       ]
     });
 
-    //TODO - this is how we can simply connect to an existing kinesis stream. But we have nothing to
-    //connect to it yet! - this will be uncommented once we do.
+    //This is a nicer way to pick up the stream name - but CDK won't compile
+    //when using the name token for the kinesis stream name below.
 
-    // new GuKinesisLambdaExperimental(this, "updaterLambda", {
-    //   monitoringConfiguration: {noMonitoring: true},
-    //   existingKinesisStream: {
-    //     externalKinesisStreamName: "blah"
-    //   },
-    //   errorHandlingConfiguration: {
-    //     retryBehaviour: StreamRetry.maxAttempts(5),
-    //     bisectBatchOnError: true,
-    //   },
-    //   runtime: Runtime.NODEJS_18_X,
-    //   app,
-    //   handler: "main.handler",
-    //   fileName: "recipe-backend-updater.zip",
-    //   timeout: Duration.seconds(30)
-    // })
+    // const crierStreamParam = new GuParameter(this, "crierStream", {
+    //   default: `/${this.stage}/${this.stack}/crier/index-stream`,
+    //   fromSSM: true,
+    //   description: "SSM path to the name of the Crier stream we are attaching to"
+    // });
+
+    new GuKinesisLambdaExperimental(this, "updaterLambda", {
+      monitoringConfiguration: {noMonitoring: true},
+      existingKinesisStream: {
+        externalKinesisStreamName: `content-api-firehose-v2-${this.stage}`,
+      },
+      errorHandlingConfiguration: {
+        retryBehaviour: StreamRetry.maxAttempts(5),
+        bisectBatchOnError: true,
+      },
+      runtime: Runtime.NODEJS_18_X,
+      app: "recipes-responder",
+      handler: "main.handler",
+      fileName: "recipes-responder.zip",
+      timeout: Duration.seconds(30)
+    })
   }
 }
