@@ -93,7 +93,7 @@ export async function sendFastlyPurgeRequestWithRetries(contentPath:string, apiK
   } catch(err) {
     if(err instanceof FastlyError) {
       const nextRetry = retryCount ? retryCount + 1 : 1;
-      if(nextRetry>MaximumRetries) throw err; //we give up! it ain't gonna work.
+      if(nextRetry>MaximumRetries || !MaximumRetries || isNaN(MaximumRetries)) throw err; //we give up! it ain't gonna work.
       await awaitableDelay();
       return sendFastlyPurgeRequestWithRetries(contentPath, apiKey, purgeType, nextRetry);
     } else {
