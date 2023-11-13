@@ -2,16 +2,11 @@ import * as process from "process";
 import {DeleteObjectCommand, NoSuchKey, PutObjectCommand, S3Client, S3ServiceException} from "@aws-sdk/client-s3";
 import {StaticBucketName as Bucket, FastlyApiKey, MaximumRetries} from "./config";
 import {sendFastlyPurgeRequestWithRetries} from "./fastly";
+import type { RecipeReference } from './models';
 import {awaitableDelay} from "./utils";
 
 const s3Client = new S3Client({region: process.env["AWS_REGION"]});
 
-//FIXME: This is a temporary definition, awaiting merge of @DivsB's proper one
-interface RecipeReference {
-  recipeUID: string;
-  jsonBlob: string;
-  checksum?: string;
-}
 
 /**
  * Publishes the given recipe data into the output bucket.
