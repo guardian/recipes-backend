@@ -47,7 +47,7 @@ export async function publishRecipeContent(recipe: RecipeReference, attempt?: nu
   } catch(err) {
     if (err instanceof S3ServiceException) {
       console.warn(`Unable to write to S3 on attempt ${realAttempt}: `, err);
-      if(realAttempt < MaximumRetries) {
+      if(MaximumRetries && !isNaN(MaximumRetries) && realAttempt < MaximumRetries) {
         await awaitableDelay();
         return publishRecipeContent(recipe, realAttempt+1);
       } else {
@@ -78,7 +78,7 @@ export async function removeRecipeContent(recipeSHA: string, attempt?: number): 
       return;
     } else if(err instanceof S3ServiceException) {
       console.warn(`Unable to delete from S3 on attempt ${realAttempt}: `, err);
-      if(realAttempt < MaximumRetries) {
+      if(MaximumRetries && !isNaN(MaximumRetries) && realAttempt < MaximumRetries) {
         await awaitableDelay();
         return removeRecipeContent(recipeSHA, realAttempt+1);
       } else {
