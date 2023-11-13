@@ -1,14 +1,9 @@
 import {calculateChecksum} from "./utils";
-import {RecipeReference} from "@recipes-api/lib/recipes-data";
+import {RecipeReference, RecipeReferenceWithoutChecksum} from "@recipes-api/lib/recipes-data";
 
 describe("calculateChecksum", ()=>{
-  it("should throw an error if the checksum field is already set", ()=>{
-    expect(()=>calculateChecksum({recipeUID: "blahblah", jsonBlob: "foodisgoodwatchitburn", checksum: "something-here"}))
-      .toThrow(new Error("Asked to checksum blahblah which already had a checksum"));
-  });
-
   it("should checksum the content into base64", ()=>{
-    const input:RecipeReference = {
+    const input:RecipeReferenceWithoutChecksum = {
       recipeUID: "blahblah",
       jsonBlob: "foodisgoodwatchitburn"
     };

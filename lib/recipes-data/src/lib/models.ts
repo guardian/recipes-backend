@@ -71,10 +71,13 @@ interface RecipeIndex {
 }
 
 //FIXME: This is a temporary definition, awaiting merge of @DivsB's proper one
-interface RecipeReference {
+interface RecipeReferenceWithoutChecksum {
   recipeUID: string;
   jsonBlob: string;
-  checksum?: string;
 }
 
-export type { RecipeDatabaseEntry,RecipeIndex, RecipeReference };
+interface RecipeReference extends RecipeReferenceWithoutChecksum{
+  checksum: string;
+}
+
+export type { RecipeDatabaseEntry,RecipeIndex, RecipeReference, RecipeReferenceWithoutChecksum };
