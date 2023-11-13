@@ -130,7 +130,7 @@ describe("s3.removeRecipeContent", ()=>{
     // @ts-ignore -- typescript doesn't know that this is a mock
     awaitableDelay.mockReturnValue(Promise.resolve());
 
-    await expect(removeRecipeContent("xxxyyyzzz")).rejects.toThrow(Error("Could not write to S3, see logs for details."));
+    await expect(removeRecipeContent("xxxyyyzzz")).rejects.toThrow(Error("Could not delete from S3, see logs for details."));
 
     expect(s3Mock.commandCalls(PutObjectCommand).length).toEqual(0);
     expect(s3Mock.commandCalls(DeleteObjectCommand).length).toEqual(MaximumRetries);

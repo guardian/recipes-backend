@@ -82,7 +82,7 @@ export async function removeRecipeContent(recipeSHA: string, attempt?: number): 
         await awaitableDelay();
         return removeRecipeContent(recipeSHA, realAttempt+1);
       } else {
-        throw new Error("Could not write to S3, see logs for details.")
+        throw new Error("Could not delete from S3, see logs for details.")
       }
     } else {
       throw err;
