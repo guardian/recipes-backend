@@ -9,3 +9,7 @@ export const ContentPrefix = ContentUrlBase ? ContentUrlBase.replace(UrlPrefix, 
 export const DebugLogsEnabled = process.env["DEBUG_LOGS"] ? process.env["DEBUG_LOGS"].toLowerCase()==="true" : false;
 export const MaximumRetries = process.env["MAX_RETRIES"] ? parseInt(process.env["MAX_RETRIES"]) : 10;
 export const RetryDelaySeconds = process.env["RETRY_DELAY"] ? parseInt(process.env["RETRY_DELAY"]) : 1;
+export const FastlyApiKey = process.env["FASTLY_API_KEY"];
+
+//Used by s3.ts
+export const StaticBucketName = process.env["STATIC_BUCKET"];
