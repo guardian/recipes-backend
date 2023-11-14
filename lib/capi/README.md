@@ -1,7 +1,6 @@
 # lib-capi
 
-This library was generated with [Nx](https://nx.dev).
+This library contains the code that the recipes backend uses to communicate directly with the Content API,
+for example when pulling the contents of a retrievable update.
 
-## Running unit tests
-
-Run `nx test lib-capi` to execute the unit tests via [Jest](https://jestjs.io).
+It also contains the serialization/deserialization code to go from Thrift to javascript objects and back again.
