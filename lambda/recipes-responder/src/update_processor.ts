@@ -21,12 +21,12 @@ async function retrieveContent(capiUrl:string) :Promise<PollingResult>{
   return callCAPI(`${capiUrl}?${params}`);
 }
 
-// eslint-disable-next-line @typescript-eslint/require-await -- not implemented yet
 export async function handleContentUpdate(content:Content):Promise<void>
 {
   if(content.type!=ContentType.ARTICLE) return;  //no point processing live-blogs etc.
 
-  throw new Error("handleContentUpdate not implemented yet");
+  console.log(`TEST - update for ${content.id} detected`);
+  return Promise.resolve();
 }
 
 export async function handleContentUpdateRetrievable(retrievable:RetrievableContent): Promise<void>
