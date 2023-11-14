@@ -16,6 +16,7 @@
 		"skipDefaultLibCheck": true,
 		"baseUrl": ".",
 		"paths": {
+			"@recipes-api/lib/capi": ["lib/capi/src/index.ts"],
 			"@recipes-api/lib/recipes-data": ["lib/recipes-data/src/index.ts"]
 		}
 	},
