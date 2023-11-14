@@ -25,26 +25,23 @@
           "lib/recipes-data/tsconfig.lib.json"
         ]
       },
-      "rules": {}
-    },
+			"rules": {}
+		},
     {
-      "files": [
-        "*.test.ts",
-        "*.test.tsx"
-      ],
+      "files": ["*.test.ts", "*.test.tsx"],
       "parserOptions": {
-        "project": [
-          "lib/recipes-data/tsconfig.spec.json"
-        ]
+        "project": ["lib/recipes-data/tsconfig.spec.json"]
       },
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/prefer-ts-expect-error": "off",
+        "@typescript-eslint/no-unsafe-call": "off"
+      }
     },
-    {
-      "files": [
-        "*.js",
-        "*.jsx"
-      ],
-      "rules": {}
-    }
-  ]
+		{
+			"files": ["*.js", "*.jsx"],
+			"rules": {}
+		}
+	]
 }
