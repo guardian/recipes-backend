@@ -9,22 +9,22 @@ export interface RecipeOutput {
 }
 
 export function extractRecipeData(webUrl: string, block: Block): RecipeOutput[] {
-  console.log("block----" + block)
-  const allRecipes = block.elements
-    .filter(elem => elem.type == ElementType.RECIPE)
-    .map(recp => parseJsonBlob(webUrl, recp.recipeTypeData.recipeJson))
-
-  return allRecipes
+  const allRecipes = block.elements.filter(elem => elem.type === ElementType.RECIPE)
+  if (allRecipes.length != 0) {
+    return allRecipes.map(recp => parseJsonBlob(webUrl, recp.recipeTypeData?.recipeJson))
+  } else {
+    throw new Error("Error! No recipe is present in elements!")
+  }
 }
 
-function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeOutput {
-  const recipeData = JSON.parse(recipeJson);
+function parseJsonBlob(canonicalId: string, recipeJson: string | undefined): RecipeOutput {
+  const recipeData = JSON.parse(recipeJson as string) as Record<string, unknown>
   if (!recipeData.id) {
     throw new Error("Error! No id present in recipeJson!")
   } else {
-    return {
-      recipeUId: `${canonicalId}-${recipeData.id}`,
-      jsonBlob: recipeData.toString()
+    return <RecipeOutput>{
+      recipeUId: `${canonicalId}-${recipeData.id as string}`,
+      jsonBlob: JSON.stringify(recipeData)
     }
   }
 }
