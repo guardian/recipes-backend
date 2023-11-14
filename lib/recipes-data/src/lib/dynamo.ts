@@ -1,7 +1,7 @@
 import type {AttributeValue, DynamoDBClient} from "@aws-sdk/client-dynamodb";
-import {ScanCommand} from "@aws-sdk/client-dynamodb";
+import {QueryCommand, ScanCommand} from "@aws-sdk/client-dynamodb";
 import {lastUpdatedIndex as IndexName, indexTableName as TableName} from "./config";
-import type { RecipeIndex, RecipeIndexEntry} from './models';
+import type {RecipeIndex, RecipeIndexEntry, RecipeReference} from './models';
 import {RecipeIndexEntryFromDynamo} from "./models";
 
 type DynamoRecord =  Record<string, AttributeValue>;
@@ -39,3 +39,16 @@ export async function retrieveIndexData(client: DynamoDBClient) : Promise<Recipe
    return {schemaVersion: 1, recipes, lastUpdated: new Date()}
 }
 
+export async function recipesforArticle(client:DynamoDBClient, articleCanonicalId: string): Promise<RecipeIndexEntry[]>
+{
+  const req = new QueryCommand({
+    TableName,
+    KeyConditionExpression: "capiArticleId=:artId",
+    ExpressionAttributeValues: {
+      ":artId": {S: articleCanonicalId},
+    }
+  });
+
+  const response = await client.send(req);
+  return response.Items ? response.Items.map(RecipeIndexEntryFromDynamo) : [];
+}
