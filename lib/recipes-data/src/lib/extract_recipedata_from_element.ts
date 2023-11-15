@@ -8,23 +8,21 @@ export interface RecipeOutput {
   checksum?: string;
 }
 
-export function extractRecipeData(webUrl: string, block: Block): RecipeOutput[] {
-  const allRecipes = block.elements.filter(elem => elem.type === ElementType.RECIPE)
-  if (allRecipes.length != 0) {
-    return allRecipes.map(recp => parseJsonBlob(webUrl, recp.recipeTypeData?.recipeJson))
-  } else {
-    throw new Error("Error! No recipe is present in elements!")
-  }
+export function extractRecipeData(canonicalId: string, block: Block): RecipeOutput[] {
+  const allRecipes = block.elements
+    .filter(elem => elem.type === ElementType.RECIPE)
+    .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson))
+  return allRecipes
 }
 
 function parseJsonBlob(canonicalId: string, recipeJson: string | undefined): RecipeOutput {
   const recipeData = JSON.parse(recipeJson as string) as Record<string, unknown>
   if (!recipeData.id) {
-    throw new Error("Error! No id present in recipeJson!")
+    throw new Error(`Error! No id present in the recipeJson, canonicalId is ${canonicalId}`)
   } else {
     return <RecipeOutput>{
       recipeUId: `${canonicalId}-${recipeData.id as string}`,
-      jsonBlob: JSON.stringify(recipeData)
+      jsonBlob: recipeJson
     }
   }
 }

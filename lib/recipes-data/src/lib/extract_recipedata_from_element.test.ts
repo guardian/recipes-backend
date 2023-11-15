@@ -1,13 +1,12 @@
 import {AssetType} from "@guardian/content-api-models/v1/assetType";
 import type {Block} from "@guardian/content-api-models/v1/block";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
-import {response} from "./../res/recipejson-example.json";
 import {extractRecipeData} from "./extract_recipedata_from_element";
 
 describe("extractRecipeData", () => {
 
-  it("should work when block containing single recipe elements ", () => {
-    const webUrl = response.results[0].webUrl
+  it("should work when block containing single recipe element", () => {
+    const canonicalId = "lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers"
     const block: Block = {
       id: "5a4b754ce4b0e33567c465c7",
       bodyHtml: "<figure class=\"element element-image\" data-media-id=\"58c32a98ae4463b5129bf717b1b2312d8ffc0d45\"> <img src=\"https://media.guim.co.uk/58c32a98ae4463b5129bf717b1b2312d8ffc0d45/0_318_5512_3308/1000.jpg\" alt=\"Thomasina Miers’ soba noodles with crisp rainbow vegetables and a spicy sesame seed dressing.\" width=\"1000\" height=\"600\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">Thomasina Miers’ soba noodles with crisp rainbow vegetables and a spicy sesame seed dressing.</span> <span class=\"element-image__credit\">Photograph: Louise Hagger for the Guardian. Food styling: Emily Kydd. Prop styling: Jennifer Kay</span> </figcaption> </figure>",
@@ -90,14 +89,14 @@ describe("extractRecipeData", () => {
         }
       ]
     }
-    const result = extractRecipeData(webUrl, block)
+    const result = extractRecipeData(canonicalId, block)
     expect(result.length).toEqual(1)
-    expect(result[0].recipeUId).toEqual("http://www.code.dev-theguardian.com/lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers-1") //
-    expect(JSON.parse(result[0].jsonBlob).title).toEqual("Soba noodles with crisp rainbow vegetables and a spicy sesame seed dressing")
+    expect(result[0].recipeUId).toEqual("lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers-1") //
+    expect(result[0].jsonBlob).toEqual(block.elements[1].recipeTypeData?.recipeJson)
   })
 
-  it("should work block containing multiple recipe elements ", () => {
-    const webUrl = response.results[0].webUrl
+  it("should work when block containing multiple recipe elements", () => {
+    const canonicalId = "lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers"
     const block: Block = {
       id: "5a4b754ce4b0e33567c465c7",
       bodyHtml: "<figure class=\"element element-image\" data-media-id=\"58c32a98ae4463b5129bf717b1b2312d8ffc0d45\"> <img src=\"https://media.guim.co.uk/58c32a98ae4463b5129bf717b1b2312d8ffc0d45/0_318_5512_3308/1000.jpg\" alt=\"Thomasina Miers’ soba noodles with crisp rainbow vegetables and a spicy sesame seed dressing.\" width=\"1000\" height=\"600\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">Thomasina Miers’ soba noodles with crisp rainbow vegetables and a spicy sesame seed dressing.</span> <span class=\"element-image__credit\">Photograph: Louise Hagger for the Guardian. Food styling: Emily Kydd. Prop styling: Jennifer Kay</span> </figcaption> </figure>",
@@ -194,15 +193,15 @@ describe("extractRecipeData", () => {
         }
       ]
     }
-    const result = extractRecipeData(webUrl, block)
+    const result = extractRecipeData(canonicalId, block)
     expect(result.length).toEqual(3)
-    expect(result[2].recipeUId).toEqual("http://www.code.dev-theguardian.com/lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers-3") //
-    expect(JSON.parse(result[2].jsonBlob).title).toEqual("Soba noodles with crisp rainbow vegetables and a spicy sesame seed dressing")
+    expect(result[2].recipeUId).toEqual("lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers-3") //
+    expect(result[2].jsonBlob).toEqual(block.elements[3].recipeTypeData?.recipeJson)
   })
 
-  it("should fail when block containing no recipe elements ", () => {
-    const webUrl = response.results[0].webUrl
-    const block1: Block = {
+  it("should work when block containing no recipe elements ", () => {
+    const canonicalId = "lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers"
+    const block: Block = {
       id: "5a4b754ce4b0e33567c465c7",
       bodyHtml: "<figure class=\"element element-image\" data-media-id=\"58c32a98ae4463b5129bf717b1b2312d8ffc0d45\"> <img src=\"https://media.guim.co.uk/58c32a98ae4463b5129bf717b1b2312d8ffc0d45/0_318_5512_3308/1000.jpg\" alt=\"Thomasina Miers’ soba noodles with crisp rainbow vegetables and a spicy sesame seed dressing.\" width=\"1000\" height=\"600\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">Thomasina Miers’ soba noodles with crisp rainbow vegetables and a spicy sesame seed dressing.</span> <span class=\"element-image__credit\">Photograph: Louise Hagger for the Guardian. Food styling: Emily Kydd. Prop styling: Jennifer Kay</span> </figcaption> </figure>",
       bodyTextSummary: "",
@@ -277,14 +276,13 @@ describe("extractRecipeData", () => {
         }
       ]
     }
-    expect(() => {
-      extractRecipeData(webUrl, block1)
-    }).toThrow("Error! No recipe is present in elements!")
+    const result = extractRecipeData(canonicalId, block)
+    expect(result.length).toEqual(0)
   })
 
 
   it("should fail when block has got invalid recipe element (no ID field) ", () => {
-    const webUrl = response.results[0].webUrl
+    const canonicalId = "lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers"
     const block: Block = {
       id: "5a4b754ce4b0e33567c465c7",
       bodyHtml: "<figure class=\"element element-image\" data-media-id=\"58c32a98ae4463b5129bf717b1b2312d8ffc0d45\"> <img src=\"https://media.guim.co.uk/58c32a98ae4463b5129bf717b1b2312d8ffc0d45/0_318_5512_3308/1000.jpg\" alt=\"Thomasina Miers’ soba noodles with crisp rainbow vegetables and a spicy sesame seed dressing.\" width=\"1000\" height=\"600\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">Thomasina Miers’ soba noodles with crisp rainbow vegetables and a spicy sesame seed dressing.</span> <span class=\"element-image__credit\">Photograph: Louise Hagger for the Guardian. Food styling: Emily Kydd. Prop styling: Jennifer Kay</span> </figcaption> </figure>",
@@ -368,8 +366,8 @@ describe("extractRecipeData", () => {
       ]
     }
     expect(() => {
-      extractRecipeData(webUrl, block)
-    }).toThrow("Error! No id present in recipeJson!")
+      extractRecipeData(canonicalId, block)
+    }).toThrow("Error! No id present in the recipeJson, canonicalId is lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers")
   })
 
 })
