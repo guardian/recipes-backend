@@ -6,7 +6,8 @@
     "update-cdk": "nx run cdk:update",
     "build": "nx run-many --target=build --skip-nx-cache",
     "test": "nx run-many --target=test",
-    "lint": "nx run-many --target=lint"
+    "lint": "nx run-many --target=lint",
+    "dbtest": "nx run tools-manual-takedown:run"
   },
   "private": true,
   "dependencies": {

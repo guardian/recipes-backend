@@ -1,0 +1,38 @@
+{
+	"extends": ["../../.eslintrc.json"],
+	"ignorePatterns": ["!**/*"],
+	"overrides": [
+		{
+			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+			"rules": {}
+		},
+    {
+      "files": [
+        "*.ts",
+        "*.tsx"
+      ],
+      "parserOptions": {
+        "project": [
+          "tools/db-test-stuff/tsconfig.app.json"
+        ]
+      },
+      "rules": {}
+    },
+    {
+      "files": [
+        "*.test.ts",
+        "*.test.tsx"
+      ],
+      "parserOptions": {
+        "project": [
+          "tools/db-test-stuff/tsconfig.spec.json"
+        ]
+      },
+      "rules": {}
+    },
+		{
+			"files": ["*.js", "*.jsx"],
+			"rules": {}
+		}
+	]
+}

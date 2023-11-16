@@ -4,6 +4,7 @@ import {lastUpdatedIndex as IndexName, MaximumRetries, indexTableName as TableNa
 import type {RecipeDatabaseKey, RecipeIndex, RecipeIndexEntry} from './models';
 import {RecipeIndexEntryFromDynamo} from "./models";
 import {awaitableDelay} from "./utils";
+import {Table} from "aws-cdk-lib/aws-dynamodb";
 
 type DynamoRecord =  Record<string, AttributeValue>;
 
@@ -136,7 +137,8 @@ async function bulkRemovePage(client:DynamoDBClient, page:WriteRequest[], others
   });
   const result = await client.send(req);
 
-  if(result.UnprocessedItems) {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- the check for !!result.UnprocessedItems[TableName as string] is actually necessary
+  if(result.UnprocessedItems && !!result.UnprocessedItems[TableName as string] && result.UnprocessedItems[TableName as string].length > 0) {
     if(retryCount > MaximumRetries) {
       console.error(`ERROR Could not remove items after maximum number of attempts, giving up.`);
       throw new Error("Unable to remove all items");
