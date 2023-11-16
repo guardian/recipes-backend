@@ -76,7 +76,14 @@ export async function removeRecipe(client: DynamoDBClient, canonicalArticleId:st
   return client.send(req)
 }
 
-export async function removeAllRecipesForArticle(client: DynamoDBClient, canonicalArticleId: string): Promise<void>
+/**
+ * Finds all of the recipes associated with the given article and removes them using the bulk-delete functionality.
+ *
+ * Returns an array of RecipeIndexEntry containing details of the removed recipes, so content can also be purged.
+ * @param client
+ * @param canonicalArticleId
+ */
+export async function removeAllRecipeIndexEntriesForArticle(client: DynamoDBClient, canonicalArticleId: string): Promise<RecipeIndexEntry[]>
 {
   const req = new QueryCommand({
     TableName,
@@ -89,8 +96,13 @@ export async function removeAllRecipesForArticle(client: DynamoDBClient, canonic
   const contentToRemove = await client.send(req);
   if(contentToRemove.Count===0 || !contentToRemove.Items) {
     console.log(`No recipes to take down for article ${canonicalArticleId}`);
-    return
+    return []
   } else {
+    const entries:RecipeIndexEntry[] = contentToRemove.Items
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- dbEntry["recipeUID"] _can_ be undefined in reality
+      .filter(dbEntry=>!!dbEntry["recipeUID"]?.S)
+      .map(RecipeIndexEntryFromDynamo);
+
     const recepts:RecipeDatabaseKey[] = contentToRemove.Items
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- dbEntry["recipeUID"] _can_ be undefined in reality
       .filter(dbEntry=>!!dbEntry["recipeUID"]?.S)
@@ -99,7 +111,8 @@ export async function removeAllRecipesForArticle(client: DynamoDBClient, canonic
         recipeUID: dbEntry["recipeUID"].S as string
       }));
     console.log(`${recepts.length} recipes to remove for article ${canonicalArticleId}`);
-    return bulkRemoveRecipe(client, recepts);
+    await bulkRemoveRecipe(client, recepts);
+    return entries
   }
 }
 

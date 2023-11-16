@@ -1,7 +1,8 @@
 import type {DynamoDBClient} from "@aws-sdk/client-dynamodb";
-import { removeRecipe } from './dynamo';
+import {removeAllRecipeIndexEntriesForArticle, removeRecipe} from './dynamo';
 import type { RecipeIndexEntry } from './models';
 import {removeRecipeContent} from "./s3";
+import {cli} from "aws-cdk/lib";
 
 
 async function takeRecipeDown(client: DynamoDBClient, canonicalArticleId: string, recipe: RecipeIndexEntry, removeFromDatabase: boolean):Promise<void>
@@ -37,4 +38,11 @@ export async function removeRecipePermanently(client: DynamoDBClient, canonicalA
 export async function removeRecipeVersion(client: DynamoDBClient, canonicalArticleId: string, recipe: RecipeIndexEntry)
 {
   return takeRecipeDown(client, canonicalArticleId, recipe, false);
+}
+
+export async function removeAllRecipesForArticle(client: DynamoDBClient, canonicalArticleId: string): Promise<void>
+{
+  const removedEntries = await removeAllRecipeIndexEntriesForArticle(client, canonicalArticleId);
+  console.log(`Taken down article ${canonicalArticleId} had ${removedEntries.length} recipes in it which will also be removed`);
+  await Promise.all(removedEntries.map(recep=>removeRecipeContent(recep.checksum, "soft")));
 }
