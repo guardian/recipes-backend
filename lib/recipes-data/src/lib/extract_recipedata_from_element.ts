@@ -11,12 +11,12 @@ export interface RecipeOutput {
 export function extractRecipeData(canonicalId: string, block: Block): RecipeOutput[] {
   const allRecipes = block.elements
     .filter(elem => elem.type === ElementType.RECIPE)
-    .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson))
+    .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson as string))
   return allRecipes
 }
 
-function parseJsonBlob(canonicalId: string, recipeJson: string | undefined): RecipeOutput {
-  const recipeData = JSON.parse(recipeJson as string) as Record<string, unknown>
+function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeOutput {
+  const recipeData = JSON.parse(recipeJson) as Record<string, unknown>
   if (!recipeData.id) {
     throw new Error(`Error! No id present in the recipeJson, canonicalId is ${canonicalId}`)
   } else {
