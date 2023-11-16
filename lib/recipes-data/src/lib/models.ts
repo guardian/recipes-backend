@@ -13,6 +13,39 @@ interface RecipeDatabaseEntry {
 }
 
 /**
+ * RecipeIndexEntry is a subset of the database model that is used to generate the client-facing index.
+ */
+export interface RecipeIndexEntry {
+  checksum: string;
+  recipeUID: string;
+}
+
+/**
+ * RecipeIndex is the shape of the data that is sent out as the recipe index, containing an array of RecipeIndexEntry
+ */
+interface RecipeIndex {
+  schemaVersion: number;
+  lastUpdated: Date;
+  recipes: RecipeIndexEntry[];
+}
+
+/**
+ * RecipeReferenceWithoutChecksum is complementary to RecipeIndexEntry, where we have a UID and json blob but
+ * no checksum yet. This is obtained from an incoming article.
+ */
+interface RecipeReferenceWithoutChecksum {
+  recipeUID: string;
+  jsonBlob: string;
+}
+
+/**
+ * RecipeReference has all three main constituents for a recipe - the immutable ID, the version ID and the json content
+ */
+interface RecipeReference extends RecipeReferenceWithoutChecksum{
+  checksum: string;
+}
+
+/**
  * Helper function to un-marshal a raw dynamo record into a RecipeDatabaseEntry structure.
  * Note, this will not throw if the fields are not present; instead, capiArticleId will be an empty string ("")
  * @param raw - record to unmarshal, from the Dynamo API
@@ -42,14 +75,6 @@ export function RecipeDatabaseEntryToDynamo(ent: RecipeDatabaseEntry): Record<st
 }
 
 /**
- * RecipeIndexEntry is a subset of the database model that is used to generate the client-facing index.
- */
-export interface RecipeIndexEntry {
-  sha: string;
-  uid: string;
-}
-
-/**
  * Helper function to convert a raw dynamo record into the RecipeIndexEntry subset.
  * Prefer to use this over the more complete RecipeDatabaseEntryFromDynamo if you don't
  * need to get the entire data model. Specifically, we ignore timestamps; so there is no
@@ -59,25 +84,21 @@ export interface RecipeIndexEntry {
  */
 export function RecipeIndexEntryFromDynamo(raw:Record<string, AttributeValue>): RecipeIndexEntry {
   return {
-    sha: raw["recipeVersion"].S ?? "",
-    uid: raw["recipeUID"].S ?? "",
+    checksum: raw["recipeVersion"].S ?? "",
+    recipeUID: raw["recipeUID"].S ?? "",
   }
 }
 
-interface RecipeIndex {
-  schemaVersion: number;
-  lastUpdated: Date;
-  recipes: RecipeIndexEntry[];
-}
 
-//FIXME: This is a temporary definition, awaiting merge of @DivsB's proper one
-interface RecipeReferenceWithoutChecksum {
-  recipeUID: string;
-  jsonBlob: string;
-}
-
-interface RecipeReference extends RecipeReferenceWithoutChecksum{
-  checksum: string;
+/**
+ * Helper function to generate a full recipe reference structure from and index entry.
+ * In order to do this, you need to supply the json content of the recipe.
+ * @param entry RecipeIndexEntry to upgrade
+ * @param jsonBlob the json content to add to it
+ */
+export function recipeReferenceFromIndexEntry(entry: RecipeIndexEntry, jsonBlob:string):RecipeReference
+{
+  return {...entry, jsonBlob}
 }
 
 export type { RecipeDatabaseEntry,RecipeIndex, RecipeReference, RecipeReferenceWithoutChecksum };

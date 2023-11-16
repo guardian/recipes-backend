@@ -1,16 +1,29 @@
 {
-	"extends": ["../../.eslintrc.json"],
-	"ignorePatterns": ["!**/*"],
-
-	"overrides": [
-		{
-			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-			"rules": {}
-		},
-		{
-			"files": ["*.ts", "*.tsx"],
+  "extends": [
+    "../../.eslintrc.json"
+  ],
+  "ignorePatterns": [
+    "!**/*"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts",
+        "*.tsx",
+        "*.js",
+        "*.jsx"
+      ],
+      "rules": {}
+    },
+    {
+      "files": [
+        "*.ts",
+        "*.tsx"
+      ],
       "parserOptions": {
-        "project": ["lib/recipes-data/tsconfig.lib.json"]
+        "project": [
+          "lib/recipes-data/tsconfig.lib.json"
+        ]
       },
 			"rules": {}
 		},
