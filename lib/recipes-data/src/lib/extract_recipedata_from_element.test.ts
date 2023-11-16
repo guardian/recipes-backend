@@ -91,7 +91,7 @@ describe("extractRecipeData", () => {
     }
     const result = extractRecipeData(canonicalId, block)
     expect(result.length).toEqual(1)
-    expect(result[0].recipeUId).toEqual("lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers-1") //
+    expect(result[0].recipeUID).toEqual("lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers-1") //
     expect(result[0].jsonBlob).toEqual(block.elements[1].recipeTypeData?.recipeJson)
   })
 
@@ -195,7 +195,7 @@ describe("extractRecipeData", () => {
     }
     const result = extractRecipeData(canonicalId, block)
     expect(result.length).toEqual(3)
-    expect(result[2].recipeUId).toEqual("lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers-3") //
+    expect(result[2].recipeUID).toEqual("lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers-3") //
     expect(result[2].jsonBlob).toEqual(block.elements[3].recipeTypeData?.recipeJson)
   })
 
