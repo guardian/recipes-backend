@@ -1,5 +1,5 @@
-import {FastlyError, sendFastlyPurgeRequest} from "./fastly";
 import fetch from "node-fetch";
+import {FastlyError, sendFastlyPurgeRequest} from "./fastly";
 
 jest.mock("./config", ()=>({
   ContentPrefix: "cdn.content.location",
@@ -7,7 +7,7 @@ jest.mock("./config", ()=>({
 }));
 
 jest.mock("node-fetch", ()=>({
-  __esmodule: true,
+  __esModule: true,
   default: jest.fn()
 }));
 
