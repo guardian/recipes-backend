@@ -4,7 +4,6 @@ import {lastUpdatedIndex as IndexName, MaximumRetries, indexTableName as TableNa
 import type {RecipeDatabaseKey, RecipeIndex, RecipeIndexEntry} from './models';
 import {RecipeIndexEntryFromDynamo} from "./models";
 import {awaitableDelay} from "./utils";
-import {Table} from "aws-cdk-lib/aws-dynamodb";
 
 type DynamoRecord =  Record<string, AttributeValue>;
 
@@ -161,7 +160,7 @@ async function bulkRemovePage(client:DynamoDBClient, page:WriteRequest[], others
  * @param client DynamoDB client
  * @param receps array of RecipeDatabaseKey[] identifying the recipes to remove from the index
  */
-async function bulkRemoveRecipe(client: DynamoDBClient, receps:RecipeDatabaseKey[]):Promise<void>
+export async function bulkRemoveRecipe(client: DynamoDBClient, receps:RecipeDatabaseKey[]):Promise<void>
 {
   const requests:WriteRequest[] = receps.map(recep=>({
     DeleteRequest: {

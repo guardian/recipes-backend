@@ -2,8 +2,6 @@ import type {DynamoDBClient} from "@aws-sdk/client-dynamodb";
 import {removeAllRecipeIndexEntriesForArticle, removeRecipe} from './dynamo';
 import type { RecipeIndexEntry } from './models';
 import {removeRecipeContent} from "./s3";
-import {cli} from "aws-cdk/lib";
-
 
 async function takeRecipeDown(client: DynamoDBClient, canonicalArticleId: string, recipe: RecipeIndexEntry, removeFromDatabase: boolean):Promise<void>
 {
