@@ -1,9 +1,9 @@
 import {DynamoDBClient} from "@aws-sdk/client-dynamodb";
 import {mockClient} from "aws-sdk-client-mock";
-import { removeAllRecipeIndexEntriesForArticle, removeRecipe } from './dynamo';
+import {recipesforArticle, removeAllRecipeIndexEntriesForArticle, removeRecipe} from './dynamo';
+import type { RecipeIndexEntry } from './models';
 import {removeRecipeContent} from "./s3";
-import {removeAllRecipesForArticle, removeRecipePermanently, removeRecipeVersion} from './takedown';
-import {RecipeIndexEntry} from "@recipes-api/lib/recipes-data";
+import {recipesToTakeDown, removeAllRecipesForArticle, removeRecipePermanently, removeRecipeVersion} from './takedown';
 
 mockClient(DynamoDBClient);
 const ddbClient = new DynamoDBClient(); //this is a mock object due to `mockClient` above
@@ -15,6 +15,7 @@ jest.mock("./s3", ()=>({
 jest.mock("./dynamo", ()=>({
   removeAllRecipeIndexEntriesForArticle: jest.fn(),
   removeRecipe: jest.fn(),
+  recipesforArticle: jest.fn()
 }));
 
 describe("takedown", ()=>{
@@ -87,5 +88,105 @@ describe("takedown", ()=>{
     expect(removeRecipeContent.mock.calls[1]).toEqual(["efg", "soft"]);
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipeContent.mock.calls[2]).toEqual(["hij", "soft"]);
+  });
+});
+
+describe("takedown.recipesToTakeDown", ()=>{
+  beforeEach(()=>{
+    jest.resetAllMocks();
+  });
+
+  it("should return a list of recipe references that feature in the DB but not in the incoming update", async ()=>{
+    const fakeDbContent:RecipeIndexEntry[] = [
+      {
+        checksum: "vers938",
+        recipeUID: "number1"
+      },
+      {
+        checksum: "vers963",
+        recipeUID: "number2"
+      },
+      {
+        checksum: "vers346",
+        recipeUID: "number3"
+      },
+      {
+        checksum: "vers432",
+        recipeUID: "number4"
+      },
+      {
+        checksum: "vers9789",
+        recipeUID: "number5"
+      },
+    ];
+
+    const fakeUpdateIds:string[] = ["number1","number3","number4"];
+
+    // @ts-ignore -- Typescript doesn't know that this is a mock
+    recipesforArticle.mockReturnValue(Promise.resolve(fakeDbContent));
+
+    const result = await recipesToTakeDown(ddbClient, "some-article-id", fakeUpdateIds);
+    expect(result).toEqual([
+      {checksum: "vers963", recipeUID:"number2"},
+      {checksum: "vers9789", recipeUID: "number5"}
+    ]);
+
+    //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(recipesforArticle.mock.calls.length).toEqual(1);
+    //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(recipesforArticle.mock.calls[0][0]).toEqual(ddbClient);
+    //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(recipesforArticle.mock.calls[0][1]).toEqual("some-article-id");
+  });
+
+  it("should return an empty list if there is nothing to take down", async ()=>{
+    const fakeDbContent:RecipeIndexEntry[] = [
+      {
+        checksum: "vers938",
+        recipeUID: "number1"
+      },
+      {
+        checksum: "vers346",
+        recipeUID: "number3"
+      },
+      {
+        checksum: "vers432",
+        recipeUID: "number4"
+      },
+    ];
+
+    const fakeUpdateIds:string[] = ["number1","number3","number4"];
+
+    // @ts-ignore -- Typescript doesn't know that this is a mock
+    recipesforArticle.mockReturnValue(Promise.resolve(fakeDbContent));
+
+    const result = await recipesToTakeDown(ddbClient, "some-article-id", fakeUpdateIds);
+    expect(result).toEqual([]);
+
+    //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(recipesforArticle.mock.calls.length).toEqual(1);
+    //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(recipesforArticle.mock.calls[0][0]).toEqual(ddbClient);
+    //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(recipesforArticle.mock.calls[0][1]).toEqual("some-article-id");
+  });
+
+  it("should return an empty list if both input and current state are empty", async ()=>{
+    const fakeDbContent:RecipeIndexEntry[] = [];
+
+    const fakeUpdateIds:string[] = [];
+
+    // @ts-ignore -- Typescript doesn't know that this is a mock
+    recipesforArticle.mockReturnValue(Promise.resolve(fakeDbContent));
+
+    const result = await recipesToTakeDown(ddbClient, "some-article-id", fakeUpdateIds);
+    expect(result).toEqual([]);
+
+    //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(recipesforArticle.mock.calls.length).toEqual(1);
+    //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(recipesforArticle.mock.calls[0][0]).toEqual(ddbClient);
+    //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(recipesforArticle.mock.calls[0][1]).toEqual("some-article-id");
   });
 })
