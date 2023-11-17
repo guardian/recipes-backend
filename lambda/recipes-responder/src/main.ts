@@ -1,7 +1,7 @@
 import {EventType} from "@guardian/content-api-models/crier/event/v1/eventType";
 import {ItemType} from "@guardian/content-api-models/crier/event/v1/itemType";
 import type {KinesisStreamHandler, KinesisStreamRecord} from "aws-lambda";
-import {deserializeEvent} from "./deserialize";
+import {deserializeEvent} from "@recipes-api/lib/capi";
 import {handleDeletedContent, handleTakedown} from "./takedown_processor";
 import {handleContentUpdate, handleContentUpdateRetrievable} from "./update_processor";
 

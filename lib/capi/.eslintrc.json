@@ -9,14 +9,14 @@
     {
       "files": ["*.ts", "*.tsx"],
       "parserOptions": {
-        "project": ["lambda/recipes-responder/tsconfig.lib.json"]
+        "project": ["lib/capi/tsconfig.lib.json"]
       },
       "rules": {}
     },
     {
       "files": ["*.test.ts", "*.test.tsx"],
       "parserOptions": {
-        "project": ["lambda/recipes-responder/tsconfig.spec.json"]
+        "project": ["lib/capi/tsconfig.spec.json"]
       },
       "rules": {
         "@typescript-eslint/no-unsafe-member-access": "off",

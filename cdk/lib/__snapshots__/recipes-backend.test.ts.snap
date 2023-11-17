@@ -6,6 +6,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     "gu:cdk:constructs": [
       "GuDistributionBucketParameter",
       "GuLambdaFunction",
+      "GuParameter",
       "GuKinesisLambdaExperimental",
     ],
     "gu:cdk:version": "TEST",
@@ -14,6 +15,10 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "capiKey": {
+      "Default": "/TEST/content-api/recipes-responder/capi-key",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
@@ -509,6 +514,9 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
         "Environment": {
           "Variables": {
             "APP": "recipes-responder",
+            "CAPI_KEY": {
+              "Ref": "capiKey",
+            },
             "STACK": "content-api",
             "STAGE": "TEST",
           },
