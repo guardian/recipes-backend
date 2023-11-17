@@ -2,7 +2,7 @@ import {AssetType} from "@guardian/content-api-models/v1/assetType";
 import type {Content} from "@guardian/content-api-models/v1/content";
 import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
-import {extractAllRecipesFromArticle} from "./extract_recipedata_from_element";
+import {extractAllRecipesFromArticle} from "./extract-recipes";
 import {makeCapiDateTime} from "./utils";
 
 describe("extractAllRecipesFromAnArticle", () => {

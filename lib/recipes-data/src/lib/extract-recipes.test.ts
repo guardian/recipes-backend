@@ -1,7 +1,7 @@
 import {AssetType} from "@guardian/content-api-models/v1/assetType";
 import type {Block} from "@guardian/content-api-models/v1/block";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
-import {extractRecipeData} from "./extract_recipedata_from_element";
+import {extractRecipeData} from "./extract-recipes";
 
 describe("extractRecipeData", () => {
 
