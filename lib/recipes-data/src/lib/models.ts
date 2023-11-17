@@ -26,6 +26,13 @@ export interface RecipeIndexEntry {
   recipeUID: string;
 }
 
+export function RecipeDatabaseEntryToIndex(from:RecipeDatabaseEntry):RecipeIndexEntry
+{
+  return {
+    checksum: from.recipeVersion,
+    recipeUID: from.recipeUID,
+  }
+}
 /**
  * RecipeIndex is the shape of the data that is sent out as the recipe index, containing an array of RecipeIndexEntry
  */

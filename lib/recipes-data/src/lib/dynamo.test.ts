@@ -1,7 +1,15 @@
-import {BatchWriteItemCommand, DeleteItemCommand, DynamoDBClient} from "@aws-sdk/client-dynamodb";
+import {
+  BatchWriteItemCommand,
+  DeleteItemCommand,
+  DynamoDBClient,
+  QueryCommand,
+  QueryCommandInput
+} from "@aws-sdk/client-dynamodb";
 import {mockClient} from "aws-sdk-client-mock";
-import {bulkRemoveRecipe, removeRecipe} from './dynamo';
-import type { RecipeDatabaseKey } from './models';
+import {bulkRemoveRecipe, removeAllRecipeIndexEntriesForArticle, removeRecipe} from './dynamo';
+import type {RecipeDatabaseEntry, RecipeDatabaseKey} from './models';
+import {RecipeDatabaseEntryToDynamo, RecipeDatabaseEntryToIndex} from "./models";
+import {removeAllRecipesForArticle} from "@recipes-api/lib/recipes-data";
 
 jest.mock("node-fetch");
 
@@ -130,8 +138,74 @@ describe("dynamodb", ()=>{
     })
   });
 
-  //FIXME: TODO!!
   describe("dynamodb.removeAllRecipeIndexEntriesForArticle", ()=>{
+    it("should query the table to find items relating to the given article, then remove all of them and return the old references", async ()=>{
+      const fakeRecords:RecipeDatabaseEntry[] = [
+        {
+          capiArticleId: "path/to/article",
+          recipeUID: "recep1",
+          recipeVersion: "xxxyyyzzz",
+          lastUpdated: new Date(),
+        },
+        {
+          capiArticleId: "path/to/article",
+          recipeUID: "recep2",
+          recipeVersion: "xxxyyyzzz",
+          lastUpdated: new Date(),
+        },
+        {
+          capiArticleId: "path/to/article",
+          recipeUID: "recep3",
+          recipeVersion: "xxxyyyzzz",
+          lastUpdated: new Date(),
+        },
+        {
+          capiArticleId: "path/to/article",
+          recipeUID: "recep4",
+          recipeVersion: "xxxyyyzzz",
+          lastUpdated: new Date(),
+        }
+      ]
+      mockDynamoClient.on(QueryCommand).resolves({
+        Items: fakeRecords.map(RecipeDatabaseEntryToDynamo)
+      });
+      mockDynamoClient.on(BatchWriteItemCommand).resolves({});
 
+      const result = await removeAllRecipeIndexEntriesForArticle(ddbClient, "path/to/article");
+      expect(result).toEqual(fakeRecords.map(RecipeDatabaseEntryToIndex));
+      expect(mockDynamoClient.commandCalls(QueryCommand).length).toEqual(1);
+      expect(mockDynamoClient.commandCalls(BatchWriteItemCommand).length).toEqual(1);
+
+      const q = mockDynamoClient.commandCalls(QueryCommand)[0].firstArg as QueryCommand;
+      expect(q.input.KeyConditionExpression).toEqual("capiArticleId=:artId");
+      expect(q.input.ExpressionAttributeValues).toEqual({":artId": {S: "path/to/article"}});
+
+      const d = mockDynamoClient.commandCalls(BatchWriteItemCommand)[0].firstArg as BatchWriteItemCommand;
+      expect((d.input.RequestItems? d.input.RequestItems["TestTable"] : []).length).toEqual(fakeRecords.length);
+      for(let i=0; i<fakeRecords.length; i++) {
+        const item = d.input.RequestItems ? d.input.RequestItems["TestTable"][i] : undefined;
+        expect(item?.DeleteRequest?.Key).toEqual({
+          capiArticleId: {S: fakeRecords[i].capiArticleId},
+          recipeUID: {S: fakeRecords[i].recipeUID}
+        })
+      }
+    });
+
+    it("should not break if there is nothing to do", async ()=>{
+      const fakeRecords:RecipeDatabaseEntry[] = [];
+      mockDynamoClient.on(QueryCommand).resolves({
+        Items: fakeRecords.map(RecipeDatabaseEntryToDynamo)
+      });
+      mockDynamoClient.on(BatchWriteItemCommand).resolves({});
+
+      const result = await removeAllRecipeIndexEntriesForArticle(ddbClient, "path/to/article");
+      expect(result).toEqual(fakeRecords.map(RecipeDatabaseEntryToIndex));
+      expect(mockDynamoClient.commandCalls(QueryCommand).length).toEqual(1);
+      expect(mockDynamoClient.commandCalls(BatchWriteItemCommand).length).toEqual(0);
+
+      const q = mockDynamoClient.commandCalls(QueryCommand)[0].firstArg as QueryCommand;
+      expect(q.input.KeyConditionExpression).toEqual("capiArticleId=:artId");
+      expect(q.input.ExpressionAttributeValues).toEqual({":artId": {S: "path/to/article"}});
+    });
   });
 })
