@@ -2,34 +2,19 @@ import {AssetType} from "@guardian/content-api-models/v1/assetType";
 import type {Content} from "@guardian/content-api-models/v1/content";
 import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
-import {extractAllRecipesFromArticle} from "./extract-all-recipes";
+import {extractAllRecipesFromArticle} from "./extract_recipedata_from_element";
+import {makeCapiDateTime} from "./utils";
 
 describe("extractAllRecipesFromAnArticle", () => {
 
-  /*
-  Initializer type {
-  sectionName: string, webPublicationDate: string, apiUrl: string, references: any[],
-  webUrl: string, blocks: {totalBodyBlocks: number,
-  main:
-  {lastModifiedDate: string, lastModifiedBy: {firstName: string, lastName: string, email: string}, published: boolean,
-  createdDate: string, createdBy: {firstName: string, lastName: string, email: string},
-  elements: {assets: (... | ... | ... | ... | ... | ...)[], imageTypeData: {copyright: ..., mediaApiUri: ..., suppliersReference: ..., alt: ..., caption: ..., source: ..., credit: ..., mediaId: ..., displayCredit: ..., imageType: ...},
-  type: ElementType.IMAGE}[], bodyTextSummary: string, bodyHtml: string, attributes: {}, id: string, firstPublishedDate: string, ...},
-  body:
-  {lastModifiedDate: string, lastModifiedBy: {firstName: string, lastName: string, email: string},
-  published: boolean, createdDate: string, createdBy: {firstName: string, lastName: string, email: string},
-  elements: ({assets: ..., textTypeData: ..., type: ...} | {assets: ..., richLinkTypeData: ..., type: ...} | {assets: ..., textTypeData: ..., type: ...} | {assets: ..., recipeTypeData: ..., type: ...})[],
-  bodyTextSummary: string, bodyHtml: string, attributes: {}, id: string, firstPublishedDate: string, ...}[]},
-  isHosted: boolean, webTitle: string, id: string, sectionId: string, type: string, ...} is not assignable to variable type Content
-   */
-
   it("should work if main and body both block contains recipes", () => {
     const articleContent: Content = {
+      tags: [],
       id: "lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers",
       type: ContentType.ARTICLE,
       sectionId: "lifeandstyle",
       sectionName: "Life and style",
-      webPublicationDate: "2018-01-05T17:00:18Z",
+      webPublicationDate: makeCapiDateTime("2018-01-05T17:00:18Z"),
       webTitle: "Thomasina Miers’ recipe for soba noodles with rainbow vegetables in a sesame seed dressing",
       webUrl: "http://www.code.dev-theguardian.com/lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers",
       apiUrl: "http://content.code.dev-guardianapis.com/lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers",
@@ -41,10 +26,10 @@ describe("extractAllRecipesFromAnArticle", () => {
           bodyTextSummary: "",
           attributes: {},
           published: true,
-          createdDate: "2018-01-05T17:00:18Z",
-          firstPublishedDate: "2018-01-05T17:00:18Z",
-          publishedDate: "2018-01-05T17:00:18Z",
-          lastModifiedDate: "2018-01-02T12:05:04Z",
+          createdDate: makeCapiDateTime("2018-01-05T17:00:18Z"),
+          firstPublishedDate: makeCapiDateTime("2018-01-05T17:00:18Z"),
+          publishedDate: makeCapiDateTime("2018-01-05T17:00:18Z"),
+          lastModifiedDate: makeCapiDateTime("2018-01-02T12:05:04Z"),
           contributors: [],
           createdBy: {
             email: "stephanie.fincham@guardian.co.uk",
@@ -151,10 +136,10 @@ describe("extractAllRecipesFromAnArticle", () => {
             bodyTextSummary: "More food: really? After two weeks of leftover roast potatoes dipped in mayonnaise for elevenses (because it’s Christmas), cake in the middle of the afternoon (ditto), mince pies drowning in rum butter and cream after practically every meal, endless cheese? I very rarely say this, but I’m ready for a break. Not a break full stop – I have a greedy reputation to uphold, after all – but more a break from traditional foods, and in my post-Christmas delirium I keep thinking back to a blissful few weeks once spent in southern India, and to its richly spiced and largely vegetarian diet. We ate vast amounts, yet returned home feeling light and refreshed after this welcome holiday from heavy proteins. So, this week, I am going light on meat and heavy on vegetables (and without straying too far into my colleague Meera Sodha’s territory). By all means pair today’s salad with fried fish, if that’s what you fancy, or chargrilled onglet, but I’ll be eating a big plateful on its own. Or perhaps as a side to some egg-fried rice. Soba noodles with crisp rainbow vegetables and a spicy sesame seed dressing This riotously bright salad is crunchy, light and, with its flavour-packed dressing, intensely savoury, making it the perfect antidote to January. A ribbon peeler or mandoline will help with the prep enormously. Serves six. 200g soba or glass noodles 50g frozen soya beans 1 tbsp sesame oil 2 carrots, peeled, then grated or cut into thin ribbons 150g red cabbage, finely shredded 100g mooli or radishes, cut into matchsticks or thin slivers 1 green apple 3 spring onions, finely sliced 1 small bunch coriander, roughly chopped 1 handful mint leaves, roughly torn 1 handful basil leaves (or more coriander), roughly chopped 40g toasted sunflower seeds 25g toasted sesame seeds (a mixture of black and white looks good), to serve For the dressing 1 thumb-sized chunk fresh ginger, peeled ½ garlic clove 50g tahini Juice of 1 lime 1 tbsp sriracha (or your favourite style of chilli sauce) 1 bird’s-eye chilli, stalked removed (optional) 1 tbsp soy sauce 1 tbsp demerara sugar (or honey) 3 tbsp sesame oil 25ml water Cook the noodles in boiling water according to the packet instructions, and add the soya beans for the final minute of cooking, to blanch. Drain and rinse under cold water until cool and no longer clumping together, then put in a large salad bowl and toss with a tablespoon of sesame oil to coat (this will help keep the noodles apart). Add the carrots, red cabbage and mooli or radishes to the bowl. Peel, core and finely shred the apple directly into the bowl, then add the spring onions and coriander. Add the picked herb leaves and pop the bowl in the fridge while you get on with the dressing (covered, if you’re not eating straight away).\nRoughly chop the ginger, put it in a food processor with the garlic and tahini, and blitz until finely chopped. Add the lime, sriracha, chilli (if using), soy sauce and sugar, and blitz again. With the motor running slowly, add the sesame oil bit by bit, followed by the water, and process until the dressing is the consistency of double cream. If the dressing looks as if it has split, put a tablespoon of tahini in a bowl, then slowly whisk in the split dressing – it should quickly come back together. Toss the dressing through the salad and season to taste; it may need more lime juice. Scatter the sesame seeds on top and serve. And for the rest of the week… So long as it’s undressed and covered, the salad will keep in the crisper drawer for a few days. The dressing works well on all sorts of veg, from strips of red pepper to bean sprouts or sliced crisp turnips. And if you want to add a meaty element, toss through some hot griddled strips of beef or pork tenderloin.",
             attributes: {},
             published: true,
-            createdDate: "2018-01-05T17:00:18Z",
-            firstPublishedDate: "2018-01-05T17:00:18Z",
-            publishedDate: "2023-11-16T12:20:10Z",
-            lastModifiedDate: "2023-11-16T12:20:10Z",
+            createdDate: makeCapiDateTime("2018-01-05T17:00:18Z"),
+            firstPublishedDate: makeCapiDateTime("2018-01-05T17:00:18Z"),
+            publishedDate: makeCapiDateTime("2023-11-16T12:20:10Z"),
+            lastModifiedDate: makeCapiDateTime("2023-11-16T12:20:10Z"),
             contributors: [],
             createdBy: {
               email: "bob.granleese@guardian.co.uk",
@@ -204,11 +189,13 @@ describe("extractAllRecipesFromAnArticle", () => {
         ],
         totalBodyBlocks: 1
       },
-      isHosted: false,
+      isHosted: false
     }
 
     const recipesFound = extractAllRecipesFromArticle(articleContent)
     expect(recipesFound.length).toEqual(2)
+    expect(recipesFound[0].recipeUID).toEqual("lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers-0009782ef45121589b29656a0e4ee9f8525c0be62e6")
+    expect(recipesFound[1].recipeUID).toEqual("lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers-9782ef45121589b29656a0e4ee9f8525c0be62e6")
   })
 
 })
