@@ -1,16 +1,16 @@
-import {Event} from "@guardian/content-api-models/crier/event/v1/event";
+import type {Event} from "@guardian/content-api-models/crier/event/v1/event";
 import {EventType} from "@guardian/content-api-models/crier/event/v1/eventType";
 import {ItemType} from "@guardian/content-api-models/crier/event/v1/itemType";
+import type {Content} from "@guardian/content-api-models/v1/content";
+import {ContentType} from "@guardian/content-api-models/v1/contentType";
+import type {KinesisStreamRecord} from "aws-lambda";
+import formatISO from "date-fns/formatISO";
+import {deserializeEvent} from "@recipes-api/lib/capi";
 import {processRecord} from "./main";
-import {deserializeEvent} from "./deserialize";
-import {KinesisStreamRecord} from "aws-lambda";
 import {handleDeletedContent, handleTakedown} from "./takedown_processor";
 import {handleContentUpdate, handleContentUpdateRetrievable} from "./update_processor";
-import {Content} from "@guardian/content-api-models/v1/content";
-import {ContentType} from "@guardian/content-api-models/v1/contentType";
-import formatISO from "date-fns/formatISO";
 
-jest.mock("./deserialize", ()=>({
+jest.mock("@recipes-api/lib/capi", ()=>({
   deserializeEvent: jest.fn(),
 }));
 

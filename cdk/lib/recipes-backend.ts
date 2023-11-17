@@ -1,5 +1,5 @@
 import type {GuStackProps} from "@guardian/cdk/lib/constructs/core";
-import { GuStack} from "@guardian/cdk/lib/constructs/core";
+import {GuParameter, GuStack} from "@guardian/cdk/lib/constructs/core";
 import {GuLambdaFunction} from "@guardian/cdk/lib/constructs/lambda";
 import {GuKinesisLambdaExperimental} from "@guardian/cdk/lib/experimental/patterns";
 import {StreamRetry} from "@guardian/cdk/lib/utils/lambda";
@@ -51,6 +51,11 @@ export class RecipesBackend extends GuStack {
     //   description: "SSM path to the name of the Crier stream we are attaching to"
     // });
 
+    const capiKeyParam = new GuParameter(this, "capiKey", {
+      fromSSM: true,
+      default: `/${this.stage}/${this.stack}/recipes-responder/capi-key`
+    })
+
     new GuKinesisLambdaExperimental(this, "updaterLambda", {
       monitoringConfiguration: {noMonitoring: true},
       existingKinesisStream: {
@@ -59,6 +64,9 @@ export class RecipesBackend extends GuStack {
       errorHandlingConfiguration: {
         retryBehaviour: StreamRetry.maxAttempts(5),
         bisectBatchOnError: true,
+      },
+      environment: {
+        CAPI_KEY: capiKeyParam.valueAsString,
       },
       runtime: Runtime.NODEJS_18_X,
       app: "recipes-responder",
