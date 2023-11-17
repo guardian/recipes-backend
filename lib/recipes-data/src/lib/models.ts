@@ -2,12 +2,18 @@ import type { AttributeValue } from "@aws-sdk/client-dynamodb";
 import {formatISO, parseISO} from "date-fns";
 
 /**
+ * RecipeDatabaseKey contains the fields necessary to uniquely identify a recipe in the index
+ */
+interface RecipeDatabaseKey {
+  capiArticleId: string;
+  recipeUID: string;
+}
+
+/**
  * RecipeIndexEntry represents a whole data record from the dynamo table containing the up-to-date index data.
  * Note that you may find it more efficient to only retrieve the fields you need rather than the whole thing.
  */
-interface RecipeDatabaseEntry {
-  capiArticleId: string;
-  recipeUID: string;
+interface RecipeDatabaseEntry extends RecipeDatabaseKey{
   lastUpdated: Date;
   recipeVersion: string;
 }
@@ -20,6 +26,13 @@ export interface RecipeIndexEntry {
   recipeUID: string;
 }
 
+export function RecipeDatabaseEntryToIndex(from:RecipeDatabaseEntry):RecipeIndexEntry
+{
+  return {
+    checksum: from.recipeVersion,
+    recipeUID: from.recipeUID,
+  }
+}
 /**
  * RecipeIndex is the shape of the data that is sent out as the recipe index, containing an array of RecipeIndexEntry
  */
@@ -101,4 +114,4 @@ export function recipeReferenceFromIndexEntry(entry: RecipeIndexEntry, jsonBlob:
   return {...entry, jsonBlob}
 }
 
-export type { RecipeDatabaseEntry,RecipeIndex, RecipeReference, RecipeReferenceWithoutChecksum };
+export type { RecipeDatabaseKey, RecipeDatabaseEntry,RecipeIndex, RecipeReference, RecipeReferenceWithoutChecksum };

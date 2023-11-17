@@ -13,22 +13,22 @@
       ],
       "parserOptions": {
         "project": [
-          "lambda/recipes-responder/tsconfig.app.json"
+          "tools/db-test-stuff/tsconfig.app.json"
         ]
       },
       "rules": {}
     },
     {
-      "files": ["*.test.ts", "*.test.tsx"],
+      "files": [
+        "*.test.ts",
+        "*.test.tsx"
+      ],
       "parserOptions": {
-        "project": ["lambda/recipes-responder/tsconfig.spec.json"]
+        "project": [
+          "tools/db-test-stuff/tsconfig.spec.json"
+        ]
       },
-      "rules": {
-        "@typescript-eslint/no-unsafe-member-access": "off",
-        "@typescript-eslint/ban-ts-comment": "off",
-        "@typescript-eslint/prefer-ts-expect-error": "off",
-        "@typescript-eslint/no-unsafe-call": "off"
-      }
+      "rules": {}
     },
 		{
 			"files": ["*.js", "*.jsx"],

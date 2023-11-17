@@ -54,11 +54,13 @@ export async function publishRecipeContent(recipe: RecipeReference, attempt?: nu
   }
 }
 
-export async function removeRecipeContent(recipeSHA: string, attempt?: number): Promise<void>
+export async function removeRecipeContent(recipeSHA: string, purgeType?:"soft"|"hard", attempt?: number): Promise<void>
 {
   const realAttempt = attempt ?? 1;
 
   const Key = `content/${recipeSHA}`;
+  console.debug(`DEBUG: removeRecipeContent path is s3://${Bucket}/${Key}`);
+
   const req = new DeleteObjectCommand({
     Bucket,
     Key,
@@ -66,7 +68,7 @@ export async function removeRecipeContent(recipeSHA: string, attempt?: number): 
 
   try {
     await s3Client.send(req);
-    await sendFastlyPurgeRequestWithRetries(Key, FastlyApiKey ?? "", "hard");
+    await sendFastlyPurgeRequestWithRetries(Key, FastlyApiKey ?? "", purgeType ?? "hard");
   } catch(err) {
     if(err instanceof NoSuchKey) {
       console.log(`removeRecipeContent: No recipe existed at version ${recipeSHA} so I could not remove it.`);
@@ -75,7 +77,7 @@ export async function removeRecipeContent(recipeSHA: string, attempt?: number): 
       console.warn(`Unable to delete from S3 on attempt ${realAttempt}: `, err);
       if(MaximumRetries && !isNaN(MaximumRetries) && realAttempt < MaximumRetries) {
         await awaitableDelay();
-        return removeRecipeContent(recipeSHA, realAttempt+1);
+        return removeRecipeContent(recipeSHA, purgeType, realAttempt+1);
       } else {
         throw new Error("Could not delete from S3, see logs for details.")
       }
