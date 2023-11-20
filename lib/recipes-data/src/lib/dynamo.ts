@@ -1,9 +1,16 @@
 import type {AttributeValue, DeleteItemCommandOutput, DynamoDBClient, WriteRequest} from "@aws-sdk/client-dynamodb";
-import {BatchWriteItemCommand, DeleteItemCommand, QueryCommand, ScanCommand} from "@aws-sdk/client-dynamodb";
+import {
+  BatchWriteItemCommand,
+  DeleteItemCommand,
+  PutItemCommand,
+  QueryCommand,
+  ScanCommand
+} from "@aws-sdk/client-dynamodb";
 import {lastUpdatedIndex as IndexName, MaximumRetries, indexTableName as TableName} from "./config";
 import type {RecipeDatabaseKey, RecipeIndex, RecipeIndexEntry} from './models';
 import {RecipeIndexEntryFromDynamo} from "./models";
-import {awaitableDelay} from "./utils";
+import {awaitableDelay, nowTime} from "./utils";
+import {formatISO} from "date-fns";
 
 type DynamoRecord =  Record<string, AttributeValue>;
 
@@ -178,3 +185,16 @@ export async function bulkRemoveRecipe(client: DynamoDBClient, receps:RecipeData
   }
 }
 
+export async function insertNewRecipe(client: DynamoDBClient, canonicalArticleId: string, entry:RecipeIndexEntry):Promise<void>
+{
+  const req = new PutItemCommand({
+    TableName,
+    Item: {
+      capiArticleId: {S: canonicalArticleId},
+      recipeUID: {S: entry.recipeUID},
+      recipeVersion: {S: entry.checksum},
+      lastUpdated: {S: formatISO(nowTime()) },
+    }
+  });
+  await client.send(req);
+}
