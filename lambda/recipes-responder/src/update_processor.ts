@@ -7,7 +7,7 @@ import {
   insertNewRecipe,
   publishRecipeContent,
   recipesToTakeDown,
-  removeRecipeVersion
+  removeRecipePermanently
 } from "@recipes-api/lib/recipes-data";
 
 /**
