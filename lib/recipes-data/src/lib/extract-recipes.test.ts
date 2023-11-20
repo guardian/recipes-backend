@@ -1,7 +1,7 @@
 import {AssetType} from "@guardian/content-api-models/v1/assetType";
 import type {Block} from "@guardian/content-api-models/v1/block";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
-import {extractRecipeData} from "./extract_recipedata_from_element";
+import {extractRecipeData} from "./extract-recipes";
 
 describe("extractRecipeData", () => {
 
@@ -91,8 +91,8 @@ describe("extractRecipeData", () => {
     }
     const result = extractRecipeData(canonicalId, block)
     expect(result.length).toEqual(1)
-    expect(result[0].recipeUID).toEqual("lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers-1") //
-    expect(result[0].jsonBlob).toEqual(block.elements[1].recipeTypeData?.recipeJson)
+    expect(result[0]?.recipeUID).toEqual("1")
+    expect(result[0]?.jsonBlob).toEqual(block.elements[1].recipeTypeData?.recipeJson)
   })
 
   it("should work when block containing multiple recipe elements", () => {
@@ -195,8 +195,8 @@ describe("extractRecipeData", () => {
     }
     const result = extractRecipeData(canonicalId, block)
     expect(result.length).toEqual(3)
-    expect(result[2].recipeUID).toEqual("lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers-3") //
-    expect(result[2].jsonBlob).toEqual(block.elements[3].recipeTypeData?.recipeJson)
+    expect(result[2]?.recipeUID).toEqual("3")
+    expect(result[2]?.jsonBlob).toEqual(block.elements[3].recipeTypeData?.recipeJson)
   })
 
   it("should work when block containing no recipe elements ", () => {
@@ -281,7 +281,7 @@ describe("extractRecipeData", () => {
   })
 
 
-  it("should fail when block has got invalid recipe element (no ID field) ", () => {
+  it("should return empty array when block has got invalid recipe element (no ID field) ", () => {
     const canonicalId = "lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers"
     const block: Block = {
       id: "5a4b754ce4b0e33567c465c7",
@@ -365,9 +365,7 @@ describe("extractRecipeData", () => {
         }
       ]
     }
-    expect(() => {
-      extractRecipeData(canonicalId, block)
-    }).toThrow("Error! No id present in the recipeJson, canonicalId is lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers")
+    expect(extractRecipeData(canonicalId, block)).toEqual([])
   })
 
 })
