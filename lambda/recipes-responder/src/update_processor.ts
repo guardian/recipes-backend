@@ -10,7 +10,7 @@ import {
   insertNewRecipe,
   publishRecipeContent,
   recipesToTakeDown,
-  removeRecipePermanently
+  removeRecipeVersion
 } from "@recipes-api/lib/recipes-data";
 import {CapiKey} from "./config";
 import {DynamoClient} from "./dynamo_conn";
@@ -59,7 +59,7 @@ export async function handleContentUpdate(content:Content):Promise<number>
 
   const entriesToRemove = await recipesToTakeDown(DynamoClient, content.id, allRecipes.map(recep=>recep.recipeUID));
   console.log(`INFO [${content.id}] - ${entriesToRemove.length} recipes have been removed/superceded`);
-  entriesToRemove.map(recep=>removeRecipePermanently(DynamoClient, content.id, recep));
+  entriesToRemove.map(recep=>removeRecipeVersion(DynamoClient, content.id, recep));
 
   console.log(`INFO [${content.id}] - publishing ${allRecipes.length} recipes to the service`)
   await Promise.all(allRecipes.map(recep=>publishRecipe(content.id, recep)))

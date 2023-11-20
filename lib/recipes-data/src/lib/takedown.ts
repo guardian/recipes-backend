@@ -35,6 +35,8 @@ export async function removeRecipePermanently(client: DynamoDBClient, canonicalA
  */
 export async function removeRecipeVersion(client: DynamoDBClient, canonicalArticleId: string, recipe: RecipeIndexEntry)
 {
+  //FIXME this is wrong wrong wrong! We should still remove from database, but with a conditional delete that
+  //will not remove if the version ID has already changed.
   return takeRecipeDown(client, canonicalArticleId, recipe, false);
 }
 
