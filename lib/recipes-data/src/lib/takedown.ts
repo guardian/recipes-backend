@@ -40,11 +40,12 @@ export async function removeRecipeVersion(client: DynamoDBClient, canonicalArtic
   return takeRecipeDown(client, canonicalArticleId, recipe, false);
 }
 
-export async function removeAllRecipesForArticle(client: DynamoDBClient, canonicalArticleId: string): Promise<void>
+export async function removeAllRecipesForArticle(client: DynamoDBClient, canonicalArticleId: string): Promise<number>
 {
   const removedEntries = await removeAllRecipeIndexEntriesForArticle(client, canonicalArticleId);
   console.log(`Taken down article ${canonicalArticleId} had ${removedEntries.length} recipes in it which will also be removed`);
   await Promise.all(removedEntries.map(recep=>removeRecipeContent(recep.checksum, "soft")));
+  return removedEntries.length;
 }
 
 /**
