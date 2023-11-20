@@ -22,8 +22,8 @@ export async function handleTakedown(evt:Event, attempt?:number):Promise<void> {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/require-await -- not implemented yet
+// I don't think that these are relevant to us here. So, I'm logging it out to verify that suspicion
 export async function handleDeletedContent(evt:DeletedContent):Promise<void> {
-
-  throw new Error("handleTakedown is not implemented yet")
+  console.log(`DEBUG received deleted-content-update for ${evt.aliasPaths?.join("/") ?? "(no paths)"}`)
+  return Promise.resolve();
 }

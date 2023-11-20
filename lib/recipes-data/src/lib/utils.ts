@@ -1,7 +1,7 @@
 import {createHash} from "crypto";
 import type {CapiDateTime} from "@guardian/content-api-models/v1/capiDateTime";
 import {parseISO} from "date-fns";
-import Int64 from "node-int64"; //Changes done in tsconfig.json as well to run this package and also made "makeCapiDateTime" as default export
+import Int64 from "node-int64"; 
 import {RetryDelaySeconds} from "./config";
 import type {RecipeReference, RecipeReferenceWithoutChecksum} from './models';
 
@@ -21,7 +21,7 @@ export function calculateChecksum(src: RecipeReferenceWithoutChecksum): RecipeRe
   return {...src, checksum,};
 }
 
-function makeCapiDateTime(from: string): CapiDateTime {
+export function makeCapiDateTime(from: string): CapiDateTime {
   const date = parseISO(from);
   const int64Format = new Int64(date.getTime());
   return {
@@ -30,6 +30,10 @@ function makeCapiDateTime(from: string): CapiDateTime {
   }
 }
 
-export {makeCapiDateTime}
-
+/**
+ * Returns new Date().  Why? So we can mock it out easily in testing.
+ */
+export function nowTime():Date {
+  return new Date();
+}
 
