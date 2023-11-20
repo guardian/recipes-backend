@@ -5,23 +5,23 @@ import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
 import type {RecipeReferenceWithoutChecksum} from './models';
 
-export function extractAllRecipesFromArticle(content: Content): Array<RecipeReferenceWithoutChecksum | null> {
+export function extractAllRecipesFromArticle(content: Content): RecipeReferenceWithoutChecksum[] {
   if (content.type == ContentType.ARTICLE && content.blocks) {
     const articleBlocks: Blocks = content.blocks
-    const getAllMainBlockRecipesIfPresent: Array<RecipeReferenceWithoutChecksum | null> = extractRecipeData(content.id, articleBlocks.main as Block)
+    const getAllMainBlockRecipesIfPresent: RecipeReferenceWithoutChecksum[] = extractRecipeData(content.id, articleBlocks.main as Block)
     const bodyBlocks = articleBlocks.body as Block[]
-    const getAllBodyBlocksRecipesIfPresent: Array<RecipeReferenceWithoutChecksum | null> = bodyBlocks.flatMap(bodyBlock => extractRecipeData(content.id, bodyBlock))
+    const getAllBodyBlocksRecipesIfPresent: RecipeReferenceWithoutChecksum[] = bodyBlocks.flatMap(bodyBlock => extractRecipeData(content.id, bodyBlock))
     return getAllMainBlockRecipesIfPresent.concat(getAllBodyBlocksRecipesIfPresent)
   } else {
     return Array<RecipeReferenceWithoutChecksum>()
   }
 }
 
-export function extractRecipeData(canonicalId: string, block: Block): Array<RecipeReferenceWithoutChecksum | null> {
+export function extractRecipeData(canonicalId: string, block: Block): RecipeReferenceWithoutChecksum[] {
   return block.elements
     .filter(elem => elem.type === ElementType.RECIPE)
     .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson as string))
-    .filter(recp => !!recp)
+    .filter(recp => !!recp) as RecipeReferenceWithoutChecksum[]
 }
 
 function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeReferenceWithoutChecksum | null {
