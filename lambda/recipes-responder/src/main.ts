@@ -1,13 +1,13 @@
 import {EventType} from "@guardian/content-api-models/crier/event/v1/eventType";
 import {ItemType} from "@guardian/content-api-models/crier/event/v1/itemType";
 import type {KinesisStreamHandler, KinesisStreamRecord} from "aws-lambda";
+import {registerMetric} from "@recipes-api/cwmetrics";
 import {deserializeEvent} from "@recipes-api/lib/capi";
 import {retrieveIndexData, writeIndexData} from "@recipes-api/lib/recipes-data";
+import {sendFastlyPurgeRequest} from "../../../lib/recipes-data/src/lib/fastly";
 import {handleDeletedContent, handleTakedown} from "./takedown_processor";
 import {handleContentUpdate} from "./update_processor";
 import {handleContentUpdateRetrievable} from "./update_retrievable_processor";
-import {sendFastlyPurgeRequest} from "../../../lib/recipes-data/src/lib/fastly";
-
 const filterProductionMonitoring:boolean = process.env["FILTER_PRODUCTION_MONITORING"] ? process.env["FILTER_PRODUCTION_MONITORING"].toLowerCase() =="yes" : false;
 
 export async function processRecord(r:KinesisStreamRecord):Promise<number> {
