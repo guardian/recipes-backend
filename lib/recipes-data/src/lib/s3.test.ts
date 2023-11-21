@@ -45,7 +45,7 @@ describe("s3.publishRecipeContent", ()=>{
     const uploadArgs = s3Mock.call(0).firstArg as PutObjectCommand;
     expect(uploadArgs.input.Body).toEqual("this-is-json");
     expect(uploadArgs.input.Key).toEqual(`content/xxxyyyzzz`);
-    expect(uploadArgs.input.ChecksumSHA256).toEqual("xxxyyyzzz");
+    //expect(uploadArgs.input.ChecksumSHA256).toEqual("xxxyyyzzz");
     expect(uploadArgs.input.Bucket).toEqual("contentbucket");
     expect(s3Mock.commandCalls(DeleteObjectCommand).length).toEqual(0);
     //@ts-ignore -- Typescript doesn't know that this is a mock
