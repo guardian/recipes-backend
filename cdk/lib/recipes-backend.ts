@@ -74,7 +74,7 @@ export class RecipesBackend extends GuStack {
         CAPI_KEY: capiKeyParam.valueAsString,
         INDEX_TABLE: store.table.tableName,
         LAST_UPDATED_INDEX: store.lastUpdatedIndexName,
-        CONTENT_URL_BASE: this.stage=="CODE" ? "recipes.code.dev-gutools.co.uk" : "recipes.gutools.co.uk",
+        CONTENT_URL_BASE: this.stage=="CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com",
         DEBUG_LOGS: "true",
         FASTLY_API_KEY: fastlyKeyParam.valueAsString,
         STATIC_BUCKET: serving.staticBucket.bucketName,

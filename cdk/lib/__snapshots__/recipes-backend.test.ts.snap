@@ -522,7 +522,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
             "CAPI_KEY": {
               "Ref": "capiKey",
             },
-            "CONTENT_URL_BASE": "recipes.gutools.co.uk",
+            "CONTENT_URL_BASE": "recipes.guardianapis.com",
             "DEBUG_LOGS": "true",
             "FASTLY_API_KEY": {
               "Ref": "fastlyKey",
