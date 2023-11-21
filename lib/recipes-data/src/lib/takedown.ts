@@ -3,12 +3,11 @@ import {recipesforArticle, removeAllRecipeIndexEntriesForArticle, removeRecipe} 
 import type { RecipeIndexEntry } from './models';
 import {removeRecipeContent} from "./s3";
 
-async function takeRecipeDown(client: DynamoDBClient, canonicalArticleId: string, recipe: RecipeIndexEntry, removeFromDatabase: boolean):Promise<void>
+async function takeRecipeDown(client: DynamoDBClient, canonicalArticleId: string, recipe: RecipeIndexEntry, unconditional: boolean):Promise<void>
 {
-  if(removeFromDatabase) {
-    console.log(`takeRecipeDown: removing recipe ${recipe.recipeUID} for ${canonicalArticleId} from the index`);
-    await removeRecipe(client, canonicalArticleId, recipe.recipeUID);
-  }
+  console.log(`takeRecipeDown: removing recipe ${recipe.recipeUID} for ${canonicalArticleId} from the index`);
+  await removeRecipe(client, canonicalArticleId, recipe.recipeUID, unconditional ? undefined : recipe.checksum);
+
   console.log(`takeRecipeDown: removing content version ${recipe.checksum} for ${recipe.recipeUID} on ${canonicalArticleId} from the store`);
   await removeRecipeContent(recipe.checksum);
   console.log(`takeRecipeDown: complete for ${recipe.checksum} for ${recipe.recipeUID} on ${canonicalArticleId}`);
@@ -35,8 +34,6 @@ export async function removeRecipePermanently(client: DynamoDBClient, canonicalA
  */
 export async function removeRecipeVersion(client: DynamoDBClient, canonicalArticleId: string, recipe: RecipeIndexEntry)
 {
-  //FIXME this is wrong wrong wrong! We should still remove from database, but with a conditional delete that
-  //will not remove if the version ID has already changed.
   return takeRecipeDown(client, canonicalArticleId, recipe, false);
 }
 

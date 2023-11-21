@@ -1,6 +1,6 @@
 import type {AttributeValue, DeleteItemCommandOutput, DynamoDBClient, WriteRequest} from "@aws-sdk/client-dynamodb";
 import {
-  BatchWriteItemCommand,
+  BatchWriteItemCommand, ConditionalCheckFailedException,
   DeleteItemCommand,
   PutItemCommand,
   QueryCommand,
@@ -69,18 +69,35 @@ export async function recipesforArticle(client:DynamoDBClient, articleCanonicalI
  * @param client dynamoDB client
  * @param canonicalArticleId article ID containing the recipe to remove
  * @param recipeUID uid of the recipe to remove
+ * @param recipeChecksum if this is set, then we perform a "conditional delete" that will only remove the record if the recipeVersion field matches this value
  */
-export async function removeRecipe(client: DynamoDBClient, canonicalArticleId:string, recipeUID: string):Promise<DeleteItemCommandOutput>
+export async function removeRecipe(client: DynamoDBClient, canonicalArticleId:string, recipeUID: string, recipeChecksum?:string):Promise<DeleteItemCommandOutput|null>
 {
+  const ExpressionAttributeValues:Record<string,AttributeValue> = {};
+  if(recipeChecksum) {
+    ExpressionAttributeValues[":ver"] = {S: recipeChecksum};
+  }
+
   const req = new DeleteItemCommand({
     TableName,
     Key: {
       capiArticleId: {S: canonicalArticleId},
       recipeUID: {S: recipeUID},
-    }
+    },
+    ConditionExpression: recipeChecksum ? `recipeVersion = :ver` : undefined,
+    ExpressionAttributeValues,
   });
 
-  return client.send(req)
+  try {
+    return client.send(req)
+  } catch(err) {
+    if(err instanceof ConditionalCheckFailedException) {
+      console.log(`INFO [${canonicalArticleId}] - not removing ${recipeUID} because version does not match ${recipeChecksum ?? "(no version)"}`);
+      return null;
+    } else {
+      throw err
+    }
+  }
 }
 
 /**
