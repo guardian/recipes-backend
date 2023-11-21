@@ -120,7 +120,7 @@ describe("takedown.recipesToTakeDown", ()=>{
       },
     ];
 
-    const fakeUpdateIds:string[] = ["number1","number3","number4"];
+    const fakeUpdateIds:string[] = ["vers938","vers346","vers432"];
 
     // @ts-ignore -- Typescript doesn't know that this is a mock
     recipesforArticle.mockReturnValue(Promise.resolve(fakeDbContent));
@@ -155,7 +155,7 @@ describe("takedown.recipesToTakeDown", ()=>{
       },
     ];
 
-    const fakeUpdateIds:string[] = ["number1","number3","number4"];
+    const fakeUpdateIds:string[] = ["vers938","vers346","vers432"];
 
     // @ts-ignore -- Typescript doesn't know that this is a mock
     recipesforArticle.mockReturnValue(Promise.resolve(fakeDbContent));
