@@ -6,7 +6,7 @@ import {
   extractAllRecipesFromArticle,
   insertNewRecipe,
   publishRecipeContent,
-  recipesToTakeDown,
+  recipesToTakeDown, removeRecipePermanently,
   removeRecipeVersion
 } from "@recipes-api/lib/recipes-data";
 import {DynamoClient} from "./dynamo_conn";
