@@ -34,7 +34,8 @@ export async function handleContentUpdate(content:Content):Promise<number>
   try {
     if (content.type != ContentType.ARTICLE) return 0;  //no point processing live-blogs etc.
 
-    const allRecipes: RecipeReference[] = extractAllRecipesFromArticle(content).map(calculateChecksum);
+    const recipesFound = await extractAllRecipesFromArticle(content)
+    const allRecipes: RecipeReference[] = recipesFound.map(calculateChecksum);
     console.log(`INFO [${content.id}] - has ${allRecipes.length} recipes`);
 
     const entriesToRemove = await recipesToTakeDown(content.id, allRecipes.map(recep => recep.recipeUID));
