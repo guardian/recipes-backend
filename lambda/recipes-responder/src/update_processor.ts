@@ -31,20 +31,27 @@ async function publishRecipe(canonicalArticleId:string, recep:RecipeReference):P
  */
 export async function handleContentUpdate(content:Content):Promise<number>
 {
-  if(content.type!=ContentType.ARTICLE) return 0;  //no point processing live-blogs etc.
+  try {
+    if (content.type != ContentType.ARTICLE) return 0;  //no point processing live-blogs etc.
 
-  const allRecipes:RecipeReference[] = (await extractAllRecipesFromArticle(content)).map(calculateChecksum);
-  console.log(`INFO [${content.id}] - has ${allRecipes.length} recipes`);
-  if(allRecipes.length==0) return 0;  //no point hanging around and noising up the logs
+    const allRecipes: RecipeReference[] = extractAllRecipesFromArticle(content).map(calculateChecksum);
+    console.log(`INFO [${content.id}] - has ${allRecipes.length} recipes`);
+    if (allRecipes.length == 0) return 0;  //no point hanging around and noising up the logs
 
-  const entriesToRemove = await recipesToTakeDown(DynamoClient, content.id, allRecipes.map(recep=>recep.recipeUID));
-  console.log(`INFO [${content.id}] - ${entriesToRemove.length} recipes have been removed/superceded`);
-  entriesToRemove.map(recep=>removeRecipeVersion(DynamoClient, content.id, recep));
+    const entriesToRemove = await recipesToTakeDown(DynamoClient, content.id, allRecipes.map(recep => recep.recipeUID));
+    console.log(`INFO [${content.id}] - ${entriesToRemove.length} recipes have been removed/superceded`);
+    entriesToRemove.map(recep => removeRecipeVersion(DynamoClient, content.id, recep));
 
-  console.log(`INFO [${content.id}] - publishing ${allRecipes.length} recipes to the service`)
-  await Promise.all(allRecipes.map(recep=>publishRecipe(content.id, recep)))
+    console.log(`INFO [${content.id}] - publishing ${allRecipes.length} recipes to the service`)
+    await Promise.all(allRecipes.map(recep => publishRecipe(content.id, recep)))
 
-  console.log(`INFO [${content.id}] - Done`);
-  return allRecipes.length;
+    console.log(`INFO [${content.id}] - Done`);
+    return allRecipes.length;
+  } catch(err) {
+    //log out what actually caused the breakage
+    console.error("Failed article was: ", JSON.stringify(content));
+    console.error(err);
+    throw err;
+  }
 }
 
