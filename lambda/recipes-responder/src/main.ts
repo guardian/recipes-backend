@@ -8,6 +8,7 @@ import {sendFastlyPurgeRequest} from "../../../lib/recipes-data/src/lib/fastly";
 import {handleDeletedContent, handleTakedown} from "./takedown_processor";
 import {handleContentUpdate} from "./update_processor";
 import {handleContentUpdateRetrievable} from "./update_retrievable_processor";
+
 const filterProductionMonitoring:boolean = process.env["FILTER_PRODUCTION_MONITORING"] ? process.env["FILTER_PRODUCTION_MONITORING"].toLowerCase() =="yes" : false;
 
 export async function processRecord(r:KinesisStreamRecord):Promise<number> {
