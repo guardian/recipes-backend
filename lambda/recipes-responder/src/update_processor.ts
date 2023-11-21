@@ -27,7 +27,8 @@ async function publishRecipe(canonicalArticleId:string, recep:RecipeReference):P
 /**
  * Takes an updated article and updates any recipes from inside it
  * @param content - Content of an incoming article
- * @returns a number, representing the number of recipes that were updated
+ * @returns a number, representing the number of recipes that were added plus the number that were deleted (i.e., an
+ * update counts as 1 add and 1 delete)
  */
 export async function handleContentUpdate(content:Content):Promise<number>
 {
@@ -36,17 +37,17 @@ export async function handleContentUpdate(content:Content):Promise<number>
 
     const allRecipes: RecipeReference[] = extractAllRecipesFromArticle(content).map(calculateChecksum);
     console.log(`INFO [${content.id}] - has ${allRecipes.length} recipes`);
-    if (allRecipes.length == 0) return 0;  //no point hanging around and noising up the logs
 
     const entriesToRemove = await recipesToTakeDown(DynamoClient, content.id, allRecipes.map(recep => recep.recipeUID));
     console.log(`INFO [${content.id}] - ${entriesToRemove.length} recipes have been removed/superceded`);
+    if (allRecipes.length == 0 && entriesToRemove.length == 0) return 0;  //no point hanging around and noising up the logs
     entriesToRemove.map(recep => removeRecipeVersion(DynamoClient, content.id, recep));
 
     console.log(`INFO [${content.id}] - publishing ${allRecipes.length} recipes to the service`)
     await Promise.all(allRecipes.map(recep => publishRecipe(content.id, recep)))
 
     console.log(`INFO [${content.id}] - Done`);
-    return allRecipes.length;
+    return allRecipes.length + entriesToRemove.length;
   } catch(err) {
     //log out what actually caused the breakage
     console.error("Failed article was: ", JSON.stringify(content));
