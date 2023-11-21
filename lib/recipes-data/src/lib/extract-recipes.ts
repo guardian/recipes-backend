@@ -8,7 +8,7 @@ import type {RecipeReferenceWithoutChecksum} from './models';
 export function extractAllRecipesFromArticle(content: Content): RecipeReferenceWithoutChecksum[] {
   if (content.type == ContentType.ARTICLE && content.blocks) {
     const articleBlocks: Blocks = content.blocks
-    const getAllMainBlockRecipesIfPresent: RecipeReferenceWithoutChecksum[] = extractRecipeData(content.id, articleBlocks.main as Block)
+    const getAllMainBlockRecipesIfPresent: RecipeReferenceWithoutChecksum[] = extractRecipeData(content.id, articleBlocks.main)
     const bodyBlocks = articleBlocks.body as Block[]
     const getAllBodyBlocksRecipesIfPresent: RecipeReferenceWithoutChecksum[] = bodyBlocks.flatMap(bodyBlock => extractRecipeData(content.id, bodyBlock))
     return getAllMainBlockRecipesIfPresent.concat(getAllBodyBlocksRecipesIfPresent)
@@ -17,9 +17,8 @@ export function extractAllRecipesFromArticle(content: Content): RecipeReferenceW
   }
 }
 
-export function extractRecipeData(canonicalId: string, block: Block): RecipeReferenceWithoutChecksum[] {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- real life disagrees with the typings here. No elements => block.elements undefined.
-  if(!block.elements) return [];
+export function extractRecipeData(canonicalId: string, block?: Block): RecipeReferenceWithoutChecksum[] {
+  if(! block?.elements) return [];
 
   return block.elements
     .filter(elem => elem.type === ElementType.RECIPE)
