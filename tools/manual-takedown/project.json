@@ -11,12 +11,13 @@
 			"options": {
 				"platform": "node",
 				"outputPath": "dist/tools/manual-takedown",
-				"format": ["esm"],
+				"format": ["cjs"],
 				"bundle": true,
 				"main": "tools/manual-takedown/src/main.ts",
 				"tsConfig": "tools/manual-takedown/tsconfig.app.json",
 				"assets": ["tools/manual-takedown/src/assets"],
 				"generatePackageJson": true,
+        "thirdParty": true,
 				"esbuildOptions": {
 					"sourcemap": true,
 					"outExtension": {
@@ -29,6 +30,7 @@
 				"production": {
 					"esbuildOptions": {
 						"sourcemap": false,
+            "minify": true,
 						"outExtension": {
 							".js": ".js"
 						}
