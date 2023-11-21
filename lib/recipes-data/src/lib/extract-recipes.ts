@@ -18,6 +18,9 @@ export function extractAllRecipesFromArticle(content: Content): RecipeReferenceW
 }
 
 export function extractRecipeData(canonicalId: string, block: Block): RecipeReferenceWithoutChecksum[] {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- real life disagrees with the typings here. No elements => block.elements undefined.
+  if(!block.elements) return [];
+
   return block.elements
     .filter(elem => elem.type === ElementType.RECIPE)
     .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson as string))
