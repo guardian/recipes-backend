@@ -6,7 +6,7 @@ import {
   extractAllRecipesFromArticle,
   insertNewRecipe,
   publishRecipeContent,
-  recipesToTakeDown, removeRecipePermanently,
+  recipesToTakeDown,
   removeRecipeVersion
 } from "@recipes-api/lib/recipes-data";
 
