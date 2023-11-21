@@ -10,8 +10,8 @@ export function extractAllRecipesFromArticle(content: Content): RecipeReferenceW
   if (content.type == ContentType.ARTICLE && content.blocks) {
     const articleBlocks: Blocks = content.blocks
     const getAllMainBlockRecipesIfPresent: RecipeReferenceWithoutChecksum[] = extractRecipeData(content.id, articleBlocks.main)
-    const bodyBlocks = articleBlocks.body as Block[]
-    const getAllBodyBlocksRecipesIfPresent: RecipeReferenceWithoutChecksum[] = bodyBlocks.flatMap(bodyBlock => extractRecipeData(content.id, bodyBlock))
+    const bodyBlocks = articleBlocks.body
+    const getAllBodyBlocksRecipesIfPresent: RecipeReferenceWithoutChecksum[] = bodyBlocks? bodyBlocks.flatMap(bodyBlock => extractRecipeData(content.id, bodyBlock)) : [];
     return getAllMainBlockRecipesIfPresent.concat(getAllBodyBlocksRecipesIfPresent)
   } else {
     return Array<RecipeReferenceWithoutChecksum>()
