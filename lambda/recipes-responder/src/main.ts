@@ -7,6 +7,7 @@ import {DynamoClient} from "./dynamo_conn";
 import {handleDeletedContent, handleTakedown} from "./takedown_processor";
 import {handleContentUpdate} from "./update_processor";
 import {handleContentUpdateRetrievable} from "./update_retrievable_processor";
+import {sendFastlyPurgeRequest} from "../../../lib/recipes-data/src/lib/fastly";
 
 const filterProductionMonitoring:boolean = process.env["FILTER_PRODUCTION_MONITORING"] ? process.env["FILTER_PRODUCTION_MONITORING"].toLowerCase() =="yes" : false;
 
@@ -55,7 +56,7 @@ export const handler:KinesisStreamHandler = async (event) => {
     console.log(`Processed updates for ${updatesTotal} recipes, rebuilding the index json`);
     const indexData = await retrieveIndexData(DynamoClient);
     await writeIndexData(indexData);
-    console.log("Finished rebuilding index")
+    console.log("Finished rebuilding index");
   } else {
     console.log("No updates to recipes, so not touching index");
   }

@@ -1,8 +1,8 @@
 import * as process from "process";
 import {DeleteObjectCommand, NoSuchKey, PutObjectCommand, S3Client, S3ServiceException} from "@aws-sdk/client-s3";
 import {StaticBucketName as Bucket, FastlyApiKey, MaximumRetries} from "./config";
-import {sendFastlyPurgeRequestWithRetries} from "./fastly";
-import type { RecipeReference ,RecipeIndex} from './models';
+import {sendFastlyPurgeRequest, sendFastlyPurgeRequestWithRetries} from "./fastly";
+import type { RecipeIndex ,RecipeReference} from './models';
 import {awaitableDelay} from "./utils";
 
 const s3Client = new S3Client({region: process.env["AWS_REGION"]});
@@ -116,5 +116,7 @@ export async function writeIndexData(indexData:RecipeIndex)
   });
 
   await s3Client.send(req);
-  console.log("Done.")
+  console.log("Done. Purging CDN...");
+  await sendFastlyPurgeRequest("index.json", FastlyApiKey ?? "");
+  console.log("Done.");
 }
