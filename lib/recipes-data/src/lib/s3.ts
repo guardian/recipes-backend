@@ -41,7 +41,7 @@ export async function publishRecipeContent(recipe: RecipeReference, attempt?: nu
     Key,
     Body: recipe.jsonBlob,
     ContentType: "application/json",
-    ChecksumSHA256: recipe.checksum,
+    //ChecksumSHA256: recipe.checksum,
     CacheControl: DefaultCacheControlParams,
   });
 
