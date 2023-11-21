@@ -1,10 +1,10 @@
+import {createHash} from "crypto";
 import type {Block} from "@guardian/content-api-models/v1/block";
 import type {Blocks} from "@guardian/content-api-models/v1/blocks";
 import type {Content} from "@guardian/content-api-models/v1/content";
 import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
 import type {RecipeReferenceWithoutChecksum} from './models';
-import {createHash} from "crypto";
 
 export function extractAllRecipesFromArticle(content: Content): RecipeReferenceWithoutChecksum[] {
   if (content.type == ContentType.ARTICLE && content.blocks) {
