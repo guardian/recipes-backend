@@ -33,6 +33,12 @@ describe("takedown", ()=>{
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipe.mock.calls.length).toEqual(1);
     //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(removeRecipe.mock.calls[0][1]).toEqual("path/to/some/article");
+    //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(removeRecipe.mock.calls[0][2]).toEqual("some-uid");
+    //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(removeRecipe.mock.calls[0][3]).toBeUndefined();
+    //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipeContent.mock.calls.length).toEqual(1);
 
     //@ts-ignore -- Typescript doesn't know that this is a mock
@@ -47,7 +53,14 @@ describe("takedown", ()=>{
     await removeRecipeVersion(ddbClient, "path/to/some/article", {recipeUID: "some-uid", checksum: "xxxyyyzzz"});
 
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipe.mock.calls.length).toEqual(0);
+    expect(removeRecipe.mock.calls.length).toEqual(1);
+    //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(removeRecipe.mock.calls[0][1]).toEqual("path/to/some/article");
+    //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(removeRecipe.mock.calls[0][2]).toEqual("some-uid");
+    //@ts-ignore -- Typescript doesn't know that this is a mock
+    expect(removeRecipe.mock.calls[0][3]).toEqual("xxxyyyzzz");
+
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipeContent.mock.calls.length).toEqual(1);
 
