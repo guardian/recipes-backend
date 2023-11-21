@@ -1,7 +1,7 @@
 import {createHash} from "crypto";
 import type {CapiDateTime} from "@guardian/content-api-models/v1/capiDateTime";
 import {parseISO} from "date-fns";
-import Int64 from "node-int64"; 
+import Int64 from "node-int64";
 import {RetryDelaySeconds} from "./config";
 import type {RecipeReference, RecipeReferenceWithoutChecksum} from './models';
 
