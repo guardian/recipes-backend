@@ -31,4 +31,15 @@ Will update the CDK snapshot and allow the tests to pass again
 
 ## How does it work?
 
-TBD
+```mermaid
+flowchart LR
+    crier([ crier ]) --> kinesis --> responder[recipes-responder]
+    responder --> content["Recipe content
+    extraction"] --> s3[(s3)]
+    responder --> dynamodb --> responder --> index[Index content] --> s3
+    s3 --> Fastly --> app([ Mobile app ])
+```
+- The recipes-responder lambda function receives updates from the Crier kinesis stream
+- Anything which is not an article update/takedown is ignored
+- Each article update is scanned to find any receipe element
+## What's in the box?
