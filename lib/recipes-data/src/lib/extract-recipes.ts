@@ -50,8 +50,7 @@ function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeReference
   try {
     const recipeData = JSON.parse(recipeJson) as Record<string, unknown>
     if (!recipeData.id) {
-      console.error(`Recipe from ${canonicalId} has no ID field. Content was:`);
-      console.error(recipeJson);
+      console.error(`Recipe from ${canonicalId} has no ID field. Content was: ${recipeJson}`);
       return null //TODO: we should incorporate a metric for failed recipes so we can have an indication of upstream issues.
     } else {
       return <RecipeReferenceWithoutChecksum>{
