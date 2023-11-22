@@ -47,13 +47,22 @@ function determineRecipeUID(contentIdField:string, canonicalId: string): string
 }
 
 function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeReferenceWithoutChecksum | null {
-  const recipeData = JSON.parse(recipeJson) as Record<string, unknown>
-  if (!recipeData.id) {
-    return null //TODO: we should incorporate a metric for failed recipes so we can have an indication of upstream issues.
-  } else {
-    return <RecipeReferenceWithoutChecksum>{
-      recipeUID: determineRecipeUID(recipeData.id as string, canonicalId),
-      jsonBlob: recipeJson
+  try {
+    const recipeData = JSON.parse(recipeJson) as Record<string, unknown>
+    if (!recipeData.id) {
+      console.error(`Recipe from ${canonicalId} has no ID field. Content was:`);
+      console.error(recipeJson);
+      return null //TODO: we should incorporate a metric for failed recipes so we can have an indication of upstream issues.
+    } else {
+      return <RecipeReferenceWithoutChecksum>{
+        recipeUID: determineRecipeUID(recipeData.id as string, canonicalId),
+        jsonBlob: recipeJson
+      }
     }
+  } catch(err) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions -- err.toString() is untyped but OK
+    console.error(`Recipe from ${canonicalId} was not parsable: ${err.toString()}`);
+    console.error(`Content was ${recipeJson}`);
+    return null;
   }
 }
