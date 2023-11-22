@@ -6,7 +6,7 @@ import type { TProtocol} from "thrift";
 import {TCompactProtocol, TFramedTransport} from "thrift";
 
 function feedToThrift(content:string|Buffer):TProtocol {
-  const buffer = Buffer.isBuffer(content) ? content : new Buffer(content, 'base64');
+  const buffer = Buffer.isBuffer(content) ? content : Buffer.from(content, 'base64');
   const transport = new TFramedTransport(buffer)
   return new TCompactProtocol(transport);
 }
