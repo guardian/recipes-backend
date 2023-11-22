@@ -41,7 +41,7 @@ export async function publishRecipeContent(recipe: RecipeReference, attempt?: nu
     Key,
     Body: recipe.jsonBlob,
     ContentType: "application/json",
-    //ChecksumSHA256: recipe.checksum,
+    //ChecksumSHA256: recipe.checksum,  //This is commented out because the format is wrong. Left here because we want to fix it but not hold up PR approval.
     CacheControl: DefaultCacheControlParams,
   });
 
@@ -69,7 +69,7 @@ export async function removeRecipeContent(recipeSHA: string, purgeType?:"soft"|"
   const realAttempt = attempt ?? 1;
 
   const Key = `content/${recipeSHA}`;
-  console.debug(`DEBUG: removeRecipeContent path is s3://${Bucket}/${Key}`);
+  console.debug(`DEBUG: removeRecipeContent path is s3://${Bucket ?? "(no bucket)"}/${Key}`);
 
   const req = new DeleteObjectCommand({
     Bucket,
