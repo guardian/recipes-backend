@@ -34,7 +34,7 @@ export class RestEndpoints extends Construct {
       description: "",
       environment: {
         STATIC_BUCKET: servingBucket.bucketName,
-        FASTLY_KEY: fastlyKey,
+        FASTLY_API_KEY: fastlyKey,
       },
       fileName: "rest-endpoints.zip",
       functionName: `recipes-backend-rest-endpoints-${scope.stage}`,
