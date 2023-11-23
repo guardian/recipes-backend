@@ -9,9 +9,9 @@ export async function importNewData(content:Buffer):Promise<void>
   const req = new PutObjectCommand({
     Bucket,
     Key: "curation.json",
-    Body: JSON.stringify(content.toString()),
+    Body: content,
     ContentType: "application/json",
-    CacheControl: "max-age=3600; stale-while-revalidate=10; stale-if-error=300"
+    CacheControl: "max-age=120; stale-while-revalidate=10; stale-if-error=300"
   });
 
   console.log("Uploading new curation data...");
