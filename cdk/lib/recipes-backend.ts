@@ -8,6 +8,7 @@ import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
 import {DataStore} from "./datastore";
 import {StaticServing} from "./static-serving";
+import {RestEndpoints} from "./rest-endpoints";
 
 export class RecipesBackend extends GuStack {
   constructor(scope: App, id: string, props: GuStackProps) {
@@ -96,6 +97,11 @@ export class RecipesBackend extends GuStack {
       handler: "main.handler",
       fileName: "recipes-responder.zip",
       timeout: Duration.seconds(30)
-    })
+    });
+
+    new RestEndpoints(this, "RestEndpoints", {
+      servingBucket: serving.staticBucket,
+      fastlyKey: fastlyKeyParam.valueAsString,
+    });
   }
 }
