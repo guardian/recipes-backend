@@ -23,6 +23,7 @@
 			"defaultConfiguration": "production",
 			"options": {
 				"platform": "node",
+        "external": ["@aws-sdk/*"],
 				"outputPath": "dist/lambda/rest-endpoints",
 				"format": ["cjs"],
 				"bundle": true,
