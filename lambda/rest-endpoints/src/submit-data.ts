@@ -1,15 +1,15 @@
 import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
-import {StaticBucketName as Bucket, FastlyApiKey} from "./config";
 import {sendFastlyPurgeRequestWithRetries} from "../../../lib/recipes-data/src/lib/fastly";
+import {StaticBucketName as Bucket, FastlyApiKey} from "./config";
 
 const s3client = new S3Client({region: process.env["AWS_REGION"]});
 
-export async function importNewData(content:unknown):Promise<void>
+export async function importNewData(content:Buffer):Promise<void>
 {
   const req = new PutObjectCommand({
     Bucket,
     Key: "curation.json",
-    Body: JSON.stringify(content),
+    Body: JSON.stringify(content.toString()),
     ContentType: "application/json",
     CacheControl: "max-age=3600; stale-while-revalidate=10; stale-if-error=300"
   });

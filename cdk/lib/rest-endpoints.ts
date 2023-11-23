@@ -10,6 +10,7 @@ import {ApiKeySourceType} from "aws-cdk-lib/aws-apigateway";
 interface RestEndpointsProps {
   servingBucket: IBucket;
   fastlyKey: string;
+  contentUrlBase: string;
 }
 
 export class RestEndpoints extends Construct {
@@ -18,7 +19,8 @@ export class RestEndpoints extends Construct {
 
     const {
       servingBucket,
-      fastlyKey
+      fastlyKey,
+      contentUrlBase
     } = props;
 
     const apiConstruct = new GuApiLambda(scope, "Lambda", {
@@ -35,6 +37,7 @@ export class RestEndpoints extends Construct {
       environment: {
         STATIC_BUCKET: servingBucket.bucketName,
         FASTLY_API_KEY: fastlyKey,
+        CONTENT_URL_BASE: contentUrlBase,
       },
       fileName: "rest-endpoints.zip",
       functionName: `recipes-backend-rest-endpoints-${scope.stage}`,
