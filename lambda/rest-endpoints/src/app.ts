@@ -10,7 +10,7 @@ app.engine('.ejs', ejs);
 const router = express.Router();
 router.use(bodyParser.json());
 
-router.get('/api/curation', (req, resp)=>{
+router.post('/api/curation', (req, resp)=>{
   importNewData(req.body)
     .then(()=>{
       return resp.status(200).json({status: "ok"})
