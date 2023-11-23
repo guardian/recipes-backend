@@ -7,8 +7,8 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["zip -r ../recipes-responder.zip *"],
-        "cwd": "dist/lambda/recipes-responder"
+        "commands": ["zip -r ../rest-endpoints.zip *"],
+        "cwd": "dist/lambda/rest-endpoints"
       },
       "dependsOn": [
         {
@@ -17,8 +17,8 @@
         }
       ]
     },
-		"build": {
-			"transpile": "@nx/esbuild:esbuild",
+		"transpile": {
+			"executor": "@nx/esbuild:esbuild",
 			"outputs": ["{options.outputPath}"],
 			"defaultConfiguration": "production",
 			"options": {
