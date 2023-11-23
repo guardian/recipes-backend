@@ -9,8 +9,37 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "GuParameter",
       "GuParameter",
       "GuKinesisLambdaExperimental",
+      "GuApiLambda",
     ],
     "gu:cdk:version": "TEST",
+  },
+  "Outputs": {
+    "LambdarecipesbackendTESTEndpointFC1C435D": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Ref": "LambdarecipesbackendTEST4B1DC1BE",
+            },
+            ".execute-api.",
+            {
+              "Ref": "AWS::Region",
+            },
+            ".",
+            {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            {
+              "Ref": "LambdarecipesbackendTESTDeploymentStageprodB9F3A129",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
   },
   "Parameters": {
     "DistributionBucketName": {
@@ -22,52 +51,680 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "Default": "/TEST/content-api/recipes-responder/capi-key",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "externalscrierindexstreamParameter23A8B068": {
-      "Default": "/TEST/content-api/crier/index-stream",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "externalsnonurgentalarmarnParameter3CDDBCA7": {
-      "Default": "/account/content-api-common/alarms/non-urgent-alarm-topic",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "externalsurgentalarmarnParameterCE71CB92": {
-      "Default": "/account/content-api-common/alarms/urgent-alarm-topic",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
     "fastlyKey": {
       "Default": "/TEST/content-api/recipes-responder/fastly-key",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
   "Resources": {
-    "DurationRuntimeAlarmC21C10E0": {
+    "LambdaD247545B": {
+      "DependsOn": [
+        "LambdaServiceRoleDefaultPolicyDAE46E21",
+        "LambdaServiceRoleA8ED4D3B",
+      ],
       "Properties": {
-        "ActionsEnabled": true,
-        "AlarmActions": [
-          {
-            "Ref": "externalsurgentalarmarnParameterCE71CB92",
+        "Code": {
+          "S3Bucket": {
+            "Ref": "DistributionBucketName",
           },
-        ],
-        "AlarmDescription": "Notify when the lambda exceeds 75%",
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": [
-          {
-            "Name": "FunctionName",
-            "Value": {
-              "Ref": "updaterLambdaE2EB52D9",
+          "S3Key": "content-api/TEST/recipes-backend-rest-endpoints/rest-endpoints.zip",
+        },
+        "Description": "",
+        "Environment": {
+          "Variables": {
+            "APP": "recipes-backend-rest-endpoints",
+            "FASTLY_KEY": {
+              "Ref": "fastlyKey",
+            },
+            "STACK": "content-api",
+            "STAGE": "TEST",
+            "STATIC_BUCKET": {
+              "Ref": "staticstaticServing53194089",
             },
           },
+        },
+        "FunctionName": "recipes-backend-rest-endpoints-TEST",
+        "Handler": "main.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaServiceRoleA8ED4D3B",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "recipes-backend-rest-endpoints",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
         ],
-        "EvaluationPeriods": 3,
-        "MetricName": "Duration",
-        "Namespace": "AWS/Lambda",
-        "Period": 60,
-        "Statistic": "Average",
-        "Threshold": 22500,
-        "TreatMissingData": "ignore",
-        "Unit": "Milliseconds",
+        "Timeout": 30,
       },
-      "Type": "AWS::CloudWatch::Alarm",
+      "Type": "AWS::Lambda::Function",
+    },
+    "LambdaServiceRoleA8ED4D3B": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "recipes-backend-rest-endpoints",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LambdaServiceRoleDefaultPolicyDAE46E21": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:PutObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "staticstaticServing53194089",
+                        "Arn",
+                      ],
+                    },
+                    "/curation.json",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                      "/content-api/TEST/recipes-backend-rest-endpoints/rest-endpoints.zip",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/content-api/recipes-backend-rest-endpoints",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/content-api/recipes-backend-rest-endpoints/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LambdaServiceRoleDefaultPolicyDAE46E21",
+        "Roles": [
+          {
+            "Ref": "LambdaServiceRoleA8ED4D3B",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "LambdarecipesbackendTEST4B1DC1BE": {
+      "Properties": {
+        "ApiKeySourceType": "HEADER",
+        "Name": "content-api-TEST-recipes-backend-TEST",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "recipes-backend-rest-endpoints",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::ApiGateway::RestApi",
+    },
+    "LambdarecipesbackendTESTANY6672F729": {
+      "Properties": {
+        "ApiKeyRequired": true,
+        "AuthorizationType": "NONE",
+        "HttpMethod": "ANY",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "LambdaD247545B",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Fn::GetAtt": [
+            "LambdarecipesbackendTEST4B1DC1BE",
+            "RootResourceId",
+          ],
+        },
+        "RestApiId": {
+          "Ref": "LambdarecipesbackendTEST4B1DC1BE",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "LambdarecipesbackendTESTANYApiPermissionRecipesBackendLambdarecipesbackendTEST4DC0CA32ANY04EC2491": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LambdaD247545B",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "LambdarecipesbackendTEST4B1DC1BE",
+              },
+              "/",
+              {
+                "Ref": "LambdarecipesbackendTESTDeploymentStageprodB9F3A129",
+              },
+              "/*/",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "LambdarecipesbackendTESTANYApiPermissionTestRecipesBackendLambdarecipesbackendTEST4DC0CA32ANY35ECC907": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LambdaD247545B",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "LambdarecipesbackendTEST4B1DC1BE",
+              },
+              "/test-invoke-stage/*/",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "LambdarecipesbackendTESTAccount7462C531": {
+      "DeletionPolicy": "Retain",
+      "DependsOn": [
+        "LambdarecipesbackendTEST4B1DC1BE",
+      ],
+      "Properties": {
+        "CloudWatchRoleArn": {
+          "Fn::GetAtt": [
+            "LambdarecipesbackendTESTCloudWatchRoleFC1D32BF",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "LambdarecipesbackendTESTCloudWatchRoleFC1D32BF": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "recipes-backend-rest-endpoints",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "LambdarecipesbackendTESTDeploymentE6FBC51Cc2e9b9c97b60fa97b1fc517b6870c027": {
+      "DependsOn": [
+        "LambdarecipesbackendTESTproxyANYB2172EAF",
+        "LambdarecipesbackendTESTproxyE7B5C009",
+        "LambdarecipesbackendTESTANY6672F729",
+      ],
+      "Properties": {
+        "Description": "Automatically created by the RestApi construct",
+        "RestApiId": {
+          "Ref": "LambdarecipesbackendTEST4B1DC1BE",
+        },
+      },
+      "Type": "AWS::ApiGateway::Deployment",
+    },
+    "LambdarecipesbackendTESTDeploymentStageprodB9F3A129": {
+      "DependsOn": [
+        "LambdarecipesbackendTESTAccount7462C531",
+      ],
+      "Properties": {
+        "DeploymentId": {
+          "Ref": "LambdarecipesbackendTESTDeploymentE6FBC51Cc2e9b9c97b60fa97b1fc517b6870c027",
+        },
+        "RestApiId": {
+          "Ref": "LambdarecipesbackendTEST4B1DC1BE",
+        },
+        "StageName": "prod",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "recipes-backend-rest-endpoints",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::ApiGateway::Stage",
+    },
+    "LambdarecipesbackendTESTUsagePlan03DEBC29": {
+      "Properties": {
+        "Description": "REST endpoints for recipes backend",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "recipes-backend-rest-endpoints",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "UsagePlanName": "recipes-backend-TEST",
+      },
+      "Type": "AWS::ApiGateway::UsagePlan",
+    },
+    "LambdarecipesbackendTESTproxyANYApiPermissionRecipesBackendLambdarecipesbackendTEST4DC0CA32ANYproxy3380861A": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LambdaD247545B",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "LambdarecipesbackendTEST4B1DC1BE",
+              },
+              "/",
+              {
+                "Ref": "LambdarecipesbackendTESTDeploymentStageprodB9F3A129",
+              },
+              "/*/*",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "LambdarecipesbackendTESTproxyANYApiPermissionTestRecipesBackendLambdarecipesbackendTEST4DC0CA32ANYproxy9D7DF76E": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LambdaD247545B",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "LambdarecipesbackendTEST4B1DC1BE",
+              },
+              "/test-invoke-stage/*/*",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "LambdarecipesbackendTESTproxyANYB2172EAF": {
+      "Properties": {
+        "ApiKeyRequired": true,
+        "AuthorizationType": "NONE",
+        "HttpMethod": "ANY",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "LambdaD247545B",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Ref": "LambdarecipesbackendTESTproxyE7B5C009",
+        },
+        "RestApiId": {
+          "Ref": "LambdarecipesbackendTEST4B1DC1BE",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "LambdarecipesbackendTESTproxyE7B5C009": {
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "LambdarecipesbackendTEST4B1DC1BE",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "{proxy+}",
+        "RestApiId": {
+          "Ref": "LambdarecipesbackendTEST4B1DC1BE",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
     },
     "staticcdnRead42C381A5": {
       "Properties": {

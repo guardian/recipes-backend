@@ -11,6 +11,7 @@ import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
 import {DataStore} from "./datastore";
 import {ExternalParameters} from "./external_parameters";
 import {StaticServing} from "./static-serving";
+import {RestEndpoints} from "./rest-endpoints";
 
 export class RecipesBackend extends GuStack {
   constructor(scope: App, id: string, props: GuStackProps) {
@@ -64,6 +65,7 @@ export class RecipesBackend extends GuStack {
       default: `/${this.stage}/${this.stack}/recipes-responder/fastly-key`
     })
 
+    const contentUrlBase = this.stage==="CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com";
     const updaterLambda = new GuKinesisLambdaExperimental(this, "updaterLambda", {
       monitoringConfiguration: {noMonitoring: true},
       existingKinesisStream: {
@@ -77,7 +79,7 @@ export class RecipesBackend extends GuStack {
         CAPI_KEY: capiKeyParam.valueAsString,
         INDEX_TABLE: store.table.tableName,
         LAST_UPDATED_INDEX: store.lastUpdatedIndexName,
-        CONTENT_URL_BASE: this.stage == "CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com",
+        CONTENT_URL_BASE: contentUrlBase,
         DEBUG_LOGS: "true",
         FASTLY_API_KEY: fastlyKeyParam.valueAsString,
         STATIC_BUCKET: serving.staticBucket.bucketName,
@@ -99,7 +101,13 @@ export class RecipesBackend extends GuStack {
       handler: "main.handler",
       fileName: "recipes-responder.zip",
       timeout: Duration.seconds(30)
-    })
+    });
+
+    new RestEndpoints(this, "RestEndpoints", {
+      servingBucket: serving.staticBucket,
+      fastlyKey: fastlyKeyParam.valueAsString,
+      contentUrlBase
+    });
 
     const durationAlarm = new Alarm(this, "DurationRuntimeAlarm", {
       alarmDescription: "Notify when the lambda exceeds 75%",
@@ -120,5 +128,4 @@ export class RecipesBackend extends GuStack {
     //const nonUrgentAlarmTopic = aws_sns.Topic.fromTopicArn(this, "nonurgent-alarm", externalParameters.nonUrgentAlarmTopicArn.stringValue);
     durationAlarm.addAlarmAction(new SnsAction(urgentAlarmTopic))
   }
-
 }
