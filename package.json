@@ -18,6 +18,7 @@
     "axios": "^1.0.0",
     "date-fns": "^2.30.0",
     "node-fetch": "^3.3.2",
+    "serverless-express": "^2.0.12",
     "tslib": "^2.3.0",
     "uuid": "^9.0.1"
   },
