@@ -73,6 +73,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
         "Environment": {
           "Variables": {
             "APP": "recipes-backend-rest-endpoints",
+            "CONTENT_URL_BASE": "recipes.guardianapis.com",
             "FASTLY_API_KEY": {
               "Ref": "fastlyKey",
             },
