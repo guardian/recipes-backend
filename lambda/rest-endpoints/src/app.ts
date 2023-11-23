@@ -11,7 +11,10 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 router.post('/api/curation', (req, resp)=>{
-  importNewData(req.body)
+  const buffer = req.body as Buffer;
+  console.log(buffer.toString('utf-8'));
+
+  importNewData(buffer)
     .then(()=>{
       return resp.status(200).json({status: "ok"})
     })
