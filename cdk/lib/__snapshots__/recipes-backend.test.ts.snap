@@ -63,6 +63,9 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
         "LambdaServiceRoleA8ED4D3B",
       ],
       "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
         "Code": {
           "S3Bucket": {
             "Ref": "DistributionBucketName",
@@ -294,6 +297,11 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     "LambdarecipesbackendTEST4B1DC1BE": {
       "Properties": {
         "ApiKeySourceType": "HEADER",
+        "EndpointConfiguration": {
+          "Types": [
+            "REGIONAL",
+          ],
+        },
         "Name": "content-api-TEST-recipes-backend-TEST",
         "Tags": [
           {
@@ -513,7 +521,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "LambdarecipesbackendTESTDeploymentE6FBC51Cc2e9b9c97b60fa97b1fc517b6870c027": {
+    "LambdarecipesbackendTESTDeploymentE6FBC51Cfc12f3dde865798df25646d21b1ca842": {
       "DependsOn": [
         "LambdarecipesbackendTESTproxyANYB2172EAF",
         "LambdarecipesbackendTESTproxyE7B5C009",
@@ -533,7 +541,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "LambdarecipesbackendTESTDeploymentE6FBC51Cc2e9b9c97b60fa97b1fc517b6870c027",
+          "Ref": "LambdarecipesbackendTESTDeploymentE6FBC51Cfc12f3dde865798df25646d21b1ca842",
         },
         "RestApiId": {
           "Ref": "LambdarecipesbackendTEST4B1DC1BE",
@@ -566,6 +574,17 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     },
     "LambdarecipesbackendTESTUsagePlan03DEBC29": {
       "Properties": {
+        "ApiStages": [
+          {
+            "ApiId": {
+              "Ref": "LambdarecipesbackendTEST4B1DC1BE",
+            },
+            "Stage": {
+              "Ref": "LambdarecipesbackendTESTDeploymentStageprodB9F3A129",
+            },
+            "Throttle": {},
+          },
+        ],
         "Description": "REST endpoints for recipes backend",
         "Tags": [
           {

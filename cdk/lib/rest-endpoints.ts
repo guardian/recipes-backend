@@ -1,11 +1,11 @@
-import {Construct} from "constructs";
-import {GuStack} from "@guardian/cdk/lib/constructs/core";
 import {GuApiLambda} from "@guardian/cdk";
-import {Runtime} from "aws-cdk-lib/aws-lambda";
+import type {GuStack} from "@guardian/cdk/lib/constructs/core";
 import {Duration} from "aws-cdk-lib";
+import {ApiKeySourceType, EndpointType} from "aws-cdk-lib/aws-apigateway";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
-import {IBucket} from "aws-cdk-lib/aws-s3";
-import {ApiKeySourceType} from "aws-cdk-lib/aws-apigateway";
+import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
+import type {IBucket} from "aws-cdk-lib/aws-s3";
+import {Construct} from "constructs";
 
 interface RestEndpointsProps {
   servingBucket: IBucket;
@@ -27,12 +27,13 @@ export class RestEndpoints extends Construct {
       api: {
         id: `recipes-backend-${scope.stage}`,
         apiKeySourceType: ApiKeySourceType.HEADER,
+        endpointTypes: [EndpointType.REGIONAL],
         defaultMethodOptions: {
           apiKeyRequired: true,
         }
       },
       app: "recipes-backend-rest-endpoints",
-      architecture: undefined,
+      architecture: Architecture.ARM_64,
       description: "",
       environment: {
         STATIC_BUCKET: servingBucket.bucketName,
@@ -56,6 +57,11 @@ export class RestEndpoints extends Construct {
     apiConstruct.api.addUsagePlan("UsagePlan", {
       name: `recipes-backend-${scope.stage}`,
       description: "REST endpoints for recipes backend",
+      apiStages: [
+        {
+          stage: apiConstruct.api.deploymentStage,
+        }
+      ]
     });
   }
 }
