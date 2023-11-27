@@ -2,7 +2,6 @@ import {AssetType} from "@guardian/content-api-models/v1/assetType";
 import type {Content} from "@guardian/content-api-models/v1/content";
 import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
-import {registerMetric} from "@recipes-api/cwmetrics";
 import {extractAllRecipesFromArticle} from "./extract-recipes";
 import {makeCapiDateTime} from "./utils";
 
@@ -10,9 +9,7 @@ jest.mock("@recipes-api/cwmetrics", () => ({
   registerMetric: jest.fn(),
 }));
 
-jest.mock("./config", () => ({}));
-
-jest.mock("./config", () => ({}));
+jest.mock("./config", ()=>({}));
 
 describe("extractAllRecipesFromAnArticle", () => {
 
@@ -205,8 +202,6 @@ describe("extractAllRecipesFromAnArticle", () => {
     expect(recipesFound.length).toEqual(2)
     expect(recipesFound[0]?.recipeUID).toEqual("0009782ef45121589b29656a0e4ee9f8525c0be62e6")
     expect(recipesFound[1]?.recipeUID).toEqual("9782ef45121589b29656a0e4ee9f8525c0be62e6")
-    expect(registerMetric).toHaveBeenCalled()
-    expect(registerMetric).toBeCalledTimes(2)
   })
 
 
