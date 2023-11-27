@@ -13,10 +13,6 @@ jest.mock("@recipes-api/cwmetrics", () => ({
 
 jest.mock("./config", () => ({}));
 
-jest.mock("./config", () => ({}));
-
-jest.mock("./config", ()=>({}));
-
 describe("extractAllRecipesFromAnArticle", () => {
 
   it("should work if main and body block contains one recipe each", async () => {
