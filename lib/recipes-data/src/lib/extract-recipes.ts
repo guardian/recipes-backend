@@ -15,7 +15,8 @@ export async function extractAllRecipesFromArticle(content: Content): Promise<Re
     const getAllBodyBlocksRecipesIfPresent = bodyBlocks.flatMap(bodyBlock => extractRecipeData(content.id, bodyBlock))
     const recipes = getAllMainBlockRecipesIfPresent.concat(getAllBodyBlocksRecipesIfPresent)
     const failureCount = recipes.filter(recp => !recp).length
-    await registerMetric("FailedRecipe", failureCount)
+    await registerMetric("FailedRecipes", failureCount)
+    await registerMetric("SuccessfulRecipes", recipes.length)
     return recipes.filter(recp => !!recp) as RecipeReferenceWithoutChecksum[]
   } else {
     return Array<RecipeReferenceWithoutChecksum>()
