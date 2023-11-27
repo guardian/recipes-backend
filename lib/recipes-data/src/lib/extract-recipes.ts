@@ -4,27 +4,31 @@ import type {Blocks} from "@guardian/content-api-models/v1/blocks";
 import type {Content} from "@guardian/content-api-models/v1/content";
 import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
+import {registerMetric} from "@recipes-api/cwmetrics";
 import type {RecipeReferenceWithoutChecksum} from './models';
 
-export function extractAllRecipesFromArticle(content: Content): RecipeReferenceWithoutChecksum[] {
+export async function extractAllRecipesFromArticle(content: Content): Promise<RecipeReferenceWithoutChecksum[]> {
   if (content.type == ContentType.ARTICLE && content.blocks) {
     const articleBlocks: Blocks = content.blocks
-    const getAllMainBlockRecipesIfPresent: RecipeReferenceWithoutChecksum[] = extractRecipeData(content.id, articleBlocks.main)
-    const bodyBlocks = articleBlocks.body
-    const getAllBodyBlocksRecipesIfPresent: RecipeReferenceWithoutChecksum[] = bodyBlocks? bodyBlocks.flatMap(bodyBlock => extractRecipeData(content.id, bodyBlock)) : [];
-    return getAllMainBlockRecipesIfPresent.concat(getAllBodyBlocksRecipesIfPresent)
+    const getAllMainBlockRecipesIfPresent = extractRecipeData(content.id, articleBlocks.main as Block)
+    const bodyBlocks = articleBlocks.body as Block[]
+    const getAllBodyBlocksRecipesIfPresent = bodyBlocks.flatMap(bodyBlock => extractRecipeData(content.id, bodyBlock))
+    const recipes = getAllMainBlockRecipesIfPresent.concat(getAllBodyBlocksRecipesIfPresent)
+    const failureCount = recipes.filter(recp => !recp).length
+    await registerMetric("FailedRecipe", failureCount)
+    return recipes.filter(recp => !!recp) as RecipeReferenceWithoutChecksum[]
   } else {
     return Array<RecipeReferenceWithoutChecksum>()
   }
 }
 
 export function extractRecipeData(canonicalId: string, block?: Block): RecipeReferenceWithoutChecksum[] {
-  if(! block?.elements) return [];
-
-  return block.elements
-    .filter(elem => elem.type === ElementType.RECIPE)
-    .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson as string))
-    .filter(recp => !!recp) as RecipeReferenceWithoutChecksum[]
+  if (!block?.elements) return [];
+  else {
+    return block.elements
+      .filter(elem => elem.type === ElementType.RECIPE)
+      .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson as string))
+  }
 }
 
 /**
@@ -52,7 +56,7 @@ function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeReference
     const recipeData = JSON.parse(recipeJson) as Record<string, unknown>
     if (!recipeData.id) {
       console.error(`Recipe from ${canonicalId} has no ID field. Content was: ${recipeJson}`);
-      return null //TODO: we should incorporate a metric for failed recipes so we can have an indication of upstream issues.
+      return null
     } else {
       return <RecipeReferenceWithoutChecksum>{
         recipeUID: determineRecipeUID(recipeData.id as string, canonicalId),
