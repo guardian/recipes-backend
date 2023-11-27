@@ -365,7 +365,9 @@ describe("extractRecipeData", () => {
         }
       ]
     }
-    expect(extractRecipeData(canonicalId, block)).toEqual([])
+    const recipesFound = extractRecipeData(canonicalId, block)
+    expect(recipesFound).toEqual([null])
+    expect(recipesFound.length).toEqual(1)
   })
 
 })
