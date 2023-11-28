@@ -4,11 +4,11 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
 {
   "Metadata": {
     "gu:cdk:constructs": [
+      "GuParameter",
+      "GuParameter",
       "GuDistributionBucketParameter",
-      "GuLambdaFunction",
-      "GuParameter",
-      "GuParameter",
       "GuKinesisLambdaExperimental",
+      "GuLambdaFunction",
       "GuApiLambda",
     ],
     "gu:cdk:version": "TEST",
@@ -72,13 +72,19 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
           },
           "S3Key": "content-api/TEST/recipes-backend-rest-endpoints/rest-endpoints.zip",
         },
-        "Description": "",
+        "Description": "REST API endpoints for the recipe backend",
         "Environment": {
           "Variables": {
             "APP": "recipes-backend-rest-endpoints",
             "CONTENT_URL_BASE": "recipes.guardianapis.com",
             "FASTLY_API_KEY": {
               "Ref": "fastlyKey",
+            },
+            "REINDEX_FUNCTION_ARN": {
+              "Fn::GetAtt": [
+                "Reindex34BEE325",
+                "Arn",
+              ],
             },
             "STACK": "content-api",
             "STAGE": "TEST",
@@ -746,6 +752,273 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       },
       "Type": "AWS::ApiGateway::Resource",
     },
+    "Reindex34BEE325": {
+      "DependsOn": [
+        "ReindexServiceRoleDefaultPolicyEE6CE66F",
+        "ReindexServiceRoleC3C62673",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
+            "Ref": "DistributionBucketName",
+          },
+          "S3Key": "content-api/TEST/recipes-backend-testindex/reindex-lambda.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "APP": "recipes-backend-testindex",
+            "INDEX_TABLE": {
+              "Ref": "storeRecipeTableC3AD84B7",
+            },
+            "LAST_UPDATED_INDEX": "idxArticleLastUpdated",
+            "STACK": "content-api",
+            "STAGE": "TEST",
+            "STATIC_BUCKET": {
+              "Ref": "staticstaticServing53194089",
+            },
+          },
+        },
+        "Handler": "main.handler",
+        "MemorySize": 512,
+        "Role": {
+          "Fn::GetAtt": [
+            "ReindexServiceRoleC3C62673",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "recipes-backend-testindex",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "ReindexServiceRoleC3C62673": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "recipes-backend-testindex",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ReindexServiceRoleDefaultPolicyEE6CE66F": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:PutObject",
+                "s3:DeleteObject",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "staticstaticServing53194089",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "dynamodb:Scan",
+                "dynamodb:Query",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "storeRecipeTableC3AD84B7",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "storeRecipeTableC3AD84B7",
+                          "Arn",
+                        ],
+                      },
+                      "/index/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                      "/content-api/TEST/recipes-backend-testindex/reindex-lambda.zip",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/content-api/recipes-backend-testindex",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/content-api/recipes-backend-testindex/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ReindexServiceRoleDefaultPolicyEE6CE66F",
+        "Roles": [
+          {
+            "Ref": "ReindexServiceRoleC3C62673",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "staticcdnRead42C381A5": {
       "Properties": {
         "Tags": [
@@ -954,273 +1227,6 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       },
       "Type": "AWS::DynamoDB::Table",
       "UpdateReplacePolicy": "Retain",
-    },
-    "testIndexLambda2BDF8073": {
-      "DependsOn": [
-        "testIndexLambdaServiceRoleDefaultPolicyD508FE80",
-        "testIndexLambdaServiceRole56B9AD34",
-      ],
-      "Properties": {
-        "Architectures": [
-          "arm64",
-        ],
-        "Code": {
-          "S3Bucket": {
-            "Ref": "DistributionBucketName",
-          },
-          "S3Key": "content-api/TEST/recipes-backend-testindex/test-indexbuild-lambda.zip",
-        },
-        "Environment": {
-          "Variables": {
-            "APP": "recipes-backend-testindex",
-            "INDEX_TABLE": {
-              "Ref": "storeRecipeTableC3AD84B7",
-            },
-            "LAST_UPDATED_INDEX": "idxArticleLastUpdated",
-            "STACK": "content-api",
-            "STAGE": "TEST",
-            "STATIC_BUCKET": {
-              "Ref": "staticstaticServing53194089",
-            },
-          },
-        },
-        "Handler": "main.handler",
-        "MemorySize": 512,
-        "Role": {
-          "Fn::GetAtt": [
-            "testIndexLambdaServiceRole56B9AD34",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "recipes-backend-testindex",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/recipes-backend",
-          },
-          {
-            "Key": "Stack",
-            "Value": "content-api",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-        "Timeout": 60,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "testIndexLambdaServiceRole56B9AD34": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "recipes-backend-testindex",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/recipes-backend",
-          },
-          {
-            "Key": "Stack",
-            "Value": "content-api",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "testIndexLambdaServiceRoleDefaultPolicyD508FE80": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "s3:PutObject",
-                "s3:DeleteObject",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    {
-                      "Fn::GetAtt": [
-                        "staticstaticServing53194089",
-                        "Arn",
-                      ],
-                    },
-                    "/*",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "dynamodb:Scan",
-                "dynamodb:Query",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "storeRecipeTableC3AD84B7",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "storeRecipeTableC3AD84B7",
-                          "Arn",
-                        ],
-                      },
-                      "/index/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            {
-              "Action": [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::",
-                      {
-                        "Ref": "DistributionBucketName",
-                      },
-                    ],
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::",
-                      {
-                        "Ref": "DistributionBucketName",
-                      },
-                      "/content-api/TEST/recipes-backend-testindex/test-indexbuild-lambda.zip",
-                    ],
-                  ],
-                },
-              ],
-            },
-            {
-              "Action": "ssm:GetParametersByPath",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/TEST/content-api/recipes-backend-testindex",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "ssm:GetParameters",
-                "ssm:GetParameter",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/TEST/content-api/recipes-backend-testindex/*",
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "testIndexLambdaServiceRoleDefaultPolicyD508FE80",
-        "Roles": [
-          {
-            "Ref": "testIndexLambdaServiceRole56B9AD34",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
     },
     "updaterLambdaE2EB52D9": {
       "DependsOn": [

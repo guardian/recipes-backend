@@ -22,7 +22,7 @@
 	},
 	"references": [
 		{
-			"path": "./lambda/test-indexbuild/tsconfig.json"
+			"path": "./lambda/reindexer/tsconfig.json"
 		}
 	],
 	"exclude": ["node_modules", "tmp"]

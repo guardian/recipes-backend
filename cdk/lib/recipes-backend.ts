@@ -1,14 +1,13 @@
 import type {GuStackProps} from "@guardian/cdk/lib/constructs/core";
 import {GuParameter, GuStack} from "@guardian/cdk/lib/constructs/core";
-import {GuLambdaFunction} from "@guardian/cdk/lib/constructs/lambda";
 import {GuKinesisLambdaExperimental} from "@guardian/cdk/lib/experimental/patterns";
 import {StreamRetry} from "@guardian/cdk/lib/utils/lambda";
 import {type App, Duration} from "aws-cdk-lib";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
-import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
+import {Runtime} from "aws-cdk-lib/aws-lambda";
 import {DataStore} from "./datastore";
-import {StaticServing} from "./static-serving";
 import {RestEndpoints} from "./rest-endpoints";
+import {StaticServing} from "./static-serving";
 
 export class RecipesBackend extends GuStack {
   constructor(scope: App, id: string, props: GuStackProps) {
@@ -16,32 +15,6 @@ export class RecipesBackend extends GuStack {
 
     const serving = new StaticServing(this, "static");
     const store = new DataStore(this, "store");
-
-    new GuLambdaFunction(this, "testIndexLambda", {
-      fileName: "test-indexbuild-lambda.zip",
-      runtime: Runtime.NODEJS_18_X,
-      architecture: Architecture.ARM_64,
-      app: "recipes-backend-testindex",
-      handler: "main.handler",
-      timeout: Duration.seconds(60),
-      environment: {
-        STATIC_BUCKET: serving.staticBucket.bucketName,
-        INDEX_TABLE: store.table.tableName,
-        LAST_UPDATED_INDEX: store.lastUpdatedIndexName,
-      },
-      initialPolicy: [
-        new PolicyStatement({
-          effect: Effect.ALLOW,
-          actions: ["s3:PutObject", "s3:DeleteObject"],
-          resources: [serving.staticBucket.bucketArn + "/*"]
-        }),
-        new PolicyStatement({
-          effect: Effect.ALLOW,
-          actions: ["dynamodb:Scan", "dynamodb:Query"],
-          resources: [store.table.tableArn, store.table.tableArn + "/index/*"]
-        })
-      ]
-    });
 
     //This is a nicer way to pick up the stream name - but CDK won't compile
     //when using the name token for the kinesis stream name below.
@@ -105,6 +78,7 @@ export class RecipesBackend extends GuStack {
       servingBucket: serving.staticBucket,
       fastlyKey: fastlyKeyParam.valueAsString,
       contentUrlBase,
+      store,
     });
   }
 }

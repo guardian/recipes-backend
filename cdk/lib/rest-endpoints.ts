@@ -6,11 +6,14 @@ import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
 import type {IBucket} from "aws-cdk-lib/aws-s3";
 import {Construct} from "constructs";
+import {GuLambdaFunction} from "@guardian/cdk/lib/constructs/lambda";
+import {DataStore} from "./datastore";
 
 interface RestEndpointsProps {
   servingBucket: IBucket;
   fastlyKey: string;
   contentUrlBase: string;
+  store: DataStore,
 }
 
 export class RestEndpoints extends Construct {
@@ -20,8 +23,35 @@ export class RestEndpoints extends Construct {
     const {
       servingBucket,
       fastlyKey,
-      contentUrlBase
+      contentUrlBase,
+      store
     } = props;
+
+    const reindexer = new GuLambdaFunction(scope, "Reindex", {
+      fileName: "reindex-lambda.zip",
+      runtime: Runtime.NODEJS_18_X,
+      architecture: Architecture.ARM_64,
+      app: "recipes-backend-testindex",
+      handler: "main.handler",
+      timeout: Duration.seconds(60),
+      environment: {
+        STATIC_BUCKET: servingBucket.bucketName,
+        INDEX_TABLE: store.table.tableName,
+        LAST_UPDATED_INDEX: store.lastUpdatedIndexName,
+      },
+      initialPolicy: [
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["s3:PutObject", "s3:DeleteObject"],
+          resources: [servingBucket.bucketArn + "/*"]
+        }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["dynamodb:Scan", "dynamodb:Query"],
+          resources: [store.table.tableArn, store.table.tableArn + "/index/*"]
+        })
+      ]
+    });
 
     const apiConstruct = new GuApiLambda(scope, "Lambda", {
       api: {
@@ -39,6 +69,7 @@ export class RestEndpoints extends Construct {
         STATIC_BUCKET: servingBucket.bucketName,
         FASTLY_API_KEY: fastlyKey,
         CONTENT_URL_BASE: contentUrlBase,
+        REINDEX_FUNCTION_ARN: reindexer.functionArn,
       },
       fileName: "rest-endpoints.zip",
       functionName: `recipes-backend-rest-endpoints-${scope.stage}`,

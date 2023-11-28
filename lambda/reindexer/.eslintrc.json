@@ -9,7 +9,7 @@
 		{
 			"files": ["*.ts", "*.tsx"],
       "parserOptions": {
-        "project": ["lambda/test-indexbuild/tsconfig.app.json"]
+        "project": ["lambda/reindexer/tsconfig.app.json"]
       },
 			"rules": {}
 		},
