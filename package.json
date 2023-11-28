@@ -12,6 +12,7 @@
   "private": true,
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.441.0",
+    "@aws-sdk/client-lambda": "^3.460.0",
     "@aws-sdk/client-s3": "^3.441.0",
     "@guardian/content-api-models": "^17.8.0",
     "@vendia/serverless-express": "^4.10.4",

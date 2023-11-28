@@ -80,11 +80,8 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
             "FASTLY_API_KEY": {
               "Ref": "fastlyKey",
             },
-            "REINDEX_FUNCTION_ARN": {
-              "Fn::GetAtt": [
-                "Reindex34BEE325",
-                "Arn",
-              ],
+            "REINDEX_FUNCTION_NAME": {
+              "Ref": "Reindex34BEE325",
             },
             "STACK": "content-api",
             "STAGE": "TEST",
@@ -781,6 +778,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
             },
           },
         },
+        "FunctionName": "recipes-backend-reindex-TEST",
         "Handler": "main.handler",
         "MemorySize": 512,
         "Role": {

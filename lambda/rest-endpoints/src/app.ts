@@ -2,6 +2,8 @@ import bodyParser from 'body-parser';
 import {renderFile as ejs} from "ejs";
 import express from 'express';
 import {importNewData} from "./submit-data";
+import {triggerReindex} from "./trigger-reindex";
+import {MisconfiguredException} from "./errors";
 
 export const app = express();
 app.set('view engine', 'ejs');
@@ -38,6 +40,23 @@ router.post('/api/curation', (req, resp)=>{
     console.error("Could not parse incoming data as json: ", err);
     return resp.status(400).json({status: "error", detail: "invalid content"});
   }
+});
+
+router.post('/api/reindex', (req, resp)=>{
+  triggerReindex()
+    .then(()=>{
+      //the reindex is now in-progress via the reindex handler
+      return resp.status(200).json({status: "ok", detail: "Reindex started"});
+    })
+    .catch((err)=>{
+      //we were not able to launch the reindex
+      if(err instanceof MisconfiguredException) {
+        return resp.status(500).json({status: "misconfigured", detail: err.message});
+      } else {
+        console.error(err);
+        return resp.status(500).json({status: "error", detail: "An internal error occurred, please see the logs"});
+      }
+    });
 });
 
 app.use('/', router);

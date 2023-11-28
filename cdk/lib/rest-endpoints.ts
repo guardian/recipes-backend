@@ -39,6 +39,7 @@ export class RestEndpoints extends Construct {
         INDEX_TABLE: store.table.tableName,
         LAST_UPDATED_INDEX: store.lastUpdatedIndexName,
       },
+      functionName: `recipes-backend-reindex-${scope.stage}`,
       initialPolicy: [
         new PolicyStatement({
           effect: Effect.ALLOW,
@@ -69,7 +70,7 @@ export class RestEndpoints extends Construct {
         STATIC_BUCKET: servingBucket.bucketName,
         FASTLY_API_KEY: fastlyKey,
         CONTENT_URL_BASE: contentUrlBase,
-        REINDEX_FUNCTION_ARN: reindexer.functionArn,
+        REINDEX_FUNCTION_NAME: reindexer.functionName,
       },
       fileName: "rest-endpoints.zip",
       functionName: `recipes-backend-rest-endpoints-${scope.stage}`,
