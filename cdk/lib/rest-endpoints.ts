@@ -34,7 +34,7 @@ export class RestEndpoints extends Construct {
       },
       app: "recipes-backend-rest-endpoints",
       architecture: Architecture.ARM_64,
-      description: "",
+      description: "REST API endpoints for the recipe backend",
       environment: {
         STATIC_BUCKET: servingBucket.bucketName,
         FASTLY_API_KEY: fastlyKey,
@@ -60,6 +60,7 @@ export class RestEndpoints extends Construct {
       apiStages: [
         {
           stage: apiConstruct.api.deploymentStage,
+          api: apiConstruct.api,
         }
       ]
     });
