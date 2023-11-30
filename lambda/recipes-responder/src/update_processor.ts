@@ -39,11 +39,12 @@ export async function handleContentUpdate(content:Content):Promise<number>
     console.log(`INFO [${content.id}] - has ${allRecipes.length} recipes`);
 
     const entriesToRemove = await recipesToTakeDown(DynamoClient, content.id, allRecipes.map(recep => recep.recipeUID));
-    console.log(`INFO [${content.id}] - ${entriesToRemove.length} recipes have been removed/superceded`);
+    console.log(`INFO [${content.id}] - ${entriesToRemove.length} recipes have been removed/superceded in the incoming article`);
     if (allRecipes.length == 0 && entriesToRemove.length == 0) return 0;  //no point hanging around and noising up the logs
     await Promise.all(entriesToRemove.map(recep => removeRecipeVersion(DynamoClient, content.id, recep)));
+    console.log(`INFO [${content.id}] - ${entriesToRemove.length} removed/superceded recipes have been removed from the store`);
 
-    console.log(`INFO [${content.id}] - publishing ${allRecipes.length} recipes to the service`)
+    console.log(`INFO [${content.id}] - publishing ${allRecipes.length} new/updated recipes to the service`)
     await Promise.all(allRecipes.map(recep => publishRecipe(content.id, recep)))
 
     console.log(`INFO [${content.id}] - Done`);
