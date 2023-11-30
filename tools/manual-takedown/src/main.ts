@@ -18,7 +18,7 @@ async function main() {
   const articleId = process.env["ARTICLE_ID"] as string;  //checkArgs ensures that this is valid
 
   console.log("Attempting takedown on ", articleId);
-  await removeAllRecipesForArticle(dynamoClient, articleId);
+  await removeAllRecipesForArticle(articleId);
 }
 
 main().then(()=>process.exit(0)).catch(err=>{

@@ -18,10 +18,6 @@ jest.mock("node-fetch", ()=>({
   default: jest.fn()
 }));
 
-jest.mock("./dynamo_conn", ()=>({
-  DynamoClient: {},
-}));
-
 jest.mock("@recipes-api/lib/recipes-data", ()=>({
   calculateChecksum: jest.fn(),
   extractAllRecipesFromArticle: jest.fn(),
@@ -82,17 +78,17 @@ describe("update_processor.handleContentUpdate", ()=>{
     // @ts-ignore -- Typescript doesn't know that this is a mock
     expect(insertNewRecipe.mock.calls.length).toEqual(3);
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(insertNewRecipe.mock.calls[0][1]).toEqual("path/to/content");  //canonical article ID
+    expect(insertNewRecipe.mock.calls[0][0]).toEqual("path/to/content");  //canonical article ID
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(insertNewRecipe.mock.calls[0][2]).toEqual({checksum: "abcd1", recipeUID: "uid-recep-1"});  //recipe data
+    expect(insertNewRecipe.mock.calls[0][1]).toEqual({checksum: "abcd1", recipeUID: "uid-recep-1"});  //recipe data
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(insertNewRecipe.mock.calls[1][1]).toEqual("path/to/content");  //canonical article ID
+    expect(insertNewRecipe.mock.calls[1][0]).toEqual("path/to/content");  //canonical article ID
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(insertNewRecipe.mock.calls[1][2]).toEqual({checksum: "efgh", recipeUID: "uid-recep-2"});  //recipe data
+    expect(insertNewRecipe.mock.calls[1][1]).toEqual({checksum: "efgh", recipeUID: "uid-recep-2"});  //recipe data
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(insertNewRecipe.mock.calls[2][1]).toEqual("path/to/content");  //canonical article ID
+    expect(insertNewRecipe.mock.calls[2][0]).toEqual("path/to/content");  //canonical article ID
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(insertNewRecipe.mock.calls[2][2]).toEqual({checksum: "xyzp", recipeUID: "uid-recep-3"});  //recipe data
+    expect(insertNewRecipe.mock.calls[2][1]).toEqual({checksum: "xyzp", recipeUID: "uid-recep-3"});  //recipe data
 
     // @ts-ignore -- Typescript doesn't know that this is a mock
     expect(publishRecipeContent.mock.calls.length).toEqual(3);
@@ -106,13 +102,13 @@ describe("update_processor.handleContentUpdate", ()=>{
     // @ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipeVersion.mock.calls.length).toEqual(2);
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipeVersion.mock.calls[0][1]).toEqual("path/to/content");
+    expect(removeRecipeVersion.mock.calls[0][0]).toEqual("path/to/content");
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipeVersion.mock.calls[0][2]).toEqual({checksum: "xxxyyyzzz", recipeUID: "uid-recep-2"});
+    expect(removeRecipeVersion.mock.calls[0][1]).toEqual({checksum: "xxxyyyzzz", recipeUID: "uid-recep-2"});
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipeVersion.mock.calls[1][1]).toEqual("path/to/content");
+    expect(removeRecipeVersion.mock.calls[1][0]).toEqual("path/to/content");
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipeVersion.mock.calls[1][2]).toEqual({checksum: "zzzyyyqqq", recipeUID: "uid-recep-4"});
+    expect(removeRecipeVersion.mock.calls[1][1]).toEqual({checksum: "zzzyyyqqq", recipeUID: "uid-recep-4"});
   });
 
   it("should ignore a piece of content that is not an article", async ()=>{

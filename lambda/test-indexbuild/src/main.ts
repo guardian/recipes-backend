@@ -31,7 +31,7 @@ export const handler:Handler = async ()=>{
   console.log("Index test starting up");
 
   console.log("Retrieving index data...");
-  const indexData = await retrieveIndexData(dynamoClient);
+  const indexData = await retrieveIndexData();
   console.log("Done.")
   await writeIndexData(indexData);
   console.log("All completed.");

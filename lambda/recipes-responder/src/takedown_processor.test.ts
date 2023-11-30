@@ -1,8 +1,6 @@
 import type {Event} from "@guardian/content-api-models/crier/event/v1/event";
 import {EventType} from "@guardian/content-api-models/crier/event/v1/eventType";
 import {ItemType} from "@guardian/content-api-models/crier/event/v1/itemType";
-import {ContentType} from "@guardian/content-api-models/v1/contentType";
-import {AtomType} from "@guardian/content-atom-model/atomType";
 import Int64 from "node-int64";
 import {awaitableDelay, removeAllRecipesForArticle} from "@recipes-api/lib/recipes-data";
 import {handleTakedown} from "./takedown_processor";
@@ -12,9 +10,6 @@ jest.mock("@recipes-api/lib/recipes-data", ()=>({
   removeAllRecipesForArticle: jest.fn(),
 }));
 
-jest.mock("./dynamo_conn", ()=>({
-  DynamoClient: {},
-}));
 
 describe("takedown_processor.handleTakedown", ()=>{
   beforeEach(()=>{
@@ -37,7 +32,7 @@ describe("takedown_processor.handleTakedown", ()=>{
     // @ts-ignore -- Typescript doesn't know that this is a mock
     expect(awaitableDelay.mock.calls.length).toEqual(0);
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeAllRecipesForArticle.mock.calls[0][1]).toEqual("path/to/article/id");
+    expect(removeAllRecipesForArticle.mock.calls[0][0]).toEqual("path/to/article/id");
     expect(count).toEqual(1);
   });
 

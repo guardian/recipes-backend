@@ -6,7 +6,6 @@ import {removeRecipeContent} from "./s3";
 import {recipesToTakeDown, removeAllRecipesForArticle, removeRecipePermanently, removeRecipeVersion} from './takedown';
 
 mockClient(DynamoDBClient);
-const ddbClient = new DynamoDBClient(); //this is a mock object due to `mockClient` above
 
 jest.mock("./s3", ()=>({
   removeRecipeContent: jest.fn(),
@@ -28,38 +27,38 @@ describe("takedown", ()=>{
   });
 
   it("removeRecipePermanently should delete the given recipe from the index and from the content bucket", async ()=>{
-    await removeRecipePermanently(ddbClient, "path/to/some/article", {recipeUID: "some-uid", checksum: "xxxyyyzzz"});
+    await removeRecipePermanently("path/to/some/article", {recipeUID: "some-uid", checksum: "xxxyyyzzz"});
 
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipe.mock.calls.length).toEqual(1);
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipe.mock.calls[0][1]).toEqual("path/to/some/article");
+    expect(removeRecipe.mock.calls[0][0]).toEqual("path/to/some/article");
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipe.mock.calls[0][2]).toEqual("some-uid");
+    expect(removeRecipe.mock.calls[0][1]).toEqual("some-uid");
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipe.mock.calls[0][3]).toBeUndefined();
+    expect(removeRecipe.mock.calls[0][2]).toBeUndefined();
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipeContent.mock.calls.length).toEqual(1);
 
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipe.mock.calls[0][1]).toEqual("path/to/some/article");
+    expect(removeRecipe.mock.calls[0][0]).toEqual("path/to/some/article");
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipe.mock.calls[0][2]).toEqual("some-uid");
+    expect(removeRecipe.mock.calls[0][1]).toEqual("some-uid");
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipeContent.mock.calls[0][0]).toEqual("xxxyyyzzz");
   });
 
   it("removeRecipeVersion should delete the given recipe from the content bucket but not the index", async ()=>{
-    await removeRecipeVersion(ddbClient, "path/to/some/article", {recipeUID: "some-uid", checksum: "xxxyyyzzz"});
+    await removeRecipeVersion("path/to/some/article", {recipeUID: "some-uid", checksum: "xxxyyyzzz"});
 
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipe.mock.calls.length).toEqual(1);
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipe.mock.calls[0][1]).toEqual("path/to/some/article");
+    expect(removeRecipe.mock.calls[0][0]).toEqual("path/to/some/article");
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipe.mock.calls[0][2]).toEqual("some-uid");
+    expect(removeRecipe.mock.calls[0][1]).toEqual("some-uid");
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipe.mock.calls[0][3]).toEqual("xxxyyyzzz");
+    expect(removeRecipe.mock.calls[0][2]).toEqual("xxxyyyzzz");
 
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipeContent.mock.calls.length).toEqual(1);
@@ -87,20 +86,20 @@ describe("takedown", ()=>{
     //@ts-ignore -- Typescript doesn't know that this is a mock
     removeAllRecipeIndexEntriesForArticle.mockReturnValue(Promise.resolve(knownArticles));
 
-    await removeAllRecipesForArticle(ddbClient, "path/to/some/article");
+    await removeAllRecipesForArticle("path/to/some/article");
 
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeAllRecipeIndexEntriesForArticle.mock.calls.length).toEqual(1);
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeAllRecipeIndexEntriesForArticle.mock.calls[0][1]).toEqual("path/to/some/article");
+    expect(removeAllRecipeIndexEntriesForArticle.mock.calls[0][0]).toEqual("path/to/some/article");
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipeContent.mock.calls.length).toEqual(3);
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipeContent.mock.calls[0]).toEqual(["abcd", "soft"]);
+    expect(removeRecipeContent.mock.calls[0]).toEqual(["abcd", "hard"]);
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipeContent.mock.calls[1]).toEqual(["efg", "soft"]);
+    expect(removeRecipeContent.mock.calls[1]).toEqual(["efg", "hard"]);
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(removeRecipeContent.mock.calls[2]).toEqual(["hij", "soft"]);
+    expect(removeRecipeContent.mock.calls[2]).toEqual(["hij", "hard"]);
   });
 });
 
@@ -138,7 +137,7 @@ describe("takedown.recipesToTakeDown", ()=>{
     // @ts-ignore -- Typescript doesn't know that this is a mock
     recipesforArticle.mockReturnValue(Promise.resolve(fakeDbContent));
 
-    const result = await recipesToTakeDown(ddbClient, "some-article-id", fakeUpdateIds);
+    const result = await recipesToTakeDown("some-article-id", fakeUpdateIds);
     expect(result).toEqual([
       {checksum: "vers963", recipeUID:"number2"},
       {checksum: "vers9789", recipeUID: "number5"}
@@ -147,9 +146,7 @@ describe("takedown.recipesToTakeDown", ()=>{
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(recipesforArticle.mock.calls.length).toEqual(1);
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(recipesforArticle.mock.calls[0][0]).toEqual(ddbClient);
-    //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(recipesforArticle.mock.calls[0][1]).toEqual("some-article-id");
+    expect(recipesforArticle.mock.calls[0][0]).toEqual("some-article-id");
   });
 
   it("should return an empty list if there is nothing to take down", async ()=>{
@@ -173,15 +170,13 @@ describe("takedown.recipesToTakeDown", ()=>{
     // @ts-ignore -- Typescript doesn't know that this is a mock
     recipesforArticle.mockReturnValue(Promise.resolve(fakeDbContent));
 
-    const result = await recipesToTakeDown(ddbClient, "some-article-id", fakeUpdateIds);
+    const result = await recipesToTakeDown("some-article-id", fakeUpdateIds);
     expect(result).toEqual([]);
 
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(recipesforArticle.mock.calls.length).toEqual(1);
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(recipesforArticle.mock.calls[0][0]).toEqual(ddbClient);
-    //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(recipesforArticle.mock.calls[0][1]).toEqual("some-article-id");
+    expect(recipesforArticle.mock.calls[0][0]).toEqual("some-article-id");
   });
 
   it("should return an empty list if both input and current state are empty", async ()=>{
@@ -192,14 +187,12 @@ describe("takedown.recipesToTakeDown", ()=>{
     // @ts-ignore -- Typescript doesn't know that this is a mock
     recipesforArticle.mockReturnValue(Promise.resolve(fakeDbContent));
 
-    const result = await recipesToTakeDown(ddbClient, "some-article-id", fakeUpdateIds);
+    const result = await recipesToTakeDown("some-article-id", fakeUpdateIds);
     expect(result).toEqual([]);
 
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(recipesforArticle.mock.calls.length).toEqual(1);
     //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(recipesforArticle.mock.calls[0][0]).toEqual(ddbClient);
-    //@ts-ignore -- Typescript doesn't know that this is a mock
-    expect(recipesforArticle.mock.calls[0][1]).toEqual("some-article-id");
+    expect(recipesforArticle.mock.calls[0][0]).toEqual("some-article-id");
   });
 })

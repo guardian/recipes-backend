@@ -3,7 +3,6 @@ import {ItemType} from "@guardian/content-api-models/crier/event/v1/itemType";
 import type {KinesisStreamHandler, KinesisStreamRecord} from "aws-lambda";
 import {deserializeEvent} from "@recipes-api/lib/capi";
 import {retrieveIndexData, writeIndexData} from "@recipes-api/lib/recipes-data";
-import {DynamoClient} from "./dynamo_conn";
 import {handleDeletedContent, handleTakedown} from "./takedown_processor";
 import {handleContentUpdate} from "./update_processor";
 import {handleContentUpdateRetrievable} from "./update_retrievable_processor";
@@ -54,7 +53,7 @@ export const handler:KinesisStreamHandler = async (event) => {
   const updatesTotal = updatesPerEvent.reduce((acc, current)=>acc+current, 0);
   if(updatesTotal>0) {
     console.log(`Processed updates for ${updatesTotal} recipes, rebuilding the index json`);
-    const indexData = await retrieveIndexData(DynamoClient);
+    const indexData = await retrieveIndexData();
     await writeIndexData(indexData);
     console.log("Finished rebuilding index");
   } else {
