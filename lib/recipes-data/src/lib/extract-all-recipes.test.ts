@@ -10,6 +10,9 @@ import {makeCapiDateTime} from "./utils";
 jest.mock("@recipes-api/cwmetrics", () => ({
   registerMetric: jest.fn(),
 }));
+jest.mock("./config", ()=>({
+
+}));
 
 jest.mock("./config", () => ({}));
 
