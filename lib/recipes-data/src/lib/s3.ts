@@ -68,7 +68,7 @@ export async function removeRecipeContent(recipeSHA: string, purgeType?: "soft" 
   const realAttempt = attempt ?? 1;
 
   const Key = `content/${recipeSHA}`;
-  console.debug(`DEBUG: removeRecipeContent path is s3://${Bucket ?? "(no bucket)"}/${Key}`);
+  console.debug(`DEBUG: removeRecipeContent path is s3://${Bucket}/${Key}`);
 
   const req = new DeleteObjectCommand({
     Bucket,
