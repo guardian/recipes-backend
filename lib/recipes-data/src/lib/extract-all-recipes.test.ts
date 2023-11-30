@@ -5,8 +5,8 @@ import {ElementType} from "@guardian/content-api-models/v1/elementType";
 import {extractAllRecipesFromArticle} from "./extract-recipes";
 import {makeCapiDateTime} from "./utils";
 
-jest.mock("@recipes-api/cwmetrics", () => ({
-  registerMetric: jest.fn(),
+jest.mock("./config", ()=>({
+
 }));
 jest.mock("./config", ()=>({
 
@@ -16,7 +16,7 @@ jest.mock("./config", ()=>({}));
 
 describe("extractAllRecipesFromAnArticle", () => {
 
-  it("should work if main and body block contains one recipe each", async () => {
+  it("should work if main and body block contains one recipe each", () => {
     const articleContent: Content = {
       tags: [],
       id: "lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers",
@@ -201,14 +201,14 @@ describe("extractAllRecipesFromAnArticle", () => {
       isHosted: false
     }
 
-    const recipesFound = await extractAllRecipesFromArticle(articleContent)
+    const recipesFound = extractAllRecipesFromArticle(articleContent)
     expect(recipesFound.length).toEqual(2)
     expect(recipesFound[0]?.recipeUID).toEqual("0009782ef45121589b29656a0e4ee9f8525c0be62e6")
     expect(recipesFound[1]?.recipeUID).toEqual("9782ef45121589b29656a0e4ee9f8525c0be62e6")
   })
 
 
-  it("should work if main and body blocks contains multiple recipes", async () => {
+  it("should work if main and body blocks contains multiple recipes", () => {
     const articleContent: Content = {
       tags: [],
       id: "lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers",
@@ -391,7 +391,7 @@ describe("extractAllRecipesFromAnArticle", () => {
       isHosted: false
     }
 
-    const recipesFound = await extractAllRecipesFromArticle(articleContent)
+    const recipesFound = extractAllRecipesFromArticle(articleContent)
     expect(recipesFound.length).toEqual(4)
     expect(recipesFound[0]?.recipeUID).toEqual("1-9782ef45121589b29656a0e4ee9f8525c0be62e6")
     expect(recipesFound[1]?.recipeUID).toEqual("2-9782ef45121589b29656a0e4ee9f8525c0be62e6")
@@ -400,7 +400,7 @@ describe("extractAllRecipesFromAnArticle", () => {
   })
 
 
-  it("should return empty array when main and body blocks contains no recipe", async () => {
+  it("should return empty array when main and body blocks contains no recipe", () => {
     const articleContent: Content = {
       tags: [],
       id: "lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers",
@@ -534,12 +534,12 @@ describe("extractAllRecipesFromAnArticle", () => {
       isHosted: false
     }
 
-    const recipesFound = await extractAllRecipesFromArticle(articleContent)
+    const recipesFound = extractAllRecipesFromArticle(articleContent)
     expect(recipesFound.length).toEqual(0)
   })
 
 
-  it("should return empty array if main and body blocks contains invalid recipe (no ID)", async () => {
+  it("should return empty array if main and body blocks contains invalid recipe (no ID)", () => {
     const articleContent: Content = {
       tags: [],
       id: "lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers",
@@ -673,12 +673,12 @@ describe("extractAllRecipesFromAnArticle", () => {
       isHosted: false
     }
 
-    const recipesFound = await extractAllRecipesFromArticle(articleContent)
+    const recipesFound = extractAllRecipesFromArticle(articleContent)
     expect(recipesFound.length).toEqual(0)
   })
 
 
-  it("should work if both main and body block contains invalid recipes (no ID)", async () => {
+  it("should work if both main and body block contains invalid recipes (no ID)", () => {
     const articleContent: Content = {
       tags: [],
       id: "lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers",
@@ -863,11 +863,10 @@ describe("extractAllRecipesFromAnArticle", () => {
       isHosted: false
     }
 
-    const recipesFound = await extractAllRecipesFromArticle(articleContent)
-    expect(recipesFound).toEqual([])
+    expect(extractAllRecipesFromArticle(articleContent)).toEqual([])
   })
 
-  it("should return only 1 recipe if main contains single valid and body block contains single invalid recipe (no ID)", async () => {
+  it("should return only 1 recipe if main contains single valid and body block contains single invalid recipe (no ID)", () => {
     const articleContent: Content = {
       tags: [],
       id: "lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers",
@@ -1052,7 +1051,7 @@ describe("extractAllRecipesFromAnArticle", () => {
       isHosted: false
     }
 
-    const recipesFound = await extractAllRecipesFromArticle(articleContent)
+    const recipesFound = extractAllRecipesFromArticle(articleContent)
     expect(recipesFound.length).toEqual(1)
     expect(recipesFound[0]?.recipeUID).toEqual("0009782ef45121589b29656a0e4ee9f8525c0be62e6")
   })
