@@ -3,10 +3,23 @@ import {recipesforArticle, removeAllRecipeIndexEntriesForArticle, removeRecipe} 
 import type { RecipeIndexEntry } from './models';
 import {removeRecipeContent} from "./s3";
 
-async function takeRecipeDown(client: DynamoDBClient, canonicalArticleId: string, recipe: RecipeIndexEntry, unconditional: boolean):Promise<void>
+enum TakedownMode {
+  AllVersions,
+  SpecificVersion
+}
+
+/**
+ * Internal function that does the business of taking a recipe down
+ * @param client DynamoDB client object
+ * @param canonicalArticleId article to which the recipe belongs
+ * @param recipe index entry identifying the recipe
+ * @param mode Takedown mode. If `TakedownMode.AllVersions`, then any occurence of the content's uid is removed.
+ * If `TakedownMode.SpecificVersion`, then the recipe is only removed if its checksum matches the one given in `recipe`
+ */
+async function takeRecipeDown(client: DynamoDBClient, canonicalArticleId: string, recipe: RecipeIndexEntry, mode:TakedownMode):Promise<void>
 {
   console.log(`takeRecipeDown: removing recipe ${recipe.recipeUID} for ${canonicalArticleId} from the index`);
-  await removeRecipe(client, canonicalArticleId, recipe.recipeUID, unconditional ? undefined : recipe.checksum);
+  await removeRecipe(client, canonicalArticleId, recipe.recipeUID, mode==TakedownMode.AllVersions ? undefined : recipe.checksum);
 
   console.log(`takeRecipeDown: removing content version ${recipe.checksum} for ${recipe.recipeUID} on ${canonicalArticleId} from the store`);
   await removeRecipeContent(recipe.checksum);
@@ -22,7 +35,7 @@ async function takeRecipeDown(client: DynamoDBClient, canonicalArticleId: string
  */
 export async function removeRecipePermanently(client: DynamoDBClient, canonicalArticleId: string, recipe: RecipeIndexEntry)
 {
-  return takeRecipeDown(client, canonicalArticleId, recipe, true);
+  return takeRecipeDown(client, canonicalArticleId, recipe, TakedownMode.AllVersions);
 }
 
 /**
@@ -34,14 +47,14 @@ export async function removeRecipePermanently(client: DynamoDBClient, canonicalA
  */
 export async function removeRecipeVersion(client: DynamoDBClient, canonicalArticleId: string, recipe: RecipeIndexEntry)
 {
-  return takeRecipeDown(client, canonicalArticleId, recipe, false);
+  return takeRecipeDown(client, canonicalArticleId, recipe, TakedownMode.SpecificVersion);
 }
 
 export async function removeAllRecipesForArticle(client: DynamoDBClient, canonicalArticleId: string): Promise<number>
 {
   const removedEntries = await removeAllRecipeIndexEntriesForArticle(client, canonicalArticleId);
   console.log(`Taken down article ${canonicalArticleId} had ${removedEntries.length} recipes in it which will also be removed`);
-  await Promise.all(removedEntries.map(recep=>removeRecipeContent(recep.checksum, "soft")));
+  await Promise.all(removedEntries.map(recep=>removeRecipeContent(recep.checksum, "hard")));
   return removedEntries.length;
 }
 

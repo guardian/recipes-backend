@@ -33,6 +33,10 @@ jest.mock("./update_retrievable_processor", ()=>({
   handleContentUpdateRetrievable: jest.fn(),
 }));
 
+jest.mock("@recipes-api/lib/recipes-data", ()=>({
+
+}));
+
 describe("main.processRecord", ()=>{
   beforeEach(()=>{
     jest.resetAllMocks();

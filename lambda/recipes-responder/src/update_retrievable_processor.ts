@@ -44,9 +44,10 @@ export async function handleContentUpdateRetrievable(retrievable:RetrievableCont
   switch(capiResponse.action) {
     case PollingAction.CONTENT_EXISTS:
       //Great, we have it - but should check if this has now been superceded
-      if(capiResponse.content?.fields?.internalRevision ?? 0 > (retrievable.internalRevision ?? 99) ) {
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- it's just a logging line
-        console.log(`INFO Retrievable update was superceded - we expected to see ${retrievable.internalRevision} but got ${capiResponse.content?.fields?.internalRevision}`);
+      if(capiResponse.content?.fields?.internalRevision &&
+        retrievable.internalRevision &&
+        capiResponse.content.fields.internalRevision > retrievable.internalRevision ) {
+        console.log(`INFO Retrievable update was superceded - we expected to see ${retrievable.internalRevision} but got ${capiResponse.content.fields.internalRevision}`);
       } else if(capiResponse.content) {
         return handleContentUpdate(capiResponse.content)
       } else {
