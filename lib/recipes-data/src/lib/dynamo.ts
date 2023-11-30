@@ -1,16 +1,18 @@
-import type {AttributeValue, DeleteItemCommandOutput, DynamoDBClient, WriteRequest} from "@aws-sdk/client-dynamodb";
+import type {AttributeValue, DeleteItemCommandOutput, WriteRequest} from "@aws-sdk/client-dynamodb";
 import {
   BatchWriteItemCommand, ConditionalCheckFailedException,
-  DeleteItemCommand,
+  DeleteItemCommand, DynamoDBClient,
   PutItemCommand,
   QueryCommand,
   ScanCommand
 } from "@aws-sdk/client-dynamodb";
+import {formatISO} from "date-fns";
 import {lastUpdatedIndex as IndexName, MaximumRetries, indexTableName as TableName} from "./config";
 import type {RecipeDatabaseKey, RecipeIndex, RecipeIndexEntry} from './models';
 import {RecipeIndexEntryFromDynamo} from "./models";
 import {awaitableDelay, nowTime} from "./utils";
-import {formatISO} from "date-fns";
+
+const client = new DynamoDBClient({region: process.env["AWS_REGION"]});
 
 type DynamoRecord =  Record<string, AttributeValue>;
 
@@ -19,7 +21,7 @@ interface DataPage {
   recipes: RecipeIndexEntry[];
 }
 
-async function retrieveIndexPage(client: DynamoDBClient, ExclusiveStartKey? : DynamoRecord): Promise<DataPage>
+async function retrieveIndexPage(ExclusiveStartKey? : DynamoRecord): Promise<DataPage>
 {
   const req = new ScanCommand({
     ExclusiveStartKey,
@@ -34,12 +36,12 @@ async function retrieveIndexPage(client: DynamoDBClient, ExclusiveStartKey? : Dy
   };
 }
 
-export async function retrieveIndexData(client: DynamoDBClient) : Promise<RecipeIndex> {
+export async function retrieveIndexData() : Promise<RecipeIndex> {
    let nextKey: DynamoRecord|undefined = undefined;
    const recipes: RecipeIndexEntry[] = [];
 
    do {
-      const page = await retrieveIndexPage(client, nextKey);
+      const page = await retrieveIndexPage(nextKey);
       nextKey = page.ExclusiveStartKey;
       recipes.push(...page.recipes);
     } while (nextKey);
@@ -47,7 +49,7 @@ export async function retrieveIndexData(client: DynamoDBClient) : Promise<Recipe
    return {schemaVersion: 1, recipes, lastUpdated: new Date()}
 }
 
-export async function recipesforArticle(client:DynamoDBClient, articleCanonicalId: string): Promise<RecipeIndexEntry[]>
+export async function recipesforArticle(articleCanonicalId: string): Promise<RecipeIndexEntry[]>
 {
   const req = new QueryCommand({
     TableName,
@@ -71,7 +73,7 @@ export async function recipesforArticle(client:DynamoDBClient, articleCanonicalI
  * @param recipeUID uid of the recipe to remove
  * @param recipeChecksum if this is set, then we perform a "conditional delete" that will only remove the record if the recipeVersion field matches this value
  */
-export async function removeRecipe(client: DynamoDBClient, canonicalArticleId:string, recipeUID: string, recipeChecksum?:string):Promise<DeleteItemCommandOutput|null>
+export async function removeRecipe(canonicalArticleId:string, recipeUID: string, recipeChecksum?:string):Promise<DeleteItemCommandOutput|null>
 {
   const ExpressionAttributeValues:Record<string,AttributeValue> = {};
   if(recipeChecksum) {
@@ -107,7 +109,7 @@ export async function removeRecipe(client: DynamoDBClient, canonicalArticleId:st
  * @param client
  * @param canonicalArticleId
  */
-export async function removeAllRecipeIndexEntriesForArticle(client: DynamoDBClient, canonicalArticleId: string): Promise<RecipeIndexEntry[]>
+export async function removeAllRecipeIndexEntriesForArticle(canonicalArticleId: string): Promise<RecipeIndexEntry[]>
 {
   const req = new QueryCommand({
     TableName,
@@ -135,12 +137,12 @@ export async function removeAllRecipeIndexEntriesForArticle(client: DynamoDBClie
         recipeUID: dbEntry["recipeUID"].S as string
       }));
     console.log(`${recepts.length} recipes to remove for article ${canonicalArticleId}`);
-    await bulkRemoveRecipe(client, recepts);
+    await bulkRemoveRecipe(recepts);
     return entries
   }
 }
 
-async function bulkRemovePage(client:DynamoDBClient, page:WriteRequest[], others:WriteRequest[], retryCount:number):Promise<void>
+async function bulkRemovePage(page:WriteRequest[], others:WriteRequest[], retryCount:number):Promise<void>
 {
   if(page.length==0) {
     if(others.length==0) {
@@ -148,7 +150,7 @@ async function bulkRemovePage(client:DynamoDBClient, page:WriteRequest[], others
       return
     } else {
       //ok for some weird reason we got an empty array to process but more to do.
-      return bulkRemovePage(client, others, [], 0);
+      return bulkRemovePage(others, [], 0);
     }
   }
 
@@ -168,11 +170,11 @@ async function bulkRemovePage(client:DynamoDBClient, page:WriteRequest[], others
     }
     console.log(`WARNING Could not remove all items on attempt ${retryCount}. Pausing before trying again...`);
     await awaitableDelay();
-    return bulkRemovePage(client, result.UnprocessedItems[TableName as string], others, retryCount+1);
+    return bulkRemovePage(result.UnprocessedItems[TableName as string], others, retryCount+1);
   } else if(others.length>0) {
     const nextPage = others.slice(0, 25);
     const nextOthers = others.length>25 ? others.slice(25) : [];
-    return bulkRemovePage(client, nextPage, nextOthers, 0);
+    return bulkRemovePage(nextPage, nextOthers, 0);
   } else {
     return
   }
@@ -181,10 +183,9 @@ async function bulkRemovePage(client:DynamoDBClient, page:WriteRequest[], others
 /**
  * Utilise the batch write functionality of Dynamo to remove a bunch of recipes in one go.
  * This is more efficient than removing each one manually.
- * @param client DynamoDB client
  * @param receps array of RecipeDatabaseKey[] identifying the recipes to remove from the index
  */
-export async function bulkRemoveRecipe(client: DynamoDBClient, receps:RecipeDatabaseKey[]):Promise<void>
+export async function bulkRemoveRecipe(receps:RecipeDatabaseKey[]):Promise<void>
 {
   const requests:WriteRequest[] = receps.map(recep=>({
     DeleteRequest: {
@@ -196,13 +197,13 @@ export async function bulkRemoveRecipe(client: DynamoDBClient, receps:RecipeData
   }));
 
   if(requests.length>25) {
-    return bulkRemovePage(client, requests.slice(0, 25), requests.slice(25), 0)
+    return bulkRemovePage(requests.slice(0, 25), requests.slice(25), 0)
   } else {
-    return bulkRemovePage(client, requests, [], 0);
+    return bulkRemovePage(requests, [], 0);
   }
 }
 
-export async function insertNewRecipe(client: DynamoDBClient, canonicalArticleId: string, entry:RecipeIndexEntry):Promise<void>
+export async function insertNewRecipe(canonicalArticleId: string, entry:RecipeIndexEntry):Promise<void>
 {
   const req = new PutItemCommand({
     TableName,

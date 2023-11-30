@@ -9,7 +9,6 @@ import {
   recipesToTakeDown,
   removeRecipeVersion
 } from "@recipes-api/lib/recipes-data";
-import {DynamoClient} from "./dynamo_conn";
 
 /**
  * Pushes new content into the service
@@ -21,7 +20,7 @@ async function publishRecipe(canonicalArticleId:string, recep:RecipeReference):P
   console.log(`INFO [${canonicalArticleId}] - pushing ${recep.recipeUID} @ ${recep.checksum} to S3...`);
   await publishRecipeContent(recep);
   console.log(`INFO [${canonicalArticleId}] - updating index table...`);
-  await insertNewRecipe(DynamoClient, canonicalArticleId, {recipeUID: recep.recipeUID, checksum: recep.checksum});
+  await insertNewRecipe(canonicalArticleId, {recipeUID: recep.recipeUID, checksum: recep.checksum});
 }
 
 /**
@@ -38,10 +37,10 @@ export async function handleContentUpdate(content:Content):Promise<number>
     const allRecipes: RecipeReference[] = extractAllRecipesFromArticle(content).map(calculateChecksum);
     console.log(`INFO [${content.id}] - has ${allRecipes.length} recipes`);
 
-    const entriesToRemove = await recipesToTakeDown(DynamoClient, content.id, allRecipes.map(recep => recep.recipeUID));
+    const entriesToRemove = await recipesToTakeDown(content.id, allRecipes.map(recep => recep.recipeUID));
     console.log(`INFO [${content.id}] - ${entriesToRemove.length} recipes have been removed/superceded in the incoming article`);
     if (allRecipes.length == 0 && entriesToRemove.length == 0) return 0;  //no point hanging around and noising up the logs
-    await Promise.all(entriesToRemove.map(recep => removeRecipeVersion(DynamoClient, content.id, recep)));
+    await Promise.all(entriesToRemove.map(recep => removeRecipeVersion(content.id, recep)));
     console.log(`INFO [${content.id}] - ${entriesToRemove.length} removed/superceded recipes have been removed from the store`);
 
     console.log(`INFO [${content.id}] - publishing ${allRecipes.length} new/updated recipes to the service`)
