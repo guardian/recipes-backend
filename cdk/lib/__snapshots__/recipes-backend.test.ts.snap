@@ -72,7 +72,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
           },
           "S3Key": "content-api/TEST/recipes-backend-rest-endpoints/rest-endpoints.zip",
         },
-        "Description": "",
+        "Description": "REST API endpoints for the recipe backend",
         "Environment": {
           "Variables": {
             "APP": "recipes-backend-rest-endpoints",
