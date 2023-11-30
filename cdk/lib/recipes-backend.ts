@@ -56,6 +56,11 @@ export class RecipesBackend extends GuStack {
       default: `/${this.stage}/${this.stack}/recipes-responder/capi-key`
     })
 
+    const fastlyKeyParam = new GuParameter(this, "fastlyKey", {
+      fromSSM: true,
+      default: `/${this.stage}/${this.stack}/recipes-responder/fastly-key`
+    })
+
     new GuKinesisLambdaExperimental(this, "updaterLambda", {
       monitoringConfiguration: {noMonitoring: true},
       existingKinesisStream: {
@@ -67,7 +72,25 @@ export class RecipesBackend extends GuStack {
       },
       environment: {
         CAPI_KEY: capiKeyParam.valueAsString,
+        INDEX_TABLE: store.table.tableName,
+        LAST_UPDATED_INDEX: store.lastUpdatedIndexName,
+        CONTENT_URL_BASE: this.stage=="CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com",
+        DEBUG_LOGS: "true",
+        FASTLY_API_KEY: fastlyKeyParam.valueAsString,
+        STATIC_BUCKET: serving.staticBucket.bucketName,
       },
+      initialPolicy: [
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["s3:PutObject", "s3:DeleteObject"],
+          resources: [serving.staticBucket.bucketArn + "/*"]
+        }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["dynamodb:Scan", "dynamodb:Query", "dynamodb:BatchWriteItem", "dynamodb:DeleteItem", "dynamodb:PutItem"],
+          resources: [store.table.tableArn, store.table.tableArn + "/index/*"]
+        })
+      ],
       runtime: Runtime.NODEJS_18_X,
       app: "recipes-responder",
       handler: "main.handler",

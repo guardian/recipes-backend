@@ -9,7 +9,6 @@ import {mockClient} from "aws-sdk-client-mock";
 import {bulkRemoveRecipe, removeAllRecipeIndexEntriesForArticle, removeRecipe} from './dynamo';
 import type {RecipeDatabaseEntry, RecipeDatabaseKey} from './models';
 import {RecipeDatabaseEntryToDynamo, RecipeDatabaseEntryToIndex} from "./models";
-import {removeAllRecipesForArticle} from "@recipes-api/lib/recipes-data";
 
 jest.mock("node-fetch");
 
@@ -43,7 +42,7 @@ describe("dynamodb", ()=>{
     it("should make a Dynamo request to remove the relevant record", async ()=>{
       mockDynamoClient.on(DeleteItemCommand).resolves({});
 
-      await removeRecipe(ddbClient, "path/to/some/article-id", "xxxyyyzzz");
+      await removeRecipe("path/to/some/article-id", "xxxyyyzzz");
       expect(mockDynamoClient.commandCalls(DeleteItemCommand).length).toEqual(1);
       const call = mockDynamoClient.commandCalls(DeleteItemCommand)[0];
       const req = call.firstArg as DeleteItemCommand;
@@ -61,7 +60,7 @@ describe("dynamodb", ()=>{
         UnprocessedItems: {"TestTable": []},
       });
 
-      await bulkRemoveRecipe(ddbClient, makeRecptBatch(6));
+      await bulkRemoveRecipe(makeRecptBatch(6));
       expect(mockDynamoClient.commandCalls(BatchWriteItemCommand).length).toEqual(1);
       const call = mockDynamoClient.commandCalls(BatchWriteItemCommand)[0];
       const req = call.firstArg as BatchWriteItemCommand;
@@ -79,7 +78,7 @@ describe("dynamodb", ()=>{
         UnprocessedItems: {"TestTable": []},
       });
 
-      await bulkRemoveRecipe(ddbClient, makeRecptBatch(93));
+      await bulkRemoveRecipe(makeRecptBatch(93));
       expect(mockDynamoClient.commandCalls(BatchWriteItemCommand).length).toEqual(4);
 
       //for brevity, we're just checking the last page of calls
@@ -115,7 +114,7 @@ describe("dynamodb", ()=>{
         })
         .resolves({});
 
-      await bulkRemoveRecipe(ddbClient, items);
+      await bulkRemoveRecipe(items);
 
       //We expect two write calls, one with all 8 of the items and the second with the two that were skipped
       expect(mockDynamoClient.commandCalls(BatchWriteItemCommand).length).toEqual(2);
@@ -171,7 +170,7 @@ describe("dynamodb", ()=>{
       });
       mockDynamoClient.on(BatchWriteItemCommand).resolves({});
 
-      const result = await removeAllRecipeIndexEntriesForArticle(ddbClient, "path/to/article");
+      const result = await removeAllRecipeIndexEntriesForArticle("path/to/article");
       expect(result).toEqual(fakeRecords.map(RecipeDatabaseEntryToIndex));
       expect(mockDynamoClient.commandCalls(QueryCommand).length).toEqual(1);
       expect(mockDynamoClient.commandCalls(BatchWriteItemCommand).length).toEqual(1);
@@ -198,7 +197,7 @@ describe("dynamodb", ()=>{
       });
       mockDynamoClient.on(BatchWriteItemCommand).resolves({});
 
-      const result = await removeAllRecipeIndexEntriesForArticle(ddbClient, "path/to/article");
+      const result = await removeAllRecipeIndexEntriesForArticle("path/to/article");
       expect(result).toEqual(fakeRecords.map(RecipeDatabaseEntryToIndex));
       expect(mockDynamoClient.commandCalls(QueryCommand).length).toEqual(1);
       expect(mockDynamoClient.commandCalls(BatchWriteItemCommand).length).toEqual(0);

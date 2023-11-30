@@ -1,12 +1,22 @@
 import * as process from "process";
 import {DeleteObjectCommand, NoSuchKey, PutObjectCommand, S3Client, S3ServiceException} from "@aws-sdk/client-s3";
 import {StaticBucketName as Bucket, FastlyApiKey, MaximumRetries} from "./config";
-import {sendFastlyPurgeRequestWithRetries} from "./fastly";
-import type { RecipeReference } from './models';
+import {sendFastlyPurgeRequest, sendFastlyPurgeRequestWithRetries} from "./fastly";
+import type { RecipeIndex ,RecipeReference} from './models';
 import {awaitableDelay} from "./utils";
 
 const s3Client = new S3Client({region: process.env["AWS_REGION"]});
 
+const DefaultCacheControlParams = makeCacheControl();
+
+function makeCacheControl(maxAge?: number, staleRevalidate?: number, staleError?: number):string
+{
+  return [
+    `max-age=${maxAge ?? 31557600}`,
+    `stale-while-revalidate=${staleRevalidate ?? 60}`,
+    `stale-if-error=${staleError ?? 300}`
+  ].join("; ");
+}
 
 /**
  * Publishes the given recipe data into the output bucket.
@@ -31,8 +41,8 @@ export async function publishRecipeContent(recipe: RecipeReference, attempt?: nu
     Key,
     Body: recipe.jsonBlob,
     ContentType: "application/json",
-    ChecksumSHA256: recipe.checksum,
-    CacheControl: "max-age=31557600; stale-while-revalidate=60; stale-if-error=300"
+    //ChecksumSHA256: recipe.checksum,  //This is commented out because the format is wrong. Left here because we want to fix it but not hold up PR approval.
+    CacheControl: DefaultCacheControlParams,
   });
 
   try {
@@ -85,4 +95,28 @@ export async function removeRecipeContent(recipeSHA: string, purgeType?:"soft"|"
       throw err;
     }
   }
+}
+
+/**
+ * Writes the built index data out to S3
+ * @param indexData built indexdata object. Get this from `retrieveIndexData`
+ */
+export async function writeIndexData(indexData:RecipeIndex)
+{
+  console.log("Marshalling data...");
+  const formattedData = JSON.stringify(indexData);
+
+  console.log("Done. Writing to S3...");
+  const req = new PutObjectCommand({
+    Bucket,
+    Key: "index.json",
+    Body: formattedData,
+    ContentType: "application/json",
+    CacheControl: makeCacheControl(3600), //cache for up to 60mins
+  });
+
+  await s3Client.send(req);
+  console.log("Done. Purging CDN...");
+  await sendFastlyPurgeRequest("index.json", FastlyApiKey ?? "");
+  console.log("Done.");
 }

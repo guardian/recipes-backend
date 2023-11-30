@@ -8,7 +8,13 @@ import formatISO from "date-fns/formatISO";
 import {deserializeEvent} from "@recipes-api/lib/capi";
 import {processRecord} from "./main";
 import {handleDeletedContent, handleTakedown} from "./takedown_processor";
-import {handleContentUpdate, handleContentUpdateRetrievable} from "./update_processor";
+import {handleContentUpdate} from "./update_processor";
+import {handleContentUpdateRetrievable} from "./update_retrievable_processor";
+
+jest.mock("node-fetch", ()=>({
+  __esmodule: true,
+  default: jest.fn(),
+}));
 
 jest.mock("@recipes-api/lib/capi", ()=>({
   deserializeEvent: jest.fn(),
@@ -21,7 +27,14 @@ jest.mock("./takedown_processor", ()=>({
 
 jest.mock("./update_processor", ()=>({
   handleContentUpdate: jest.fn(),
+}));
+
+jest.mock("./update_retrievable_processor", ()=>({
   handleContentUpdateRetrievable: jest.fn(),
+}));
+
+jest.mock("@recipes-api/lib/recipes-data", ()=>({
+
 }));
 
 describe("main.processRecord", ()=>{
@@ -232,7 +245,7 @@ describe("main.processRecord", ()=>{
     deserializeEvent.mockReturnValue(testEvent);
     //@ts-ignore
     const result = await processRecord(testReq);
-    expect(result).toBeNull();
+    expect(result).toEqual(0);
     //@ts-ignore
     expect(handleTakedown.mock.calls.length).toEqual(0);
     //@ts-ignore

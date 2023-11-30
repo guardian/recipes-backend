@@ -5,6 +5,10 @@ import {ElementType} from "@guardian/content-api-models/v1/elementType";
 import {extractAllRecipesFromArticle} from "./extract-recipes";
 import {makeCapiDateTime} from "./utils";
 
+jest.mock("./config", ()=>({
+
+}));
+
 describe("extractAllRecipesFromAnArticle", () => {
 
   it("should work if main and body block contains one recipe each", () => {

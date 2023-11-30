@@ -13,7 +13,7 @@
       ],
       "parserOptions": {
         "project": [
-          "tools/db-test-stuff/tsconfig.app.json"
+          "tools/manual-takedown/tsconfig.app.json"
         ]
       },
       "rules": {}
@@ -25,7 +25,7 @@
       ],
       "parserOptions": {
         "project": [
-          "tools/db-test-stuff/tsconfig.spec.json"
+          "tools/manual-takedown/tsconfig.spec.json"
         ]
       },
       "rules": {}

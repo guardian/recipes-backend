@@ -1,5 +1,9 @@
+import type { RecipeReferenceWithoutChecksum } from './models';
 import {calculateChecksum} from "./utils";
-import {RecipeReference, RecipeReferenceWithoutChecksum} from "@recipes-api/lib/recipes-data";
+
+jest.mock("./config", ()=>({
+
+}));
 
 describe("calculateChecksum", ()=>{
   it("should checksum the content into base64", ()=>{
