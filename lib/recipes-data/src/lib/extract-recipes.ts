@@ -32,18 +32,19 @@ export function extractRecipeData(canonicalId: string, block: Block): Array<Reci
  * Most recipes have a UUID-style `id` field, so we pass that through.
  * However some of the ones that were extracted by D&I have a numeric field still.
  * In that case, we concatenate the canonical ID onto the numeric value and then sha1 the lot.
- * @param contentIdField
- * @param canonicalId
+ * @param recipeIdField incoming ID of the recipe
+ * @param canonicalId canonical ID of the article
+ * @returns a useful unique ID for the recipe
  */
-function determineRecipeUID(contentIdField:string, canonicalId: string): string
+function determineRecipeUID(recipeIdField:string, canonicalId: string): string
 {
-  if(contentIdField.match(/^\d+$/)) {
+  if(recipeIdField.match(/^\d+$/)) {
     const hasher = createHash("sha1");
     //do the same as https://github.com/guardian/flexible-content/blob/6e963d9027d02a4f3af4637dbe6498934d904a4f/flexible-content-integration/src/main/scala/com/gu/flexiblecontent/integration/dispatcher/RecipesImportDispatcher.scala#L213
-    const stringToHash = `${contentIdField}-${canonicalId}`;
+    const stringToHash = `${recipeIdField}-${canonicalId}`;
     return hasher.update(stringToHash).digest("hex");
   } else {
-    return contentIdField;
+    return recipeIdField;
   }
 }
 
