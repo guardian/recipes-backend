@@ -15,8 +15,7 @@ import {
  * @param canonicalArticleId
  * @param recep
  */
-async function publishRecipe(canonicalArticleId:string, recep:RecipeReference):Promise<void>
-{
+async function publishRecipe(canonicalArticleId: string, recep: RecipeReference): Promise<void> {
   console.log(`INFO [${canonicalArticleId}] - pushing ${recep.recipeUID} @ ${recep.checksum} to S3...`);
   await publishRecipeContent(recep);
   console.log(`INFO [${canonicalArticleId}] - updating index table...`);
@@ -29,8 +28,7 @@ async function publishRecipe(canonicalArticleId:string, recep:RecipeReference):P
  * @returns a number, representing the number of recipes that were added plus the number that were deleted (i.e., an
  * update counts as 1 add and 1 delete)
  */
-export async function handleContentUpdate(content:Content):Promise<number>
-{
+export async function handleContentUpdate(content: Content): Promise<number> {
   try {
     if (content.type != ContentType.ARTICLE) return 0;  //no point processing live-blogs etc.
 
@@ -49,7 +47,7 @@ export async function handleContentUpdate(content:Content):Promise<number>
 
     console.log(`INFO [${content.id}] - Done`);
     return allRecipes.length + entriesToRemove.length;
-  } catch(err) {
+  } catch (err) {
     //log out what actually caused the breakage
     console.error("Failed article was: ", JSON.stringify(content));
     console.error(err);
