@@ -15,6 +15,7 @@ import {
  * @param canonicalArticleId
  * @param recep
  */
+
 async function publishRecipe(canonicalArticleId: string, recep: RecipeReference): Promise<void> {
   console.log(`INFO [${canonicalArticleId}] - pushing ${recep.recipeUID} @ ${recep.checksum} to S3...`);
   await publishRecipeContent(recep);

@@ -23,6 +23,7 @@ export async function extractAllRecipesFromArticle(content: Content): Promise<Re
   }
 }
 
+
 export function extractRecipeData(canonicalId: string, block: Block): Array<RecipeReferenceWithoutChecksum | null> {
   return block.elements
     .filter(elem => elem.type === ElementType.RECIPE)
@@ -60,6 +61,7 @@ function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeReference
         jsonBlob: recipeJson
       }
     }
+
   } catch (err) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions -- err.toString() is untyped but OK
     console.error(`Recipe from ${canonicalId} was not parsable: ${err.toString()}`);
