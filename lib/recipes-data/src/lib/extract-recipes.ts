@@ -15,7 +15,8 @@ export async function extractAllRecipesFromArticle(content: Content): Promise<Re
     const getAllBodyBlocksRecipesIfPresent = bodyBlocks.flatMap(bodyBlock => extractRecipeData(content.id, bodyBlock))
     const recipes = getAllMainBlockRecipesIfPresent.concat(getAllBodyBlocksRecipesIfPresent)
     const failureCount = recipes.filter(recp => !recp).length
-    await registerMetric("FailedRecipe", failureCount)
+    await registerMetric("FailedRecipes", failureCount)
+    await registerMetric("SuccessfulRecipes", recipes.length)
     return recipes.filter(recp => !!recp) as RecipeReferenceWithoutChecksum[]
   } else {
     return Array<RecipeReferenceWithoutChecksum>()
@@ -36,9 +37,8 @@ export function extractRecipeData(canonicalId: string, block: Block): Array<Reci
  * @param canonicalId canonical ID of the article
  * @returns a useful unique ID for the recipe
  */
-function determineRecipeUID(recipeIdField:string, canonicalId: string): string
-{
-  if(recipeIdField.match(/^\d+$/)) {
+function determineRecipeUID(recipeIdField: string, canonicalId: string): string {
+  if (recipeIdField.match(/^\d+$/)) {
     const hasher = createHash("sha1");
     //do the same as https://github.com/guardian/flexible-content/blob/6e963d9027d02a4f3af4637dbe6498934d904a4f/flexible-content-integration/src/main/scala/com/gu/flexiblecontent/integration/dispatcher/RecipesImportDispatcher.scala#L213
     const stringToHash = `${recipeIdField}-${canonicalId}`;
@@ -49,13 +49,21 @@ function determineRecipeUID(recipeIdField:string, canonicalId: string): string
 }
 
 function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeReferenceWithoutChecksum | null {
-  const recipeData = JSON.parse(recipeJson) as Record<string, unknown>
-  if (!recipeData.id) {
-    return null
-  } else {
-    return <RecipeReferenceWithoutChecksum>{
-      recipeUID: determineRecipeUID(recipeData.id as string, canonicalId),
-      jsonBlob: recipeJson
+  try {
+    const recipeData = JSON.parse(recipeJson) as Record<string, unknown>
+    if (!recipeData.id) {
+      console.error(`Recipe from ${canonicalId} has no ID field. Content was: ${recipeJson}`);
+      return null
+    } else {
+      return <RecipeReferenceWithoutChecksum>{
+        recipeUID: determineRecipeUID(recipeData.id as string, canonicalId),
+        jsonBlob: recipeJson
+      }
     }
+  } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions -- err.toString() is untyped but OK
+    console.error(`Recipe from ${canonicalId} was not parsable: ${err.toString()}`);
+    console.error(`Content was ${recipeJson}`);
+    return null;
   }
 }
