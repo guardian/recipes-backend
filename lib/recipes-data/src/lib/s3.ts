@@ -1,7 +1,7 @@
 import * as process from "process";
 import {DeleteObjectCommand, NoSuchKey, PutObjectCommand, S3Client, S3ServiceException} from "@aws-sdk/client-s3";
 import {StaticBucketName as Bucket, FastlyApiKey, MaximumRetries} from "./config";
-import {sendFastlyPurgeRequest, sendFastlyPurgeRequestWithRetries} from "./fastly";
+import {FastlyError, sendFastlyPurgeRequest, sendFastlyPurgeRequestWithRetries} from "./fastly";
 import type { RecipeIndex ,RecipeReference} from './models';
 import {awaitableDelay} from "./utils";
 
@@ -52,12 +52,14 @@ export async function publishRecipeContent(recipe: RecipeReference, attempt?: nu
   } catch(err) {
     if (err instanceof S3ServiceException) {
       console.warn(`Unable to write to S3 on attempt ${realAttempt}: `, err);
-      if(MaximumRetries && !isNaN(MaximumRetries) && realAttempt < MaximumRetries) {
+      if (MaximumRetries && !isNaN(MaximumRetries) && realAttempt < MaximumRetries) {
         await awaitableDelay();
-        return publishRecipeContent(recipe, realAttempt+1);
+        return publishRecipeContent(recipe, realAttempt + 1);
       } else {
         throw new Error("Could not write to S3, see logs for details.")
       }
+    } else if(err instanceof FastlyError) {
+      console.warn(`Unable to flush Fastly cache: `, err);
     } else {
       throw err;
     }

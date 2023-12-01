@@ -72,6 +72,9 @@ export async function sendFastlyPurgeRequest(contentPath:string, apiKey:string, 
     case 200:
       if(DebugLogsEnabled) console.log(`Purge of ${contentPath} successful: ${content}`);
       break;
+    case 404:
+      console.warn(`Fastly could not purge ${contentPath}, api returned Not Found.`);
+      break;
     default:
       console.error(`Unable to purge ${contentPath}, Fastly returned ${response.status}: ${content}`);
       throw new FastlyError(`Fastly returned ${response.status}`);
