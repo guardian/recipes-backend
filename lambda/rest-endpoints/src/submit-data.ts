@@ -17,5 +17,5 @@ export async function importNewData(content:string|Buffer):Promise<void>
   console.log("Uploading new curation data...");
   await s3client.send(req);
   console.log("Done. Flushing CDN cache...");
-  await sendFastlyPurgeRequestWithRetries("content.json", FastlyApiKey, "hard");
+  await sendFastlyPurgeRequestWithRetries("curation.json", FastlyApiKey, "hard");
 }
