@@ -22,12 +22,53 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "Default": "/TEST/content-api/recipes-responder/capi-key",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "externalscrierindexstreamParameter23A8B068": {
+      "Default": "/TEST/content-api/crier/index-stream",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "externalsnonurgentalarmarnParameter3CDDBCA7": {
+      "Default": "/account/content-api-common/alarms/non-urgent-alarm-topic",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "externalsurgentalarmarnParameterCE71CB92": {
+      "Default": "/account/content-api-common/alarms/urgent-alarm-topic",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
     "fastlyKey": {
       "Default": "/TEST/content-api/recipes-responder/fastly-key",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
   "Resources": {
+    "DurationRuntimeAlarmC21C10E0": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "externalsurgentalarmarnParameterCE71CB92",
+          },
+        ],
+        "AlarmDescription": "Notify when the lambda exceeds 75%",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "updaterLambdaE2EB52D9",
+            },
+          },
+        ],
+        "EvaluationPeriods": 3,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "Period": 60,
+        "Statistic": "Average",
+        "Threshold": 22500,
+        "TreatMissingData": "ignore",
+        "Unit": "Milliseconds",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
     "staticcdnRead42C381A5": {
       "Properties": {
         "Tags": [
