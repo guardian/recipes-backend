@@ -4,7 +4,7 @@ import {StaticBucketName as Bucket, FastlyApiKey} from "./config";
 
 const s3client = new S3Client({region: process.env["AWS_REGION"]});
 
-export async function importNewData(content:Buffer):Promise<void>
+export async function importNewData(content:string|Buffer):Promise<void>
 {
   const req = new PutObjectCommand({
     Bucket,

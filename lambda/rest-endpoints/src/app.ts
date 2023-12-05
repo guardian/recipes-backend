@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser';
 import {renderFile as ejs} from "ejs";
 import express from 'express';
+import {getBodyContentAsJson} from "./helpers";
 import {importNewData} from "./submit-data";
 
 export const app = express();
@@ -11,24 +12,22 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 router.post('/api/curation', (req, resp)=>{
-  const buffer = req.body as Buffer;
+  const textContent = getBodyContentAsJson(req.body);
 
   if(req.header("Content-Type") != "application/json") {
     resp.status(405).json({status: "error", detail: "wrong content type"});
     return;
   }
 
-  if(buffer.length==0) {
+  if(textContent.length==0) {
     resp.status(400).json({status: "error", detail: "no content was sent"});
     return;
   }
 
   try {
-    const textContent = buffer.toString('utf-8');
     console.log("Received payload ", textContent);
-    JSON.parse(textContent);
 
-    importNewData(buffer)
+    importNewData(textContent)
       .then(() => {
         return resp.status(200).json({status: "ok"})
       })
