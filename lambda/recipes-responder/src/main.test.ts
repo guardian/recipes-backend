@@ -3,7 +3,7 @@ import {EventType} from "@guardian/content-api-models/crier/event/v1/eventType";
 import {ItemType} from "@guardian/content-api-models/crier/event/v1/itemType";
 import type {Content} from "@guardian/content-api-models/v1/content";
 import {ContentType} from "@guardian/content-api-models/v1/contentType";
-import type {KinesisStreamEvent, KinesisStreamRecord} from "aws-lambda";
+import type {Callback, KinesisStreamBatchResponse, KinesisStreamEvent, KinesisStreamRecord} from "aws-lambda";
 import formatISO from "date-fns/formatISO";
 import {registerMetric} from "@recipes-api/cwmetrics";
 import {deserializeEvent} from "@recipes-api/lib/capi";
@@ -280,7 +280,7 @@ describe("main.handler", () => {
       ],
     };
 
-    const response = await handler(eventMock, {
+    const contextMock = {
       awsRequestId: "",
       callbackWaitsForEmptyEventLoop: false,
       functionName: "",
@@ -295,9 +295,19 @@ describe("main.handler", () => {
       }, fail(error: Error | string): void {
       }, succeed(messageOrObject: any, object?: any): void {
       }
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-    }, () => {
-    })
+    }
+
+    const callbackMock: Callback<KinesisStreamBatchResponse | void> = (error, result) => {
+      // Your mock callback logic here
+      if (error) {
+        console.error('Error:', error);
+      } else {
+        console.log('Result:', result);
+      }
+    };
+
+
+    const response = await handler(eventMock, contextMock, callbackMock)
     expect(registerMetric).toHaveBeenCalled()
     expect(registerMetric).toBeCalledTimes(1)
   })
