@@ -106,7 +106,7 @@ export class RecipesBackend extends GuStack {
     new RestEndpoints(this, "RestEndpoints", {
       servingBucket: serving.staticBucket,
       fastlyKey: fastlyKeyParam.valueAsString,
-      contentUrlBase
+      contentUrlBase,
     });
 
     const durationAlarm = new Alarm(this, "DurationRuntimeAlarm", {
