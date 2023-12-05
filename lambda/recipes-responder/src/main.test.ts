@@ -3,61 +3,64 @@ import {EventType} from "@guardian/content-api-models/crier/event/v1/eventType";
 import {ItemType} from "@guardian/content-api-models/crier/event/v1/itemType";
 import type {Content} from "@guardian/content-api-models/v1/content";
 import {ContentType} from "@guardian/content-api-models/v1/contentType";
-import type {KinesisStreamRecord} from "aws-lambda";
+import type {KinesisStreamEvent, KinesisStreamRecord} from "aws-lambda";
 import formatISO from "date-fns/formatISO";
+import {registerMetric} from "@recipes-api/cwmetrics";
 import {deserializeEvent} from "@recipes-api/lib/capi";
-import {processRecord} from "./main";
+import {handler, processRecord} from "./main";
 import {handleDeletedContent, handleTakedown} from "./takedown_processor";
 import {handleContentUpdate} from "./update_processor";
 import {handleContentUpdateRetrievable} from "./update_retrievable_processor";
 
-jest.mock("node-fetch", ()=>({
+jest.mock("node-fetch", () => ({
   __esmodule: true,
   default: jest.fn(),
 }));
 
-jest.mock("@recipes-api/lib/capi", ()=>({
+jest.mock("@recipes-api/lib/capi", () => ({
   deserializeEvent: jest.fn(),
 }));
 
-jest.mock("./takedown_processor", ()=>({
+jest.mock("./takedown_processor", () => ({
   handleTakedown: jest.fn(),
   handleDeletedContent: jest.fn(),
 }));
 
-jest.mock("./update_processor", ()=>({
+jest.mock("./update_processor", () => ({
   handleContentUpdate: jest.fn(),
 }));
 
-jest.mock("./update_retrievable_processor", ()=>({
+jest.mock("./update_retrievable_processor", () => ({
   handleContentUpdateRetrievable: jest.fn(),
 }));
 
-jest.mock("@recipes-api/lib/recipes-data", ()=>({
+jest.mock("@recipes-api/lib/recipes-data", () => ({}));
 
+jest.mock("@recipes-api/cwmetrics", () => ({
+  registerMetric: jest.fn(),
 }));
 
-describe("main.processRecord", ()=>{
-  beforeEach(()=>{
+describe("main.processRecord", () => {
+  beforeEach(() => {
     jest.resetAllMocks();
   });
 
   //@ts-ignore
-  const testReq:KinesisStreamRecord = {
+  const testReq: KinesisStreamRecord = {
     //@ts-ignore
     kinesis: {
       data: "base64-would-be-here"
     }
   }
 
-  const testContent:Content = {
+  const testContent: Content = {
     apiUrl: "", id: "", isHosted: false, references: [], tags: [], type: ContentType.ARTICLE, webTitle: "", webUrl: ""
   }
 
-  it("should pass a DELETE event to handleTakedown", async ()=>{
+  it("should pass a DELETE event to handleTakedown", async () => {
     const nowtime = new Date();
 
-    const testEvent:Event = {
+    const testEvent: Event = {
       //@ts-ignore
       dateTime: nowtime.valueOf(),
       eventType: EventType.DELETE,
@@ -85,10 +88,10 @@ describe("main.processRecord", ()=>{
     expect(handleDeletedContent.mock.calls.length).toEqual(0);
   });
 
-  it("should pass an UPDATE event to handleUpdate", async ()=>{
+  it("should pass an UPDATE event to handleUpdate", async () => {
     const nowtime = new Date();
 
-    const testEvent:Event = {
+    const testEvent: Event = {
       //@ts-ignore
       dateTime: nowtime.valueOf(),
       eventType: EventType.UPDATE,
@@ -116,10 +119,10 @@ describe("main.processRecord", ()=>{
     expect(handleDeletedContent.mock.calls.length).toEqual(0);
   });
 
-  it("should pass an RETRIEVABLE_UPDATE event to handleRetrievableUpdate", async ()=>{
+  it("should pass an RETRIEVABLE_UPDATE event to handleRetrievableUpdate", async () => {
     const nowtime = new Date();
 
-    const testEvent:Event = {
+    const testEvent: Event = {
       //@ts-ignore
       dateTime: nowtime.valueOf(),
       eventType: EventType.RETRIEVABLEUPDATE,
@@ -150,10 +153,10 @@ describe("main.processRecord", ()=>{
     expect(handleDeletedContent.mock.calls.length).toEqual(0);
   });
 
-  it("should pass an UPDATE event with DeletedContent payload to handleDeletedContent", async ()=>{
+  it("should pass an UPDATE event with DeletedContent payload to handleDeletedContent", async () => {
     const nowtime = new Date();
 
-    const testEvent:Event = {
+    const testEvent: Event = {
       //@ts-ignore
       dateTime: nowtime.valueOf(),
       eventType: EventType.RETRIEVABLEUPDATE,
@@ -161,11 +164,12 @@ describe("main.processRecord", ()=>{
       payloadId: "xxxxxxxxxx",
       payload: {
         deletedContent: {
-          aliasPaths: [{path: "/some/path", ceasedToBeCanonicalAt: {
-            //@ts-ignore
-            dateTime: nowtime.valueOf(),
+          aliasPaths: [{
+            path: "/some/path", ceasedToBeCanonicalAt: {
+              //@ts-ignore
+              dateTime: nowtime.valueOf(),
               iso8601: formatISO(nowtime)
-          }
+            }
           }]
         },
         kind: "deletedContent"
@@ -186,7 +190,8 @@ describe("main.processRecord", ()=>{
     expect(handleDeletedContent.mock.calls.length).toEqual(1);
     //@ts-ignore
     expect(handleDeletedContent.mock.calls[0][0]).toEqual({
-      aliasPaths: [{path: "/some/path", ceasedToBeCanonicalAt: {
+      aliasPaths: [{
+        path: "/some/path", ceasedToBeCanonicalAt: {
           //@ts-ignore
           dateTime: nowtime.valueOf(),
           iso8601: formatISO(nowtime)
@@ -195,10 +200,10 @@ describe("main.processRecord", ()=>{
     });
   });
 
-  it("should pass a DELETE event to handleTakedown", async ()=>{
+  it("should pass a DELETE event to handleTakedown", async () => {
     const nowtime = new Date();
 
-    const testEvent:Event = {
+    const testEvent: Event = {
       //@ts-ignore
       dateTime: nowtime.valueOf(),
       eventType: EventType.DELETE,
@@ -226,10 +231,10 @@ describe("main.processRecord", ()=>{
     expect(handleDeletedContent.mock.calls.length).toEqual(0);
   });
 
-  it("should ignore an UPDATE event for an atom", async ()=>{
+  it("should ignore an UPDATE event for an atom", async () => {
     const nowtime = new Date();
 
-    const testEvent:Event = {
+    const testEvent: Event = {
       //@ts-ignore
       dateTime: nowtime.valueOf(),
       eventType: EventType.UPDATE,
@@ -256,3 +261,44 @@ describe("main.processRecord", ()=>{
     expect(handleDeletedContent.mock.calls.length).toEqual(0);
   });
 });
+
+
+describe("main.handler", () => {
+
+  it("should call registerMetric", async () => {
+    //@ts-ignore
+    const testReq: KinesisStreamRecord = {
+      //@ts-ignore
+      kinesis: {
+        data: "base64-would-be-here"
+      }
+    }
+
+    const eventMock: KinesisStreamEvent = {
+      Records: [
+        testReq
+      ],
+    };
+
+    const response = await handler(eventMock, {
+      awsRequestId: "",
+      callbackWaitsForEmptyEventLoop: false,
+      functionName: "",
+      functionVersion: "",
+      invokedFunctionArn: "",
+      logGroupName: "",
+      logStreamName: "",
+      memoryLimitInMB: "",
+      getRemainingTimeInMillis(): number {
+        return 0;
+      }, done(error?: Error, result?: any): void {
+      }, fail(error: Error | string): void {
+      }, succeed(messageOrObject: any, object?: any): void {
+      }
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+    }, () => {
+    })
+    expect(registerMetric).toHaveBeenCalled()
+    expect(registerMetric).toBeCalledTimes(1)
+  })
+})
