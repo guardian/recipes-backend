@@ -24,7 +24,10 @@ router.post('/api/curation', (req, resp)=>{
   }
 
   try {
-    JSON.parse(buffer.toString('utf-8'));
+    const textContent = buffer.toString('utf-8');
+    console.log("Received payload ", textContent);
+    JSON.parse(textContent);
+
     importNewData(buffer)
       .then(() => {
         return resp.status(200).json({status: "ok"})
