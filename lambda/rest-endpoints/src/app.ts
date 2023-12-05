@@ -12,20 +12,17 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 router.post('/api/curation', (req, resp)=>{
-  const textContent = getBodyContentAsJson(req.body);
-
   if(req.header("Content-Type") != "application/json") {
     resp.status(405).json({status: "error", detail: "wrong content type"});
     return;
   }
 
-  if(textContent.length==0) {
-    resp.status(400).json({status: "error", detail: "no content was sent"});
-    return;
-  }
-
   try {
-    console.log("Received payload ", textContent);
+    const textContent = getBodyContentAsJson(req.body);
+    if(textContent.length==0) {
+      resp.status(400).json({status: "error", detail: "no content was sent"});
+      return;
+    }
 
     importNewData(textContent)
       .then(() => {
