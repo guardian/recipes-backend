@@ -60,5 +60,6 @@ export const handler: KinesisStreamHandler = async (event) => {
     console.log("Finished rebuilding index");
   } else {
     console.log("No updates to recipes, so not touching index");
+    await registerMetric("UpdatesTotalOfRecipes", 0)
   }
 }
