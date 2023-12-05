@@ -66,6 +66,7 @@ export class RecipesBackend extends GuStack {
     })
 
     const contentUrlBase = this.stage==="CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com";
+    
     const updaterLambda = new GuKinesisLambdaExperimental(this, "updaterLambda", {
       monitoringConfiguration: {noMonitoring: true},
       existingKinesisStream: {
@@ -108,7 +109,7 @@ export class RecipesBackend extends GuStack {
       fastlyKey: fastlyKeyParam.valueAsString,
       contentUrlBase,
     });
-
+    
     const durationAlarm = new Alarm(this, "DurationRuntimeAlarm", {
       alarmDescription: "Notify when the lambda exceeds 75%",
       actionsEnabled: true,
