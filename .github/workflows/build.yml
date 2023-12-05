@@ -48,3 +48,5 @@ jobs:
               - dist/lambda/test-indexbuild-lambda.zip
             recipes-responder:
               - dist/lambda/recipes-responder.zip
+            recipes-backend-rest-endpoints:
+              - dist/lambda/rest-endpoints.zip
