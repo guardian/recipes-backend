@@ -64,6 +64,8 @@ export class RecipesBackend extends GuStack {
       default: `/${this.stage}/${this.stack}/recipes-responder/fastly-key`
     })
 
+    const contentUrlBase = this.stage==="CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com";
+
     const contentUrlBase = this.stage === "CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com";
 
     const updaterLambda = new GuKinesisLambdaExperimental(this, "updaterLambda", {
