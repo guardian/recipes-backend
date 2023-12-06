@@ -25,9 +25,15 @@ export async function extractAllRecipesFromArticle(content: Content): Promise<Re
 
 
 export function extractRecipeData(canonicalId: string, block: Block): Array<RecipeReferenceWithoutChecksum | null> {
-  return block.elements
-    .filter(elem => elem.type === ElementType.RECIPE)
-    .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson as string))
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- to fix error when elements are undefined , example if main block does not have any elements.
+  if (block.elements) {
+    return block.elements
+      .filter(elem => elem.type === ElementType.RECIPE)
+      .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson as string))
+  } else {
+    console.log(`Recipe from ${canonicalId} has no elements in this block hence moving on without parsing!`);
+    return []
+  }
 }
 
 /**
@@ -38,9 +44,8 @@ export function extractRecipeData(canonicalId: string, block: Block): Array<Reci
  * @param canonicalId canonical ID of the article
  * @returns a useful unique ID for the recipe
  */
-function determineRecipeUID(recipeIdField:string, canonicalId: string): string
-{
-  if(recipeIdField.match(/^\d+$/)) {
+function determineRecipeUID(recipeIdField: string, canonicalId: string): string {
+  if (recipeIdField.match(/^\d+$/)) {
     const hasher = createHash("sha1");
     //do the same as https://github.com/guardian/flexible-content/blob/6e963d9027d02a4f3af4637dbe6498934d904a4f/flexible-content-integration/src/main/scala/com/gu/flexiblecontent/integration/dispatcher/RecipesImportDispatcher.scala#L213
     const stringToHash = `${recipeIdField}-${canonicalId}`;
