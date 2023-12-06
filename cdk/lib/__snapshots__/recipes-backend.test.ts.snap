@@ -51,10 +51,6 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "Default": "/TEST/content-api/recipes-responder/capi-key",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "externalscrierindexstreamParameter23A8B068": {
-      "Default": "/TEST/content-api/crier/index-stream",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
     "externalsnonurgentalarmarnParameter3CDDBCA7": {
       "Default": "/account/content-api-common/alarms/non-urgent-alarm-topic",
       "Type": "AWS::SSM::Parameter::Value<String>",
@@ -77,7 +73,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
             "Ref": "externalsurgentalarmarnParameterCE71CB92",
           },
         ],
-        "AlarmDescription": "Notify when the lambda exceeds 75%",
+        "AlarmDescription": "Recipe backend ingest lambda at 75% of allowed duration",
         "ComparisonOperator": "GreaterThanThreshold",
         "Dimensions": [
           {
@@ -90,8 +86,8 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
         "EvaluationPeriods": 3,
         "MetricName": "Duration",
         "Namespace": "AWS/Lambda",
-        "Period": 60,
-        "Statistic": "Average",
+        "Period": 180,
+        "Statistic": "Maximum",
         "Threshold": 22500,
         "TreatMissingData": "ignore",
         "Unit": "Milliseconds",
@@ -1056,7 +1052,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
             "Value": "TEST",
           },
         ],
-        "Timeout": 60,
+        "Timeout": 30,
       },
       "Type": "AWS::Lambda::Function",
     },
