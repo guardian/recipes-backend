@@ -26,7 +26,7 @@ export async function extractAllRecipesFromArticle(content: Content): Promise<Re
 
 export function extractRecipeData(canonicalId: string, block: Block): Array<RecipeReferenceWithoutChecksum | null> {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- to fix error when elements are undefined , example if main block does not have any elements.
-  if (block.elements) {
+  if (block.elements != undefined) {
     return block.elements
       .filter(elem => elem.type === ElementType.RECIPE)
       .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson as string))
