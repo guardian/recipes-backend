@@ -3,15 +3,12 @@ import {GuParameter, GuStack} from "@guardian/cdk/lib/constructs/core";
 import {GuLambdaFunction} from "@guardian/cdk/lib/constructs/lambda";
 import {GuKinesisLambdaExperimental} from "@guardian/cdk/lib/experimental/patterns";
 import {StreamRetry} from "@guardian/cdk/lib/utils/lambda";
-import {type App, aws_sns, Duration} from "aws-cdk-lib";
-import {Alarm, ComparisonOperator, TreatMissingData, Unit} from "aws-cdk-lib/aws-cloudwatch";
-import {SnsAction} from "aws-cdk-lib/aws-cloudwatch-actions";
+import {type App, Duration} from "aws-cdk-lib";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
 import {DataStore} from "./datastore";
-import {ExternalParameters} from "./external_parameters";
-import {StaticServing} from "./static-serving";
 import {RestEndpoints} from "./rest-endpoints";
+import {StaticServing} from "./static-serving";
 
 export class RecipesBackend extends GuStack {
   constructor(scope: App, id: string, props: GuStackProps) {
@@ -67,7 +64,7 @@ export class RecipesBackend extends GuStack {
       default: `/${this.stage}/${this.stack}/recipes-responder/fastly-key`
     })
 
-    const contentUrlBase = this.stage==="CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com";
+    const contentUrlBase = this.stage === "CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com";
 
     const updaterLambda = new GuKinesisLambdaExperimental(this, "updaterLambda", {
       monitoringConfiguration: {noMonitoring: true},
@@ -97,7 +94,12 @@ export class RecipesBackend extends GuStack {
           effect: Effect.ALLOW,
           actions: ["dynamodb:Scan", "dynamodb:Query", "dynamodb:BatchWriteItem", "dynamodb:DeleteItem", "dynamodb:PutItem"],
           resources: [store.table.tableArn, store.table.tableArn + "/index/*"]
-        })
+        }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          resources: ["*"],
+          actions: ["cloudwatch:PutMetricData"]
+        }),
       ],
       runtime: Runtime.NODEJS_18_X,
       app: "recipes-responder",
