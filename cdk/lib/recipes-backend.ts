@@ -3,10 +3,13 @@ import {GuParameter, GuStack} from "@guardian/cdk/lib/constructs/core";
 import {GuLambdaFunction} from "@guardian/cdk/lib/constructs/lambda";
 import {GuKinesisLambdaExperimental} from "@guardian/cdk/lib/experimental/patterns";
 import {StreamRetry} from "@guardian/cdk/lib/utils/lambda";
-import {type App, Duration} from "aws-cdk-lib";
+import {type App, aws_sns, Duration} from "aws-cdk-lib";
+import {Alarm, ComparisonOperator, TreatMissingData, Unit} from "aws-cdk-lib/aws-cloudwatch";
+import {SnsAction} from "aws-cdk-lib/aws-cloudwatch-actions";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
 import {DataStore} from "./datastore";
+import {ExternalParameters} from "./external_parameters";
 import {RestEndpoints} from "./rest-endpoints";
 import {StaticServing} from "./static-serving";
 
