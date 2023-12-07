@@ -24,6 +24,10 @@ const updateByline:FieldsUpdaterFunction = (article, recipe)=> {
   }
 }
 
+/**
+ * Internal function to extract out the profile links from the byline html
+ * @param bylineHtml
+ */
 function grokBylineHtml(bylineHtml:string):string[]
 {
   const searcher = /href="([\w/-]+)"/g;
