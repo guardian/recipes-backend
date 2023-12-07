@@ -6,6 +6,7 @@ import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
 import {registerMetric} from "@recipes-api/cwmetrics";
 import type {RecipeReferenceWithoutChecksum} from './models';
+import {updateRecipeFields} from "./recipe_fields_updater";
 
 export async function extractAllRecipesFromArticle(content: Content): Promise<RecipeReferenceWithoutChecksum[]> {
   if (content.type == ContentType.ARTICLE && content.blocks) {
@@ -17,7 +18,9 @@ export async function extractAllRecipesFromArticle(content: Content): Promise<Re
     const failureCount = recipes.filter(recp => !recp).length
     await registerMetric("FailedRecipes", failureCount)
     await registerMetric("SuccessfulRecipes", recipes.length)
-    return recipes.filter(recp => !!recp) as RecipeReferenceWithoutChecksum[]
+
+    const validRecipes = recipes.filter(recp => !!recp) as RecipeReferenceWithoutChecksum[]
+    return validRecipes.map(recep=>updateRecipeFields(content, recep));
   } else {
     return Array<RecipeReferenceWithoutChecksum>()
   }
@@ -62,7 +65,7 @@ function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeReference
     } else {
       return <RecipeReferenceWithoutChecksum>{
         recipeUID: determineRecipeUID(recipeData.id as string, canonicalId),
-        jsonBlob: recipeJson
+        jsonData: recipeData,
       }
     }
 

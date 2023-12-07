@@ -48,14 +48,15 @@ interface RecipeIndex {
  */
 interface RecipeReferenceWithoutChecksum {
   recipeUID: string;
-  jsonBlob: string;
+  jsonData: Record<string, unknown>;
 }
 
 /**
  * RecipeReference has all three main constituents for a recipe - the immutable ID, the version ID and the json content
  */
-interface RecipeReference extends RecipeReferenceWithoutChecksum{
+interface RecipeReference extends Omit<RecipeReferenceWithoutChecksum, "jsonData">{
   checksum: string;
+  jsonBlob: string;
 }
 
 /**
