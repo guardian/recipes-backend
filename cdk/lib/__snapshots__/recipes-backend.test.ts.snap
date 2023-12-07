@@ -51,10 +51,6 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "Default": "/TEST/content-api/recipes-responder/capi-key",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "fastlyKey": {
-      "Default": "/TEST/content-api/recipes-responder/fastly-key",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
     "externalsnonurgentalarmarnParameter3CDDBCA7": {
       "Default": "/account/content-api-common/alarms/non-urgent-alarm-topic",
       "Type": "AWS::SSM::Parameter::Value<String>",
@@ -1469,11 +1465,6 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
                   ],
                 },
               ],
-            },
-            {
-              "Action": "cloudwatch:PutMetricData",
-              "Effect": "Allow",
-              "Resource": "*",
             },
             {
               "Action": [
