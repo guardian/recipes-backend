@@ -4,7 +4,6 @@ import type {KinesisStreamHandler, KinesisStreamRecord} from "aws-lambda";
 import {registerMetric} from "@recipes-api/cwmetrics";
 import {deserializeEvent} from "@recipes-api/lib/capi";
 import {retrieveIndexData, writeIndexData} from "@recipes-api/lib/recipes-data";
-import {sendFastlyPurgeRequest} from "../../../lib/recipes-data/src/lib/fastly";
 import {handleDeletedContent, handleTakedown} from "./takedown_processor";
 import {handleContentUpdate} from "./update_processor";
 import {handleContentUpdateRetrievable} from "./update_retrievable_processor";
@@ -54,12 +53,12 @@ export const handler: KinesisStreamHandler = async (event) => {
   const updatesTotal = updatesPerEvent.reduce((acc, current) => acc + current, 0);
   if (updatesTotal > 0) {
     console.log(`Processed updates for ${updatesTotal} recipes, rebuilding the index json`);
-    await registerMetric("UpdatesTotalOfRecipes", updatesTotal)
+    await registerMetric("UpdatesTotalOfArticle", updatesTotal)
     const indexData = await retrieveIndexData();
     await writeIndexData(indexData);
     console.log("Finished rebuilding index");
   } else {
     console.log("No updates to recipes, so not touching index");
-    await registerMetric("UpdatesTotalOfRecipes", 0)
+    await registerMetric("UpdatesTotalOfArticle", 0)
   }
 }
