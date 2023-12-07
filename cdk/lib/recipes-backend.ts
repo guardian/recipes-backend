@@ -131,8 +131,8 @@ export class RecipesBackend extends GuStack {
 
     const externalParameters = new ExternalParameters(this, "externals");
     const urgentAlarmTopic = aws_sns.Topic.fromTopicArn(this, "urgent-alarm", externalParameters.urgentAlarmTopicArn.stringValue);
-    //const nonUrgentAlarmTopic = aws_sns.Topic.fromTopicArn(this, "nonurgent-alarm", externalParameters.nonUrgentAlarmTopicArn.stringValue);
-    durationAlarm.addAlarmAction(new SnsAction(urgentAlarmTopic))
+    const nonUrgentAlarmTopic = aws_sns.Topic.fromTopicArn(this, "nonurgent-alarm", externalParameters.nonUrgentAlarmTopicArn.stringValue);
+    durationAlarm.addAlarmAction(new SnsAction(nonUrgentAlarmTopic))
   }
 
 }
