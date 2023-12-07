@@ -56,7 +56,8 @@ describe("update_processor.handleContentUpdate", ()=>{
     ];
 
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    extractAllRecipesFromArticle.mockReturnValue(refsInArticle);
+    extractAllRecipesFromArticle.mockReturnValue(Promise.resolve(refsInArticle));
+
     // @ts-ignore -- Typescript doesn't know that this is a mock
     recipesToTakeDown.mockReturnValue(refsToRemove);
 
@@ -159,7 +160,7 @@ describe("update_processor.handleContentUpdate", ()=>{
     const refsToRemove:RecipeIndexEntry[] = [];
 
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    extractAllRecipesFromArticle.mockReturnValue(refsInArticle);
+    extractAllRecipesFromArticle.mockReturnValue(Promise.resolve(refsInArticle));
     // @ts-ignore -- Typescript doesn't know that this is a mock
     recipesToTakeDown.mockReturnValue(refsToRemove);
 

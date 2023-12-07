@@ -2,15 +2,14 @@ import * as process from "process";
 import {DeleteObjectCommand, NoSuchKey, PutObjectCommand, S3Client, S3ServiceException} from "@aws-sdk/client-s3";
 import {StaticBucketName as Bucket, FastlyApiKey, MaximumRetries} from "./config";
 import {FastlyError, sendFastlyPurgeRequest, sendFastlyPurgeRequestWithRetries} from "./fastly";
-import type { RecipeIndex ,RecipeReference} from './models';
+import type {RecipeIndex, RecipeReference} from './models';
 import {awaitableDelay} from "./utils";
 
 const s3Client = new S3Client({region: process.env["AWS_REGION"]});
 
 const DefaultCacheControlParams = makeCacheControl();
 
-function makeCacheControl(maxAge?: number, staleRevalidate?: number, staleError?: number):string
-{
+function makeCacheControl(maxAge?: number, staleRevalidate?: number, staleError?: number): string {
   return [
     `max-age=${maxAge ?? 31557600}`,
     `stale-while-revalidate=${staleRevalidate ?? 60}`,
@@ -27,10 +26,9 @@ function makeCacheControl(maxAge?: number, staleRevalidate?: number, staleError?
  * @param attempt used internally to track retries
  * @return a promise which resolves to void on success or errors on failure
  */
-export async function publishRecipeContent(recipe: RecipeReference, attempt?: number):Promise<void>
-{
+export async function publishRecipeContent(recipe: RecipeReference, attempt?: number): Promise<void> {
   const realAttempt = attempt ?? 1;
-  if(!recipe.checksum) {
+  if (!recipe.checksum) {
     throw new Error("publishRecipeContent: Cannot output recipe data without a checksum");
   }
 
@@ -49,7 +47,7 @@ export async function publishRecipeContent(recipe: RecipeReference, attempt?: nu
     await s3Client.send(req);
     //TODO - check if "hard" or "soft" purging is the right option here
     await sendFastlyPurgeRequestWithRetries(Key, FastlyApiKey ?? "", "hard");
-  } catch(err) {
+  } catch (err) {
     if (err instanceof S3ServiceException) {
       console.warn(`Unable to write to S3 on attempt ${realAttempt}: `, err);
       if (MaximumRetries && !isNaN(MaximumRetries) && realAttempt < MaximumRetries) {
@@ -58,7 +56,7 @@ export async function publishRecipeContent(recipe: RecipeReference, attempt?: nu
       } else {
         throw new Error("Could not write to S3, see logs for details.")
       }
-    } else if(err instanceof FastlyError) {
+    } else if (err instanceof FastlyError) {
       console.warn(`Unable to flush Fastly cache: `, err);
     } else {
       throw err;
@@ -66,8 +64,7 @@ export async function publishRecipeContent(recipe: RecipeReference, attempt?: nu
   }
 }
 
-export async function removeRecipeContent(recipeSHA: string, purgeType?:"soft"|"hard", attempt?: number): Promise<void>
-{
+export async function removeRecipeContent(recipeSHA: string, purgeType?: "soft" | "hard", attempt?: number): Promise<void> {
   const realAttempt = attempt ?? 1;
 
   const Key = `content/${recipeSHA}`;
@@ -81,15 +78,15 @@ export async function removeRecipeContent(recipeSHA: string, purgeType?:"soft"|"
   try {
     await s3Client.send(req);
     await sendFastlyPurgeRequestWithRetries(Key, FastlyApiKey ?? "", purgeType ?? "hard");
-  } catch(err) {
-    if(err instanceof NoSuchKey) {
+  } catch (err) {
+    if (err instanceof NoSuchKey) {
       console.log(`removeRecipeContent: No recipe existed at version ${recipeSHA} so I could not remove it.`);
       return;
-    } else if(err instanceof S3ServiceException) {
+    } else if (err instanceof S3ServiceException) {
       console.warn(`Unable to delete from S3 on attempt ${realAttempt}: `, err);
-      if(MaximumRetries && !isNaN(MaximumRetries) && realAttempt < MaximumRetries) {
+      if (MaximumRetries && !isNaN(MaximumRetries) && realAttempt < MaximumRetries) {
         await awaitableDelay();
-        return removeRecipeContent(recipeSHA, purgeType, realAttempt+1);
+        return removeRecipeContent(recipeSHA, purgeType, realAttempt + 1);
       } else {
         throw new Error("Could not delete from S3, see logs for details.")
       }
@@ -103,8 +100,7 @@ export async function removeRecipeContent(recipeSHA: string, purgeType?:"soft"|"
  * Writes the built index data out to S3
  * @param indexData built indexdata object. Get this from `retrieveIndexData`
  */
-export async function writeIndexData(indexData:RecipeIndex)
-{
+export async function writeIndexData(indexData: RecipeIndex) {
   console.log("Marshalling data...");
   const formattedData = JSON.stringify(indexData);
 

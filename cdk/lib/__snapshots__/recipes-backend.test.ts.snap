@@ -1430,6 +1430,11 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
               ],
             },
             {
+              "Action": "cloudwatch:PutMetricData",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
