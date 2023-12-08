@@ -2,6 +2,18 @@ import type { AttributeValue } from "@aws-sdk/client-dynamodb";
 import {formatISO, parseISO} from "date-fns";
 
 /**
+ * This is a proposed schema update that should come into effect in Jan '24 for a more structured
+ * representation in the `contributors` array
+ */
+export type ContributorChef = {
+  type: "text";
+  text: string;
+} | {
+  type: "tag";
+  tagId: string;
+}
+
+/**
  * RecipeDatabaseKey contains the fields necessary to uniquely identify a recipe in the index
  */
 interface RecipeDatabaseKey {
