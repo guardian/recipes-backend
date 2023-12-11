@@ -9,11 +9,11 @@ describe("calculateChecksum", ()=>{
   it("should checksum the content into base64", ()=>{
     const input:RecipeReferenceWithoutChecksum = {
       recipeUID: "blahblah",
-      jsonBlob: "foodisgoodwatchitburn"
+      jsonData: {msg: "foodisgoodwatchitburn"}
     };
     const result = calculateChecksum(input);
     expect(result.recipeUID).toEqual(input.recipeUID);
-    expect(result.jsonBlob).toEqual(input.jsonBlob);
-    expect(result.checksum).toEqual("6rIHocBjte3q9jPnLtzQhtFsDabFUKQGVk3VMuorRB8")
+    expect(result.jsonBlob).toEqual('{"msg":"foodisgoodwatchitburn"}');
+    expect(result.checksum).toEqual("6ev4GHjOZEoa3L-iznZI64gFJozVpwBYjmFsAVEE4UY")
   })
 });

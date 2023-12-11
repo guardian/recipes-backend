@@ -45,9 +45,9 @@ describe("update_processor.handleContentUpdate", ()=>{
 
   it("should extract recipes from the content, publish those and take-down any that were no longer needed", async ()=>{
     const refsInArticle:RecipeReferenceWithoutChecksum[] = [
-      { recipeUID: "uid-recep-1", jsonBlob: ""},
-      { recipeUID: "uid-recep-2", jsonBlob: ""},
-      { recipeUID: "uid-recep-3", jsonBlob: ""},
+      { recipeUID: "uid-recep-1", jsonData: {}},
+      { recipeUID: "uid-recep-2", jsonData: {}},
+      { recipeUID: "uid-recep-3", jsonData: {}},
     ];
 
     const refsToRemove:RecipeIndexEntry[] = [
@@ -114,9 +114,9 @@ describe("update_processor.handleContentUpdate", ()=>{
 
   it("should ignore a piece of content that is not an article", async ()=>{
     const refsInArticle:RecipeReferenceWithoutChecksum[] = [
-      { recipeUID: "uid-recep-1", jsonBlob: ""},
-      { recipeUID: "uid-recep-2", jsonBlob: ""},
-      { recipeUID: "uid-recep-3", jsonBlob: ""},
+      { recipeUID: "uid-recep-1", jsonData: {}},
+      { recipeUID: "uid-recep-2", jsonData: {}},
+      { recipeUID: "uid-recep-3", jsonData: {}},
     ];
 
     const refsToRemove:RecipeIndexEntry[] = [

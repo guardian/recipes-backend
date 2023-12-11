@@ -92,7 +92,8 @@ describe("extractRecipeData", () => {
     const result = extractRecipeData(canonicalId, block)
     expect(result.length).toEqual(1)
     expect(result[0]?.recipeUID).toEqual("62ac3f0f98f6495cbefd72c11fac6d1e26390e99")
-    expect(result[0]?.jsonBlob).toEqual(block.elements[1].recipeTypeData?.recipeJson)
+    const expectedData = block.elements[1].recipeTypeData?.recipeJson ? JSON.parse(block.elements[1].recipeTypeData.recipeJson) as Record<string, unknown> : {};
+    expect(result[0]?.jsonData).toEqual(expectedData)
   })
 
   it("should work when block containing multiple recipe elements", () => {
@@ -195,8 +196,9 @@ describe("extractRecipeData", () => {
     }
     const result = extractRecipeData(canonicalId, block)
     expect(result.length).toEqual(3)
-    expect(result[2]?.recipeUID).toEqual("ffe7319af2c4a1b209e0c4a44f8acf7d7c3d88c4")
-    expect(result[2]?.jsonBlob).toEqual(block.elements[3].recipeTypeData?.recipeJson)
+    expect(result[2]?.recipeUID).toEqual("ffe7319af2c4a1b209e0c4a44f8acf7d7c3d88c4");
+    const expectedData = block.elements[3].recipeTypeData?.recipeJson ? JSON.parse(block.elements[3].recipeTypeData.recipeJson) as Record<string, unknown> : {};
+    expect(result[2]?.jsonData).toEqual(expectedData);
   })
 
   it("should work when block containing no recipe elements ", () => {
