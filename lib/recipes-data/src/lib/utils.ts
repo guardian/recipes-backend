@@ -19,7 +19,11 @@ export function calculateChecksum(src: RecipeReferenceWithoutChecksum): RecipeRe
   hasher.update(jsonBlob);
   const checksum = hasher.digest("base64url");  //base64 encoding should be more byte-efficient
 
-  return {...src, checksum, jsonBlob};
+  return {
+    recipeUID: src.recipeUID,
+    checksum,
+    jsonBlob
+  };
 }
 
 export function makeCapiDateTime(from: string): CapiDateTime {
