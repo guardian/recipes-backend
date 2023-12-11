@@ -15,10 +15,11 @@ export async function awaitableDelay(): Promise<void> {
 
 export function calculateChecksum(src: RecipeReferenceWithoutChecksum): RecipeReference {
   const hasher = createHash('sha256');
-  hasher.update(src.jsonBlob);
+  const jsonBlob = JSON.stringify(src.jsonData);
+  hasher.update(jsonBlob);
   const checksum = hasher.digest("base64url");  //base64 encoding should be more byte-efficient
 
-  return {...src, checksum,};
+  return {...src, checksum, jsonBlob};
 }
 
 export function makeCapiDateTime(from: string): CapiDateTime {

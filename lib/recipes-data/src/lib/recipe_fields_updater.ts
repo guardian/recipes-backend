@@ -6,10 +6,26 @@ type FieldsUpdaterFunction = (article:Content, recipe:ParsedRecipe) => ParsedRec
 const isEmptyRegex = /^\s*$/;  //"empty" can mean zero-length or consisting entirely of whitespace
 
 /**
+ * Eager-returning implementation of a function that will return false on the first non-empty string it finds in a lost
+ * and true only if there are no non-empty strings
+ * @param list string list to check
+ */
+function isNonEmpty(list:string[]):boolean {
+  for(let i=0; i<list.length; i++) {
+    if(! list[i].match(isEmptyRegex)) return false;
+  }
+  return true;
+}
+
+/**
  * Internal function that is called from updateRecipeFields; only exported for tests. Don't use directly.
  */
-const updateByline:FieldsUpdaterFunction = (article, recipe)=> {
+export const updateByline:FieldsUpdaterFunction = (article, recipe)=> {
   const existingByline = recipe["byline"] as (string[]|string|undefined);
+  const existingContributors = recipe["contributors"] as (string[]|undefined);  //TODO - the type of this will be changing, but this is accurate right now
+
+  //The app always prefers contributors list to byline. Therefore, if we have contributors don't fill the byline.
+  if(!!existingContributors && !isNonEmpty(existingContributors)) return recipe;
 
   if(!existingByline    //is it null?
     || (Array.isArray(existingByline) && existingByline.filter(str=>!str.match(isEmptyRegex)).length==0)  //or an array consisting of zero or only empty strings?
@@ -68,8 +84,8 @@ export const updateContributors:FieldsUpdaterFunction = (article, recipe) => {
  */
 export function updateRecipeFields(article:Content, recipe: RecipeReferenceWithoutChecksum):RecipeReferenceWithoutChecksum {
   const updaterChain:FieldsUpdaterFunction[] = [
+    updateContributors,
     updateByline,
-    updateContributors
   ];
 
   const updated = updaterChain.reduce((currentRecipe, updater)=>updater(article, currentRecipe), recipe.jsonData);
