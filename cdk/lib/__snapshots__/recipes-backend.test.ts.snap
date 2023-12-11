@@ -51,12 +51,49 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "Default": "/TEST/content-api/recipes-responder/capi-key",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "externalsnonurgentalarmarnParameter3CDDBCA7": {
+      "Default": "/account/content-api-common/alarms/non-urgent-alarm-topic",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "externalsurgentalarmarnParameterCE71CB92": {
+      "Default": "/account/content-api-common/alarms/urgent-alarm-topic",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
     "fastlyKey": {
       "Default": "/TEST/content-api/recipes-responder/fastly-key",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
   "Resources": {
+    "DurationRuntimeAlarmC21C10E0": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "externalsnonurgentalarmarnParameter3CDDBCA7",
+          },
+        ],
+        "AlarmDescription": "Recipe backend ingest lambda at 75% of allowed duration",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "updaterLambdaE2EB52D9",
+            },
+          },
+        ],
+        "EvaluationPeriods": 3,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "Period": 180,
+        "Statistic": "Maximum",
+        "Threshold": 22500,
+        "TreatMissingData": "ignore",
+        "Unit": "Milliseconds",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
     "LambdaD247545B": {
       "DependsOn": [
         "LambdaServiceRoleDefaultPolicyDAE46E21",
@@ -1015,7 +1052,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
             "Value": "TEST",
           },
         ],
-        "Timeout": 60,
+        "Timeout": 30,
       },
       "Type": "AWS::Lambda::Function",
     },

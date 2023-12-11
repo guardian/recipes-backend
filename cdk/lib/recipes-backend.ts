@@ -3,11 +3,14 @@ import {GuParameter, GuStack} from "@guardian/cdk/lib/constructs/core";
 import {GuLambdaFunction} from "@guardian/cdk/lib/constructs/lambda";
 import {GuKinesisLambdaExperimental} from "@guardian/cdk/lib/experimental/patterns";
 import {StreamRetry} from "@guardian/cdk/lib/utils/lambda";
-import {type App, Duration} from "aws-cdk-lib";
+import {type App, aws_sns, Duration} from "aws-cdk-lib";
+import {Alarm, ComparisonOperator, TreatMissingData, Unit} from "aws-cdk-lib/aws-cloudwatch";
+import {SnsAction} from "aws-cdk-lib/aws-cloudwatch-actions";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
 import {DataStore} from "./datastore";
 import {RestEndpoints} from "./rest-endpoints";
+import {ExternalParameters} from "./external_parameters";
 import {StaticServing} from "./static-serving";
 
 export class RecipesBackend extends GuStack {
@@ -17,13 +20,15 @@ export class RecipesBackend extends GuStack {
     const serving = new StaticServing(this, "static");
     const store = new DataStore(this, "store");
 
+    const lambdaTimeout = Duration.seconds(30);
+
     new GuLambdaFunction(this, "testIndexLambda", {
       fileName: "test-indexbuild-lambda.zip",
       runtime: Runtime.NODEJS_18_X,
       architecture: Architecture.ARM_64,
       app: "recipes-backend-testindex",
       handler: "main.handler",
-      timeout: Duration.seconds(60),
+      timeout: lambdaTimeout,
       environment: {
         STATIC_BUCKET: serving.staticBucket.bucketName,
         INDEX_TABLE: store.table.tableName,
@@ -61,10 +66,10 @@ export class RecipesBackend extends GuStack {
       fromSSM: true,
       default: `/${this.stage}/${this.stack}/recipes-responder/fastly-key`
     })
-
+    
     const contentUrlBase = this.stage === "CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com";
 
-    new GuKinesisLambdaExperimental(this, "updaterLambda", {
+    const updaterLambda = new GuKinesisLambdaExperimental(this, "updaterLambda", {
       monitoringConfiguration: {noMonitoring: true},
       existingKinesisStream: {
         externalKinesisStreamName: `content-api-firehose-v2-${this.stage}`,
@@ -103,7 +108,7 @@ export class RecipesBackend extends GuStack {
       app: "recipes-responder",
       handler: "main.handler",
       fileName: "recipes-responder.zip",
-      timeout: Duration.seconds(30)
+      timeout: lambdaTimeout
     });
 
     new RestEndpoints(this, "RestEndpoints", {
@@ -111,5 +116,25 @@ export class RecipesBackend extends GuStack {
       fastlyKey: fastlyKeyParam.valueAsString,
       contentUrlBase,
     });
+
+    const durationAlarm = new Alarm(this, "DurationRuntimeAlarm", {
+      alarmDescription: "Recipe backend ingest lambda at 75% of allowed duration",
+      actionsEnabled: true,
+      threshold: lambdaTimeout.toMilliseconds() * 0.75,
+      treatMissingData: TreatMissingData.IGNORE,
+      comparisonOperator: ComparisonOperator.GREATER_THAN_THRESHOLD,
+      metric: updaterLambda.metricDuration({
+        period: Duration.minutes(3),
+        statistic: "Maximum",
+        unit: Unit.MILLISECONDS
+      }),
+      evaluationPeriods: 3,// when happens atleast 3 times
+    })
+
+    const externalParameters = new ExternalParameters(this, "externals");
+    //const urgentAlarmTopic = aws_sns.Topic.fromTopicArn(this, "urgent-alarm", externalParameters.urgentAlarmTopicArn.stringValue);
+    const nonUrgentAlarmTopic = aws_sns.Topic.fromTopicArn(this, "nonurgent-alarm", externalParameters.nonUrgentAlarmTopicArn.stringValue);
+    durationAlarm.addAlarmAction(new SnsAction(nonUrgentAlarmTopic))
   }
+
 }
