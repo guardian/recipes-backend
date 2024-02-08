@@ -230,7 +230,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
                         "Arn",
                       ],
                     },
-                    "/curation.json",
+                    "/*/*/curation.json",
                   ],
                 ],
               },
