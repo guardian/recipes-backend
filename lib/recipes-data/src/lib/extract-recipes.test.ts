@@ -392,5 +392,11 @@ describe("handleFreeTextContribs", ()=>{
     expect(result.byline).toEqual([]);
   });
 
+  it("should return empty arrays if there is nothing in the inital array", ()=>{
+    const incoming = {contributors: []};
 
+    const result = handleFreeTextContribs(incoming);
+    expect(result.contributors).toEqual([]);
+    expect(result.byline).toEqual([]);
+  });
 })
