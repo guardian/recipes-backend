@@ -5,7 +5,7 @@ import type {Content} from "@guardian/content-api-models/v1/content";
 import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
 import {registerMetric} from "@recipes-api/cwmetrics";
-import type {RecipeReferenceWithoutChecksum} from './models';
+import type {Contributor, RecipeReferenceWithoutChecksum} from './models';
 
 export async function extractAllRecipesFromArticle(content: Content): Promise<RecipeReferenceWithoutChecksum[]> {
   if (content.type == ContentType.ARTICLE && content.blocks) {
@@ -54,16 +54,51 @@ function determineRecipeUID(recipeIdField: string, canonicalId: string): string 
   }
 }
 
+/**
+ * Composer will pass an ADT, in the format {type: "contributor", tagId: string} | {type: "freetext", text: string}.  We need to put the 'contributor' tags into
+ * the "contributors" array and the "freetext" tags into the "byline" array.  We must also handle the migration case, where we still get a raw string passed over.
+ * @param parsedRecipe raw parsed recipe
+ */
+export function handleFreeTextContribs(parsedRecipe: Record<string, unknown>):Record<string, unknown> {
+  const incomingArray = parsedRecipe.contributors as unknown[];
+
+  const contributorTags:string[] = [];
+  const freetexts: string[] = [];
+
+  incomingArray.forEach((entry)=>{
+    if(typeof entry==='string') { //it's an old one, a contrib tag
+      contributorTags.push(entry);
+    } else if(typeof entry==='object') {  //it's an object
+      const contrib = entry as Contributor;
+      switch(contrib.type) {
+        case "contributor":
+          contributorTags.push(contrib.tagId);
+          break;
+        case "freetext":
+          freetexts.push(contrib.text);
+          break;
+        default:
+          break;
+      }
+    }
+  });
+
+  return {...parsedRecipe, contributors: contributorTags, byline: freetexts}
+}
+
 function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeReferenceWithoutChecksum | null {
   try {
-    const recipeData = JSON.parse(recipeJson) as Record<string, unknown>
+    const recipeData = JSON.parse(recipeJson) as Record<string, unknown>;
+    const updatedRecipe = handleFreeTextContribs(recipeData);
+    const rerendedJson = JSON.stringify(updatedRecipe);
+
     if (!recipeData.id) {
       console.error(`Recipe from ${canonicalId} has no ID field. Content was: ${recipeJson}`);
       return null
     } else {
       return <RecipeReferenceWithoutChecksum>{
         recipeUID: determineRecipeUID(recipeData.id as string, canonicalId),
-        jsonBlob: recipeJson
+        jsonBlob: rerendedJson
       }
     }
 

@@ -1,7 +1,7 @@
 import {AssetType} from "@guardian/content-api-models/v1/assetType";
 import type {Block} from "@guardian/content-api-models/v1/block";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
-import {extractRecipeData} from "./extract-recipes";
+import {extractRecipeData, handleFreeTextContribs} from "./extract-recipes";
 
 describe("extractRecipeData", () => {
 
@@ -369,5 +369,28 @@ describe("extractRecipeData", () => {
     expect(recipesFound).toEqual([null])
     expect(recipesFound.length).toEqual(1)
   })
+
+});
+
+describe("handleFreeTextContribs", ()=>{
+  it("should put contributor tags into the contributors array and freetext tags into the byline array", ()=>{
+    const incoming = {
+      contributors: [{type:"contributor", tagId:"profile/andy-gallagher"}, {type:"freetext", text: "Barry the Fish With Fingers"}]
+    };
+
+    const result = handleFreeTextContribs(incoming);
+    expect(result.contributors).toEqual(["profile/andy-gallagher"]);
+    expect(result.byline).toEqual(["Barry the Fish With Fingers"]);
+  });
+
+  it("should place legacy string-only IDs into the contributors array", ()=>{
+    const incoming = {
+      contributors: ["profile/andy-gallagher", {type:"contributor", tagId: "profile/kenneth-anger"}],
+    };
+    const result = handleFreeTextContribs(incoming);
+    expect(result.contributors).toEqual(["profile/andy-gallagher", "profile/kenneth-anger"]);
+    expect(result.byline).toEqual([]);
+  });
+
 
 })
