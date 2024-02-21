@@ -2,9 +2,9 @@ name: Build on PR
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
   workflow_dispatch: {}
 
 jobs:
@@ -27,19 +27,16 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
-#      - run: npm run lint
+      #      - run: npm run lint
       - run: npm test
       - run: npm run build
 
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: eu-west-1
-          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
-
-      - uses: guardian/actions-riff-raff@v2
+      - uses: guardian/actions-riff-raff@v4
         with:
           projectName: Content Platforms::recipes-backend
-          configPath: "cdk/cdk.out/riff-raff.yaml"
+          configPath: 'cdk/cdk.out/riff-raff.yaml'
+          roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
           contentDirectories: |
             cdk.out:
               - cdk/cdk.out/RecipesBackend-euwest-1-CODE.template.json
