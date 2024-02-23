@@ -58,6 +58,8 @@ interface RecipeReference extends RecipeReferenceWithoutChecksum{
   checksum: string;
 }
 
+export type Contributor = { "type": "contributor"; "tagId": string } | { "type": "freetext"; "text": string};
+
 /**
  * Helper function to un-marshal a raw dynamo record into a RecipeDatabaseEntry structure.
  * Note, this will not throw if the fields are not present; instead, capiArticleId will be an empty string ("")
