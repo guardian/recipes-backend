@@ -59,11 +59,11 @@ function determineRecipeUID(recipeIdField: string, canonicalId: string): string 
  * the "contributors" array and the "freetext" tags into the "byline" array.  We must also handle the migration case, where we still get a raw string passed over.
  * @param parsedRecipe raw parsed recipe
  */
-export function handleFreeTextContribs<R extends {contributors: Array<string | Contributor>}>(parsedRecipe: R): R & {contributors: string[], byline: string[]} {
+export function handleFreeTextContribs<R extends {contributors: Array<string | Contributor>}>(parsedRecipe: R): R & {contributors: string[]; byline: string[]} {
   const contributorTags: string[] = [];
   const freetexts: string[] = [];
 
-  parsedRecipe.contributors.forEach((entry) => { 
+  parsedRecipe.contributors.forEach((entry) => {
     if (typeof entry === 'string') { //it's an old one, a contrib tag
       contributorTags.push(entry);
     } else {  //it's a Contributor object
