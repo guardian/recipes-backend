@@ -59,25 +59,20 @@ function determineRecipeUID(recipeIdField: string, canonicalId: string): string 
  * the "contributors" array and the "freetext" tags into the "byline" array.  We must also handle the migration case, where we still get a raw string passed over.
  * @param parsedRecipe raw parsed recipe
  */
-export function handleFreeTextContribs(parsedRecipe: Record<string, unknown>):Record<string, unknown> {
-  const incomingArray = parsedRecipe.contributors as unknown[];
-
-  const contributorTags:string[] = [];
+export function handleFreeTextContribs<R extends {contributors: Array<string | Contributor>}>(parsedRecipe: R): R & {contributors: string[], byline: string[]} {
+  const contributorTags: string[] = [];
   const freetexts: string[] = [];
 
-  incomingArray.forEach((entry)=>{
-    if(typeof entry==='string') { //it's an old one, a contrib tag
+  parsedRecipe.contributors.forEach((entry) => { 
+    if (typeof entry === 'string') { //it's an old one, a contrib tag
       contributorTags.push(entry);
-    } else if(typeof entry==='object') {  //it's an object
-      const contrib = entry as Contributor;
-      switch(contrib.type) {
+    } else {  //it's a Contributor object
+      switch(entry.type) {
         case "contributor":
-          contributorTags.push(contrib.tagId);
+          contributorTags.push(entry.tagId);
           break;
         case "freetext":
-          freetexts.push(contrib.text);
-          break;
-        default:
+          freetexts.push(entry.text);
           break;
       }
     }
@@ -88,7 +83,7 @@ export function handleFreeTextContribs(parsedRecipe: Record<string, unknown>):Re
 
 function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeReferenceWithoutChecksum | null {
   try {
-    const recipeData = JSON.parse(recipeJson) as Record<string, unknown>;
+    const recipeData = JSON.parse(recipeJson) as (Record<string, unknown> & {contributors: Array<string | Contributor>});
     const updatedRecipe = handleFreeTextContribs(recipeData);
     const rerendedJson = JSON.stringify(updatedRecipe);
 
