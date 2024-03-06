@@ -91,7 +91,7 @@ router.get('/api/content/by-uid/:composerId', (req: Request<FromComposerParams>,
     if(result) {
       console.log(`Debug: Query for ${req.params.composerId} returned ${JSON.stringify(result)}`);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions  -- no idea why this is being flagged
-      resp.header("Location", `/content/${result.checksum}`).status(302);
+      resp.redirect(`/content/${result.checksum}`);
       return;
     } else {
       resp.status(404).json({status: "not found", detail: "No recipe found with that UID"});
