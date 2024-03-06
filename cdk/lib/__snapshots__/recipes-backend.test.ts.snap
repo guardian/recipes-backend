@@ -117,6 +117,9 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
             "FASTLY_API_KEY": {
               "Ref": "fastlyKey",
             },
+            "INDEX_TABLE": {
+              "Ref": "storeRecipeTableC3AD84B7",
+            },
             "STACK": "content-api",
             "STAGE": "TEST",
             "STATIC_BUCKET": {

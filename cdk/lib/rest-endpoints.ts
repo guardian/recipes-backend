@@ -42,6 +42,7 @@ export class RestEndpoints extends Construct {
         STATIC_BUCKET: servingBucket.bucketName,
         FASTLY_API_KEY: fastlyKey,
         CONTENT_URL_BASE: contentUrlBase,
+        INDEX_TABLE: dataStore.table.tableName,
       },
       fileName: "rest-endpoints.zip",
       functionName: `recipes-backend-rest-endpoints-${scope.stage}`,
