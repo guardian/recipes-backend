@@ -1,7 +1,7 @@
 import type { AttributeValue} from "@aws-sdk/client-dynamodb";
 import { BatchWriteItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {v4 as uuid} from "uuid";
-import { type RecipeDatabaseEntry, RecipeDatabaseEntryToDynamo} from "@recipes-api";
+import { type RecipeDatabaseEntry, RecipeDatabaseEntryToDynamo} from "@recipes-api/lib/recipes-data";
 
 const tableName = process.env["TABLE_NAME"];
 const client = new DynamoDBClient();
