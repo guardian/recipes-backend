@@ -66,19 +66,19 @@ router.post('/api/curation/:region/:variant', (req: Request<CurationParams>, res
   }
 });
 
-interface FromComposerParams {
-  composerId: string;
+interface RecipeIdParams {
+  immutableId: string;
 }
 
-function validateComposerParams(params: FromComposerParams) {
+function validateComposerParams(params: RecipeIdParams) {
   const checker = /^[\w\d]+$/;
 
-  if(!params.composerId.match(checker)) {
+  if(!params.immutableId.match(checker)) {
     throw new Error("Invalid composer ID");
   }
 }
 
-router.get('/api/content/by-uid/:composerId', (req: Request<FromComposerParams>, resp) => {
+router.get('/api/content/by-uid/:immutableId', (req: Request<RecipeIdParams>, resp) => {
   try {
     validateComposerParams(req.params);
   } catch(e) {
@@ -87,16 +87,16 @@ router.get('/api/content/by-uid/:composerId', (req: Request<FromComposerParams>,
     return;
   }
 
-  recipeByUID(req.params.composerId).then(result=>{
+  recipeByUID(req.params.immutableId).then(result=>{
     if(result) {
-      console.log(`Debug: Query for ${req.params.composerId} returned ${JSON.stringify(result)}`);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions  -- no idea why this is being flagged
+      console.log(`Debug: Query for ${req.params.immutableId} returned ${JSON.stringify(result)}`);
       resp.redirect(`/content/${result.checksum}`);
       return;
     } else {
       resp.status(404).json({status: "not found", detail: "No recipe found with that UID"});
+      return;
     }
   });
+});
 
-})
 app.use('/', router);
