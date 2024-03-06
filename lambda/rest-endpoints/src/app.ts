@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import {renderFile as ejs} from "ejs";
 import express from 'express';
 import type {Request} from 'express';
+import {recipeByUID } from "@recipes-api/lib/recipes-data";
 import {getBodyContentAsJson} from "./helpers";
 import {importNewData} from "./submit-data";
 
@@ -65,4 +66,37 @@ router.post('/api/curation/:region/:variant', (req: Request<CurationParams>, res
   }
 });
 
+interface FromComposerParams {
+  composerId: string;
+}
+
+function validateComposerParams(params: FromComposerParams) {
+  const checker = /^[\w\d]+$/;
+
+  if(!params.composerId.match(checker)) {
+    throw new Error("Invalid composer ID");
+  }
+}
+
+router.get('/api/content/by-uid/:composerId', (req: Request<FromComposerParams>, resp) => {
+  try {
+    validateComposerParams(req.params);
+  } catch(e) {
+    console.log("Provided params ", req.params, " did not validate");
+    resp.status(400).json({status: "error", detail: "invalid recipe immutable ID"});
+    return;
+  }
+
+  recipeByUID(req.params.composerId).then(result=>{
+    if(result) {
+      console.log(`Debug: Query for ${req.params.composerId} returned ${JSON.stringify(result)}`);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions  -- no idea why this is being flagged
+      resp.header("Location", `/content/${result.checksum}`).status(302);
+      return;
+    } else {
+      resp.status(404).json({status: "not found", detail: "No recipe found with that UID"});
+    }
+  });
+
+})
 app.use('/', router);

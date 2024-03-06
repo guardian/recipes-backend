@@ -236,6 +236,32 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
               },
             },
             {
+              "Action": "dynamodb:Query",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "storeRecipeTableC3AD84B7",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "storeRecipeTableC3AD84B7",
+                          "Arn",
+                        ],
+                      },
+                      "/index/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
@@ -943,6 +969,21 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
               {
                 "AttributeName": "lastUpdated",
                 "KeyType": "RANGE",
+              },
+            ],
+            "Projection": {
+              "NonKeyAttributes": [
+                "recipeVersion",
+              ],
+              "ProjectionType": "INCLUDE",
+            },
+          },
+          {
+            "IndexName": "idxRecipeUID",
+            "KeySchema": [
+              {
+                "AttributeName": "recipeUID",
+                "KeyType": "HASH",
               },
             ],
             "Projection": {

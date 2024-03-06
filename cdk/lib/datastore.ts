@@ -1,10 +1,18 @@
-import type { GuStack } from "@guardian/cdk/lib/constructs/core";
-import { AttributeType, BillingMode, type ITable, ProjectionType, Table, TableEncryption } from "aws-cdk-lib/aws-dynamodb";
-import { Construct } from "constructs";
+import type {GuStack} from "@guardian/cdk/lib/constructs/core";
+import {
+  AttributeType,
+  BillingMode,
+  type ITable,
+  ProjectionType,
+  Table,
+  TableEncryption
+} from "aws-cdk-lib/aws-dynamodb";
+import {Construct} from "constructs";
 
 export class DataStore extends Construct {
   table: ITable;
   lastUpdatedIndexName: string;
+  recipeUIDIndexName: string;
 
   constructor(scope:GuStack, id:string) {
     super(scope, id);
@@ -42,6 +50,17 @@ export class DataStore extends Construct {
       nonKeyAttributes: ["recipeVersion"]   //recipeVersion corresponds to `Current SHA` in the document
     });
 
+    this.recipeUIDIndexName = "idxRecipeUID";
+
+    table.addGlobalSecondaryIndex({
+      partitionKey: {
+        name: "recipeUID",
+        type: AttributeType.STRING
+      },
+      projectionType: ProjectionType.INCLUDE,
+      indexName: this.recipeUIDIndexName,
+      nonKeyAttributes: ["recipeVersion"]
+    })
     this.table = table;
   }
 }

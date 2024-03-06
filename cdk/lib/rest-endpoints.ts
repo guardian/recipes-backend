@@ -6,11 +6,13 @@ import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
 import type {IBucket} from "aws-cdk-lib/aws-s3";
 import {Construct} from "constructs";
+import type {DataStore} from "./datastore";
 
 interface RestEndpointsProps {
   servingBucket: IBucket;
   fastlyKey: string;
   contentUrlBase: string;
+  dataStore: DataStore;
 }
 
 export class RestEndpoints extends Construct {
@@ -20,7 +22,8 @@ export class RestEndpoints extends Construct {
     const {
       servingBucket,
       fastlyKey,
-      contentUrlBase
+      contentUrlBase,
+      dataStore
     } = props;
 
     const apiConstruct = new GuApiLambda(scope, "Lambda", {
@@ -51,7 +54,13 @@ export class RestEndpoints extends Construct {
         effect: Effect.ALLOW,
         actions: ["s3:PutObject"],
         resources: [`${servingBucket.bucketArn}/*/*/curation.json`]
-      })]
+      }),
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["dynamodb:Query"],
+        resources: [`${dataStore.table.tableArn}`, `${dataStore.table.tableArn}/index/*`]
+      })
+      ]
     });
 
     apiConstruct.api.addUsagePlan("UsagePlan", {

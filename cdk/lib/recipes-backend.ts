@@ -9,8 +9,8 @@ import {SnsAction} from "aws-cdk-lib/aws-cloudwatch-actions";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
 import {DataStore} from "./datastore";
-import {RestEndpoints} from "./rest-endpoints";
 import {ExternalParameters} from "./external_parameters";
+import {RestEndpoints} from "./rest-endpoints";
 import {StaticServing} from "./static-serving";
 
 export class RecipesBackend extends GuStack {
@@ -66,7 +66,7 @@ export class RecipesBackend extends GuStack {
       fromSSM: true,
       default: `/${this.stage}/${this.stack}/recipes-responder/fastly-key`
     })
-    
+
     const contentUrlBase = this.stage === "CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com";
 
     const updaterLambda = new GuKinesisLambdaExperimental(this, "updaterLambda", {
@@ -115,6 +115,7 @@ export class RecipesBackend extends GuStack {
       servingBucket: serving.staticBucket,
       fastlyKey: fastlyKeyParam.valueAsString,
       contentUrlBase,
+      dataStore: store,
     });
 
     const durationAlarm = new Alarm(this, "DurationRuntimeAlarm", {
