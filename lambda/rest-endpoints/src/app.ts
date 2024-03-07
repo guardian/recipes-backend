@@ -67,18 +67,18 @@ router.post('/api/curation/:region/:variant', (req: Request<CurationParams>, res
 });
 
 interface RecipeIdParams {
-  immutableId: string;
+  recipeUID: string;
 }
 
 function validateComposerParams(params: RecipeIdParams) {
   const checker = /^[\w\d]+$/;
 
-  if(!params.immutableId.match(checker)) {
-    throw new Error("Invalid composer ID");
+  if(!params.recipeUID.match(checker)) {
+    throw new Error("Invalid recipe UID");
   }
 }
 
-router.get('/api/content/by-uid/:immutableId', (req: Request<RecipeIdParams>, resp) => {
+router.get('/api/content/by-uid/:recipeUID', (req: Request<RecipeIdParams>, resp) => {
   try {
     validateComposerParams(req.params);
   } catch(e) {
@@ -87,9 +87,8 @@ router.get('/api/content/by-uid/:immutableId', (req: Request<RecipeIdParams>, re
     return;
   }
 
-  recipeByUID(req.params.immutableId).then(result=>{
+  recipeByUID(req.params.recipeUID).then(result=>{
     if(result) {
-      console.log(`Debug: Query for ${req.params.immutableId} returned ${JSON.stringify(result)}`);
       resp.redirect(`/content/${result.checksum}`);
       return;
     } else {
