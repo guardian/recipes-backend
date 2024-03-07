@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import {renderFile as ejs} from "ejs";
 import express from 'express';
 import type {Request} from 'express';
+import {recipeByUID } from "@recipes-api/lib/recipes-data";
 import {getBodyContentAsJson} from "./helpers";
 import {importNewData} from "./submit-data";
 
@@ -63,6 +64,38 @@ router.post('/api/curation/:region/:variant', (req: Request<CurationParams>, res
     console.error("Could not parse incoming data as json: ", err);
     return resp.status(400).json({status: "error", detail: "invalid content"});
   }
+});
+
+interface RecipeIdParams {
+  recipeUID: string;
+}
+
+function validateComposerParams(params: RecipeIdParams) {
+  const checker = /^[\w\d]+$/;
+
+  if(!params.recipeUID.match(checker)) {
+    throw new Error("Invalid recipe UID");
+  }
+}
+
+router.get('/api/content/by-uid/:recipeUID', (req: Request<RecipeIdParams>, resp) => {
+  try {
+    validateComposerParams(req.params);
+  } catch(e) {
+    console.log("Provided params ", req.params, " did not validate");
+    resp.status(400).json({status: "error", detail: "invalid recipe immutable ID"});
+    return;
+  }
+
+  recipeByUID(req.params.recipeUID).then(result=>{
+    if(result) {
+      resp.redirect(`/content/${result.checksum}`);
+      return;
+    } else {
+      resp.status(404).json({status: "not found", detail: "No recipe found with that UID"});
+      return;
+    }
+  });
 });
 
 app.use('/', router);

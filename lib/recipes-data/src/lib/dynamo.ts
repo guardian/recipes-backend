@@ -63,6 +63,20 @@ export async function recipesforArticle(articleCanonicalId: string): Promise<Rec
   return response.Items ? response.Items.map(RecipeIndexEntryFromDynamo) : [];
 }
 
+export async function recipeByUID(recipeUID:string): Promise<RecipeIndexEntry|null>
+{
+  const req = new QueryCommand({
+    TableName,
+    KeyConditionExpression: "recipeUID=:uid",
+    ExpressionAttributeValues: {
+      ":uid": {S: recipeUID}
+    },
+    IndexName: "idxRecipeUID"
+  });
+
+  const response = await client.send(req);
+  return response.Items && response.Items.length>0 ? RecipeIndexEntryFromDynamo(response.Items[0]) : null
+}
 
 /**
  * Remove a single recipe from the index.
