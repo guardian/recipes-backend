@@ -67,6 +67,17 @@ export class RecipesBackend extends GuStack {
       default: `/${this.stage}/${this.stack}/recipes-responder/fastly-key`
     })
 
+    const telemetryXAR = new GuParameter(this, "TelemetryCrossAcctRole", {
+      fromSSM: true,
+      default: `/${this.stage}/${this.stack}/recipes-responder/telemetryXAR`,
+      description: "Cross-account role to allow data submissions"
+    });
+    const telemetryTopic = new GuParameter(this, "TelemetryTopic", {
+      fromSSM: true,
+      default: `/${this.stage}/${this.stack}/recipes-responder/telemetryTopic`,
+      description: "ARN of the SNS topic to use for data submissions"
+    });
+
     const contentUrlBase = this.stage === "CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com";
 
     const updaterLambda = new GuKinesisLambdaExperimental(this, "updaterLambda", {
@@ -86,6 +97,8 @@ export class RecipesBackend extends GuStack {
         DEBUG_LOGS: "true",
         FASTLY_API_KEY: fastlyKeyParam.valueAsString,
         STATIC_BUCKET: serving.staticBucket.bucketName,
+        TELEMETRY_XAR: telemetryXAR.valueAsString,
+        TELEMETRY_TOPIC: telemetryTopic.valueAsString,
       },
       initialPolicy: [
         new PolicyStatement({
