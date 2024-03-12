@@ -116,6 +116,11 @@ export class RecipesBackend extends GuStack {
           resources: ["*"],
           actions: ["cloudwatch:PutMetricData"]
         }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["sts:AssumeRole"],
+          resources: [telemetryXAR.valueAsString]
+        })
       ],
       runtime: Runtime.NODEJS_18_X,
       app: "recipes-responder",

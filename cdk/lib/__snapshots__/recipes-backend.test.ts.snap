@@ -1534,6 +1534,13 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
               "Resource": "*",
             },
             {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "TelemetryCrossAcctRole",
+              },
+            },
+            {
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
