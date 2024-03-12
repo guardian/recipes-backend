@@ -41,6 +41,7 @@ export async function sendTelemetryEvent(eventId:EventType, recipeId:string, jso
   }
 
   try {
+    console.log("SNS temporary credentials: ", credentials);
     const snsClient = new SNSClient({
       credentials,
       region: process.env["AWS_REGION"]
