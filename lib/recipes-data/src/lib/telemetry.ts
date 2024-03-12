@@ -6,6 +6,7 @@ import type { AwsCredentialIdentity } from "@aws-sdk/types";
 import {TelemetryTopic, TelemetryXAR} from "./config";
 
 const stsClient = new STSClient({region: process.env["AWS_REGION"]});
+const maxAttempts = 3;
 
 let cachedCredentials:STSCredentials|undefined;
 
@@ -26,7 +27,11 @@ async function refreshCredentials() {
   }
 }
 
-export async function sendTelemetryEvent(eventId:EventType, recipeId:string, jsonString:string) {
+async function smallDelay(ms:number):Promise<void> {
+  return new Promise((resolve)=>window.setTimeout(resolve,ms));
+}
+
+export async function sendTelemetryEvent(eventId:EventType, recipeId:string, jsonString:string, attempt?: number) {
   if(!TelemetryXAR || !TelemetryTopic) {
     console.error("You must configure TELEMETRY_XAR and TELEMETRY_TOPIC to enable telemetry.");
     return
@@ -43,7 +48,6 @@ export async function sendTelemetryEvent(eventId:EventType, recipeId:string, jso
   }
 
   try {
-    console.log("SNS temporary credentials: ", credentials);
     const snsClient = new SNSClient({
       credentials,
       region: process.env["AWS_REGION"]
@@ -63,5 +67,15 @@ export async function sendTelemetryEvent(eventId:EventType, recipeId:string, jso
   } catch(err) {
     const typeofErr = typeof err;
     console.error(`sendEvent caught ${typeofErr}: ${JSON.stringify(err)}`);
+    const realAttempt = attempt ?? 1;
+    if(realAttempt < maxAttempts) {
+      console.log("Refreshing credentials and trying again");
+      await smallDelay(500);
+      cachedCredentials = await refreshCredentials();
+      return sendTelemetryEvent(eventId, recipeId, jsonString, realAttempt+1);
+    } else {
+      console.error("Ran out of retries");
+      //don't re-throw the error, because we want to ensure publication works anyway.
+    }
   }
 }
