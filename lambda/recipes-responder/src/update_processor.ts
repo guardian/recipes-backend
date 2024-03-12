@@ -7,9 +7,9 @@ import {
   insertNewRecipe,
   publishRecipeContent,
   recipesToTakeDown,
-  removeRecipeVersion
+  removeRecipeVersion,
+  sendTelemetryEvent
 } from "@recipes-api/lib/recipes-data";
-import {sendTelemetryEvent} from "./telemetry";
 
 /**
  * Pushes new content into the service

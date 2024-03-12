@@ -2,7 +2,7 @@ import type {DynamoDBClient} from "@aws-sdk/client-dynamodb";
 import {recipesforArticle, removeAllRecipeIndexEntriesForArticle, removeRecipe} from './dynamo';
 import type { RecipeIndexEntry } from './models';
 import {removeRecipeContent} from "./s3";
-import {sendTelemetryEvent} from "../../../../lambda/recipes-responder/src/telemetry";
+import {sendTelemetryEvent} from "./telemetry";
 
 enum TakedownMode {
   AllVersions,

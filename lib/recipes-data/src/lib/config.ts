@@ -23,3 +23,7 @@ function mandatoryParameter(name:string):string {
     throw new Error(`You need to define the environment variable ${name} in the lambda config`)
   }
 }
+
+//Used by telemetry
+export const TelemetryXAR = process.env["TELEMETRY_XAR"]
+export const TelemetryTopic = process.env["TELEMETRY_TOPIC"]
