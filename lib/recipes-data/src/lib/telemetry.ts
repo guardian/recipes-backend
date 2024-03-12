@@ -53,8 +53,8 @@ export async function sendTelemetryEvent(eventId:EventType, recipeId:string, jso
       TopicArn: TelemetryTopic,
       Message: jsonString,
       MessageAttributes: {
-        recipeId: {DataType: "string", StringValue: recipeId},
-        Event: {DataType: "string", StringValue: eventId}
+        recipeId: {DataType: "String", StringValue: recipeId},
+        Event: {DataType: "String", StringValue: eventId}
       }
     });
     const response = await snsClient.send(req);
