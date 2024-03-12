@@ -32,12 +32,14 @@ export async function sendTelemetryEvent(eventId:EventType, recipeId:string, jso
     return
   }
 
-  if(!cachedCredentials) await refreshCredentials();
+  if(!cachedCredentials) {
+    cachedCredentials = await refreshCredentials();
+  }
 
   const credentials:AwsCredentialIdentity = {
-    accessKeyId: cachedCredentials?.AccessKeyId ?? "",  //This is safe, because the if() branch above ensures that AccessKeyId is defined.
-    secretAccessKey: cachedCredentials?.SecretAccessKey ?? "",
-    sessionToken: cachedCredentials?.SessionToken
+    accessKeyId: cachedCredentials.AccessKeyId ?? "",  //This is safe, because the if() branch above ensures that AccessKeyId is defined.
+    secretAccessKey: cachedCredentials.SecretAccessKey ?? "",
+    sessionToken: cachedCredentials.SessionToken
   }
 
   try {
