@@ -14,7 +14,7 @@ type EventType = "IncomingHTML"|"CleanedText"|"CleanedHTML"|"StructuredData"|"Me
 async function refreshCredentials() {
   console.log("Refreshing cross-account credentials for telemetry")
   const req = new AssumeRoleCommand({
-    DurationSeconds: 180,
+    DurationSeconds: 900, //900 seconds is the minumum duration
     RoleArn: TelemetryXAR,
     RoleSessionName: "RecipeBackend"
   });
