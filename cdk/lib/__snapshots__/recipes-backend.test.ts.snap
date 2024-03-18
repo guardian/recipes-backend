@@ -8,6 +8,8 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "GuLambdaFunction",
       "GuParameter",
       "GuParameter",
+      "GuParameter",
+      "GuParameter",
       "GuKinesisLambdaExperimental",
       "GuApiLambda",
     ],
@@ -45,6 +47,16 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "TelemetryCrossAcctRole": {
+      "Default": "/TEST/content-api/recipes-responder/telemetryXAR",
+      "Description": "Cross-account role to allow data submissions",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "TelemetryTopic": {
+      "Default": "/TEST/content-api/recipes-responder/telemetryTopic",
+      "Description": "ARN of the SNS topic to use for data submissions",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "capiKey": {
@@ -1335,6 +1347,12 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
             "STATIC_BUCKET": {
               "Ref": "staticstaticServing53194089",
             },
+            "TELEMETRY_TOPIC": {
+              "Ref": "TelemetryTopic",
+            },
+            "TELEMETRY_XAR": {
+              "Ref": "TelemetryCrossAcctRole",
+            },
           },
         },
         "Handler": "main.handler",
@@ -1514,6 +1532,13 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
               "Action": "cloudwatch:PutMetricData",
               "Effect": "Allow",
               "Resource": "*",
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "TelemetryCrossAcctRole",
+              },
             },
             {
               "Action": [

@@ -2,6 +2,7 @@ import type {DynamoDBClient} from "@aws-sdk/client-dynamodb";
 import {recipesforArticle, removeAllRecipeIndexEntriesForArticle, removeRecipe} from './dynamo';
 import type { RecipeIndexEntry } from './models';
 import {removeRecipeContent} from "./s3";
+import {sendTelemetryEvent} from "./telemetry";
 
 enum TakedownMode {
   AllVersions,
@@ -35,7 +36,13 @@ async function takeRecipeDown(canonicalArticleId: string, recipe: RecipeIndexEnt
  */
 export async function removeRecipePermanently(canonicalArticleId: string, recipe: RecipeIndexEntry)
 {
-  return takeRecipeDown(canonicalArticleId, recipe, TakedownMode.AllVersions);
+  await takeRecipeDown(canonicalArticleId, recipe, TakedownMode.AllVersions);
+
+  try {
+    await sendTelemetryEvent("TakenDown", recipe.recipeUID, "");
+  } catch(err) {
+    console.error(`ERROR [${canonicalArticleId}] - unable to send telemetry: `, err);
+  }
 }
 
 /**

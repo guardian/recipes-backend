@@ -7,7 +7,8 @@ import {
   insertNewRecipe,
   publishRecipeContent,
   recipesToTakeDown,
-  removeRecipeVersion
+  removeRecipeVersion,
+  sendTelemetryEvent
 } from "@recipes-api/lib/recipes-data";
 
 /**
@@ -17,6 +18,11 @@ import {
  */
 async function publishRecipe(canonicalArticleId:string, recep:RecipeReference):Promise<void>
 {
+  try {
+    await sendTelemetryEvent("PublishedData", recep.recipeUID, recep.jsonBlob);
+  } catch(err) {
+    console.error(`[${canonicalArticleId}] - unable to send telemetry: `, err);
+  }
   console.log(`INFO [${canonicalArticleId}] - pushing ${recep.recipeUID} @ ${recep.checksum} to S3...`);
   await publishRecipeContent(recep);
   console.log(`INFO [${canonicalArticleId}] - updating index table...`);

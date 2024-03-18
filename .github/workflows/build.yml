@@ -29,6 +29,9 @@ jobs:
       - run: npm ci
       #      - run: npm run lint
       - run: npm test
+        env:
+          STATIC_BUCKET: test
+          CONTENT_URL_BASE: test
       - run: npm run build
 
       - uses: guardian/actions-riff-raff@v4
