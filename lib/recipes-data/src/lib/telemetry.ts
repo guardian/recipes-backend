@@ -28,7 +28,7 @@ async function refreshCredentials() {
 }
 
 async function smallDelay(ms:number):Promise<void> {
-  return new Promise((resolve)=>window.setTimeout(resolve,ms));
+  return new Promise((resolve)=>setTimeout(resolve,ms));
 }
 
 export async function sendTelemetryEvent(eventId:EventType, recipeId:string, jsonString:string, attempt?: number) {
