@@ -1,8 +1,9 @@
 import * as process from "process";
 import {DeleteObjectCommand, NoSuchKey, PutObjectCommand, S3Client, S3ServiceException} from "@aws-sdk/client-s3";
-import {StaticBucketName as Bucket, FastlyApiKey, MaximumRetries} from "./config";
+import {StaticBucketName as Bucket, FastlyApiKey, FEATURED_IMAGE_WIDTH, IMAGE_DPR, MaximumRetries, PREVIEW_IMAGE_WIDTH} from "./config";
 import {FastlyError, sendFastlyPurgeRequest, sendFastlyPurgeRequestWithRetries} from "./fastly";
 import type {RecipeIndex, RecipeReference} from './models';
+import { replaceImageUrlWithFastlyResizer } from "./transform";
 import {awaitableDelay} from "./utils";
 
 const s3Client = new S3Client({region: process.env["AWS_REGION"]});
@@ -26,7 +27,9 @@ function makeCacheControl(maxAge?: number, staleRevalidate?: number, staleError?
  * @param attempt used internally to track retries
  * @return a promise which resolves to void on success or errors on failure
  */
-export async function publishRecipeContent(recipe: RecipeReference, attempt?: number): Promise<void> {
+export async function publishRecipeContent(_recipe: RecipeReference, attempt?: number): Promise<void> {
+  const recipe = replaceImageUrlWithFastlyResizer(_recipe, FEATURED_IMAGE_WIDTH, PREVIEW_IMAGE_WIDTH, IMAGE_DPR);
+
   const realAttempt = attempt ?? 1;
   if (!recipe.checksum) {
     throw new Error("publishRecipeContent: Cannot output recipe data without a checksum");
