@@ -1,5 +1,4 @@
-import type { RecipeReference } from './models';
-import type { Recipe, RecipeImage } from './types';
+import type { Contributor, RecipeImage } from './models';
 
 const getFastlyUrl = (
 	imageId: string,
@@ -19,7 +18,9 @@ export const replaceFastlyUrl = (
 	const { width, mediaId, cropId } = image;
 
 	if (!cropId) {
-		console.warn(`No cropId found for image with id ${image.mediaId}.`);
+		console.warn(
+			`Error adding fastly URL to recipe ${recipeId} - no cropId found for image with id ${image.mediaId}.`,
+		);
 		return image;
 	}
 
@@ -29,40 +30,73 @@ export const replaceFastlyUrl = (
 	};
 };
 
-export const replaceImageUrlWithFastlyResizer = (
-	recipe: RecipeReference,
-	featuredImageWidth: number,
-	previewImageWidth: number,
-	dpr: number,
-): RecipeReference => {
-	try {
-		const recipeContent = JSON.parse(recipe.jsonBlob) as Recipe;
+export type RecipeWithImageData = {
+	id: string;
+	featuredImage: RecipeImage;
+	previewImage?: RecipeImage;
+};
 
-		return {
-			...recipe,
-			jsonBlob: JSON.stringify({
-				...recipeContent,
+/**
+ * Replace the featured and preview image URLs, which are by convention full-resolution crops,
+ * with Fastly resizer urls. Allows us to serve lower resolution assets to the app.
+ */
+export const createFastlyImageTransformer =
+	(featuredImageWidth: number, previewImageWidth: number, dpr: number) =>
+	<R extends RecipeWithImageData>(recipe: R): R => {
+		try {
+			return {
+				...recipe,
 				previewImage: replaceFastlyUrl(
-					recipeContent.id,
-					recipeContent.previewImage ?? recipeContent.featuredImage,
+					recipe.id,
+					recipe.previewImage ?? recipe.featuredImage,
 					previewImageWidth,
 					dpr,
 				),
 				featuredImage: replaceFastlyUrl(
-					recipeContent.id,
-					recipeContent.featuredImage,
+					recipe.id,
+					recipe.featuredImage,
 					featuredImageWidth,
 					dpr,
 				),
-			}),
-		};
-	} catch (err) {
-		if (err instanceof Error) {
-			console.warn(
-				`Could not replace preview image url with fastly resizer url for recipe ${recipe.recipeUID} with checksum ${recipe.checksum} - ${err.message}`,
-				err,
-			);
+			};
+		} catch (err) {
+			if (err instanceof Error) {
+				console.warn(
+					`Could not replace preview image url with fastly resizer url for recipe ${recipe.id} - ${err.message}`,
+					err,
+				);
+			}
+			return recipe;
 		}
-		return recipe;
-	}
-};
+	};
+
+/**
+ * Composer will pass an ADT, in the format {type: "contributor", tagId: string} | {type: "freetext", text: string}.  We need to put the 'contributor' tags into
+ * the "contributors" array and the "freetext" tags into the "byline" array.  We must also handle the migration case, where we still get a raw string passed over.
+ * @param parsedRecipe raw parsed recipe
+ */
+export function handleFreeTextContribs<
+	R extends { contributors: Array<string | Contributor> },
+>(parsedRecipe: R): R & { contributors: string[]; byline: string[] } {
+	const contributorTags: string[] = [];
+	const freetexts: string[] = [];
+
+	parsedRecipe.contributors.forEach((entry) => {
+		if (typeof entry === 'string') {
+			//it's an old one, a contrib tag
+			contributorTags.push(entry);
+		} else {
+			//it's a Contributor object
+			switch (entry.type) {
+				case 'contributor':
+					contributorTags.push(entry.tagId);
+					break;
+				case 'freetext':
+					freetexts.push(entry.text);
+					break;
+			}
+		}
+	});
+
+	return { ...parsedRecipe, contributors: contributorTags, byline: freetexts };
+}

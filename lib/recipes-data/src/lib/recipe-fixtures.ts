@@ -1,7 +1,4 @@
-import type { RecipeReference } from './models';
-import type { Recipe } from './types';
-
-export const exampleRecipe: Recipe = {
+export const exampleRecipe = {
 	bookCredit:
 		'Laura Goodman is the author of The Joy of Snacks (Headline, £17) and Carbs (Quadrille, £15)',
 	canonicalArticle:
