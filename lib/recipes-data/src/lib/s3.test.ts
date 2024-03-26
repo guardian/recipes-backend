@@ -1,14 +1,14 @@
-import {mockClient} from "aws-sdk-client-mock";
 import {
   DeleteObjectCommand, NoSuchKey,
   PutObjectCommand,
   S3Client,
   S3ServiceException
 } from "@aws-sdk/client-s3";
-import {publishRecipeContent, removeRecipeContent} from "./s3";
+import {mockClient} from "aws-sdk-client-mock";
 import {FastlyApiKey, MaximumRetries} from "./config";
-import {awaitableDelay} from "./utils";
 import {sendFastlyPurgeRequestWithRetries} from "./fastly";
+import {publishRecipeContent, removeRecipeContent} from "./s3";
+import {awaitableDelay} from "./utils";
 
 const s3Mock = mockClient(S3Client);
 

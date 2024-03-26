@@ -1,12 +1,65 @@
+import type { Contributor, RecipeImage } from './models';
 import { exampleRecipe } from './recipe-fixtures';
-import type { RecipeWithImageData } from './transform';
-import { createFastlyImageTransformer } from './transform';
+import {
+	handleFreeTextContribs,
+	replaceImageUrlsWithFastly,
+} from './transform';
+
+jest.mock('./config', () => ({
+	FeaturedImageWidth: 700,
+	PreviewImageWidth: 300,
+	ImageDpr: 1,
+}));
+
+type RecipeFixture = {
+	id: string;
+	featuredImage: RecipeImage;
+	previewImage?: RecipeImage;
+};
 
 describe('Recipe transforms', () => {
-	describe('createFastlyImageTransformer', () => {
+	describe('handleFreeTextContribs', () => {
+		it('should put contributor tags into the contributors array and freetext tags into the byline array', () => {
+			const incoming = {
+				contributors: [
+					{ type: 'contributor', tagId: 'profile/andy-gallagher' },
+					{ type: 'freetext', text: 'Barry the Fish With Fingers' },
+				] as Contributor[],
+			};
+
+			const result = handleFreeTextContribs(incoming);
+			expect(result.contributors).toEqual(['profile/andy-gallagher']);
+			expect(result.byline).toEqual(['Barry the Fish With Fingers']);
+		});
+
+		it('should place legacy string-only IDs into the contributors array', () => {
+			const incoming = {
+				contributors: [
+					'profile/andy-gallagher',
+					{ type: 'contributor', tagId: 'profile/kenneth-anger' },
+				] as Array<Contributor | string>,
+			};
+			const result = handleFreeTextContribs(incoming);
+			expect(result.contributors).toEqual([
+				'profile/andy-gallagher',
+				'profile/kenneth-anger',
+			]);
+			expect(result.byline).toEqual([]);
+		});
+
+		it('should return empty arrays if there is nothing in the inital array', () => {
+			const incoming = { contributors: [] };
+
+			const result = handleFreeTextContribs(incoming);
+			expect(result.contributors).toEqual([]);
+			expect(result.byline).toEqual([]);
+		});
+	});
+
+	describe('replaceImageUrlsWithFastly', () => {
 		const assertImageUrls = (
-			originalRecipe: RecipeWithImageData,
-			newRecipe: RecipeWithImageData,
+			originalRecipe: RecipeFixture,
+			newRecipe: RecipeFixture,
 			expectedFeaturedUrl: string,
 			expectedPreviewUrl: string,
 		) => {
@@ -33,11 +86,8 @@ describe('Recipe transforms', () => {
 		};
 
 		it('should replace a preview image with a fastly URL, if the relevant fields are present', () => {
-			const transformedRecipeReference = createFastlyImageTransformer(
-				700,
-				300,
-				1,
-			)(exampleRecipe);
+			const transformedRecipeReference =
+				replaceImageUrlsWithFastly(exampleRecipe);
 
 			assertImageUrls(
 				exampleRecipe,
@@ -50,11 +100,8 @@ describe('Recipe transforms', () => {
 		it("should backfill the preview image if there isn't one", () => {
 			const { previewImage: _, ...recipeWithoutPreview } = exampleRecipe;
 
-			const transformedRecipeReference = createFastlyImageTransformer(
-				700,
-				300,
-				1,
-			)(recipeWithoutPreview);
+			const transformedRecipeReference =
+				replaceImageUrlsWithFastly(recipeWithoutPreview);
 
 			assertImageUrls(
 				recipeWithoutPreview,
@@ -71,11 +118,9 @@ describe('Recipe transforms', () => {
 				featuredImage,
 			};
 
-			const transformedRecipeReference = createFastlyImageTransformer(
-				700,
-				300,
-				1,
-			)(recipeWithFeaturedImageWithoutCropId);
+			const transformedRecipeReference = replaceImageUrlsWithFastly(
+				recipeWithFeaturedImageWithoutCropId,
+			);
 
 			assertImageUrls(
 				recipeWithFeaturedImageWithoutCropId,
@@ -92,11 +137,9 @@ describe('Recipe transforms', () => {
 				previewImage,
 			};
 
-			const transformedRecipeReference = createFastlyImageTransformer(
-				700,
-				300,
-				1,
-			)(recipeWithPreviewImageWithoutCropId);
+			const transformedRecipeReference = replaceImageUrlsWithFastly(
+				recipeWithPreviewImageWithoutCropId,
+			);
 
 			assertImageUrls(
 				recipeWithPreviewImageWithoutCropId,

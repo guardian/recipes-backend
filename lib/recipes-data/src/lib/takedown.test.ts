@@ -7,6 +7,12 @@ import {recipesToTakeDown, removeAllRecipesForArticle, removeRecipePermanently, 
 
 mockClient(DynamoDBClient);
 
+jest.mock('./config', () => ({
+	FeaturedImageWidth: 700,
+	PreviewImageWidth: 300,
+	ImageDpr: 1,
+}));
+
 jest.mock("./s3", ()=>({
   removeRecipeContent: jest.fn(),
 }));

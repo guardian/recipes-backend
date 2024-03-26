@@ -29,6 +29,6 @@ export const TelemetryXAR = process.env["TELEMETRY_XAR"]
 export const TelemetryTopic = process.env["TELEMETRY_TOPIC"]
 
 //Used by content transforms
-export const PREVIEW_IMAGE_WIDTH = process.env["PREVIEW_IMAGE_WIDTH"] ? parseInt(process.env["PREVIEW_IMAGE_WIDTH"]) : 300;
-export const FEATURED_IMAGE_WIDTH = process.env["FEATURED_IMAGE_WIDTH"] ? parseInt(process.env["FEATURED_IMAGE_WIDTH"]) : 700;
-export const IMAGE_DPR = process.env["IMAGE_DPR"] ? parseInt(process.env["IMAGE_DPR"]) : 700;
+export const PreviewImageWidth = process.env["PREVIEW_IMAGE_WIDTH"] ? parseInt(process.env["PREVIEW_IMAGE_WIDTH"]) : 300;
+export const FeaturedImageWidth = process.env["FEATURED_IMAGE_WIDTH"] ? parseInt(process.env["FEATURED_IMAGE_WIDTH"]) : 700;
+export const ImageDpr = process.env["IMAGE_DPR"] ? parseInt(process.env["IMAGE_DPR"]) : 700;

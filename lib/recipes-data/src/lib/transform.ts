@@ -1,3 +1,4 @@
+import { FeaturedImageWidth, ImageDpr, PreviewImageWidth } from './config';
 import type { Contributor, RecipeImage } from './models';
 
 const getFastlyUrl = (
@@ -30,45 +31,58 @@ export const replaceFastlyUrl = (
 	};
 };
 
+export type ImageConfig = {
+	featuredImageWidth: number;
+	previewImageWidth: number;
+	dpr: number;
+};
+
 export type RecipeWithImageData = {
 	id: string;
-	featuredImage: RecipeImage;
-	previewImage?: RecipeImage;
+	featuredImage: RecipeImage | string; // the latter is an old image format that appears in our test fixtures
+	previewImage?: RecipeImage | string;
 };
 
 /**
  * Replace the featured and preview image URLs, which are by convention full-resolution crops,
  * with Fastly resizer urls. Allows us to serve lower resolution assets to the app.
  */
-export const createFastlyImageTransformer =
-	(featuredImageWidth: number, previewImageWidth: number, dpr: number) =>
-	<R extends RecipeWithImageData>(recipe: R): R => {
-		try {
-			return {
-				...recipe,
-				previewImage: replaceFastlyUrl(
-					recipe.id,
-					recipe.previewImage ?? recipe.featuredImage,
-					previewImageWidth,
-					dpr,
-				),
-				featuredImage: replaceFastlyUrl(
-					recipe.id,
-					recipe.featuredImage,
-					featuredImageWidth,
-					dpr,
-				),
-			};
-		} catch (err) {
-			if (err instanceof Error) {
-				console.warn(
-					`Could not replace preview image url with fastly resizer url for recipe ${recipe.id} - ${err.message}`,
-					err,
-				);
-			}
-			return recipe;
+export const replaceImageUrlsWithFastly = <R extends RecipeWithImageData>(
+	recipe: R,
+): R => {
+	if (
+		typeof recipe.featuredImage === 'string' ||
+		typeof recipe.previewImage === 'string'
+	) {
+		return recipe;
+	}
+
+	try {
+		return {
+			...recipe,
+			previewImage: replaceFastlyUrl(
+				recipe.id,
+				recipe.previewImage ?? recipe.featuredImage,
+				PreviewImageWidth,
+				ImageDpr,
+			),
+			featuredImage: replaceFastlyUrl(
+				recipe.id,
+				recipe.featuredImage,
+				FeaturedImageWidth,
+				ImageDpr,
+			),
+		};
+	} catch (err) {
+		if (err instanceof Error) {
+			console.warn(
+				`Could not replace preview image url with fastly resizer url for recipe ${recipe.id} - ${err.message}`,
+				err,
+			);
 		}
-	};
+		return recipe;
+	}
+};
 
 /**
  * Composer will pass an ADT, in the format {type: "contributor", tagId: string} | {type: "freetext", text: string}.  We need to put the 'contributor' tags into

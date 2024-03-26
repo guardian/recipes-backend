@@ -6,6 +6,7 @@ import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
 import {registerMetric} from "@recipes-api/cwmetrics";
 import type {Contributor, RecipeReferenceWithoutChecksum} from './models';
+import { handleFreeTextContribs, type RecipeWithImageData, replaceImageUrlsWithFastly } from "./transform";
 
 export async function extractAllRecipesFromArticle(content: Content): Promise<RecipeReferenceWithoutChecksum[]> {
   if (content.type == ContentType.ARTICLE && content.blocks) {
@@ -56,8 +57,10 @@ function determineRecipeUID(recipeIdField: string, canonicalId: string): string 
 
 function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeReferenceWithoutChecksum | null {
   try {
-    const recipeData = JSON.parse(recipeJson) as (Record<string, unknown> & {contributors: Array<string | Contributor>});
-    const updatedRecipe = replaceImageUrlWithFastlyResizer(handleFreeTextContribs(recipeData));
+    const recipeData = JSON.parse(recipeJson) as (Record<string, unknown> & {contributors: Array<string | Contributor>} & RecipeWithImageData);
+    const updatedRecipe = replaceImageUrlsWithFastly(
+      handleFreeTextContribs(recipeData)
+    );
     const rerendedJson = JSON.stringify(updatedRecipe);
 
     if (!recipeData.id) {
@@ -65,7 +68,7 @@ function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeReference
       return null
     } else {
       return <RecipeReferenceWithoutChecksum>{
-        recipeUID: determineRecipeUID(recipeData.id as string, canonicalId),
+        recipeUID: determineRecipeUID(recipeData.id , canonicalId),
         jsonBlob: rerendedJson
       }
     }
