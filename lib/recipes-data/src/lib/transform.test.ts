@@ -111,7 +111,7 @@ describe('Recipe transforms', () => {
 			);
 		});
 
-		it('should ignore if the featured image is missing a cropId', () => {
+		it('should attempt to extract cropId from original URL if the featured image is missing a cropId', () => {
 			const { cropId: _, ...featuredImage } = exampleRecipe.featuredImage;
 			const recipeWithFeaturedImageWithoutCropId = {
 				...exampleRecipe,
@@ -125,12 +125,12 @@ describe('Recipe transforms', () => {
 			assertImageUrls(
 				recipeWithFeaturedImageWithoutCropId,
 				transformedRecipeReference,
-				'https://media.guim.co.uk/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/2000.jpg',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/2000.jpg?width=700&dpr=1&s=none',
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_257_5626_6188/master/2000.jpg?width=300&dpr=1&s=none',
 			);
 		});
 
-		it('should ignore if the preview image is missing a cropId', () => {
+		it('should attempt to extract a crop from the original URL if the preview image is missing a cropId', () => {
 			const { cropId: _, ...previewImage } = exampleRecipe.previewImage;
 			const recipeWithPreviewImageWithoutCropId = {
 				...exampleRecipe,
@@ -145,7 +145,29 @@ describe('Recipe transforms', () => {
 				recipeWithPreviewImageWithoutCropId,
 				transformedRecipeReference,
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_2412_5626_3375/master/2000.jpg?width=700&dpr=1&s=none',
-				'https://media.guim.co.uk/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/2000.jpg',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/2000.jpg?width=300&dpr=1&s=none',
+			);
+		});
+
+    it('should not attempt to extract a crop from the original URL if the featured image URL is not a guim URL', () => {
+			const { cropId: _, ...previewImage } = exampleRecipe.previewImage;
+			const recipeWithPreviewImageWithoutCropId = {
+				...exampleRecipe,
+				previewImage: {
+          ...previewImage,
+          url: "https://cdn.road.cc/sites/default/files/styles/main_width/public/Wat-duck.png"
+        },
+			};
+
+			const transformedRecipeReference = replaceImageUrlsWithFastly(
+				recipeWithPreviewImageWithoutCropId,
+			);
+
+			assertImageUrls(
+				recipeWithPreviewImageWithoutCropId,
+				transformedRecipeReference,
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_2412_5626_3375/master/2000.jpg?width=700&dpr=1&s=none',
+				'https://cdn.road.cc/sites/default/files/styles/main_width/public/Wat-duck.png',
 			);
 		});
 	});

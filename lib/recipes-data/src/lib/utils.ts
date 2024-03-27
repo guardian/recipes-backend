@@ -37,3 +37,7 @@ export function nowTime():Date {
   return new Date();
 }
 
+export const extractCropIdFromGuimUrl = (url: string): string | undefined =>
+	url.match(
+		/https:\/\/.*?\/(?<id>.*?)\/(?<cropId>\d{1,4}_\d{1,4}_\d{1,4}_\d{1,4})\/(?<fileName>.*?)$/,
+	)?.groups?.cropId;

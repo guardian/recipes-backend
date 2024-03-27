@@ -1,5 +1,6 @@
 import { FeaturedImageWidth, ImageDpr, PreviewImageWidth } from './config';
 import type { Contributor, RecipeImage } from './models';
+import { extractCropIdFromGuimUrl } from './utils';
 
 const getFastlyUrl = (
 	imageId: string,
@@ -16,7 +17,8 @@ export const replaceFastlyUrl = (
 	desiredWidth: number,
 	dpr: number,
 ): RecipeImage => {
-	const { width, mediaId, cropId } = image;
+	const { width, mediaId } = image;
+  const cropId = image.cropId ?? extractCropIdFromGuimUrl(image.url);
 
 	if (!cropId) {
 		console.warn(
