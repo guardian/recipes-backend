@@ -118,7 +118,7 @@ export function recipeReferenceFromIndexEntry(entry: RecipeIndexEntry, jsonBlob:
 
 export type RecipeImage = {
 	url: string;
-	mediaId: string;
+	mediaId?: string;
 	cropId?: string;
 	source?: string;
 	photographer?: string;

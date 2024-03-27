@@ -23,6 +23,14 @@ export const replaceFastlyUrl = (
 	dpr: number,
 ): RecipeImage => {
 	const { width, mediaId } = image;
+
+	if (!mediaId) {
+		console.warn(
+			`Error adding fastly URL to recipe ${recipeId} - no mediaId found for image ${JSON.stringify(image)}`,
+		);
+		return image;
+	}
+
 	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- we're testing for an empty string
 	const cropId = image.cropId || extractCropIdFromGuimUrl(image.url);
 

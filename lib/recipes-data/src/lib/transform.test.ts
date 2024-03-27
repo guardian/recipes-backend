@@ -121,6 +121,25 @@ describe('Recipe transforms', () => {
 			);
 		});
 
+    it('should failover if the mediaId is not present', () => {
+			const { mediaId: _, ...featuredImage } = recipes[0].featuredImage;
+			const recipeWithFeaturedImageWithoutCropId = {
+				...recipes[0],
+				featuredImage,
+			};
+
+			const transformedRecipeReference = replaceImageUrlsWithFastly(
+				recipeWithFeaturedImageWithoutCropId,
+			);
+
+			assertImageUrls(
+				recipes[0],
+				transformedRecipeReference,
+				'https://media.guim.co.uk/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/2000.jpg',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_257_5626_6188/master/2000.jpg?width=300&dpr=1&s=none',
+			);
+		});
+
 		it("should backfill the preview image if there isn't one", () => {
 			const { previewImage: _, ...recipeWithoutPreview } = recipes[0];
 
