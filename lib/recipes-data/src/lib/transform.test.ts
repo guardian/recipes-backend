@@ -1,5 +1,5 @@
 import type { Contributor } from './models';
-import type { RecipeFixture} from './recipe-fixtures';
+import type { RecipeFixture } from './recipe-fixtures';
 import { recipes } from './recipe-fixtures';
 import {
 	handleFreeTextContribs,
@@ -99,6 +99,25 @@ describe('Recipe transforms', () => {
 				transformedRecipeReference,
 				'https://i.guim.co.uk/img/media/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/master/2000.jpg?width=700&dpr=1&s=none',
 				'https://i.guim.co.uk/img/media/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/master/2000.jpg?width=300&dpr=1&s=none',
+			);
+		});
+
+		it('should assume a default width if the originalWidth field is not present on the image', () => {
+			const { width: _, ...featuredImage } = recipes[0].featuredImage;
+			const recipeWithFeaturedImageWithoutCropId = {
+				...recipes[0],
+				featuredImage,
+			};
+
+			const transformedRecipeReference = replaceImageUrlsWithFastly(
+				recipeWithFeaturedImageWithoutCropId,
+			);
+
+			assertImageUrls(
+				recipes[0],
+				transformedRecipeReference,
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_2412_5626_3375/master/2000.jpg?width=700&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_257_5626_6188/master/2000.jpg?width=300&dpr=1&s=none',
 			);
 		});
 

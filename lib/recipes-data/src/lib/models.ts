@@ -126,8 +126,8 @@ export type RecipeImage = {
 	caption?: string;
 	mediaApiUri?: string;
 	displayCredit?: boolean;
-	width: number;
-	height: number;
+	width?: number;
+	height?: number;
 };
 
 export type { RecipeDatabaseKey, RecipeDatabaseEntry,RecipeIndex, RecipeReference, RecipeReferenceWithoutChecksum };

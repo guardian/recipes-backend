@@ -5,11 +5,16 @@ import { extractCropIdFromGuimUrl } from './utils';
 const getFastlyUrl = (
 	imageId: string,
 	cropId: string,
-	originalWidth: number,
-	desiredWidth: number,
 	dpr: number,
-) =>
-	`https://i.guim.co.uk/img/media/${imageId}/${cropId}/master/${originalWidth}.jpg?width=${desiredWidth}&dpr=${dpr}&s=none`;
+	desiredWidth: number,
+	originalWidth?: number,
+) => {
+	// This works because if we cannot find the correct image, Fastly Resizer fails over to the closest width.
+  // Assumption is that 2000 is a safe width to start with and Fastly will work downwards to a width it can find.
+	// See https://github.com/guardian/fastly-image-service/blob/34399e065bc85b8ca4d5adeeca02b4b6404eaa98/fastly-io_guim_co_uk/src/main/resources/varnish/main.vcl#L122
+	const width = originalWidth ?? '2000';
+	return `https://i.guim.co.uk/img/media/${imageId}/${cropId}/master/${width}.jpg?width=${desiredWidth}&dpr=${dpr}&s=none`;
+};
 
 export const replaceFastlyUrl = (
 	recipeId: string,
@@ -30,14 +35,8 @@ export const replaceFastlyUrl = (
 
 	return {
 		...image,
-		url: getFastlyUrl(mediaId, cropId, width, desiredWidth, dpr),
+		url: getFastlyUrl(mediaId, cropId, dpr, desiredWidth, width),
 	};
-};
-
-export type ImageConfig = {
-	featuredImageWidth: number;
-	previewImageWidth: number;
-	dpr: number;
 };
 
 export type RecipeWithImageData = {
