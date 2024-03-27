@@ -116,4 +116,18 @@ export function recipeReferenceFromIndexEntry(entry: RecipeIndexEntry, jsonBlob:
   return {...entry, jsonBlob}
 }
 
+export type RecipeImage = {
+	url: string;
+	mediaId?: string;
+	cropId?: string;
+	source?: string;
+	photographer?: string;
+	imageType?: string;
+	caption?: string;
+	mediaApiUri?: string;
+	displayCredit?: boolean;
+	width?: number;
+	height?: number;
+};
+
 export type { RecipeDatabaseKey, RecipeDatabaseEntry,RecipeIndex, RecipeReference, RecipeReferenceWithoutChecksum };

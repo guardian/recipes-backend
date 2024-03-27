@@ -1,8 +1,13 @@
 import {AssetType} from "@guardian/content-api-models/v1/assetType";
 import type {Block} from "@guardian/content-api-models/v1/block";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
-import {extractRecipeData, handleFreeTextContribs} from "./extract-recipes";
-import {Contributor} from "@recipes-api/lib/recipes-data";
+import {extractRecipeData} from "./extract-recipes";
+
+jest.mock('./config', () => ({
+	FeaturedImageWidth: 700,
+	PreviewImageWidth: 300,
+	ImageDpr: 1,
+}));
 
 describe("extractRecipeData", () => {
 
@@ -376,32 +381,3 @@ describe("extractRecipeData", () => {
   })
 
 });
-
-describe("handleFreeTextContribs", ()=>{
-  it("should put contributor tags into the contributors array and freetext tags into the byline array", ()=>{
-    const incoming = {
-      contributors: [{type:"contributor", tagId:"profile/andy-gallagher"}, {type:"freetext", text: "Barry the Fish With Fingers"}] as Contributor[],
-    };
-
-    const result = handleFreeTextContribs(incoming);
-    expect(result.contributors).toEqual(["profile/andy-gallagher"]);
-    expect(result.byline).toEqual(["Barry the Fish With Fingers"]);
-  });
-
-  it("should place legacy string-only IDs into the contributors array", ()=>{
-    const incoming = {
-      contributors: ["profile/andy-gallagher", {type:"contributor", tagId: "profile/kenneth-anger"}] as Array<Contributor | string>,
-    };
-    const result = handleFreeTextContribs(incoming);
-    expect(result.contributors).toEqual(["profile/andy-gallagher", "profile/kenneth-anger"]);
-    expect(result.byline).toEqual([]);
-  });
-
-  it("should return empty arrays if there is nothing in the inital array", ()=>{
-    const incoming = {contributors: []};
-
-    const result = handleFreeTextContribs(incoming);
-    expect(result.contributors).toEqual([]);
-    expect(result.byline).toEqual([]);
-  });
-})

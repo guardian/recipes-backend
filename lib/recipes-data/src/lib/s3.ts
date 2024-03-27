@@ -1,6 +1,6 @@
 import * as process from "process";
 import {DeleteObjectCommand, NoSuchKey, PutObjectCommand, S3Client, S3ServiceException} from "@aws-sdk/client-s3";
-import {StaticBucketName as Bucket, FastlyApiKey, MaximumRetries} from "./config";
+import {StaticBucketName as Bucket, FastlyApiKey, MaximumRetries } from "./config";
 import {FastlyError, sendFastlyPurgeRequest, sendFastlyPurgeRequestWithRetries} from "./fastly";
 import type {RecipeIndex, RecipeReference} from './models';
 import {awaitableDelay} from "./utils";
