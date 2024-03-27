@@ -1,5 +1,6 @@
-import type { Contributor, RecipeImage } from './models';
-import { exampleRecipe } from './recipe-fixtures';
+import type { Contributor } from './models';
+import type { RecipeFixture} from './recipe-fixtures';
+import { recipes } from './recipe-fixtures';
 import {
 	handleFreeTextContribs,
 	replaceImageUrlsWithFastly,
@@ -10,12 +11,6 @@ jest.mock('./config', () => ({
 	PreviewImageWidth: 300,
 	ImageDpr: 1,
 }));
-
-type RecipeFixture = {
-	id: string;
-	featuredImage: RecipeImage;
-	previewImage?: RecipeImage;
-};
 
 describe('Recipe transforms', () => {
 	describe('handleFreeTextContribs', () => {
@@ -85,20 +80,30 @@ describe('Recipe transforms', () => {
 			}
 		};
 
-		it('should replace a preview image with a fastly URL, if the relevant fields are present', () => {
-			const transformedRecipeReference =
-				replaceImageUrlsWithFastly(exampleRecipe);
+		it('should replace a preview image with a fastly URL, if the relevant fields are present - 1', () => {
+			const transformedRecipeReference = replaceImageUrlsWithFastly(recipes[0]);
 
 			assertImageUrls(
-				exampleRecipe,
+				recipes[0],
 				transformedRecipeReference,
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_2412_5626_3375/master/2000.jpg?width=700&dpr=1&s=none',
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_257_5626_6188/master/2000.jpg?width=300&dpr=1&s=none',
 			);
 		});
 
+		it('should replace a preview image with a fastly URL, if the relevant fields are present - 2', () => {
+			const transformedRecipeReference = replaceImageUrlsWithFastly(recipes[1]);
+
+			assertImageUrls(
+				recipes[1],
+				transformedRecipeReference,
+				'https://i.guim.co.uk/img/media/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/master/2000.jpg?width=700&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/master/2000.jpg?width=300&dpr=1&s=none',
+			);
+		});
+
 		it("should backfill the preview image if there isn't one", () => {
-			const { previewImage: _, ...recipeWithoutPreview } = exampleRecipe;
+			const { previewImage: _, ...recipeWithoutPreview } = recipes[0];
 
 			const transformedRecipeReference =
 				replaceImageUrlsWithFastly(recipeWithoutPreview);
@@ -112,9 +117,9 @@ describe('Recipe transforms', () => {
 		});
 
 		it('should attempt to extract cropId from original URL if the featured image is missing a cropId', () => {
-			const { cropId: _, ...featuredImage } = exampleRecipe.featuredImage;
+			const { cropId: _, ...featuredImage } = recipes[0].featuredImage;
 			const recipeWithFeaturedImageWithoutCropId = {
-				...exampleRecipe,
+				...recipes[0],
 				featuredImage,
 			};
 
@@ -131,9 +136,9 @@ describe('Recipe transforms', () => {
 		});
 
 		it('should attempt to extract a crop from the original URL if the preview image is missing a cropId', () => {
-			const { cropId: _, ...previewImage } = exampleRecipe.previewImage;
+			const { cropId: _, ...previewImage } = recipes[0].previewImage!;
 			const recipeWithPreviewImageWithoutCropId = {
-				...exampleRecipe,
+				...recipes[0],
 				previewImage,
 			};
 
@@ -149,14 +154,14 @@ describe('Recipe transforms', () => {
 			);
 		});
 
-    it('should not attempt to extract a crop from the original URL if the featured image URL is not a guim URL', () => {
-			const { cropId: _, ...previewImage } = exampleRecipe.previewImage;
+		it('should not attempt to extract a crop from the original URL if the featured image URL is not a guim URL', () => {
+			const { cropId: _, ...previewImage } = recipes[0].previewImage!;
 			const recipeWithPreviewImageWithoutCropId = {
-				...exampleRecipe,
+				...recipes[0],
 				previewImage: {
-          ...previewImage,
-          url: "https://cdn.road.cc/sites/default/files/styles/main_width/public/Wat-duck.png"
-        },
+					...previewImage,
+					url: 'https://cdn.road.cc/sites/default/files/styles/main_width/public/Wat-duck.png',
+				},
 			};
 
 			const transformedRecipeReference = replaceImageUrlsWithFastly(

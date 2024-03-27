@@ -64,6 +64,10 @@ describe('extractCropIdFromGuimUrl', () => {
 				'https://media.guim.co.uk/d7964a461c5ce4449395da3ee800965b4cb252b7/705_779_3876_3873/3876.jpg',
 				'705_779_3876_3873',
 			],
+      [
+        'https://media.guim.co.uk/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/2000.jpg',
+        '258_0_7328_4400'
+      ]
 		];
 
 		urlsToAssert.forEach(([url, cropId]) => assertCropId(url, cropId));

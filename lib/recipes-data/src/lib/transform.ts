@@ -18,7 +18,8 @@ export const replaceFastlyUrl = (
 	dpr: number,
 ): RecipeImage => {
 	const { width, mediaId } = image;
-  const cropId = image.cropId ?? extractCropIdFromGuimUrl(image.url);
+	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- we're testing for an empty string
+	const cropId = image.cropId || extractCropIdFromGuimUrl(image.url);
 
 	if (!cropId) {
 		console.warn(
