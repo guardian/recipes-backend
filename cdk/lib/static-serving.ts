@@ -18,6 +18,7 @@ export class StaticServing extends Construct {
       bucketName: `recipes-backend${maybePreview}-static-${scope.stage.toLowerCase()}`,
       enforceSSL: true,
       removalPolicy: RemovalPolicy.DESTROY,
+      versioned: true
     });
 
     const cdnReadUser = new User(this, "cdnRead", {
