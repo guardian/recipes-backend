@@ -54,8 +54,8 @@ describe("update_processor.handleContentUpdate", ()=>{
     ];
 
     const refsToRemove:RecipeIndexEntry[] = [
-      { recipeUID: "uid-recep-2", checksum: "xxxyyyzzz"},
-      { recipeUID: "uid-recep-4", checksum: "zzzyyyqqq"}
+      { recipeUID: "uid-recep-2", checksum: "xxxyyyzzz", capiArticleId: "path/to/article"},
+      { recipeUID: "uid-recep-4", checksum: "zzzyyyqqq", capiArticleId: "path/to/article"}
     ];
 
     // @ts-ignore -- Typescript doesn't know that this is a mock
@@ -126,8 +126,8 @@ describe("update_processor.handleContentUpdate", ()=>{
     ];
 
     const refsToRemove:RecipeIndexEntry[] = [
-      { recipeUID: "uid-recep-2", checksum: "xxxyyyzzz"},
-      { recipeUID: "uid-recep-4", checksum: "zzzyyyqqq"}
+      { recipeUID: "uid-recep-2", checksum: "xxxyyyzzz", capiArticleId: "path/to/article"},
+      { recipeUID: "uid-recep-4", checksum: "zzzyyyqqq", capiArticleId: "path/to/article"}
     ];
 
     // @ts-ignore -- Typescript doesn't know that this is a mock
@@ -199,8 +199,8 @@ describe("update_processor.handleContentUpdate", ()=>{
     ];
 
     const refsToRemove:RecipeIndexEntry[] = [
-      { recipeUID: "uid-recep-2", checksum: "xxxyyyzzz"},
-      { recipeUID: "uid-recep-4", checksum: "zzzyyyqqq"}
+      { recipeUID: "uid-recep-2", checksum: "xxxyyyzzz", capiArticleId: "path/to/article"},
+      { recipeUID: "uid-recep-4", checksum: "zzzyyyqqq", capiArticleId: "path/to/article"}
     ];
 
     // @ts-ignore -- Typescript doesn't know that this is a mock

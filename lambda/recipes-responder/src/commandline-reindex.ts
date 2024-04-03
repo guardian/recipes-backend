@@ -2,6 +2,7 @@ import {parseArgs} from "node:util";
 import {CapiKey} from "./config";
 import {handleContentUpdate} from "./update_processor";
 import {PollingAction, retrieveContent} from "./update_retrievable_processor";
+import {recipeByUID} from "@recipes-api/lib/recipes-data";
 
 const oldLog = console.log;
 const oldError = console.error;
@@ -11,20 +12,30 @@ global.console.log = (...args: unknown[])=>oldLog("\x1b[34m ", ...args, "\x1b[0m
 global.console.error = (...args: unknown[]) => oldError("\x1b[31m ", ...args, "\x1b[0m")
 global.console.debug = (...args: unknown[]) => undefined //oldDebug("\x1b[30m ", ...args, "\x1b[0m")
 
-function getQueryUri(maybeCapiUri?:string, maybeComposerId?:string):string {
-  if(maybeCapiUri) {
+async function getQueryUri(maybeCapiUri?:string, maybeComposerId?:string, maybeRecipeUid?: string):Promise<string> {
+  const capiBase = process.env["STAGE"]=="PROD" ? "https://content.guardianapis.com" : "https://content.code.dev-guardianapis.com";
+
+  if(maybeRecipeUid) {
+    const indexEntry = await recipeByUID(maybeRecipeUid);
+    if(indexEntry) {
+      console.log(`Recipe ${maybeRecipeUid} belongs to CAPI article ${indexEntry.capiArticleId}`);
+      return `${capiBase}/${indexEntry.capiArticleId}`
+    } else {
+      throw new Error(`Could not find a recipe with ID ${maybeRecipeUid}. Are you sure you are querying the right environment?`)
+    }
+  } else if(maybeCapiUri) {
     return maybeCapiUri
   } else if(maybeComposerId) {
-    const capiBase = process.env["STAGE"]=="PROD" ? "https://content.guardianapis.com" : "https://content.code.dev-guardianapis.com";
     return `${capiBase}/internal-code/composer/${maybeComposerId}`
-  } else {  //shouldn't happen due to caller checks
-    return "";
+  } else {
+    throw new Error("You must specify either recipe UID, capi URI or composer ID")
   }
 }
+
 async function main() {
 //Parse the commandline arguments
   const {
-    values: {help, composerId, capiUri},
+    values: {help, composerId, capiUri, recipeUid, recipeVersion},
   } = parseArgs({
     options: {
       help: {
@@ -64,21 +75,19 @@ async function main() {
     process.exit(1);
   }
 
-  if (!!capiUri || !!composerId) {
-    const queryUri = getQueryUri(capiUri, composerId)
-    const pollingResult = await retrieveContent(queryUri);
-    switch(pollingResult.action) {
-      case PollingAction.CONTENT_EXISTS:
-        console.log(`Found article with title '${pollingResult.content?.webTitle ?? ""}' published ${pollingResult.content?.webPublicationDate?.iso8601 ?? ""}`);
-        if(pollingResult.content) {
-          await handleContentUpdate(pollingResult.content);
-        } else {
-          throw new Error("Got a positive result but no content?? This must be a bug :(");
-        }
-        break;
-      default:
-        throw new Error(`Unable to retrieve content from ${queryUri}`)
-    }
+  const queryUri = await getQueryUri(capiUri, composerId, recipeUid)
+  const pollingResult = await retrieveContent(queryUri);
+  switch(pollingResult.action) {
+    case PollingAction.CONTENT_EXISTS:
+      console.log(`Found article with title '${pollingResult.content?.webTitle ?? ""}' published ${pollingResult.content?.webPublicationDate?.iso8601 ?? ""}`);
+      if(pollingResult.content) {
+        await handleContentUpdate(pollingResult.content);
+      } else {
+        throw new Error("Got a positive result but no content?? This must be a bug :(");
+      }
+      break;
+    default:
+      throw new Error(`Unable to retrieve content from ${queryUri}`)
   }
 }
 
