@@ -57,7 +57,7 @@ export async function handleContentUpdate(content:Content):Promise<number>
     return allRecipes.length + entriesToRemove.length;
   } catch(err) {
     //log out what actually caused the breakage
-    console.error("Failed article was: ", JSON.stringify(content));
+    //console.error("Failed article was: ", JSON.stringify(content));
     console.error(err);
     throw err;
   }

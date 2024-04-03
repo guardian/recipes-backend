@@ -2,7 +2,7 @@ import {parseArgs} from "node:util";
 import {CapiKey} from "./config";
 import {handleContentUpdate} from "./update_processor";
 import {PollingAction, retrieveContent} from "./update_retrievable_processor";
-import {recipeByUID} from "@recipes-api/lib/recipes-data";
+import {recipeByUID, retrieveIndexData} from "@recipes-api/lib/recipes-data";
 
 const oldLog = console.log;
 const oldError = console.error;
@@ -24,7 +24,11 @@ async function getQueryUri(maybeCapiUri?:string, maybeComposerId?:string, maybeR
       throw new Error(`Could not find a recipe with ID ${maybeRecipeUid}. Are you sure you are querying the right environment?`)
     }
   } else if(maybeCapiUri) {
-    return maybeCapiUri
+    if(maybeCapiUri.startsWith("http")) {
+      return maybeCapiUri;
+    } else {
+      return `${capiBase}/${maybeCapiUri}`;
+    }
   } else if(maybeComposerId) {
     return `${capiBase}/internal-code/composer/${maybeComposerId}`
   } else {
@@ -32,50 +36,7 @@ async function getQueryUri(maybeCapiUri?:string, maybeComposerId?:string, maybeR
   }
 }
 
-async function main() {
-//Parse the commandline arguments
-  const {
-    values: {help, composerId, capiUri, recipeUid, recipeVersion},
-  } = parseArgs({
-    options: {
-      help: {
-        type: "boolean",
-        short: "h"
-      },
-      recipeVersion: {
-        type: "string"
-      },
-      recipeUid: {
-        type: "string"
-      },
-      composerId: {
-        type: "string",
-      },
-      capiUri: {
-        type: "string",
-      },
-      test: {
-        type: "boolean",
-        short: "t"
-      }
-    }
-  });
-
-  if (help) {
-    console.log("Performs a re-index of the specified recipes in the recipe backend. Requires CAPI dev privileges to run.");
-    console.log("This expects the following environment variables to be set:");
-    console.log(" - CONTENT_URL_BASE  - base URL of the Guardian content API (e.g. https://content.guardianapis.com)");
-    console.log(" - CAPI_KEY          - valid Content API key for internal-tier access to the CAPI environment given by the base URL");
-    console.log("You must specify exactly one of --recipeVersion {checksumId} / --recipeUid {uid} / --composerId {composerId} / --capiId {capiId} ");
-    process.exit(0);
-  }
-
-  if (!CapiKey || CapiKey == "") {
-    console.error("You need to set the CAPI_KEY environment variable to a valid, internal-tier CAPI key for this to work");
-    process.exit(1);
-  }
-
-  const queryUri = await getQueryUri(capiUri, composerId, recipeUid)
+async function reindex(queryUri:string):Promise<void> {
   const pollingResult = await retrieveContent(queryUri);
   switch(pollingResult.action) {
     case PollingAction.CONTENT_EXISTS:
@@ -88,6 +49,98 @@ async function main() {
       break;
     default:
       throw new Error(`Unable to retrieve content from ${queryUri}`)
+  }
+}
+
+async function main() {
+//Parse the commandline arguments
+  const {
+    values: {help, composerId, capiUri, recipeUid, all, test},
+  } = parseArgs({
+    options: {
+      help: {
+        type: "boolean",
+        short: "h"
+      },
+      recipeUid: {
+        type: "string"
+      },
+      composerId: {
+        type: "string",
+      },
+      capiUri: {
+        type: "string",
+      },
+      all: {
+        type: "boolean",
+        short: "a"
+      },
+      test: {
+        type: "boolean",
+        short: "t"
+      }
+    }
+  });
+
+  if (help) {
+    console.log("Performs a re-index of the specified recipes in the recipe backend. Requires CAPI dev privileges to run.");
+    console.log("This expects the following environment variables to be set. You can get the values by running `./get-local-config.sh`:");
+    console.log(" - STACK              - deployment stack, required as it's a metrics param");
+    console.log(" - LAST_UPDATED_INDEX - name of the Dynamo index for querying `lastUpdated");
+    console.log(" - INDEX_TABLE        - Dynamo table that holds the index");
+    console.log(" - STATIC_BUCKET      - bucket that holds the static content");
+    console.log(" - STAGE              - choose whether to target CODE or PROD");
+    console.log(" - CONTENT_URL_BASE   - base URL of the Recipes API");
+    console.log(" - FASTLY_API_KEY     - API key to allow flush of the Fastly cache");
+    console.log(" - CAPI_KEY           - valid Content API key for internal-tier access to the CAPI environment given by the base URL");
+
+    console.log("You must specify exactly one of  --recipeUid {uid} / --composerId {composerId} / --capiUri {capi-uri} / --all to indicate which content to re-index");
+    process.exit(0);
+  }
+
+  if (!CapiKey || CapiKey == "") {
+    console.error("You need to set the CAPI_KEY environment variable to a valid, internal-tier CAPI key for this to work");
+    process.exit(1);
+  }
+
+  if(process.env["STACK"]) {
+    const msg = `Performing re-index operations on ${process.env["STAGE"]}`;
+
+    if(process.env["STAGE"]=="PROD") console.error(msg); else console.log(msg);
+    console.log("------------------------------------------------------\n");
+  }
+
+  if(all) {
+    const index = await retrieveIndexData();
+    console.log(`Re-index all: index was last updated at ${index.lastUpdated.toISOString()}`);
+    const articleIdSet = index.recipes.reduce<Set<string>>((idSet, entry)=>(
+      idSet.add(entry.capiArticleId)
+    ), new Set<string>());
+
+    const articleIdList = Array.from(articleIdSet.values());
+
+    console.log(`Re-index all: Found ${index.recipes.length} recipes to re-index across ${articleIdList.length} articles`);
+    if(test) {
+      console.log("Not performing any operations as --test was specified")
+    } else {
+      const total = articleIdList.length;
+      let i = 1;
+      for (const articleId of articleIdList) {
+        console.log("------------------------------------------------------");
+        console.log(`Article ${i} / ${total}...\n`);
+        const queryUri = await getQueryUri(articleId, undefined, undefined);
+        await reindex(queryUri);
+        console.log("------------------------------------------------------\n");
+        i++;
+      }
+    }
+  } else {
+    const queryUri = await getQueryUri(capiUri, composerId, recipeUid);
+    if(test) {
+      console.log("Not performing any operations as --test was specified")
+    } else {
+      await reindex(queryUri);
+    }
   }
 }
 
