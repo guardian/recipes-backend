@@ -10,7 +10,7 @@ import {handleContentUpdate} from "./update_processor";
 
 // Why can't we just import this from capi module? It appears that the info gets erased at transpile time, so we end up
 //with object undefined errors at runtime :-(
-enum PollingAction {
+export enum PollingAction {
   CONTENT_EXISTS,
   CONTENT_MISSING,
   CONTENT_GONE,
@@ -20,7 +20,7 @@ enum PollingAction {
   RATE_LIMITED
 }
 
-async function retrieveContent(capiUrl:string) :Promise<PollingResult>{
+export async function retrieveContent(capiUrl:string) :Promise<PollingResult>{
   if(!CapiKey) {
     throw new Error("You need to set CAPI_KEY in order to make requests to CAPI");
   }

@@ -4,6 +4,13 @@
 	"sourceRoot": "lambda/recipes-responder/src",
 	"projectType": "application",
 	"targets": {
+    "commandline-reindex": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["ts-node --project tsconfig.exec.json -r tsconfig-paths/register src/commandline-reindex.ts"],
+        "cwd": "lambda/recipes-responder"
+      }
+    },
     "build": {
       "executor": "nx:run-commands",
       "options": {

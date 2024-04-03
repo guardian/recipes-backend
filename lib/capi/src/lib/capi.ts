@@ -1,6 +1,5 @@
 /* eslint @typescript-eslint/naming-convention: "off"  -- PollingAction uses a more CAPI-like convention*/
 import type {Content} from "@guardian/content-api-models/v1/content";
-import fetch from "node-fetch";
 import {deserializeItemResponse} from "./deserialize";
 
 export enum PollingAction {

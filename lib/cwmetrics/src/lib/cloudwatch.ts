@@ -5,6 +5,7 @@ const cwClient = new CloudWatchClient({region: process.env["AWS_REGION"]});
 
 export type KnownMetric = "FailedRecipes" | "SuccessfulRecipes" | "UpdatesTotalOfArticle";
 
+
 export async function registerMetric(metricName: KnownMetric, value: number) {
   const req = new PutMetricDataCommand({
     Namespace: "RecipeBackend",
@@ -28,5 +29,5 @@ export async function registerMetric(metricName: KnownMetric, value: number) {
   });
 
   const response = await cwClient.send(req);
-  console.log(`Updated ${metricName} metric after ${response.$metadata.attempts ?? 1} attempts`);
+  console.debug(`Updated ${metricName} metric after ${response.$metadata.attempts ?? 1} attempts`);
 }
