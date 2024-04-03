@@ -9,11 +9,22 @@ const oldDebug = console.debug;
 
 global.console.log = (...args: unknown[])=>oldLog("\x1b[34m ", ...args, "\x1b[0m")
 global.console.error = (...args: unknown[]) => oldError("\x1b[31m ", ...args, "\x1b[0m")
-global.console.debug = (...args: unknown[]) => oldDebug("\x1b[30m ", ...args, "\x1b[0m")
+global.console.debug = (...args: unknown[]) => undefined //oldDebug("\x1b[30m ", ...args, "\x1b[0m")
+
+function getQueryUri(maybeCapiUri?:string, maybeComposerId?:string):string {
+  if(maybeCapiUri) {
+    return maybeCapiUri
+  } else if(maybeComposerId) {
+    const capiBase = process.env["STAGE"]=="PROD" ? "https://content.guardianapis.com" : "https://content.code.dev-guardianapis.com";
+    return `${capiBase}/internal-code/composer/${maybeComposerId}`
+  } else {  //shouldn't happen due to caller checks
+    return "";
+  }
+}
 async function main() {
 //Parse the commandline arguments
   const {
-    values: {help, composerId, capiId},
+    values: {help, composerId, capiUri},
   } = parseArgs({
     options: {
       help: {
@@ -29,7 +40,7 @@ async function main() {
       composerId: {
         type: "string",
       },
-      capiId: {
+      capiUri: {
         type: "string",
       },
       test: {
@@ -53,8 +64,9 @@ async function main() {
     process.exit(1);
   }
 
-  if (capiId) {
-    const pollingResult = await retrieveContent(capiId);
+  if (!!capiUri || !!composerId) {
+    const queryUri = getQueryUri(capiUri, composerId)
+    const pollingResult = await retrieveContent(queryUri);
     switch(pollingResult.action) {
       case PollingAction.CONTENT_EXISTS:
         console.log(`Found article with title '${pollingResult.content?.webTitle ?? ""}' published ${pollingResult.content?.webPublicationDate?.iso8601 ?? ""}`);
@@ -65,7 +77,7 @@ async function main() {
         }
         break;
       default:
-        throw new Error(`Unable to retrieve content from ${capiId}`)
+        throw new Error(`Unable to retrieve content from ${queryUri}`)
     }
   }
 }
