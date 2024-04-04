@@ -13,7 +13,7 @@ fi
 
 echo Found stack "$STACK_NAME"
 
-LAMBDA_FUNCTION=$(aws cloudformation describe-stack-resources --stack-name content-api-CODE-recipes-backend --query 'StackResources[?ResourceType == `AWS::Lambda::Function` && starts_with(LogicalResourceId, `updater`)]' | jq -r '.[].PhysicalResourceId')
+LAMBDA_FUNCTION=$(aws cloudformation describe-stack-resources --stack-name $STACK_NAME --query 'StackResources[?ResourceType == `AWS::Lambda::Function` && starts_with(LogicalResourceId, `updater`)]' | jq -r '.[].PhysicalResourceId')
 
 if [ "$LAMBDA_FUNCTION" == "" ]; then
   echo Could not find updater lambda in the stack definition.  These are the lambdas available:
@@ -22,6 +22,6 @@ if [ "$LAMBDA_FUNCTION" == "" ]; then
 fi
 
 echo Found lambda function "$LAMBDA_FUNCTION". Outputting environment...
-aws lambda get-function --function-name content-api-CODE-recipes-bac-updaterLambdaE2EB52D9-96E3fkPw4vbx --query 'Configuration.Environment.Variables' | perl -n -e'/\"([\w_]+)\": \"(.+)\"/ && print "export $1=$2\n"' | grep -v TELEMETRY > "environ-${STAGE}"
+aws lambda get-function --function-name "$LAMBDA_FUNCTION" --query 'Configuration.Environment.Variables' | perl -n -e'/\"([\w_]+)\": \"(.+)\"/ && print "export $1=$2\n"' | grep -v TELEMETRY > "environ-${STAGE}"
 
 echo You can now run \`source environ-${STAGE}\` to get hold of the environment configuration for $STAGE
