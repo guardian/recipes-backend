@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import {FastlyError, sendFastlyPurgeRequest} from "./fastly";
 
 jest.mock("./config", ()=>({
@@ -6,10 +5,6 @@ jest.mock("./config", ()=>({
 
 }));
 
-jest.mock("node-fetch", ()=>({
-  __esModule: true,
-  default: jest.fn()
-}));
 
 describe("sendFastlyPurgeRequest", ()=>{
   beforeEach(()=>{
@@ -18,11 +13,11 @@ describe("sendFastlyPurgeRequest", ()=>{
 
   it("should POST to the Fastly API with the right URL and headers, using soft-purge at the default", async ()=>{
     const fakeData = JSON.stringify({id: "1234xyz", status: "ok"});
-    //@ts-ignore
-    fetch.mockReturnValue(Promise.resolve({
+
+    jest.spyOn(global, "fetch").mockReturnValue(Promise.resolve({
       text: ()=>Promise.resolve(fakeData),
       status: 200,
-    }))
+    } as Response))
     await sendFastlyPurgeRequest("/path/to/content","fake-key");
 
     //@ts-ignore

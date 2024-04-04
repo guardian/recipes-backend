@@ -1,4 +1,3 @@
-import type {DynamoDBClient} from "@aws-sdk/client-dynamodb";
 import {recipesforArticle, removeAllRecipeIndexEntriesForArticle, removeRecipe} from './dynamo';
 import type { RecipeIndexEntry } from './models';
 import {removeRecipeContent} from "./s3";
@@ -62,6 +61,11 @@ export async function removeAllRecipesForArticle(canonicalArticleId: string): Pr
   const removedEntries = await removeAllRecipeIndexEntriesForArticle(canonicalArticleId);
   console.log(`Taken down article ${canonicalArticleId} had ${removedEntries.length} recipes in it which will also be removed`);
   await Promise.all(removedEntries.map(recep=>removeRecipeContent(recep.checksum, "hard")));
+  try {
+    await Promise.all(removedEntries.map(recep=>sendTelemetryEvent("TakenDown", recep.recipeUID, "")));
+  } catch(err) {
+    console.error(`ERROR [${canonicalArticleId}] - unable to send telemetry: `, err);
+  }
   return removedEntries.length;
 }
 

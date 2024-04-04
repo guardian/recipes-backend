@@ -3,14 +3,11 @@ import {
   DeleteItemCommand,
   DynamoDBClient,
   QueryCommand,
-  QueryCommandInput
 } from "@aws-sdk/client-dynamodb";
 import {mockClient} from "aws-sdk-client-mock";
 import {bulkRemoveRecipe, removeAllRecipeIndexEntriesForArticle, removeRecipe} from './dynamo';
 import type {RecipeDatabaseEntry, RecipeDatabaseKey} from './models';
 import {RecipeDatabaseEntryToDynamo, RecipeDatabaseEntryToIndex} from "./models";
-
-jest.mock("node-fetch");
 
 jest.mock("./config", ()=>({
   indexTableName: "TestTable"
@@ -36,6 +33,7 @@ describe("dynamodb", ()=>{
   beforeEach(()=>{
     mockDynamoClient.reset();
     jest.resetAllMocks();
+    jest.spyOn(global, "fetch").mockImplementation(jest.fn());
   });
 
   describe("dynamodb.removeRecipe", ()=>{
