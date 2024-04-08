@@ -5,6 +5,54 @@
 This is a backend service that translates data from the Content API into a format that apps like 
 https://github.com/guardian/ios-feast can use.
 
+# Operations
+
+## Set up for local operations
+
+You need to have a large number of environment variables set for the tools to work. Fortunately there is a script to make setting them up easier.
+1. Get CAPI credentials from Janus.  You'll need the AWS commandline, and `jq` utility, installed; but you should have these already.
+2. Run `STAGE=CODE ./get-local-config.sh` to generate the file `environ-CODE`. Substitute PROD for CODE to get setup for the Production environment (but be careful!)
+   - I'd recommend deleting the file once you're done with it.
+3. It goes without saying that these environ files should NEVER be committed to the repo.  They are gitignored, but still... don't do it.
+4. Once you have the file, run `source environ-CODE` to set up the environment variables you need to target the CODE environment.
+5. You can now run the tools outlined below.
+
+## How do I re-index content from CAPI out to Feast?
+
+1. Set up for local operations, as above
+2. Run `npm run commandline-reindex -- [--composer-id 1234567] [--capi-uri path/to/article/in/capi] [--recipe-uid 0551534c8d93e8da7bb70553b10fa0d0f62534a3]`
+
+Note that Content API publishes _articles_, wheras we publish _recipes_. There may well be more than one recipe in an article.  This command will therefore
+re-publish _every_ recipe from the given article; it may well change the SHA value (mutable ID) of some of the recipes.  The index will be updated to respect this;
+it's necessary so that the client app knows that the content has changed.
+
+You must specify exactly one of the three optional arguments above.
+- `--composer-id` is the composer ID of an article to re-index. This can be found in the `internalComposerCode` field in CAPI or at the end of a Composer URL (when
+editing a piece of content, the address your browser shows is `/content/{composer-id}`).
+- `--capi-uri` is the path under which the content can be found in CAPI.  It's OK to use either the full URI or the path.  Normally this is the same as the URL
+path under which the content can be found on the website.
+- `--recipe-uid` is an immutable recipe id (UUID) from the Feast app.  This can be found in the index.json or at the bottom of a recipe in the feast app when you
+have Developer Mode turned on.
+
+When this command is run, the normal publication process will be performed on your local machine.  New content will be published, the index updated and the 
+caches flushed.
+
+You will need to force an update on the app to actually see the changes.
+
+## How do I manually force a takedown?
+
+1. Set up for local operations, as above
+2. Find the CAPI path for the article you want to take down. Normally this is the same as the URL path on the Guardian website.
+3. Run `ARTICLE_ID={capi-path} npm run manual-takedown`.
+
+When this command is run, the normal removal process will be performed on your local machine.  All recipes from the article will be removed, the index updated and the
+caches flushed.
+
+**Note** The Feast app does _not_ show content "live"; it downloads and caches it.  Therefore, even when a recipe is "taken down" it can still be
+seen by end-users until their app refreshes its content.
+
+# Development and Deployment
+
 ## Running CDK
 
 The CDK stack is integrated with `nx`, so the regular "npm run synth" in the cdk directory won't work.
@@ -21,7 +69,7 @@ To build _everything_, including the CDK.
 npm test
 ```
 
-Will run the tests on everyhing, including CDK (therefore it will fail if the CDK snapshot is out of sync)
+Will run the tests on everything, including CDK (therefore it will fail if the CDK snapshot is out of sync)
 
 ```bash
 npm run update-cdk
