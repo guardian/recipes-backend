@@ -39,6 +39,15 @@ caches flushed.
 
 You will need to force an update on the app to actually see the changes.
 
+You _can_ run with `--all` to republish _every single article in the system_.  But be careful; 
+- **one** the index is only regenerated at the end, so it must complete or the index may point to recipe versions that don't exist any more
+- **two** if material content updates are made to all recipes that could be a large update for the clients to handle.
+
+## How do I republish only the index JSON?
+
+If you suspect that the index JSON has got out of sync somehow (of _course_, that could never happen!) then you can re-generate it by running:
+`npm run commandline-reindex -- --index-only`
+
 ## How do I manually force a takedown?
 
 1. Set up for local operations, as above
