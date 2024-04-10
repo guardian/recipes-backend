@@ -24,6 +24,7 @@ interface RecipeDatabaseEntry extends RecipeDatabaseKey{
 export interface RecipeIndexEntry {
   checksum: string;
   recipeUID: string;
+  capiArticleId: string;
 }
 
 export function RecipeDatabaseEntryToIndex(from:RecipeDatabaseEntry):RecipeIndexEntry
@@ -31,6 +32,7 @@ export function RecipeDatabaseEntryToIndex(from:RecipeDatabaseEntry):RecipeIndex
   return {
     checksum: from.recipeVersion,
     recipeUID: from.recipeUID,
+    capiArticleId: from.capiArticleId,
   }
 }
 /**
@@ -101,6 +103,7 @@ export function RecipeIndexEntryFromDynamo(raw:Record<string, AttributeValue>): 
   return {
     checksum: raw["recipeVersion"].S ?? "",
     recipeUID: raw["recipeUID"].S ?? "",
+    capiArticleId: raw["capiArticleId"].S ?? ""
   }
 }
 

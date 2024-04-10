@@ -12,11 +12,6 @@ import {handleDeletedContent, handleTakedown} from "./takedown_processor";
 import {handleContentUpdate} from "./update_processor";
 import {handleContentUpdateRetrievable} from "./update_retrievable_processor";
 
-jest.mock("node-fetch", () => ({
-  __esmodule: true,
-  default: jest.fn(),
-}));
-
 jest.mock("@recipes-api/lib/capi", () => ({
   deserializeEvent: jest.fn(),
 }));
@@ -43,6 +38,7 @@ jest.mock("@recipes-api/cwmetrics", () => ({
 describe("main.processRecord", () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    jest.spyOn(global, "fetch").mockImplementation(jest.fn());
   });
 
   //@ts-ignore

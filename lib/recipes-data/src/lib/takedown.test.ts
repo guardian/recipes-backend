@@ -4,6 +4,7 @@ import {recipesforArticle, removeAllRecipeIndexEntriesForArticle, removeRecipe} 
 import type { RecipeIndexEntry } from './models';
 import {removeRecipeContent} from "./s3";
 import {recipesToTakeDown, removeAllRecipesForArticle, removeRecipePermanently, removeRecipeVersion} from './takedown';
+import { sendTelemetryEvent } from './telemetry';
 
 mockClient(DynamoDBClient);
 
@@ -23,6 +24,13 @@ jest.mock("./dynamo", ()=>({
   recipesforArticle: jest.fn()
 }));
 
+jest.mock("./config", ()=>({}));
+
+jest.mock("./telemetry", ()=>({
+  __esmodule: true,
+  sendTelemetryEvent: jest.fn()
+}));
+
 describe("takedown", ()=>{
   beforeEach(()=>{
     jest.resetAllMocks();
@@ -33,7 +41,7 @@ describe("takedown", ()=>{
   });
 
   it("removeRecipePermanently should delete the given recipe from the index and from the content bucket", async ()=>{
-    await removeRecipePermanently("path/to/some/article", {recipeUID: "some-uid", checksum: "xxxyyyzzz"});
+    await removeRecipePermanently("path/to/some/article", {recipeUID: "some-uid", checksum: "xxxyyyzzz", capiArticleId: "path/to/some/article"});
 
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipe.mock.calls.length).toEqual(1);
@@ -52,10 +60,15 @@ describe("takedown", ()=>{
     expect(removeRecipe.mock.calls[0][1]).toEqual("some-uid");
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipeContent.mock.calls[0][0]).toEqual("xxxyyyzzz");
+
+    expect((sendTelemetryEvent as jest.Mock).mock.calls.length).toEqual(1);
+    expect((sendTelemetryEvent as jest.Mock).mock.calls[0][0]).toEqual("TakenDown");
+    expect((sendTelemetryEvent as jest.Mock).mock.calls[0][1]).toEqual("some-uid");
+
   });
 
   it("removeRecipeVersion should delete the given recipe from the content bucket but not the index", async ()=>{
-    await removeRecipeVersion("path/to/some/article", {recipeUID: "some-uid", checksum: "xxxyyyzzz"});
+    await removeRecipeVersion("path/to/some/article", {recipeUID: "some-uid", checksum: "xxxyyyzzz", capiArticleId: "path/to/some/article"});
 
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipe.mock.calls.length).toEqual(1);
@@ -71,21 +84,26 @@ describe("takedown", ()=>{
 
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipeContent.mock.calls[0][0]).toEqual("xxxyyyzzz");
+
+    expect((sendTelemetryEvent as jest.Mock).mock.calls.length).toEqual(0); //this is not a take-down
   });
 
   it("removeAllRecipesForArticle should remove all entries from the database and use the information gleaned to remove from content bucket", async ()=>{
     const knownArticles:RecipeIndexEntry[] = [
       {
         checksum: "abcd",
-        recipeUID:"r1"
+        recipeUID:"r1",
+        capiArticleId: "path/to/some/article"
       },
       {
         checksum: "efg",
-        recipeUID:"r2"
+        recipeUID:"r2",
+        capiArticleId: "path/to/some/article"
       },
       {
         checksum: "hij",
-        recipeUID:"r3"
+        recipeUID:"r3",
+        capiArticleId: "path/to/some/article"
       },
     ];
 
@@ -106,6 +124,8 @@ describe("takedown", ()=>{
     expect(removeRecipeContent.mock.calls[1]).toEqual(["efg", "hard"]);
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(removeRecipeContent.mock.calls[2]).toEqual(["hij", "hard"]);
+
+    expect((sendTelemetryEvent as jest.Mock).mock.calls.length).toEqual(3);
   });
 });
 
@@ -118,23 +138,28 @@ describe("takedown.recipesToTakeDown", ()=>{
     const fakeDbContent:RecipeIndexEntry[] = [
       {
         checksum: "vers938",
-        recipeUID: "number1"
+        recipeUID: "number1",
+        capiArticleId: "path/to/some/article"
       },
       {
         checksum: "vers963",
-        recipeUID: "number2"
+        recipeUID: "number2",
+        capiArticleId: "path/to/some/article"
       },
       {
         checksum: "vers346",
-        recipeUID: "number3"
+        recipeUID: "number3",
+        capiArticleId: "path/to/some/article"
       },
       {
         checksum: "vers432",
-        recipeUID: "number4"
+        recipeUID: "number4",
+        capiArticleId: "path/to/some/article"
       },
       {
         checksum: "vers9789",
-        recipeUID: "number5"
+        recipeUID: "number5",
+        capiArticleId: "path/to/some/article"
       },
     ];
 
@@ -145,8 +170,8 @@ describe("takedown.recipesToTakeDown", ()=>{
 
     const result = await recipesToTakeDown("some-article-id", fakeUpdateIds);
     expect(result).toEqual([
-      {checksum: "vers963", recipeUID:"number2"},
-      {checksum: "vers9789", recipeUID: "number5"}
+      {checksum: "vers963", recipeUID:"number2", capiArticleId: "path/to/some/article"},
+      {checksum: "vers9789", recipeUID: "number5", capiArticleId: "path/to/some/article"}
     ]);
 
     //@ts-ignore -- Typescript doesn't know that this is a mock
@@ -159,15 +184,18 @@ describe("takedown.recipesToTakeDown", ()=>{
     const fakeDbContent:RecipeIndexEntry[] = [
       {
         checksum: "vers938",
-        recipeUID: "number1"
+        recipeUID: "number1",
+        capiArticleId: "path/to/some/article"
       },
       {
         checksum: "vers346",
-        recipeUID: "number3"
+        recipeUID: "number3",
+        capiArticleId: "path/to/some/article"
       },
       {
         checksum: "vers432",
-        recipeUID: "number4"
+        recipeUID: "number4",
+        capiArticleId: "path/to/some/article"
       },
     ];
 
