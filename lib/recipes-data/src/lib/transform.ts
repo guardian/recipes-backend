@@ -1,6 +1,6 @@
 import { FeaturedImageWidth, ImageDpr, PreviewImageWidth } from './config';
 import type { Contributor, RecipeImage } from './models';
-import { extractCropIdFromGuimUrl } from './utils';
+import { extractCropDataFromGuimUrl } from './utils';
 
 const getFastlyUrl = (
 	imageId: string,
@@ -32,7 +32,7 @@ export const replaceFastlyUrl = (
 	}
 
 	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- we're testing for an empty string
-	const cropId = image.cropId || extractCropIdFromGuimUrl(image.url);
+	const cropId = image.cropId || extractCropDataFromGuimUrl(image.url);
 
 	if (!cropId) {
 		console.warn(

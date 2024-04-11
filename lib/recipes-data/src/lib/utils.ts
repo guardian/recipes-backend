@@ -37,7 +37,25 @@ export function nowTime():Date {
   return new Date();
 }
 
-export const extractCropIdFromGuimUrl = (url: string): string | undefined =>
-	url.match(
-		/https:\/\/.*?\/(?<id>.*?)\/(?<cropId>\d{1,4}_\d{1,4}_\d{1,4}_\d{1,4})\/(?<fileName>.*?)$/,
-	)?.groups?.cropId;
+export const extractCropDataFromGuimUrl = (
+	url: string,
+): { cropId: string; width: number } | undefined => {
+	const match = url.match(
+		/https:\/\/.*?\/(?<id>.*?)\/(?<cropId>\d{1,4}_\d{1,4}_(?<width>\d{1,4})_\d{1,4})\/(?<fileName>.*?)$/,
+	);
+
+	if (!match?.groups) {
+		return;
+	}
+
+	const { cropId, width } = match.groups;
+
+	if (!cropId || !width) {
+		return;
+	}
+
+	return {
+		cropId,
+		width: parseInt(width),
+	};
+};
