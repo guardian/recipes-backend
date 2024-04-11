@@ -41,7 +41,7 @@ export const extractCropDataFromGuimUrl = (
 	url: string,
 ): { mediaId: string; cropId: string; width: number } | undefined => {
 	const match = url.match(
-		/https:\/\/.*?\/(?<mediaId>.*?)\/(?<cropId>\d{1,4}_\d{1,4}_(?<width>\d{1,4})_\d{1,4})\/(?<fileName>.*?)$/,
+		/https:\/\/.*\/(?<mediaId>.*?)\/(?<cropId>\d{1,4}_\d{1,4}_(?<width>\d{1,4})_\d{1,4})\/(?<fileName>.*?)$/,
 	);
 
 	if (!match?.groups) {
