@@ -7,14 +7,8 @@ const getFastlyUrl = (
 	cropId: string,
 	dpr: number,
 	desiredWidth: number,
-	originalWidth?: number,
-) => {
-	// This works because if we cannot find the correct image, Fastly Resizer fails over to the closest width.
-  // Assumption is that 2000 is a safe width to start with and Fastly will work downwards to a width it can find.
-	// See https://github.com/guardian/fastly-image-service/blob/34399e065bc85b8ca4d5adeeca02b4b6404eaa98/fastly-io_guim_co_uk/src/main/resources/varnish/main.vcl#L122
-	const width = originalWidth ?? '2000';
-	return `https://i.guim.co.uk/img/media/${imageId}/${cropId}/master/${width}.jpg?width=${desiredWidth}&dpr=${dpr}&s=none`;
-};
+	originalWidth: number,
+) => `https://i.guim.co.uk/img/media/${imageId}/${cropId}/master/${originalWidth}.jpg?width=${desiredWidth}&dpr=${dpr}&s=none`;
 
 export const replaceFastlyUrl = (
 	recipeId: string,
@@ -22,24 +16,16 @@ export const replaceFastlyUrl = (
 	desiredWidth: number,
 	dpr: number,
 ): RecipeImage => {
-	const { width, mediaId } = image;
+  const cropData = extractCropDataFromGuimUrl(image.url);
 
-	if (!mediaId) {
+	if (!cropData) {
 		console.warn(
-			`Error adding fastly URL to recipe ${recipeId} - no mediaId found for image ${JSON.stringify(image)}`,
+			`Error adding fastly URL to recipe ${recipeId} - no crop data found for image with url ${image.url}.`,
 		);
 		return image;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- we're testing for an empty string
-	const cropId = image.cropId || extractCropDataFromGuimUrl(image.url);
-
-	if (!cropId) {
-		console.warn(
-			`Error adding fastly URL to recipe ${recipeId} - no cropId found for image with id ${image.mediaId}.`,
-		);
-		return image;
-	}
+	const { mediaId, cropId, width } = cropData;
 
 	return {
 		...image,
