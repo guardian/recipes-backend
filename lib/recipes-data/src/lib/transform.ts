@@ -8,7 +8,8 @@ const getFastlyUrl = (
 	dpr: number,
 	desiredWidth: number,
 	originalWidth: number,
-) => `https://i.guim.co.uk/img/media/${imageId}/${cropId}/master/${originalWidth}.jpg?width=${desiredWidth}&dpr=${dpr}&s=none`;
+  extension: string
+) => `https://i.guim.co.uk/img/media/${imageId}/${cropId}/master/${originalWidth}.${extension}?width=${desiredWidth}&dpr=${dpr}&s=none`;
 
 export const replaceFastlyUrl = (
 	recipeId: string,
@@ -25,11 +26,11 @@ export const replaceFastlyUrl = (
 		return image;
 	}
 
-	const { mediaId, cropId, width } = cropData;
+	const { mediaId, cropId, width, extension } = cropData;
 
 	return {
 		...image,
-		url: getFastlyUrl(mediaId, cropId, dpr, desiredWidth, width),
+		url: getFastlyUrl(mediaId, cropId, dpr, desiredWidth, width, extension),
 	};
 };
 
