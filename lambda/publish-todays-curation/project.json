@@ -1,0 +1,77 @@
+{
+	"name": "lambda-publish-todays-curation",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "lambda/publish-todays-curation/src",
+	"projectType": "application",
+	"targets": {
+		"build": {
+			"executor": "@nx/esbuild:esbuild",
+			"outputs": ["{options.outputPath}"],
+			"defaultConfiguration": "production",
+			"options": {
+				"platform": "node",
+				"outputPath": "dist/lambda/publish-todays-curation",
+				"format": ["cjs"],
+				"bundle": false,
+				"main": "lambda/publish-todays-curation/src/main.ts",
+				"tsConfig": "lambda/publish-todays-curation/tsconfig.app.json",
+				"assets": ["lambda/publish-todays-curation/src/assets"],
+				"generatePackageJson": true,
+				"esbuildOptions": {
+					"sourcemap": true,
+					"outExtension": {
+						".js": ".js"
+					}
+				}
+			},
+			"configurations": {
+				"development": {},
+				"production": {
+					"esbuildOptions": {
+						"sourcemap": false,
+						"outExtension": {
+							".js": ".js"
+						}
+					}
+				}
+			}
+		},
+		"serve": {
+			"executor": "@nx/js:node",
+			"defaultConfiguration": "development",
+			"options": {
+				"buildTarget": "lambda/publish-todays-curation:build"
+			},
+			"configurations": {
+				"development": {
+					"buildTarget": "lambda/publish-todays-curation:build:development"
+				},
+				"production": {
+					"buildTarget": "lambda/publish-todays-curation:build:production"
+				}
+			}
+		},
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["lambda/publish-todays-curation/**/*.ts"]
+			}
+		},
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "lambda/publish-todays-curation/jest.config.ts",
+				"passWithNoTests": true
+			},
+			"configurations": {
+				"ci": {
+					"ci": true,
+					"codeCoverage": true
+				}
+			}
+		}
+	},
+	"tags": []
+}
