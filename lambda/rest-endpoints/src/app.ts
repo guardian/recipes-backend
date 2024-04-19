@@ -3,7 +3,7 @@ import {renderFile as ejs} from "ejs";
 import express from 'express';
 import type {Request} from 'express';
 import {recipeByUID } from "@recipes-api/lib/recipes-data";
-import {getBodyContentAsJson} from "./helpers";
+import {getBodyContentAsJson, validateDateParam} from "./helpers";
 import {importNewData} from "./submit-data";
 
 export const app = express();
@@ -36,8 +36,18 @@ router.post('/api/curation/:region/:variant', (req: Request<CurationParams>, res
     return;
   }
 
+  let dateval:Date|null = null;
+
   try {
-    validateCurationParams(req.params)
+    dateval = req.query.date ? validateDateParam(req.query.date as string) : null;
+  } catch {
+    console.log("Provided querystring ", req.query, " did not validate");
+    resp.status(400).json({status: "error", "detail": "invalid querystring parameters. date must be specified in YYYY-MM-DD format"})
+    return;
+  }
+
+  try {
+    validateCurationParams(req.params);
   } catch(err) {
     console.log("Provided params ", req.params, " did not validate");
     resp.status(400).json({status: "error", "detail": "invalid regionalisation parameters. region and variant must be basic strings with no punctuation etc."})
@@ -51,7 +61,7 @@ router.post('/api/curation/:region/:variant', (req: Request<CurationParams>, res
       return;
     }
 
-    importNewData(textContent, req.params.region, req.params.variant)
+    importNewData(textContent, req.params.region, req.params.variant, dateval)
       .then(() => {
         return resp.status(200).json({status: "ok"})
       })
