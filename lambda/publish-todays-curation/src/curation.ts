@@ -1,4 +1,4 @@
-import {CopyObjectCommand, HeadObjectCommand, NoSuchKey, S3Client, S3ServiceException} from "@aws-sdk/client-s3";
+import {CopyObjectCommand, HeadObjectCommand, NoSuchKey, S3Client} from "@aws-sdk/client-s3";
 import {format, formatISO} from "date-fns";
 import {Bucket} from "./config";
 
@@ -61,7 +61,7 @@ export function doesCurationPathMatch(p:CurationPath, d:Date):boolean {
   return (p.year==d.getFullYear()) && (p.month==d.getMonth()+1) && (p.day==d.getDate());
 }
 
-const PathMatcher = /^([^/]+)\/([^/]+)\/(\d{4})-(\d{2})-(\d{2})\/curation.json/;
+const PathMatcher = /^([^/]+)\/([^/]+)\/(\d{4})-(\d{2})-(\d{2})\/curation\.json/;
 export function checkCurationPath(key:string):CurationPath|null {
   const parts = PathMatcher.exec(key);
   if(parts) {
@@ -125,17 +125,4 @@ export async function activateCuration(info:CurationPath):Promise<void> {
 
   const response = await s3Client.send(req);
   console.log(`Done, new Etag is ${response.CopyObjectResult?.ETag ?? "(unknown)"}`);
-}
-
-export async function activateAllCurationForDate(date: Date): Promise<void> {
-  for (const region of KnownRegions) {
-    for (const variant of KnownVariants) {
-      try {
-        const p = newCurationPath(region, variant, date);
-        await activateCuration(p);
-      } catch(err) {
-        console.warn(`Unable to activate curation for ${region}/${variant} on ${formatISO(date)}: `, err);
-      }
-    }
-  }
 }

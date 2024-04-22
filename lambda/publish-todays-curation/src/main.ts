@@ -1,8 +1,7 @@
-import type {Context, S3Event} from "aws-lambda";
+import type {S3Event} from "aws-lambda";
 import {formatISO} from "date-fns";
 import {Bucket, Today} from "./config";
 import {
-  activateAllCurationForDate,
   activateCuration, checkCurationPath, doesCurationPathMatch,
   validateAllCuration,
 } from "./curation";
@@ -19,7 +18,13 @@ async function handleS3Event(event:S3Event):Promise<void> {
       return;
     }
 
-    const info = checkCurationPath(rec.s3.object.key);
+    if(rec.eventName != "ObjectCreated:Put") {
+      console.log(`Event was for ${rec.eventName} not ObjectCreated:Put, ignoring`);
+      return;
+    }
+
+    const targetPath = decodeURIComponent(rec.s3.object.key);
+    const info = checkCurationPath(targetPath);
     if(info) {
       if(doesCurationPathMatch(info, Today)) {
         console.log(`Detected an update of today's curation data for ${info.region}/${info.variant}, redeploying`);
@@ -28,7 +33,7 @@ async function handleS3Event(event:S3Event):Promise<void> {
         console.log(`Detected an update of curation data for ${info.region}/${info.variant} on ${info.year}-${info.month}-${info.day}`);
       }
     } else {
-      console.log(`Event was for unrecognised path ${rec.s3.object.key}`);
+      console.log(`Event was for unrecognised path ${targetPath}`);
     }
   });
 
@@ -47,19 +52,18 @@ async function handleTimerEvent(date: Date):Promise<void> {
     console.error(`No curation data was available for date ${formatISO(date)}`);
   } else {
     console.log(`Activating ${curations.length} fronts...`);
-    await activateAllCurationForDate(date);
+    await Promise.all(curations.map(activateCuration));
     console.log("Done.");
   }
 }
 
-
-
-async function handler(event: S3Event|unknown, context: Context) {
-  if((event as {}).hasOwnProperty("Records")) {
+export async function handler(event: S3Event|unknown) {
+  // eslint-disable-next-line no-prototype-builtins -- hasOwnProperty is valid here
+  if((event as NonNullable<unknown>).hasOwnProperty("Records")) {
     console.log("Invoked from S3");
     return handleS3Event(event as S3Event)
   } else {
     console.log("Did not receive an S3 record, assuming invoked from timer");
-    return handleTimerEvent(new Date());
+    return handleTimerEvent(Today);
   }
 }
