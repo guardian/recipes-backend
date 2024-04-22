@@ -1,9 +1,11 @@
-import {Context, S3Event} from "aws-lambda";
+import type {Context, S3Event} from "aws-lambda";
+import {formatISO} from "date-fns";
+import {Bucket, Today} from "./config";
 import {
-  activateAllCurationForDate, activateCurationForDate, checkCurationPath, doesCurationPathMatch,
+  activateAllCurationForDate,
+  activateCuration, checkCurationPath, doesCurationPathMatch,
   validateAllCuration,
 } from "./curation";
-import {Bucket, Today} from "./config";
 
 /**
  * Check if an upload consists of an update for today's curation data. If so, then activate it
@@ -21,7 +23,7 @@ async function handleS3Event(event:S3Event):Promise<void> {
     if(info) {
       if(doesCurationPathMatch(info, Today)) {
         console.log(`Detected an update of today's curation data for ${info.region}/${info.variant}, redeploying`);
-        return activateCurationForDate(info.region, info.variant, Today);
+        return activateCuration(info);
       } else {
         console.log(`Detected an update of curation data for ${info.region}/${info.variant} on ${info.year}-${info.month}-${info.day}`);
       }
@@ -38,12 +40,16 @@ async function handleS3Event(event:S3Event):Promise<void> {
  * @param date Date to activate
  */
 async function handleTimerEvent(date: Date):Promise<void> {
-  console.log(`Checking we have curation for ${date}...`)
+  console.log(`Checking we have curation for ${formatISO(date)}...`)
   //Check if we have curation available for the new date
-  await validateAllCuration(date, false);
-  console.log(`Activating...`);
-  await activateAllCurationForDate(date);
-  console.log("Done.");
+  const curations= await validateAllCuration(date, false);
+  if(curations.length==0) {
+    console.error(`No curation data was available for date ${formatISO(date)}`);
+  } else {
+    console.log(`Activating ${curations.length} fronts...`);
+    await activateAllCurationForDate(date);
+    console.log("Done.");
+  }
 }
 
 
