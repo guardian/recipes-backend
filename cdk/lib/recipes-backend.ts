@@ -159,7 +159,7 @@ export class RecipesBackend extends GuStack {
     durationAlarm.addAlarmAction(new SnsAction(nonUrgentAlarmTopic));
 
     const publishTodaysCurationLambda = new GuScheduledLambda(this, "PublishTodaysCuration", {
-      app: "recipies-publish-todays-curation",
+      app: "recipes-publish-todays-curation",
       architecture: Architecture.ARM_64,
       fileName: "publish-todays-curation.zip",
       functionName: `PublishTodaysCuration-${props.stage}`,

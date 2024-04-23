@@ -1048,11 +1048,11 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "content-api/TEST/recipies-publish-todays-curation/publish-todays-curation.zip",
+          "S3Key": "content-api/TEST/recipes-publish-todays-curation/publish-todays-curation.zip",
         },
         "Environment": {
           "Variables": {
-            "APP": "recipies-publish-todays-curation",
+            "APP": "recipes-publish-todays-curation",
             "FASTLY_API_KEY": {
               "Ref": "fastlyKey",
             },
@@ -1076,7 +1076,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "Tags": [
           {
             "Key": "App",
-            "Value": "recipies-publish-todays-curation",
+            "Value": "recipes-publish-todays-curation",
           },
           {
             "Key": "gu:cdk:version",
@@ -1168,7 +1168,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "Tags": [
           {
             "Key": "App",
-            "Value": "recipies-publish-todays-curation",
+            "Value": "recipes-publish-todays-curation",
           },
           {
             "Key": "gu:cdk:version",
@@ -1268,7 +1268,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/content-api/TEST/recipies-publish-todays-curation/publish-todays-curation.zip",
+                      "/content-api/TEST/recipes-publish-todays-curation/publish-todays-curation.zip",
                     ],
                   ],
                 },
@@ -1289,7 +1289,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipies-publish-todays-curation",
+                    ":parameter/TEST/content-api/recipes-publish-todays-curation",
                   ],
                 ],
               },
@@ -1312,7 +1312,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipies-publish-todays-curation/*",
+                    ":parameter/TEST/content-api/recipes-publish-todays-curation/*",
                   ],
                 ],
               },
