@@ -1,6 +1,6 @@
 import {
   CopyObjectCommand,
-  HeadObjectCommand,
+  HeadObjectCommand, HeadObjectCommandInput,
   NoSuchKey,
   S3Client,
   S3ServiceException
@@ -13,8 +13,9 @@ import {
   doesCurationPathMatch,
   generatePath,
   generatePathFromCuration,
-  newCurationPath, validateCurationData
+  newCurationPath, validateAllCuration, validateCurationData
 } from "./curation";
+import {Bucket, Today} from "./config";
 
 const s3Mock = mockClient(S3Client);
 
@@ -44,7 +45,7 @@ describe("curation.checkCurationPath", ()=>{
   })
 })
 
-describe("generatePathFromCuration", ()=>{
+describe("curation.generatePathFromCuration", ()=>{
   it("should generate CurationPath from the provided data", ()=>{
     expect(generatePathFromCuration({
       region: "region-one",
@@ -56,25 +57,25 @@ describe("generatePathFromCuration", ()=>{
   })
 })
 
-describe("generatePath", ()=>{
+describe("curation.generatePath", ()=>{
   it("should generate the curation path for the given date", ()=>{
     expect(generatePath("region-one","all-recipes",new Date(2024,2,2)))
       .toEqual("region-one/all-recipes/2024-03-02/curation.json")
   })
 });
 
-describe("doesCurationPathMatch", ()=>{
+describe("curation.doesCurationPathMatch", ()=>{
   it("should return truthy if the given date matches the CurationPath", ()=>{
     expect(doesCurationPathMatch({region: "", variant:"", year:2024,month:3,day:2}, new Date(2024,2,2)))
       .toBeTruthy();
   });
 
-  it("should return falsy if the given date does not match the CurationPath", ()=>{
+  it("curation.should return falsy if the given date does not match the CurationPath", ()=>{
     expect(doesCurationPathMatch({region: "", variant:"", year:2024,month:3,day:2}, new Date(2024,1,5)));
   })
 })
 
-describe("newCurationPath", ()=>{
+describe("curation.newCurationPath", ()=>{
   it("should return a CurationPath for the given data", ()=>{
     expect(newCurationPath("region-one","all-recipes", new Date(2024,5,6)))
       .toEqual({
@@ -87,7 +88,7 @@ describe("newCurationPath", ()=>{
   })
 });
 
-describe("validateCurationData", ()=> {
+describe("curation.validateCurationData", ()=> {
   beforeEach(() => {
     s3Mock.reset();
   });
@@ -122,7 +123,7 @@ describe("validateCurationData", ()=> {
     expect(arg.input.Key).toEqual("some-region/some-variant/2024-03-03/curation.json");
   });
 
-  it("should pass on any other error as an exception", async () => {
+  it("curation.should pass on any other error as an exception", async () => {
     s3Mock.on(HeadObjectCommand).rejects(new S3ServiceException({
       $fault: "server",
       name: "",
@@ -134,7 +135,59 @@ describe("validateCurationData", ()=> {
   });
 });
 
-describe("activateCuration", ()=>{
+describe("curation.validateAllCuration", ()=>{
+  beforeEach(()=>{
+    s3Mock.reset();
+    jest.resetAllMocks();
+  });
+
+  it("should return a list of the curation files which do exist", async ()=>{
+    s3Mock.on(HeadObjectCommand).resolvesOnce({})
+      .rejectsOnce(new NoSuchKey({$metadata: {}, message: ""}))
+      .resolvesOnce({})
+      .rejects(new NoSuchKey({$metadata: {}, message: ""}));
+
+    const result = await validateAllCuration(Today, false);
+
+    expect(s3Mock.commandCalls(HeadObjectCommand).length).toEqual(4);
+    for(let i=0; i<4; i++) {
+      const req = s3Mock.commandCalls(HeadObjectCommand)[i].firstArg.input as HeadObjectCommandInput;
+      expect(req.Bucket).toEqual(Bucket);
+      switch(i) {
+        case 0:
+          expect(req.Key).toEqual("northern-hemisphere/meat-free/2024-02-03/curation.json");
+          break;
+        case 1:
+          expect(req.Key).toEqual("northern-hemisphere/all-recipes/2024-02-03/curation.json");
+          break;
+        case 2:
+          expect(req.Key).toEqual("southern-hemisphere/meat-free/2024-02-03/curation.json");
+          break;
+        case 3:
+          expect(req.Key).toEqual("southern-hemisphere/all-recipes/2024-02-03/curation.json");
+          break;
+      }
+    }
+
+    expect(result.length).toEqual(2);
+    expect(result[0]).toEqual({
+      region: "northern-hemisphere",
+      variant: "meat-free",
+      year: 2024,
+      month: 2,
+      day: 3
+    });
+    expect(result[1]).toEqual({
+      region: "southern-hemisphere",
+      variant: "meat-free",
+      year: 2024,
+      month: 2,
+      day: 3
+    });
+  });
+});
+
+describe("curation.activateCuration", ()=>{
   beforeEach(()=>{
     s3Mock.reset();
   });
