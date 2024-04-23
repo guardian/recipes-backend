@@ -47,7 +47,7 @@ export class RestEndpoints extends Construct {
       fileName: "rest-endpoints.zip",
       functionName: `recipes-backend-rest-endpoints-${scope.stage}`,
       handler: "main.handler",
-      memorySize: 128,
+      memorySize: 256,
       monitoringConfiguration: {noMonitoring: true},  //for the time being
       runtime: Runtime.NODEJS_18_X,
       timeout: Duration.seconds(30),

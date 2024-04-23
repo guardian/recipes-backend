@@ -181,7 +181,7 @@ export class RecipesBackend extends GuStack {
           resources: [serving.staticBucket.bucketArn]
         })
       ],
-      memorySize: 128,
+      memorySize: 256,
       monitoringConfiguration: {
         noMonitoring: true,
       },

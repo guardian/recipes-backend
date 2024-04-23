@@ -352,7 +352,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         },
         "FunctionName": "recipes-backend-rest-endpoints-TEST",
         "Handler": "main.handler",
-        "MemorySize": 128,
+        "MemorySize": 256,
         "Role": {
           "Fn::GetAtt": [
             "LambdaServiceRoleA8ED4D3B",
@@ -1066,7 +1066,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         },
         "FunctionName": "PublishTodaysCuration-TEST",
         "Handler": "main.handler",
-        "MemorySize": 128,
+        "MemorySize": 256,
         "Role": {
           "Fn::GetAtt": [
             "PublishTodaysCurationServiceRoleBDC7AE8F",
