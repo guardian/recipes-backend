@@ -1,4 +1,4 @@
-import {CopyObjectCommand, HeadObjectCommand, NoSuchKey, S3Client} from "@aws-sdk/client-s3";
+import {CopyObjectCommand, HeadObjectCommand, NotFound, S3Client} from "@aws-sdk/client-s3";
 import {format, formatISO} from "date-fns";
 import { sendFastlyPurgeRequestWithRetries } from '@recipes-api/lib/recipes-data';
 import {Bucket, FastlyApiKey} from "./config";
@@ -14,8 +14,8 @@ export interface CurationPath {
 }
 
 const KnownRegions = [
-  "northern-hemisphere",
-  "southern-hemisphere"
+  "northern",
+  "southern"
 ];
 
 const KnownVariants = [
@@ -89,6 +89,7 @@ export function newCurationPath(region:string, variant:string, date:Date):Curati
 }
 
 export async function validateCurationData(region:string, variant:string, date:Date):Promise<CurationPath|null> {
+  console.debug(`Checking path `, generatePath(region, variant, date));
   const req = new HeadObjectCommand({
     Bucket,
     Key: generatePath(region, variant, date),
@@ -105,7 +106,7 @@ export async function validateCurationData(region:string, variant:string, date:D
       day: date.getDate()
     };
   } catch(err) {
-    if(err instanceof NoSuchKey) {
+    if(err instanceof NotFound) {
       console.debug(`Did not find curation data for ${region}/${variant} on ${formatISO(date)}`);
       return null;
     } else {
@@ -121,7 +122,7 @@ export async function activateCuration(info:CurationPath):Promise<void> {
 
   const req = new CopyObjectCommand({
     Bucket,
-    CopySource: generatePathFromCuration(info),
+    CopySource: (Bucket ?? "") + "/" + generatePathFromCuration(info),
     Key: targetPath
   });
 

@@ -174,6 +174,11 @@ export class RecipesBackend extends GuStack {
           effect: Effect.ALLOW,
           actions: ["s3:PutObject","s3:GetObject"],
           resources: [serving.staticBucket.bucketArn + "/*"]
+        }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["s3:ListBucket"],
+          resources: [serving.staticBucket.bucketArn]
         })
       ],
       memorySize: 128,

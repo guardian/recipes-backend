@@ -1235,6 +1235,16 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               },
             },
             {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "staticstaticServing53194089",
+                  "Arn",
+                ],
+              },
+            },
+            {
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",

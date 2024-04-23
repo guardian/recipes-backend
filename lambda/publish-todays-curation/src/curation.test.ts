@@ -1,7 +1,7 @@
 import {
   CopyObjectCommand,
   HeadObjectCommand, HeadObjectCommandInput,
-  NoSuchKey,
+  NotFound,
   S3Client,
   S3ServiceException
 } from "@aws-sdk/client-s3";
@@ -111,7 +111,7 @@ describe("curation.validateCurationData", ()=> {
   });
 
   it("should return null if the file does not exist", async () => {
-    s3Mock.on(HeadObjectCommand).rejects(new NoSuchKey({$metadata: {}, message: ""}))
+    s3Mock.on(HeadObjectCommand).rejects(new NotFound({$metadata: {}, message: ""}))
 
     const response = await validateCurationData("some-region", "some-variant", new Date(2024, 2, 3));
     expect(response).toBeNull();
@@ -143,9 +143,9 @@ describe("curation.validateAllCuration", ()=>{
 
   it("should return a list of the curation files which do exist", async ()=>{
     s3Mock.on(HeadObjectCommand).resolvesOnce({})
-      .rejectsOnce(new NoSuchKey({$metadata: {}, message: ""}))
+      .rejectsOnce(new NotFound({$metadata: {}, message: ""}))
       .resolvesOnce({})
-      .rejects(new NoSuchKey({$metadata: {}, message: ""}));
+      .rejects(new NotFound({$metadata: {}, message: ""}));
 
     const result = await validateAllCuration(Today, false);
 
@@ -155,30 +155,30 @@ describe("curation.validateAllCuration", ()=>{
       expect(req.Bucket).toEqual(Bucket);
       switch(i) {
         case 0:
-          expect(req.Key).toEqual("northern-hemisphere/meat-free/2024-02-03/curation.json");
+          expect(req.Key).toEqual("northern/meat-free/2024-02-03/curation.json");
           break;
         case 1:
-          expect(req.Key).toEqual("northern-hemisphere/all-recipes/2024-02-03/curation.json");
+          expect(req.Key).toEqual("northern/all-recipes/2024-02-03/curation.json");
           break;
         case 2:
-          expect(req.Key).toEqual("southern-hemisphere/meat-free/2024-02-03/curation.json");
+          expect(req.Key).toEqual("southern/meat-free/2024-02-03/curation.json");
           break;
         case 3:
-          expect(req.Key).toEqual("southern-hemisphere/all-recipes/2024-02-03/curation.json");
+          expect(req.Key).toEqual("southern/all-recipes/2024-02-03/curation.json");
           break;
       }
     }
 
     expect(result.length).toEqual(2);
     expect(result[0]).toEqual({
-      region: "northern-hemisphere",
+      region: "northern",
       variant: "meat-free",
       year: 2024,
       month: 2,
       day: 3
     });
     expect(result[1]).toEqual({
-      region: "southern-hemisphere",
+      region: "southern",
       variant: "meat-free",
       year: 2024,
       month: 2,
@@ -205,7 +205,7 @@ describe("curation.activateCuration", ()=>{
     expect(s3Mock.commandCalls(CopyObjectCommand).length).toEqual(1);
     const input = (s3Mock.commandCalls(CopyObjectCommand)[0].firstArg as CopyObjectCommand).input;
     expect(input.Bucket).toEqual("TestBucket");
-    expect(input.CopySource).toEqual("some-region/some-variant/2023-08-09/curation.json");
+    expect(input.CopySource).toEqual("TestBucket/some-region/some-variant/2023-08-09/curation.json");
     expect(input.Key).toEqual("some-region/some-variant/curation.json");
 
     const fastlyPurgeMocked = (sendFastlyPurgeRequestWithRetries as jest.Mock).mock.calls;
