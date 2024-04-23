@@ -24,6 +24,10 @@ jest.mock('./curation', ()=>{
   }
 });
 
+jest.mock("@recipes-api/lib/recipes-data", ()=>({
+  sendFastlyPurgeRequestWithRetries: jest.fn(),
+}));
+
 describe("main.handler", ()=>{
   beforeEach(()=>{
     jest.resetAllMocks();

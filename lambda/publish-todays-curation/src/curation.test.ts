@@ -1,12 +1,12 @@
 import {
   CopyObjectCommand,
   HeadObjectCommand,
-  HeadObjectCommandInput,
   NoSuchKey,
   S3Client,
   S3ServiceException
 } from "@aws-sdk/client-s3";
 import {mockClient} from "aws-sdk-client-mock";
+import {sendFastlyPurgeRequestWithRetries} from "@recipes-api/lib/recipes-data";
 import {
   activateCuration,
   checkCurationPath,
@@ -17,6 +17,11 @@ import {
 } from "./curation";
 
 const s3Mock = mockClient(S3Client);
+
+jest.mock("@recipes-api/lib/recipes-data", ()=>({
+  sendFastlyPurgeRequestWithRetries: jest.fn(),
+}));
+
 
 jest.mock("./config", ()=>({
   Bucket: "TestBucket",
@@ -149,5 +154,8 @@ describe("activateCuration", ()=>{
     expect(input.Bucket).toEqual("TestBucket");
     expect(input.CopySource).toEqual("some-region/some-variant/2023-08-09/curation.json");
     expect(input.Key).toEqual("some-region/some-variant/curation.json");
+
+    const fastlyPurgeMocked = (sendFastlyPurgeRequestWithRetries as jest.Mock).mock.calls;
+    expect(fastlyPurgeMocked.length).toEqual(1);
   });
 })

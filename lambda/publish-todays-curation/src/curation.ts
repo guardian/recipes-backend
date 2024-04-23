@@ -1,6 +1,7 @@
 import {CopyObjectCommand, HeadObjectCommand, NoSuchKey, S3Client} from "@aws-sdk/client-s3";
 import {format, formatISO} from "date-fns";
-import {Bucket} from "./config";
+import { sendFastlyPurgeRequestWithRetries } from '@recipes-api/lib/recipes-data';
+import {Bucket, FastlyApiKey} from "./config";
 
 const s3Client = new S3Client({region: process.env["AWS_REGION"]});
 
@@ -115,14 +116,16 @@ export async function validateCurationData(region:string, variant:string, date:D
 }
 
 export async function activateCuration(info:CurationPath):Promise<void> {
-  console.log(`Deploying config ${generatePathFromCuration(info)} to ${generateActivePath(info.region, info.variant)}`);
+  const targetPath = generateActivePath(info.region, info.variant);
+  console.log(`Deploying config ${generatePathFromCuration(info)} to ${targetPath}`);
 
   const req = new CopyObjectCommand({
     Bucket,
     CopySource: generatePathFromCuration(info),
-    Key: generateActivePath(info.region, info.variant)
+    Key: targetPath
   });
 
   const response = await s3Client.send(req);
   console.log(`Done, new Etag is ${response.CopyObjectResult?.ETag ?? "(unknown)"}`);
+  await sendFastlyPurgeRequestWithRetries(targetPath, FastlyApiKey as string);
 }
