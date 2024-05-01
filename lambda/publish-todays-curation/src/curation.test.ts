@@ -123,7 +123,7 @@ describe("curation.validateCurationData", ()=> {
     expect(arg.input.Key).toEqual("some-region/some-variant/2024-03-03/curation.json");
   });
 
-  it("curation.should pass on any other error as an exception", async () => {
+  it("should pass on any other error as an exception", async () => {
     s3Mock.on(HeadObjectCommand).rejects(new S3ServiceException({
       $fault: "server",
       name: "",
