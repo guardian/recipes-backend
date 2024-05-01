@@ -1,12 +1,11 @@
-import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
+import type {PutObjectCommand} from "@aws-sdk/client-s3";
+import { S3Client} from "@aws-sdk/client-s3";
 import {mockClient} from "aws-sdk-client-mock";
-import {importNewData} from "./submit-data";
 import {sendFastlyPurgeRequestWithRetries} from "@recipes-api/lib/recipes-data";
+import {importNewData} from "./submit-data";
 import MockedFn = jest.MockedFn;
-import Mock = jest.Mock;
 
 const s3Mock = mockClient(S3Client);
-//const dynamoMock = mockClient(DynamoDBClient);
 
 jest.mock("process", ()=>{
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- typescript doesn't like 'any' value

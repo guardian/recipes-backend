@@ -27,10 +27,10 @@ async function handleS3Event(event:S3Event):Promise<void> {
     const info = checkCurationPath(targetPath);
     if(info) {
       if(doesCurationPathMatch(info, Today)) {
-        console.log(`Detected an update of today's curation data for ${info.region}/${info.variant}, redeploying`);
+        console.log(`Detected an update of today's curation data for ${info.edition}/${info.front}, redeploying`);
         return activateCuration(info);
       } else {
-        console.log(`Detected an update of curation data for ${info.region}/${info.variant} on ${info.year}-${info.month}-${info.day}`);
+        console.log(`Detected an update of curation data for ${info.edition}/${info.front} on ${info.year}-${info.month}-${info.day}`);
       }
     } else {
       console.log(`Event was for unrecognised path ${targetPath}`);

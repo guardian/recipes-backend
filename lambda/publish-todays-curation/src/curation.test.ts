@@ -32,8 +32,8 @@ jest.mock("./config", ()=>({
 describe("curation.checkCurationPath", ()=>{
   it("should extract data from a proper path", ()=>{
     const result = checkCurationPath("northern-area/all-recipes/2020-01-02/curation.json");
-    expect(result?.region).toEqual("northern-area");
-    expect(result?.variant).toEqual("all-recipes");
+    expect(result?.edition).toEqual("northern-area");
+    expect(result?.front).toEqual("all-recipes");
     expect(result?.year).toEqual(2020);
     expect(result?.month).toEqual(1);
     expect(result?.day).toEqual(2);
@@ -48,8 +48,8 @@ describe("curation.checkCurationPath", ()=>{
 describe("curation.generatePathFromCuration", ()=>{
   it("should generate CurationPath from the provided data", ()=>{
     expect(generatePathFromCuration({
-      region: "region-one",
-      variant: "all-recipes",
+      edition: "region-one",
+      front: "all-recipes",
       year: 2024,
       month: 3,
       day: 2
@@ -66,12 +66,12 @@ describe("curation.generatePath", ()=>{
 
 describe("curation.doesCurationPathMatch", ()=>{
   it("should return truthy if the given date matches the CurationPath", ()=>{
-    expect(doesCurationPathMatch({region: "", variant:"", year:2024,month:3,day:2}, new Date(2024,2,2)))
+    expect(doesCurationPathMatch({edition: "", front:"", year:2024,month:3,day:2}, new Date(2024,2,2)))
       .toBeTruthy();
   });
 
   it("curation.should return falsy if the given date does not match the CurationPath", ()=>{
-    expect(doesCurationPathMatch({region: "", variant:"", year:2024,month:3,day:2}, new Date(2024,1,5)));
+    expect(doesCurationPathMatch({edition: "", front:"", year:2024,month:3,day:2}, new Date(2024,1,5)));
   })
 })
 
@@ -79,8 +79,8 @@ describe("curation.newCurationPath", ()=>{
   it("should return a CurationPath for the given data", ()=>{
     expect(newCurationPath("region-one","all-recipes", new Date(2024,5,6)))
       .toEqual({
-        region: "region-one",
-        variant: "all-recipes",
+        edition: "region-one",
+        front: "all-recipes",
         year: 2024,
         month: 6,
         day: 6
@@ -103,8 +103,8 @@ describe("curation.validateCurationData", ()=> {
     expect(arg.input.Bucket).toEqual("TestBucket");
     expect(arg.input.Key).toEqual("some-region/some-variant/2024-03-03/curation.json");
 
-    expect(response?.variant).toEqual("some-variant");
-    expect(response?.region).toEqual("some-region");
+    expect(response?.front).toEqual("some-variant");
+    expect(response?.edition).toEqual("some-region");
     expect(response?.year).toEqual(2024);
     expect(response?.month).toEqual(3);
     expect(response?.day).toEqual(3);
@@ -171,15 +171,15 @@ describe("curation.validateAllCuration", ()=>{
 
     expect(result.length).toEqual(2);
     expect(result[0]).toEqual({
-      region: "northern",
-      variant: "meat-free",
+      edition: "northern",
+      front: "meat-free",
       year: 2024,
       month: 2,
       day: 3
     });
     expect(result[1]).toEqual({
-      region: "southern",
-      variant: "meat-free",
+      edition: "southern",
+      front: "meat-free",
       year: 2024,
       month: 2,
       day: 3
@@ -195,8 +195,8 @@ describe("curation.activateCuration", ()=>{
   it("should copy the given date to the default curation path", async ()=>{
     s3Mock.on(CopyObjectCommand).resolves({CopyObjectResult: {ETag: "some-etag"}});
     await activateCuration({
-      region: "some-region",
-      variant: "some-variant",
+      edition: "some-region",
+      front: "some-variant",
       year: 2023,
       month: 8,
       day: 9

@@ -14,8 +14,8 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 interface CurationParams {
-  region: string;
-  variant: string;
+  edition: string;
+  front: string;
 }
 
 /**
@@ -25,12 +25,12 @@ interface CurationParams {
 function validateCurationParams(params: CurationParams) {
   const checker = /[^\\w]+/;
 
-  if(!params.region.match(checker) || !params.variant.match(checker)) {
+  if(!params.edition.match(checker) || !params.front.match(checker)) {
     throw new Error("Invalid region parameter");
   }
 }
 
-router.post('/api/curation/:region/:variant', (req: Request<CurationParams>, resp)=>{
+router.post('/api/curation/:edition/:front', (req: Request<CurationParams>, resp)=>{
   if(req.header("Content-Type") != "application/json") {
     resp.status(405).json({status: "error", detail: "wrong content type"});
     return;
@@ -61,7 +61,7 @@ router.post('/api/curation/:region/:variant', (req: Request<CurationParams>, res
       return;
     }
 
-    importNewData(textContent, req.params.region, req.params.variant, dateval)
+    importNewData(textContent, req.params.edition, req.params.front, dateval)
       .then(() => {
         return resp.status(200).json({status: "ok"})
       })
@@ -105,6 +105,9 @@ router.get('/api/content/by-uid/:recipeUID', (req: Request<RecipeIdParams>, resp
       resp.status(404).json({status: "not found", detail: "No recipe found with that UID"});
       return;
     }
+  }).catch((err)=>{
+    console.error(err);
+    resp.status(500).json({status: "error", detail: "there was an internal error fetching the recipe. See server-side logs."})
   });
 });
 

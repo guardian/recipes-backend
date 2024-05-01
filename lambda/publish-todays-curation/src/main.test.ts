@@ -35,9 +35,9 @@ describe("main.handler", ()=>{
 
   it("should launch all present curations for today's date, if they are available", async ()=>{
     const availableFronts:CurationPath[] = [
-      {variant: "some-variant",region:"region-one",year: 2024, month: 2, day:3},
-      {variant: "another-variant", region: "region-one", year: 2024, month: 2, day: 3},
-      {variant: "some-variant",region:"region-two",year: 2024, month: 2, day:3},
+      {front: "some-variant",edition:"region-one",year: 2024, month: 2, day:3},
+      {front: "another-variant", edition: "region-one", year: 2024, month: 2, day: 3},
+      {front: "some-variant",edition:"region-two",year: 2024, month: 2, day:3},
     ];
 
     (validateAllCuration as jest.Mock).mockReturnValue(Promise.resolve<CurationPath[]>(availableFronts));
@@ -102,8 +102,8 @@ describe("main.handler", ()=>{
     const activateCalls = (activateCuration as jest.Mock).mock.calls;
     expect(activateCalls.length).toEqual(1);
     expect(activateCalls[0][0]).toEqual({
-      variant: "variant-two",
-      region: "region-one",
+      front: "variant-two",
+      edition: "region-one",
       year: 2024,
       month: 2,
       day: 3

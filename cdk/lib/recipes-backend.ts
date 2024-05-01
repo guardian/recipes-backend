@@ -51,7 +51,6 @@ export class RecipesBackend extends GuStack {
       ]
     });
     const externalParameters = new ExternalParameters(this, "externals");
-    //const urgentAlarmTopic = aws_sns.Topic.fromTopicArn(this, "urgent-alarm", externalParameters.urgentAlarmTopicArn.stringValue);
     const nonUrgentAlarmTopic = aws_sns.Topic.fromTopicArn(this, "nonurgent-alarm", externalParameters.nonUrgentAlarmTopicArn.stringValue);
 
     //This is a nicer way to pick up the stream name - but CDK won't compile

@@ -6,19 +6,19 @@ import {Bucket, FastlyApiKey} from "./config";
 const s3Client = new S3Client({region: process.env["AWS_REGION"]});
 
 export interface CurationPath {
-  region: string;
-  variant: string;
+  edition: string;
+  front: string;
   year: number;
   month: number;
   day: number;
 }
 
-const KnownRegions = [
+const KnownEditions = [
   "northern",
   "southern"
 ];
 
-const KnownVariants = [
+const KnownFronts = [
   "meat-free",
   "all-recipes"
 ];
@@ -26,8 +26,8 @@ const KnownVariants = [
 const DateFormat = "yyyy-MM-dd";
 
 export async function validateAllCuration(date:Date, throwOnAbsent:boolean):Promise<CurationPath[]> {
-  const promises = KnownRegions.flatMap((region)=>
-    KnownVariants.map(async (variant) => {
+  const promises = KnownEditions.flatMap((region)=>
+    KnownFronts.map(async (variant) => {
       const maybeInfo = await validateCurationData(region, variant, date);
       if (!maybeInfo) {
         console.warn(`No curation was present for region ${region} variant ${variant} on date ${format(date, DateFormat)}`);
@@ -50,7 +50,7 @@ function zeroPad(num:number, places:number) {
 }
 
 export function generatePathFromCuration(info:CurationPath) {
-  return `${info.region}/${info.variant}/${zeroPad(info.year,4)}-${zeroPad(info.month, 2)}-${zeroPad(info.day, 2)}/curation.json`;
+  return `${info.edition}/${info.front}/${zeroPad(info.year,4)}-${zeroPad(info.month, 2)}-${zeroPad(info.day, 2)}/curation.json`;
 }
 
 export function generateActivePath(region:string, variant: string) {
@@ -67,8 +67,8 @@ export function checkCurationPath(key:string):CurationPath|null {
   const parts = PathMatcher.exec(key);
   if(parts) {
     return {
-      region: parts[1],
-      variant: parts[2],
+      edition: parts[1],
+      front: parts[2],
       year: parseInt(parts[3]),
       month: parseInt(parts[4]),
       day: parseInt(parts[5])
@@ -80,8 +80,8 @@ export function checkCurationPath(key:string):CurationPath|null {
 
 export function newCurationPath(region:string, variant:string, date:Date):CurationPath {
   return {
-    region,
-    variant,
+    edition: region,
+    front: variant,
     year: date.getFullYear(),
     month: date.getMonth()+1,
     day: date.getDate(),
@@ -99,8 +99,8 @@ export async function validateCurationData(region:string, variant:string, date:D
     await s3Client.send(req); //this should throw an exception if the file does not exist
     console.debug(`Found curation data for ${region}/${variant} on ${formatISO(date)}`);
     return {
-      variant,
-      region,
+      front: variant,
+      edition: region,
       year: date.getFullYear(),
       month: date.getMonth()+1,
       day: date.getDate()
@@ -117,7 +117,7 @@ export async function validateCurationData(region:string, variant:string, date:D
 }
 
 export async function activateCuration(info:CurationPath):Promise<void> {
-  const targetPath = generateActivePath(info.region, info.variant);
+  const targetPath = generateActivePath(info.edition, info.front);
   console.log(`Deploying config ${generatePathFromCuration(info)} to ${targetPath}`);
 
   const req = new CopyObjectCommand({
