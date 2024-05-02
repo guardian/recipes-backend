@@ -1,3 +1,4 @@
+import {GuScheduledLambda} from "@guardian/cdk";
 import type {GuStackProps} from "@guardian/cdk/lib/constructs/core";
 import {GuParameter, GuStack} from "@guardian/cdk/lib/constructs/core";
 import {GuLambdaFunction} from "@guardian/cdk/lib/constructs/lambda";
@@ -6,8 +7,10 @@ import {StreamRetry} from "@guardian/cdk/lib/utils/lambda";
 import {type App, aws_sns, Duration} from "aws-cdk-lib";
 import {Alarm, ComparisonOperator, TreatMissingData, Unit} from "aws-cdk-lib/aws-cloudwatch";
 import {SnsAction} from "aws-cdk-lib/aws-cloudwatch-actions";
+import {Schedule} from "aws-cdk-lib/aws-events";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
+import {LambdaDestination} from "aws-cdk-lib/aws-s3-notifications";
 import {DataStore} from "./datastore";
 import {ExternalParameters} from "./external_parameters";
 import {RestEndpoints} from "./rest-endpoints";
@@ -47,6 +50,8 @@ export class RecipesBackend extends GuStack {
         })
       ]
     });
+    const externalParameters = new ExternalParameters(this, "externals");
+    const nonUrgentAlarmTopic = aws_sns.Topic.fromTopicArn(this, "nonurgent-alarm", externalParameters.nonUrgentAlarmTopicArn.stringValue);
 
     //This is a nicer way to pick up the stream name - but CDK won't compile
     //when using the name token for the kinesis stream name below.
@@ -147,13 +152,55 @@ export class RecipesBackend extends GuStack {
         statistic: "Maximum",
         unit: Unit.MILLISECONDS
       }),
-      evaluationPeriods: 3,// when happens atleast 3 times
+      evaluationPeriods: 3,// when happens at least 3 times
     })
 
-    const externalParameters = new ExternalParameters(this, "externals");
-    //const urgentAlarmTopic = aws_sns.Topic.fromTopicArn(this, "urgent-alarm", externalParameters.urgentAlarmTopicArn.stringValue);
-    const nonUrgentAlarmTopic = aws_sns.Topic.fromTopicArn(this, "nonurgent-alarm", externalParameters.nonUrgentAlarmTopicArn.stringValue);
-    durationAlarm.addAlarmAction(new SnsAction(nonUrgentAlarmTopic))
+    durationAlarm.addAlarmAction(new SnsAction(nonUrgentAlarmTopic));
+
+    const publishTodaysCurationLambda = new GuScheduledLambda(this, "PublishTodaysCuration", {
+      app: "recipes-publish-todays-curation",
+      architecture: Architecture.ARM_64,
+      fileName: "publish-todays-curation.zip",
+      functionName: `PublishTodaysCuration-${props.stage}`,
+      handler: "main.handler",
+      initialPolicy: [
+        new PolicyStatement({
+          effect: Effect.DENY,
+          actions: ["*"],
+          resources: [serving.staticBucket.bucketArn + "/content/*"]
+        }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["s3:PutObject","s3:GetObject"],
+          resources: [serving.staticBucket.bucketArn + "/*"]
+        }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["s3:ListBucket"],
+          resources: [serving.staticBucket.bucketArn]
+        })
+      ],
+      memorySize: 256,
+      monitoringConfiguration: {
+        noMonitoring: true,
+      },
+      rules: [{
+        schedule: Schedule.cron({hour: "0", minute: "1"}),
+        description: "Update Feast app daily curation at midnight"
+      }],
+      runtime: Runtime.NODEJS_18_X,
+      timeout: Duration.seconds(10),
+      environment: {
+        STATIC_BUCKET: serving.staticBucket.bucketName,
+        FASTLY_API_KEY: fastlyKeyParam.valueAsString,
+        CONTENT_URL_BASE: contentUrlBase,
+      }
+    });
+
+    serving.staticBucket.addObjectCreatedNotification(
+      new LambdaDestination(publishTodaysCurationLambda),
+      { suffix: "curation.json", }
+    );
   }
 
 }
