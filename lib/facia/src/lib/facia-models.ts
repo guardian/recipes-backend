@@ -52,5 +52,26 @@ export const FeastAppContainer = z.object({
 
 export type FeastAppContainer = z.infer<typeof FeastAppContainer>;
 
-export const FeastCuration = z.record(z.string(), z.array(FeastAppContainer));
+export type Edition = "northern"|"southern";
+export const Edition = z.custom<Edition>((val)=>{
+  return val === "northern" || val === "southern"
+});
+
+const DateString = z.custom<string>((val)=>{
+  try {
+    const d = Date.parse(val as string);
+    return !isNaN(d)
+  } catch {
+    return false
+  }
+});
+
+export const FeastCuration = z.object({
+  id: z.string(),
+  edition: Edition,
+  issueDate: DateString,
+  version: z.string(),
+  fronts: z.record(z.string(), z.array(FeastAppContainer))
+});
+
 export type FeastCuration = z.infer<typeof FeastCuration>;
