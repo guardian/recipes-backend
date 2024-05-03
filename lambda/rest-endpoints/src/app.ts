@@ -4,6 +4,7 @@ import express from 'express';
 import type {Request} from 'express';
 import {importCurationData, recipeByUID } from "@recipes-api/lib/recipes-data";
 import {getBodyContentAsJson, validateDateParam} from "./helpers";
+import {FeastAppContainer} from "@recipes-api/lib/facia";
 
 export const app = express();
 app.set('view engine', 'ejs');
@@ -60,6 +61,16 @@ router.post('/api/curation/:edition/:front', (req: Request<CurationParams>, resp
     if(textContent.length==0) {
       resp.status(400).json({status: "error", detail: "no content was sent"});
       return;
+    }
+
+    //For the time being, this check is only advisory as we are not 100% confident that the models represent everything that MEP can send
+    //When we move to Fronts this will be mandatory
+    try {
+      FeastAppContainer.parse(JSON.parse(textContent));
+    } catch (err) {
+      console.warn(`We were sent content that did not validate: `, err);
+      console.warn("Data we got: ");
+      console.warn(textContent);
     }
 
     importCurationData(textContent, req.params.edition, req.params.front, dateval)
