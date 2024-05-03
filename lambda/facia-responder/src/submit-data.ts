@@ -5,8 +5,6 @@ import {StaticBucketName as Bucket, FastlyApiKey} from "./config";
 
 const s3client = new S3Client({region: process.env["AWS_REGION"]});
 
-//TODO: Factor this out into library code!
-
 export async function importNewData(content:string|Buffer, region: string, variant: string, maybeDate: Date|null):Promise<void>
 {
   const Key = maybeDate ? `${region}/${variant}/${format(maybeDate, "yyyy-MM-dd")}/curation.json`: `${region}/${variant}/curation.json`;
