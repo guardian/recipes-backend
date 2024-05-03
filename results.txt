@@ -1,0 +1,143 @@
+{
+	"id": "66842740cc5048b79d2112ea",
+	"type": "article",
+	"blocks": [
+		{
+			"id": "66842741cc5048b79d2112eb",
+			"tags": [],
+			"elements": [
+				{
+					"assets": [],
+					"fields": {},
+					"elementType": "text"
+				}
+			],
+			"createdBy": {
+				"email": "jonathon.herbert@guardian.co.uk",
+				"lastName": "Herbert",
+				"firstName": "Jonathon"
+			},
+			"published": false,
+			"attributes": {},
+			"dateCreated": 1719936833696,
+			"contributors": [],
+			"lastModified": 1719936833696,
+			"lastModifiedBy": {
+				"email": "jonathon.herbert@guardian.co.uk",
+				"lastName": "Herbert",
+				"firstName": "Jonathon"
+			}
+		}
+	],
+	"expiry": {
+		"rights": {
+			"expired": false
+		},
+		"commercial": {
+			"expired": false
+		}
+	},
+	"fields": {},
+	"isGone": false,
+	"rights": {
+		"developerCommunity": false,
+		"syndicationAggregate": false,
+		"subscriptionDatabases": false
+	},
+	"channels": {},
+	"isHosted": false,
+	"settings": {
+		"blockAds": "false",
+		"timeZone": "Europe/London",
+		"tableOfContents": "false",
+		"legallySensitive": "false",
+		"productionOffice": "UK",
+		"hideReaderRevenue": "false",
+		"relatedContentOff": "false",
+		"isInappropriateForSponsorship": "false"
+	},
+	"taxonomy": {
+		"tags": [
+			{
+				"tag": {
+					"id": 26903,
+					"path": "articles",
+					"slug": "article",
+					"type": "Content Type",
+					"section": {
+						"id": 281,
+						"name": "Global",
+						"slug": "global",
+						"pathPrefix": "global"
+					},
+					"externalName": "Article",
+					"internalName": "Article (Content type)"
+				},
+				"isLead": false
+			}
+		],
+		"tracking": [],
+		"references": [],
+		"publication": {
+			"id": 4,
+			"path": "guardian/all",
+			"slug": "guardian",
+			"type": "Publication",
+			"section": {
+				"id": 281,
+				"name": "Global",
+				"slug": "global",
+				"pathPrefix": "global"
+			},
+			"externalName": "theguardian.com",
+			"internalName": "guardian.co.uk publication"
+		},
+		"contributors": []
+	},
+	"published": false,
+	"aliasPaths": [],
+	"identifiers": {},
+	"toolSettings": {
+		"pathLocked": "false",
+		"seoChanged": "false",
+		"slugLinked": "true",
+		"republished": "false",
+		"seoOptimised": "false",
+		"linkTextLinked": "true",
+		"suggestedEmbeds": "false",
+		"trailTextLinked": "true",
+		"atomPoweredVideo": "false",
+		"disableOctopusUpdates": "false",
+		"includedSuggestedEmbeds": ""
+	},
+	"collaborators": [
+		{
+			"email": "jonathon.herbert@guardian.co.uk",
+			"lastName": "Herbert",
+			"firstName": "Jonathon"
+		}
+	],
+	"auxiliaryAtoms": [],
+	"backReferences": [],
+	"originatingSystem": "composer",
+	"contentChangeDetails": {
+		"created": {
+			"date": 1719936832984,
+			"user": {
+				"email": "jonathon.herbert@guardian.co.uk",
+				"lastName": "Herbert",
+				"firstName": "Jonathon"
+			}
+		},
+		"revision": 10,
+		"lastModified": {
+			"date": 1719936833751,
+			"user": {
+				"email": "jonathon.herbert@guardian.co.uk",
+				"lastName": "Herbert",
+				"firstName": "Jonathon"
+			}
+		},
+		"minutesActive": 1
+	}
+}
