@@ -15,6 +15,7 @@ import {DataStore} from "./datastore";
 import {ExternalParameters} from "./external_parameters";
 import {RestEndpoints} from "./rest-endpoints";
 import {StaticServing} from "./static-serving";
+import {FaciaConnection} from "./facia-connection";
 
 export class RecipesBackend extends GuStack {
   constructor(scope: App, id: string, props: GuStackProps) {
@@ -132,6 +133,12 @@ export class RecipesBackend extends GuStack {
       handler: "main.handler",
       fileName: "recipes-responder.zip",
       timeout: lambdaTimeout
+    });
+
+    new FaciaConnection(this, "RecipesFacia", {
+      fastlyKeyParam,
+      serving,
+      externalParameters
     });
 
     new RestEndpoints(this, "RestEndpoints", {
