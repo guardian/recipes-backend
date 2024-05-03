@@ -1,1 +1,1 @@
-export * from './lib/lib-facia';
+export * from './lib/facia-models';
