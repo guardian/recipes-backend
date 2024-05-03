@@ -1,7 +1,7 @@
 import type {SQSHandler, SQSRecord} from "aws-lambda";
 import format from "date-fns/format";
 import  * as facia  from "@recipes-api/lib/facia";
-import {importNewData} from "./submit-data";
+import {importCurationData } from "@recipes-api/lib/recipes-data";
 
 function parseMesssage(from:SQSRecord):facia.FeastCuration
 {
@@ -16,7 +16,7 @@ async function deployCuration(curation:facia.FeastCuration)
   for(const frontName of Object.keys(curation.fronts)) {
     console.log(`Deploying new front for ${frontName} in ${curation.edition as string} on ${format(issueDate, "YYYY-mm-dd")}`);
     const serializedFront = JSON.stringify(curation.fronts[frontName]);
-    await importNewData(serializedFront, curation.edition, frontName, issueDate);
+    await importCurationData(serializedFront, curation.edition, frontName, issueDate);
   }
 }
 
