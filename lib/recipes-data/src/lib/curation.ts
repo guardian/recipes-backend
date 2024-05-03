@@ -1,13 +1,11 @@
 import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
 import format from "date-fns/format";
-import {sendFastlyPurgeRequestWithRetries} from "@recipes-api/lib/recipes-data";
 import {StaticBucketName as Bucket, FastlyApiKey} from "./config";
+import { sendFastlyPurgeRequestWithRetries } from './fastly';
 
 const s3client = new S3Client({region: process.env["AWS_REGION"]});
 
-//TODO: Factor this out into library code!
-
-export async function importNewData(content:string|Buffer, region: string, variant: string, maybeDate: Date|null):Promise<void>
+export async function importCurationData(content:string|Buffer, region: string, variant: string, maybeDate: Date|null):Promise<void>
 {
   const Key = maybeDate ? `${region}/${variant}/${format(maybeDate, "yyyy-MM-dd")}/curation.json`: `${region}/${variant}/curation.json`;
 
@@ -22,5 +20,5 @@ export async function importNewData(content:string|Buffer, region: string, varia
   console.log("Uploading new curation data...");
   await s3client.send(req);
   console.log("Done. Flushing CDN cache...");
-  await sendFastlyPurgeRequestWithRetries(Key, FastlyApiKey, "hard");
+  await sendFastlyPurgeRequestWithRetries(Key, FastlyApiKey as string, "hard");
 }
