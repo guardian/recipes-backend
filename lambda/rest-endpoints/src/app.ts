@@ -2,9 +2,8 @@ import bodyParser from 'body-parser';
 import {renderFile as ejs} from "ejs";
 import express from 'express';
 import type {Request} from 'express';
-import {recipeByUID } from "@recipes-api/lib/recipes-data";
+import {importCurationData, recipeByUID } from "@recipes-api/lib/recipes-data";
 import {getBodyContentAsJson, validateDateParam} from "./helpers";
-import {importNewData} from "./submit-data";
 
 export const app = express();
 app.set('view engine', 'ejs');
@@ -63,7 +62,7 @@ router.post('/api/curation/:edition/:front', (req: Request<CurationParams>, resp
       return;
     }
 
-    importNewData(textContent, req.params.edition, req.params.front, dateval)
+    importCurationData(textContent, req.params.edition, req.params.front, dateval)
       .then(() => {
         return resp.status(200).json({status: "ok"})
       })
