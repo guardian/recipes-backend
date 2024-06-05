@@ -11,7 +11,9 @@ app.set('view engine', 'ejs');
 app.engine('.ejs', ejs);
 
 const router = express.Router();
-router.use(bodyParser.json());
+router.use(bodyParser.json({
+  limit: '1mb'
+}));
 
 interface CurationParams {
   edition: string;
