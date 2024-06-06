@@ -17,6 +17,12 @@ You need to have a large number of environment variables set for the tools to wo
 4. Once you have the file, run `source environ-CODE` to set up the environment variables you need to target the CODE environment.
 5. You can now run the tools outlined below.
 
+## Testing
+
+Run tests in every project with `npm run test`.
+
+For a tighter feedback loop, run individual projects or files, and watch, with `npm run test -- [project-name] [--test-file file-name] [--watch]`, for example `npm run test -- recipes-data --test-file transform.test.ts --watch`.
+
 ## How do I re-index content from CAPI out to Feast?
 
 1. Set up for local operations, as above
