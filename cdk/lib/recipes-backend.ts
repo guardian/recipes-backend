@@ -13,14 +13,15 @@ import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
 import {LambdaDestination} from "aws-cdk-lib/aws-s3-notifications";
 import {DataStore} from "./datastore";
 import {ExternalParameters} from "./external_parameters";
+import {FaciaConnection} from "./facia-connection";
 import {RestEndpoints} from "./rest-endpoints";
 import {StaticServing} from "./static-serving";
-import {FaciaConnection} from "./facia-connection";
 
 export class RecipesBackend extends GuStack {
   constructor(scope: App, id: string, props: GuStackProps) {
     super(scope, id, props);
 
+    const app = "recipes-responder";
     const serving = new StaticServing(this, "static");
     const store = new DataStore(this, "store");
 
@@ -65,24 +66,30 @@ export class RecipesBackend extends GuStack {
 
     const capiKeyParam = new GuParameter(this, "capiKey", {
       fromSSM: true,
-      default: `/${this.stage}/${this.stack}/recipes-responder/capi-key`
+      default: `/${this.stage}/${this.stack}/${app}/capi-key`
     })
 
     const fastlyKeyParam = new GuParameter(this, "fastlyKey", {
       fromSSM: true,
-      default: `/${this.stage}/${this.stack}/recipes-responder/fastly-key`
+      default: `/${this.stage}/${this.stack}/${app}/fastly-key`
     })
 
     const telemetryXAR = new GuParameter(this, "TelemetryCrossAcctRole", {
       fromSSM: true,
-      default: `/${this.stage}/${this.stack}/recipes-responder/telemetryXAR`,
+      default: `/${this.stage}/${this.stack}/${app}/telemetryXAR`,
       description: "Cross-account role to allow data submissions"
     });
     const telemetryTopic = new GuParameter(this, "TelemetryTopic", {
       fromSSM: true,
-      default: `/${this.stage}/${this.stack}/recipes-responder/telemetryTopic`,
+      default: `/${this.stage}/${this.stack}/${app}/telemetryTopic`,
       description: "ARN of the SNS topic to use for data submissions"
     });
+
+		const faciaSNSTopicARNParam = new GuParameter(this, 'faciaSNSTopicParam', {
+			default: `/${this.stage}/${this.stack}/${app}/facia-sns-topic-arn`,
+			fromSSM: true,
+			description: 'The ARN of the facia-tool SNS topic that emits curation notifications',
+		});
 
     const contentUrlBase = this.stage === "CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com";
 
@@ -129,16 +136,17 @@ export class RecipesBackend extends GuStack {
         })
       ],
       runtime: Runtime.NODEJS_18_X,
-      app: "recipes-responder",
+      app,
       handler: "main.handler",
-      fileName: "recipes-responder.zip",
+      fileName: `${app}.zip`,
       timeout: lambdaTimeout
     });
 
     new FaciaConnection(this, "RecipesFacia", {
       fastlyKeyParam,
       serving,
-      externalParameters
+      externalParameters,
+      faciaSNSTopicARN: faciaSNSTopicARNParam.valueAsString
     });
 
     new RestEndpoints(this, "RestEndpoints", {
