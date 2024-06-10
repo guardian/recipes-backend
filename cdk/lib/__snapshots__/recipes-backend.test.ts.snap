@@ -10,6 +10,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "GuParameter",
       "GuParameter",
       "GuParameter",
+      "GuParameter",
       "GuLambdaFunction",
       "GuLambdaFunction",
       "GuLambdaErrorPercentageAlarm",
@@ -72,6 +73,11 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     },
     "externalsurgentalarmarnParameterCE71CB92": {
       "Default": "/account/content-api-common/alarms/urgent-alarm-topic",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "faciaSNSTopicParam": {
+      "Default": "/TEST/content-api/recipes-responder/facia-sns-topic-arn",
+      "Description": "The ARN of the facia-tool SNS topic that emits curation notifications",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "fastlyKey": {
@@ -1514,6 +1520,26 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                 ],
               },
             },
+            {
+              "Action": "sqs:SendMessage",
+              "Condition": {
+                "ArnEquals": {
+                  "aws:SourceArn": {
+                    "Ref": "faciaSNSTopicParam",
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "sns.amazonaws.com",
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "RecipesFaciaConnection04952500",
+                  "Arn",
+                ],
+              },
+            },
           ],
           "Version": "2012-10-17",
         },
@@ -1524,6 +1550,37 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         ],
       },
       "Type": "AWS::SQS::QueuePolicy",
+    },
+    "RecipesFaciaConnectionRecipesBackendRecipesFaciafaciaSNSTopic4A8496A449BAE420": {
+      "DependsOn": [
+        "RecipesFaciaConnectionPolicyC7CB124D",
+      ],
+      "Properties": {
+        "Endpoint": {
+          "Fn::GetAtt": [
+            "RecipesFaciaConnection04952500",
+            "Arn",
+          ],
+        },
+        "Protocol": "sqs",
+        "Region": {
+          "Fn::Select": [
+            3,
+            {
+              "Fn::Split": [
+                ":",
+                {
+                  "Ref": "faciaSNSTopicParam",
+                },
+              ],
+            },
+          ],
+        },
+        "TopicArn": {
+          "Ref": "faciaSNSTopicParam",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
     },
     "RecipesFaciaDLQA0FC5B46": {
       "DeletionPolicy": "Delete",
