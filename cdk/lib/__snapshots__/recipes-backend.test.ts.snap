@@ -1476,6 +1476,15 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     "RecipesFaciaConnection04952500": {
       "DeletionPolicy": "Delete",
       "Properties": {
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::GetAtt": [
+              "RecipesFaciaDLQA0FC5B46",
+              "Arn",
+            ],
+          },
+          "maxReceiveCount": 1,
+        },
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -1621,14 +1630,6 @@ def submit_response(event: dict, context, response_status: str, error_message: s
             "Ref": "DistributionBucketName",
           },
           "S3Key": "content-api/TEST/recipes-facia-responder/facia-responder.zip",
-        },
-        "DeadLetterConfig": {
-          "TargetArn": {
-            "Fn::GetAtt": [
-              "RecipesFaciaDLQA0FC5B46",
-              "Arn",
-            ],
-          },
         },
         "Environment": {
           "Variables": {
@@ -1900,16 +1901,6 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     },
                     "/*",
                   ],
-                ],
-              },
-            },
-            {
-              "Action": "sqs:SendMessage",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "RecipesFaciaDLQA0FC5B46",
-                  "Arn",
                 ],
               },
             },
