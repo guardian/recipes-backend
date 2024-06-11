@@ -19,6 +19,7 @@ interface FaciaConnectionProps {
 	serving: StaticServing;
 	externalParameters: ExternalParameters;
 	faciaSNSTopicARN: string;
+  contentUrlBase: string;
 }
 
 export class FaciaConnection extends Construct {
@@ -30,6 +31,7 @@ export class FaciaConnection extends Construct {
 			externalParameters,
 			fastlyKeyParam,
 			serving,
+      contentUrlBase
 		}: FaciaConnectionProps,
 	) {
 		super(scope, id);
@@ -65,6 +67,7 @@ export class FaciaConnection extends Construct {
 			environment: {
 				FASTLY_API_KEY: fastlyKeyParam.valueAsString,
 				STATIC_BUCKET: serving.staticBucket.bucketName,
+        CONTENT_URL_BASE: contentUrlBase,
 			},
 			fileName: 'facia-responder.zip',
 			functionName: `RecipesFaciaResponder-${scope.stage}`,
