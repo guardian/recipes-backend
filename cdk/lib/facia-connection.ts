@@ -64,6 +64,7 @@ export class FaciaConnection extends Construct {
 			app: 'recipes-facia-responder',
 			architecture: Architecture.ARM_64,
 			deadLetterQueue: faciaDLQ,
+      deadLetterQueueEnabled: true,
 			environment: {
 				FASTLY_API_KEY: fastlyKeyParam.valueAsString,
 				STATIC_BUCKET: serving.staticBucket.bucketName,
