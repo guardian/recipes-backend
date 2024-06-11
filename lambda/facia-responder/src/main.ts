@@ -1,7 +1,7 @@
-import type {SQSHandler, SQSRecord} from "aws-lambda";
-import format from "date-fns/format";
 import  * as facia  from "@recipes-api/lib/facia";
 import {importCurationData } from "@recipes-api/lib/recipes-data";
+import type {SQSHandler, SQSRecord} from "aws-lambda";
+import format from "date-fns/format";
 
 function parseMesssage(from:SQSRecord):facia.FeastCuration
 {
@@ -22,7 +22,7 @@ async function deployCuration(curation:facia.FeastCuration)
 
 export const handler:SQSHandler = async (event)=> {
   for(const rec of event.Records) {
-    console.log(`Received message with ID ${rec.messageId}`);
+    console.log(`Received message with ID ${rec.messageId}, payload ${rec.body}`);
 
     //If something fails here, let it crash. The message will get retried and then sent to DLQ
     // by the Lambda runtime and we will continue running
