@@ -1,13 +1,12 @@
 import  * as facia  from "@recipes-api/lib/facia";
 import {importCurationData } from "@recipes-api/lib/recipes-data";
-import type {SQSHandler, SQSRecord} from "aws-lambda";
+import type {SNSMessage, SQSHandler, SQSRecord} from "aws-lambda";
 import format from "date-fns/format";
 
 function parseMesssage(from:SQSRecord):facia.FeastCuration
 {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- not unsafe because we validate in the next line
-  const parsedContent = JSON.parse(from.body);  // will throw if the content is not valid;
-  return facia.FeastCuration.parse(parsedContent);
+  const parsedContent = JSON.parse(from.body) as SNSMessage;  // will throw if the content is not valid;
+  return facia.FeastCuration.parse(parsedContent.Message);
 }
 
 async function deployCuration(curation:facia.FeastCuration)
@@ -20,7 +19,7 @@ async function deployCuration(curation:facia.FeastCuration)
   }
 }
 
-export const handler:SQSHandler = async (event)=> {
+export const handler: SQSHandler = async (event)=> {
   for(const rec of event.Records) {
     console.log(`Received message with ID ${rec.messageId}, payload ${rec.body}`);
 
