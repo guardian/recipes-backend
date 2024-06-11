@@ -1,10 +1,7 @@
 import type { GuParameter, GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
 import { Duration } from 'aws-cdk-lib';
-import {
-	Effect,
-	PolicyStatement,
-} from 'aws-cdk-lib/aws-iam';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import { Topic } from 'aws-cdk-lib/aws-sns';
@@ -19,7 +16,7 @@ interface FaciaConnectionProps {
 	serving: StaticServing;
 	externalParameters: ExternalParameters;
 	faciaSNSTopicARN: string;
-  contentUrlBase: string;
+	contentUrlBase: string;
 }
 
 export class FaciaConnection extends Construct {
@@ -31,7 +28,7 @@ export class FaciaConnection extends Construct {
 			externalParameters,
 			fastlyKeyParam,
 			serving,
-      contentUrlBase
+			contentUrlBase,
 		}: FaciaConnectionProps,
 	) {
 		super(scope, id);
@@ -42,13 +39,17 @@ export class FaciaConnection extends Construct {
 			faciaSNSTopicARN,
 		);
 
+		const faciaDLQ = new Queue(this, 'DLQ');
+
 		const faciaQueue = new Queue(this, 'Connection', {
 			enforceSSL: true,
+			deadLetterQueue: {
+				queue: faciaDLQ,
+				maxReceiveCount: 1,
+			},
 		});
 
 		faciaSNSTopic.addSubscription(new SqsSubscription(faciaQueue));
-
-		const faciaDLQ = new Queue(this, 'DLQ');
 
 		new GuLambdaFunction(scope, 'RecipesFaciaResponder', {
 			events: [
@@ -63,12 +64,10 @@ export class FaciaConnection extends Construct {
 			},
 			app: 'recipes-facia-responder',
 			architecture: Architecture.ARM_64,
-			deadLetterQueue: faciaDLQ,
-      deadLetterQueueEnabled: true,
 			environment: {
 				FASTLY_API_KEY: fastlyKeyParam.valueAsString,
 				STATIC_BUCKET: serving.staticBucket.bucketName,
-        CONTENT_URL_BASE: contentUrlBase,
+				CONTENT_URL_BASE: contentUrlBase,
 			},
 			fileName: 'facia-responder.zip',
 			functionName: `RecipesFaciaResponder-${scope.stage}`,
