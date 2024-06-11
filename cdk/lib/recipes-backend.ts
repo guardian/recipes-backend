@@ -161,7 +161,8 @@ export class RecipesBackend extends GuStack {
       fastlyKeyParam,
       serving,
       externalParameters,
-      faciaSNSTopicARN: faciaSNSTopicARNParam.valueAsString
+      faciaSNSTopicARN: faciaSNSTopicARNParam.valueAsString,
+      contentUrlBase
     });
 
     new RestEndpoints(this, "RestEndpoints", {

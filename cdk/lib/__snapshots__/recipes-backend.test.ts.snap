@@ -1633,6 +1633,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "Environment": {
           "Variables": {
             "APP": "recipes-facia-responder",
+            "CONTENT_URL_BASE": "recipes.guardianapis.com",
             "FASTLY_API_KEY": {
               "Ref": "fastlyKey",
             },
