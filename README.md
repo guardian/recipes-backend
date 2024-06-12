@@ -92,6 +92,16 @@ npm run update-cdk
 
 Will update the CDK snapshot and allow the tests to pass again
 
+## Running projects
+
+Build, test and lint with `npm run build`, `npm run test`, and `npm run lint`. This will run the relevant command for every project.
+
+To run commands against individual projects, use NX. It's installed as a project dependency, and there's a handy alias to run it via NPM: `npm run nx`.
+
+For example, to run the tests in the `lib-recipes-data` project in watch mode, use `npm run nx -- run lib-recipes-data:test --watch`.
+
+See the [NX documentation](https://nx.dev/nx-api/nx/documents) for other commands.
+
 ## How does it work?
 
 ```mermaid
