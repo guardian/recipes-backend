@@ -5,8 +5,9 @@ import format from "date-fns/format";
 
 function parseMesssage(from:SQSRecord):facia.FeastCuration
 {
-  const parsedContent = JSON.parse(from.body) as SNSMessage;  // will throw if the content is not valid;
-  return facia.FeastCuration.parse(parsedContent.Message);
+  const parsedSNSMessage = JSON.parse(from.body) as SNSMessage;  // will throw if the content is not valid;
+  const parsedBody = JSON.parse(parsedSNSMessage.Message) as unknown;
+  return facia.FeastCuration.parse(parsedBody);
 }
 
 async function deployCuration(curation:facia.FeastCuration)
