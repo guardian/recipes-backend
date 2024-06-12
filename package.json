@@ -8,7 +8,8 @@
     "test": "nx run-many --target=test",
     "lint": "nx run-many --target=lint",
     "manual-takedown": "nx run tools-manual-takedown:run",
-    "commandline-reindex": "nx run lambda-recipes-responder:commandline-reindex -- "
+    "commandline-reindex": "nx run lambda-recipes-responder:commandline-reindex -- ",
+    "nx": "nx"
   },
   "private": true,
   "dependencies": {
