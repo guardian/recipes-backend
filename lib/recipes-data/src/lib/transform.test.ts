@@ -10,6 +10,7 @@ jest.mock('./config', () => ({
 	FeaturedImageWidth: 700,
 	PreviewImageWidth: 300,
 	ImageDpr: 1,
+  FastlyImageSalt: 'example-salt'
 }));
 
 describe('Recipe transforms', () => {
@@ -99,9 +100,9 @@ describe('Recipe transforms', () => {
 				recipes[0],
 				transformedRecipeReference,
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=700&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=b9acebc7cf3712ca2a3a55ccde030cf7',
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=300&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=b9acebc7cf3712ca2a3a55ccde030cf7',
 			);
 		});
 
@@ -112,9 +113,9 @@ describe('Recipe transforms', () => {
 				recipes[1],
 				transformedRecipeReference,
 				'https://i.guim.co.uk/img/media/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/master/7328.jpg?width=700&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/master/7328.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/master/7328.jpg?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=7f40a4e2793b4febdeb1f75fc2bf968b',
 				'https://i.guim.co.uk/img/media/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/master/7328.jpg?width=300&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/master/7328.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/master/7328.jpg?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=7f40a4e2793b4febdeb1f75fc2bf968b',
 			);
 		});
 
@@ -133,9 +134,9 @@ describe('Recipe transforms', () => {
 				recipes[0],
 				transformedRecipeReference,
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=700&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=b9acebc7cf3712ca2a3a55ccde030cf7',
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=300&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=b9acebc7cf3712ca2a3a55ccde030cf7',
 			);
 		});
 
@@ -154,9 +155,9 @@ describe('Recipe transforms', () => {
 				recipes[0],
 				transformedRecipeReference,
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=700&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=b9acebc7cf3712ca2a3a55ccde030cf7',
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=300&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=b9acebc7cf3712ca2a3a55ccde030cf7',
 			);
 		});
 
@@ -177,9 +178,9 @@ describe('Recipe transforms', () => {
 				recipes[0],
 				transformedRecipeReference,
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.png?width=700&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.png?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.png?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=4bce3610a8086d61ca3fa62c7f417168',
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=300&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=b9acebc7cf3712ca2a3a55ccde030cf7',
 			);
 		});
 
@@ -193,9 +194,9 @@ describe('Recipe transforms', () => {
 				recipeWithoutPreview,
 				transformedRecipeReference,
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=700&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=b9acebc7cf3712ca2a3a55ccde030cf7',
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=300&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=b9acebc7cf3712ca2a3a55ccde030cf7',
 			);
 		});
 
@@ -214,9 +215,9 @@ describe('Recipe transforms', () => {
 				recipeWithPreviewImageWithoutCropId,
 				transformedRecipeReference,
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=700&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=b9acebc7cf3712ca2a3a55ccde030cf7',
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=300&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=b9acebc7cf3712ca2a3a55ccde030cf7',
 			);
 		});
 
@@ -238,7 +239,7 @@ describe('Recipe transforms', () => {
 				recipeWithPreviewImageWithoutCropId,
 				transformedRecipeReference,
 				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=700&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=#{width}&height=#{height}&quality=#{quality}&dpr=1&s=b9acebc7cf3712ca2a3a55ccde030cf7',
 				'https://cdn.road.cc/sites/default/files/styles/main_width/public/Wat-duck.png',
 				undefined,
 			);

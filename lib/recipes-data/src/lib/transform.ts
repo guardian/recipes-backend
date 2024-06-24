@@ -1,4 +1,10 @@
-import { FeaturedImageWidth, ImageDpr, PreviewImageWidth } from './config';
+import crypto from 'crypto';
+import {
+	FastlyImageSalt,
+	FeaturedImageWidth,
+	ImageDpr,
+	PreviewImageWidth,
+} from './config';
 import type { Contributor, RecipeImage } from './models';
 import { extractCropDataFromGuimUrl } from './utils';
 
@@ -25,25 +31,35 @@ const getFastlyTemplateUrl = ({
 	dpr,
 	originalWidth,
 	extension,
+	salt,
 }: {
 	imageId: string;
 	cropId: string;
 	dpr: number;
 	originalWidth: number;
 	extension: string;
-}) =>
-	`https://i.guim.co.uk/img/media/${imageId}/${cropId}/master/${originalWidth}.${extension}?width=#{width}&quality=#{quality}&dpr=${dpr}&s=none`;
+	salt: string;
+}) => {
+	const path = `https://i.guim.co.uk/img/media/${imageId}/${cropId}/master/${originalWidth}.${extension}`;
+
+	return `${path}?width=#{width}&height=#{height}&quality=#{quality}&dpr=${dpr}&s=${getFastlyImageHash(
+		salt,
+		path,
+	)}`;
+};
 
 export const replaceFastlyUrl = ({
 	recipeId,
 	image,
 	desiredWidth,
 	dpr,
+	salt,
 }: {
 	recipeId: string;
 	image: RecipeImage;
 	desiredWidth: number;
 	dpr: number;
+	salt: string;
 }): RecipeImage => {
 	const cropData = extractCropDataFromGuimUrl(image.url);
 
@@ -64,7 +80,7 @@ export const replaceFastlyUrl = ({
 			dpr,
 			desiredWidth,
 			originalWidth: width,
-			extension,
+			extension
 		}),
 		templateUrl: getFastlyTemplateUrl({
 			imageId: mediaId,
@@ -72,9 +88,13 @@ export const replaceFastlyUrl = ({
 			dpr,
 			originalWidth: width,
 			extension,
+			salt,
 		}),
 	};
 };
+
+export const getFastlyImageHash = (path: string, salt: string): string =>
+	crypto.createHash('md5').update(`${salt}${path}`).digest('hex');
 
 export type RecipeWithImageData = {
 	id: string;
@@ -104,13 +124,15 @@ export const replaceImageUrlsWithFastly = <R extends RecipeWithImageData>(
 				image: recipe.previewImage ?? recipe.featuredImage,
 				desiredWidth: PreviewImageWidth,
 				dpr: ImageDpr,
-    }),
+				salt: FastlyImageSalt,
+			}),
 			featuredImage: replaceFastlyUrl({
 				recipeId: recipe.id,
 				image: recipe.featuredImage,
 				desiredWidth: FeaturedImageWidth,
 				dpr: ImageDpr,
-    }),
+				salt: FastlyImageSalt,
+			}),
 		};
 	} catch (err) {
 		if (err instanceof Error) {
