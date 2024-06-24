@@ -66,7 +66,7 @@ export const replaceFastlyUrl = ({
 			originalWidth: width,
 			extension,
 		}),
-		templateUrl: getFastlyTemplateUrl({
+		templateURL: getFastlyTemplateUrl({
 			imageId: mediaId,
 			cropId,
 			dpr,

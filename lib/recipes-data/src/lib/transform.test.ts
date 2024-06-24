@@ -69,18 +69,18 @@ describe('Recipe transforms', () => {
 
 			// We should have transformed the relevant URLs
 			expect(featuredImage.url).toBe(expectedFeaturedUrl);
-			expect(featuredImage.templateUrl).toBe(expectedFeaturedTemplateUrl);
+			expect(featuredImage.templateURL).toBe(expectedFeaturedTemplateUrl);
 			expect(previewImage?.url).toBe(expectedPreviewUrl);
-			expect(previewImage?.templateUrl).toBe(expectedPreviewTemplateUrl);
+			expect(previewImage?.templateURL).toBe(expectedPreviewTemplateUrl);
 
 			const {
 				url: __,
-				templateUrl: ___,
+				templateURL: ___,
 				...remainingFeaturedImage
 			} = featuredImage;
 			const {
 				url: ____,
-				templateUrl: _____,
+				templateURL: _____,
 				...remainingPreviewImage
 			} = previewImage ?? {};
 
