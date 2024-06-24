@@ -1,0 +1,35 @@
+{
+	"extends": ["../../.eslintrc.json"],
+	"ignorePatterns": ["!**/*"],
+	"overrides": [
+		{
+			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+			"rules": {}
+		},
+		{
+			"files": ["*.ts", "*.tsx"],
+			"rules": {},
+      "parserOptions": {
+        "project": [
+          "lambda/facia-responder/tsconfig.app.json"
+        ]
+      }
+		},
+    {
+      "files": ["*.test.ts", "*.test.tsx"],
+      "parserOptions": {
+        "project": ["lambda/facia-responder/tsconfig.spec.json"]
+      },
+      "rules": {
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/prefer-ts-expect-error": "off",
+        "@typescript-eslint/no-unsafe-call": "off"
+      }
+    },
+		{
+			"files": ["*.js", "*.jsx"],
+			"rules": {}
+		}
+	]
+}
