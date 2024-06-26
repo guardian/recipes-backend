@@ -121,7 +121,6 @@ export function recipeReferenceFromIndexEntry(entry: RecipeIndexEntry, jsonBlob:
 
 export type RecipeImage = {
 	url: string;
-  templateURL?: string; // Contains #{width} so that device can request image at needed size
 	mediaId?: string;
 	cropId?: string;
 	source?: string;
