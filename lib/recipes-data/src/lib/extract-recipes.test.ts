@@ -4,9 +4,9 @@ import {ElementType} from "@guardian/content-api-models/v1/elementType";
 import {extractRecipeData} from "./extract-recipes";
 
 jest.mock('./config', () => ({
-	FeaturedImageWidth: 700,
-	PreviewImageWidth: 300,
-	ImageDpr: 1,
+  FeaturedImageWidth: 700,
+  PreviewImageWidth: 300,
+  ImageDpr: 1,
 }));
 
 describe("extractRecipeData", () => {
@@ -95,11 +95,11 @@ describe("extractRecipeData", () => {
         }
       ]
     }
-    const result = extractRecipeData(canonicalId, block)
+    const result = extractRecipeData(canonicalId, block, [])
     expect(result.length).toEqual(1)
     expect(result[0]?.recipeUID).toEqual("62ac3f0f98f6495cbefd72c11fac6d1e26390e99")
-    const originalContent = block.elements[1].recipeTypeData?.recipeJson ? JSON.parse(block.elements[1].recipeTypeData.recipeJson) as Record<string, unknown>: {};
-    const expected = JSON.stringify({...originalContent, contributors:["profile/thomasina-miers"], byline: []});
+    const originalContent = block.elements[1].recipeTypeData?.recipeJson ? JSON.parse(block.elements[1].recipeTypeData.recipeJson) as Record<string, unknown> : {};
+    const expected = JSON.stringify({...originalContent, contributors: ["profile/thomasina-miers"], byline: []});
     expect(result[0]?.jsonBlob).toEqual(expected);
   })
 
@@ -201,11 +201,11 @@ describe("extractRecipeData", () => {
         }
       ]
     }
-    const result = extractRecipeData(canonicalId, block)
+    const result = extractRecipeData(canonicalId, block, [])
     expect(result.length).toEqual(3)
     expect(result[2]?.recipeUID).toEqual("62ac3f0f98f6495cbefd72c11fac6d1e26390e99")
-    const originalContent = block.elements[3].recipeTypeData?.recipeJson ? JSON.parse(block.elements[3].recipeTypeData.recipeJson) as Record<string, unknown>: {};
-    const expected = JSON.stringify({...originalContent, contributors:["profile/thomasina-miers"], byline: []});
+    const originalContent = block.elements[3].recipeTypeData?.recipeJson ? JSON.parse(block.elements[3].recipeTypeData.recipeJson) as Record<string, unknown> : {};
+    const expected = JSON.stringify({...originalContent, contributors: ["profile/thomasina-miers"], byline: []});
     expect(result[2]?.jsonBlob).toEqual(expected);
   })
 
@@ -286,7 +286,7 @@ describe("extractRecipeData", () => {
         }
       ]
     }
-    const result = extractRecipeData(canonicalId, block)
+    const result = extractRecipeData(canonicalId, block, [])
     expect(result.length).toEqual(0)
   })
 
@@ -375,7 +375,7 @@ describe("extractRecipeData", () => {
         }
       ]
     }
-    const recipesFound = extractRecipeData(canonicalId, block)
+    const recipesFound = extractRecipeData(canonicalId, block, [])
     expect(recipesFound).toEqual([null])
     expect(recipesFound.length).toEqual(1)
   })
