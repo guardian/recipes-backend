@@ -2,6 +2,8 @@ import { FeaturedImageWidth, ImageDpr, PreviewImageWidth } from './config';
 import type { Contributor, RecipeImage } from './models';
 import { extractCropDataFromGuimUrl } from './utils';
 
+export type RecipeTransformationFunction = (recipeData:Record<string, unknown>)=>Record<string,unknown>;
+
 const getFastlyUrl = (
 	imageId: string,
 	cropId: string,
@@ -44,7 +46,7 @@ export type RecipeWithImageData = {
  * Replace the featured and preview image URLs, which are by convention full-resolution crops,
  * with Fastly resizer urls. Allows us to serve lower resolution assets to the app.
  */
-export const replaceImageUrlsWithFastly = <R extends RecipeWithImageData>(
+export const replaceImageUrlsWithFastly = <R extends Record<string, unknown> & RecipeWithImageData>(
 	recipe: R,
 ): R => {
 	if (
