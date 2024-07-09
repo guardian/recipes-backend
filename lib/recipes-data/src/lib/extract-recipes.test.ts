@@ -490,10 +490,11 @@ describe("extractRecipeData", () => {
     const result = extractRecipeData(canonicalId, block, activeSponsorships)
     expect(result.length).toEqual(1)
     expect(result[0]?.recipeUID).toEqual("62ac3f0f98f6495cbefd72c11fac6d1e26390e99")
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment -- this is safe
-    const data = JSON.parse(JSON.parse(JSON.stringify(result))[0]?.jsonBlob)
+    const data = JSON.parse(result[0]?.jsonBlob as string) as JSON
     const sponsorsExists = "sponsors" in data
     expect(sponsorsExists).toBe(true)
+    expect(data).toHaveProperty("sponsors[0].sponsorshipType", 0)
+    expect(data).toHaveProperty("sponsors[0].sponsorLink", "https://theguardian.org/")
   })
 
 
