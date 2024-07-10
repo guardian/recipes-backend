@@ -58,7 +58,8 @@ export const addSponsorsTransform: (sponsors: Sponsorship[]) => RecipeTransforma
         ...sponsor,
         sponsorshipType: getSponsorshipTypeNames[sponsor.sponsorshipType],
         validFrom: sponsor.validFrom?.iso8601,
-        validTo: sponsor.validTo?.iso8601
+        validTo: sponsor.validTo?.iso8601,
+        targeting: sponsor.targeting ? sponsor.targeting.publishedSince?.iso8601 : undefined
       }
     })
   })

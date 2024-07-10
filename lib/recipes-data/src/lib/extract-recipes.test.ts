@@ -495,6 +495,7 @@ describe("extractRecipeData", () => {
     expect(sponsorsExists).toBe(true)
     expect(data).toHaveProperty("sponsors[0].sponsorshipType", "Sponsored")
     expect(data).toHaveProperty("sponsors[0].sponsorLink", "https://theguardian.org/")
+    expect(data).not.toHaveProperty("sponsors[0].targeting")
   })
 
   it("should work when block containing recipe element but not sponsored, means no sponsor data available", () => {
