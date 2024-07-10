@@ -46,7 +46,9 @@ export type RecipeWithImageData = {
 export const addSponsorsTransform: (sponsors: Sponsorship[]) => RecipeTransformationFunction = sponsors => {
   return (recipeData) => ({
     ...recipeData,
-    sponsors: sponsors.length === 0 ? undefined : sponsors
+    sponsors: sponsors.length === 0 ? undefined : sponsors.map(s => {
+      return {...s, validFrom: s.validFrom?.iso8601, validTo: s.validTo?.iso8601}
+    })
   })
 }
 
