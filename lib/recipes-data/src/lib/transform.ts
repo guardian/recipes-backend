@@ -1,4 +1,5 @@
 import type {Sponsorship} from "@guardian/content-api-models/v1/sponsorship";
+import {SponsorshipType} from "@guardian/content-api-models/v1/sponsorshipType";
 import {FeaturedImageWidth, ImageDpr, PreviewImageWidth} from './config';
 import type {Contributor, RecipeImage} from './models';
 import {extractCropDataFromGuimUrl} from './utils';
@@ -43,11 +44,22 @@ export type RecipeWithImageData = {
   previewImage?: RecipeImage | string;
 };
 
+const getSponsorshipTypeNames: Record<number, string> = {
+  [SponsorshipType.SPONSORED]: "Sponsored",
+  [SponsorshipType.FOUNDATION]: "Foundation",
+  [SponsorshipType.PAID_CONTENT]: "Paid content"
+};
+
 export const addSponsorsTransform: (sponsors: Sponsorship[]) => RecipeTransformationFunction = sponsors => {
   return (recipeData) => ({
     ...recipeData,
-    sponsors: sponsors.length === 0 ? undefined : sponsors.map(s => {
-      return {...s, validFrom: s.validFrom?.iso8601, validTo: s.validTo?.iso8601}
+    sponsors: sponsors.length === 0 ? undefined : sponsors.map(sponsor => {
+      return {
+        ...sponsor,
+        sponsorshipType: getSponsorshipTypeNames[sponsor.sponsorshipType],
+        validFrom: sponsor.validFrom?.iso8601,
+        validTo: sponsor.validTo?.iso8601
+      }
     })
   })
 }

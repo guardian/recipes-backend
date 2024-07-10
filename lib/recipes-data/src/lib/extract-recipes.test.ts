@@ -493,7 +493,7 @@ describe("extractRecipeData", () => {
     const data = JSON.parse(result[0]?.jsonBlob as string) as JSON
     const sponsorsExists = "sponsors" in data
     expect(sponsorsExists).toBe(true)
-    expect(data).toHaveProperty("sponsors[0].sponsorshipType", 0)
+    expect(data).toHaveProperty("sponsors[0].sponsorshipType", "Sponsored")
     expect(data).toHaveProperty("sponsors[0].sponsorLink", "https://theguardian.org/")
   })
 
