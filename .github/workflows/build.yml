@@ -2,7 +2,7 @@ name: Build on PR
 
 on:
   push:
-    branches: ['main']
+    branches: ['main', 'jsh/test-facia']
   pull_request:
     branches: ['main']
   workflow_dispatch: {}
