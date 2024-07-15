@@ -9,11 +9,11 @@ import {EventBus, Rule, Schedule} from "aws-cdk-lib/aws-events";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
 import {LambdaDestination} from "aws-cdk-lib/aws-s3-notifications";
+import {Queue} from "aws-cdk-lib/aws-sqs";
 import {DataStore} from "./datastore";
 import {ExternalParameters} from "./external_parameters";
 import {RestEndpoints} from "./rest-endpoints";
 import {StaticServing} from "./static-serving";
-import {Queue} from "aws-cdk-lib/aws-sqs";
 
 export class RecipesBackend extends GuStack {
   constructor(scope: App, id: string, props: GuStackProps) {
@@ -126,7 +126,7 @@ export class RecipesBackend extends GuStack {
       timeout: lambdaTimeout
     });
 
-    const eventBus = EventBus.fromEventBusName(this, "CrierEventBus", `content-api-crier-v2-${this.stage}`);
+    const eventBus = EventBus.fromEventBusName(this, "CrierEventBus", `crier-eventbus-content-api-crier-v2-${this.stage}`);
     const responderDLQ = new Queue(this, "RecipeResponcerDLQ", {
       queueName: `recipe-responder-${this.stage}-DLQ`
     });
@@ -186,7 +186,7 @@ export class RecipesBackend extends GuStack {
         }),
         new PolicyStatement({
           effect: Effect.ALLOW,
-          actions: ["s3:PutObject","s3:GetObject"],
+          actions: ["s3:PutObject", "s3:GetObject"],
           resources: [serving.staticBucket.bucketArn + "/*"]
         }),
         new PolicyStatement({
@@ -214,7 +214,7 @@ export class RecipesBackend extends GuStack {
 
     serving.staticBucket.addObjectCreatedNotification(
       new LambdaDestination(publishTodaysCurationLambda),
-      { suffix: "curation.json", }
+      {suffix: "curation.json",}
     );
   }
 

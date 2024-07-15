@@ -310,7 +310,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     "CrierConnectionE7D24320": {
       "Properties": {
         "Description": "Connect recipe responder TEST to Crier",
-        "EventBusName": "content-api-crier-v2-TEST",
+        "EventBusName": "crier-eventbus-content-api-crier-v2-TEST",
         "EventPattern": {
           "detail": {
             "channels": [
