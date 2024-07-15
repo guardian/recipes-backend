@@ -10,7 +10,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "GuParameter",
       "GuParameter",
       "GuParameter",
-      "GuKinesisLambdaExperimental",
+      "GuLambdaFunction",
       "GuApiLambda",
       "GuScheduledLambda",
     ],
@@ -287,6 +287,66 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "CrierConnectionAllowEventRuleRecipesBackendupdaterLambda0796CBC53405D228": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "updaterLambdaE2EB52D9",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "CrierConnectionE7D24320",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "CrierConnectionE7D24320": {
+      "Properties": {
+        "Description": "Connect recipe responder TEST to Crier",
+        "EventBusName": "content-api-crier-v2-TEST",
+        "EventPattern": {
+          "detail": {
+            "channels": [
+              "feast",
+            ],
+          },
+          "source": [
+            "crier",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "updaterLambdaE2EB52D9",
+                "Arn",
+              ],
+            },
+            "DeadLetterConfig": {
+              "Arn": {
+                "Fn::GetAtt": [
+                  "RecipeResponcerDLQF19E09A3",
+                  "Arn",
+                ],
+              },
+            },
+            "Id": "Target0",
+            "RetryPolicy": {
+              "MaximumEventAgeInSeconds": 1800,
+              "MaximumRetryAttempts": 5,
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
     },
     "DurationRuntimeAlarmC21C10E0": {
       "Properties": {
@@ -1340,6 +1400,71 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::IAM::Policy",
     },
+    "RecipeResponcerDLQF19E09A3": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "QueueName": "recipe-responder-TEST-DLQ",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "RecipeResponcerDLQPolicyB88FED23": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:SendMessage",
+              "Condition": {
+                "ArnEquals": {
+                  "aws:SourceArn": {
+                    "Fn::GetAtt": [
+                      "CrierConnectionE7D24320",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "RecipeResponcerDLQF19E09A3",
+                  "Arn",
+                ],
+              },
+              "Sid": "AllowEventRuleRecipesBackendCrierConnection45DBF5AE",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Queues": [
+          {
+            "Ref": "RecipeResponcerDLQF19E09A3",
+          },
+        ],
+      },
+      "Type": "AWS::SQS::QueuePolicy",
+    },
     "staticcdnRead42C381A5": {
       "Properties": {
         "Tags": [
@@ -1936,6 +2061,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
             },
           },
         },
+        "FunctionName": "recipe-responder-content-api-TEST",
         "Handler": "main.handler",
         "MemorySize": 512,
         "Role": {
@@ -1970,34 +2096,6 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "Timeout": 30,
       },
       "Type": "AWS::Lambda::Function",
-    },
-    "updaterLambdaKinesisEventSourceRecipesBackendcontentapifirehosev2TEST610C4BA2C96AE54F": {
-      "Properties": {
-        "BatchSize": 100,
-        "BisectBatchOnFunctionError": true,
-        "EventSourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:aws:kinesis:",
-              {
-                "Ref": "AWS::Region",
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId",
-              },
-              ":stream/content-api-firehose-v2-TEST",
-            ],
-          ],
-        },
-        "FunctionName": {
-          "Ref": "updaterLambdaE2EB52D9",
-        },
-        "MaximumRetryAttempts": 5,
-        "StartingPosition": "LATEST",
-      },
-      "Type": "AWS::Lambda::EventSourceMapping",
     },
     "updaterLambdaServiceRole83C687C0": {
       "Properties": {
@@ -2201,55 +2299,6 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                       "Ref": "AWS::AccountId",
                     },
                     ":parameter/TEST/content-api/recipes-responder/*",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "kinesis:DescribeStreamSummary",
-                "kinesis:GetRecords",
-                "kinesis:GetShardIterator",
-                "kinesis:ListShards",
-                "kinesis:SubscribeToShard",
-                "kinesis:DescribeStream",
-                "kinesis:ListStreams",
-                "kinesis:DescribeStreamConsumer",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":stream/content-api-firehose-v2-TEST",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": "kinesis:DescribeStream",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":stream/content-api-firehose-v2-TEST",
                   ],
                 ],
               },

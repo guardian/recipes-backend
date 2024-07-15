@@ -2,12 +2,10 @@ import {GuScheduledLambda} from "@guardian/cdk";
 import type {GuStackProps} from "@guardian/cdk/lib/constructs/core";
 import {GuParameter, GuStack} from "@guardian/cdk/lib/constructs/core";
 import {GuLambdaFunction} from "@guardian/cdk/lib/constructs/lambda";
-import {GuKinesisLambdaExperimental} from "@guardian/cdk/lib/experimental/patterns";
-import {StreamRetry} from "@guardian/cdk/lib/utils/lambda";
-import {type App, aws_sns, Duration} from "aws-cdk-lib";
+import {type App, aws_events_targets, aws_sns, Duration} from "aws-cdk-lib";
 import {Alarm, ComparisonOperator, TreatMissingData, Unit} from "aws-cdk-lib/aws-cloudwatch";
 import {SnsAction} from "aws-cdk-lib/aws-cloudwatch-actions";
-import {Schedule} from "aws-cdk-lib/aws-events";
+import {EventBus, Rule, Schedule} from "aws-cdk-lib/aws-events";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
 import {LambdaDestination} from "aws-cdk-lib/aws-s3-notifications";
@@ -15,6 +13,7 @@ import {DataStore} from "./datastore";
 import {ExternalParameters} from "./external_parameters";
 import {RestEndpoints} from "./rest-endpoints";
 import {StaticServing} from "./static-serving";
+import {Queue} from "aws-cdk-lib/aws-sqs";
 
 export class RecipesBackend extends GuStack {
   constructor(scope: App, id: string, props: GuStackProps) {
@@ -85,15 +84,8 @@ export class RecipesBackend extends GuStack {
 
     const contentUrlBase = this.stage === "CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com";
 
-    const updaterLambda = new GuKinesisLambdaExperimental(this, "updaterLambda", {
-      monitoringConfiguration: {noMonitoring: true},
-      existingKinesisStream: {
-        externalKinesisStreamName: `content-api-firehose-v2-${this.stage}`,
-      },
-      errorHandlingConfiguration: {
-        retryBehaviour: StreamRetry.maxAttempts(5),
-        bisectBatchOnError: true,
-      },
+    const updaterLambda = new GuLambdaFunction(this, "updaterLambda", {
+      functionName: `recipe-responder-${this.stack}-${this.stage}`,
       environment: {
         CAPI_KEY: capiKeyParam.valueAsString,
         INDEX_TABLE: store.table.tableName,
@@ -132,6 +124,29 @@ export class RecipesBackend extends GuStack {
       handler: "main.handler",
       fileName: "recipes-responder.zip",
       timeout: lambdaTimeout
+    });
+
+    const eventBus = EventBus.fromEventBusName(this, "CrierEventBus", `content-api-crier-v2-${this.stage}`);
+    const responderDLQ = new Queue(this, "RecipeResponcerDLQ", {
+      queueName: `recipe-responder-${this.stage}-DLQ`
+    });
+
+    new Rule(this, "CrierConnection", {
+      eventBus,
+      description: `Connect recipe responder ${this.stage} to Crier`,
+      eventPattern: {
+        "source": ["crier"],
+        "detail": {
+          "channels": ["feast"]
+        }
+      },
+      targets: [
+        new aws_events_targets.LambdaFunction(updaterLambda, {
+          deadLetterQueue: responderDLQ,
+          maxEventAge: Duration.minutes(30),
+          retryAttempts: 5,
+        }),
+      ]
     });
 
     new RestEndpoints(this, "RestEndpoints", {
