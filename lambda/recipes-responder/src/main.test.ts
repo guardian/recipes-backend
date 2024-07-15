@@ -282,7 +282,7 @@ describe("main.handler", () => {
 
     const eventMock:EventBridgeEvent<string, CrierEvent> =
     {
-      "account": "308506855511",
+      "account": "234786246782",
       "detail": testReq,
       "detail-type": "content-update",
       "id": "d8acb3c0-2426-43f3-beb5-bdf2f2c973b5",
