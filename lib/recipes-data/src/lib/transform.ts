@@ -44,10 +44,13 @@ export type RecipeWithImageData = {
   previewImage?: RecipeImage | string;
 };
 
-const getSponsorshipTypeNames: Record<number, string> = {
-  [SponsorshipType.SPONSORED]: "Sponsored",
-  [SponsorshipType.FOUNDATION]: "Foundation",
-  [SponsorshipType.PAID_CONTENT]: "Paid content"
+const getSponsorshipTypeNames = (st: SponsorshipType): string => {
+  if (SponsorshipType[SponsorshipType[st]]) {
+    const lower = SponsorshipType[st].toLowerCase();
+    return `${lower[0].toUpperCase()}${lower.slice(1).replace("_", " ")}`
+  } else {
+    return "Unknown"
+  }
 };
 
 export const addSponsorsTransform: (sponsors: Sponsorship[]) => RecipeTransformationFunction = sponsors => {
@@ -56,7 +59,7 @@ export const addSponsorsTransform: (sponsors: Sponsorship[]) => RecipeTransforma
     sponsors: sponsors.length === 0 ? undefined : sponsors.map(sponsor => {
       return {
         ...sponsor,
-        sponsorshipType: getSponsorshipTypeNames[sponsor.sponsorshipType],
+        sponsorshipType: getSponsorshipTypeNames(sponsor.sponsorshipType),
         validFrom: sponsor.validFrom?.iso8601,
         validTo: sponsor.validTo?.iso8601,
         targeting: sponsor.targeting?.publishedSince?.iso8601
