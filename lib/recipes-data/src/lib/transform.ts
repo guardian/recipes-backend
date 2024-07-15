@@ -45,7 +45,7 @@ export type RecipeWithImageData = {
 };
 
 const getSponsorshipTypeNames = (st: SponsorshipType): string => {
-  if (SponsorshipType[SponsorshipType[st]]) {
+  if (SponsorshipType[st]) {
     const lower = SponsorshipType[st].toLowerCase();
     return `${lower[0].toUpperCase()}${lower.slice(1).replace("_", " ")}`
   } else {
