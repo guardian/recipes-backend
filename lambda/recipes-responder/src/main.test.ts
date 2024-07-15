@@ -3,7 +3,13 @@ import {EventType} from "@guardian/content-api-models/crier/event/v1/eventType";
 import {ItemType} from "@guardian/content-api-models/crier/event/v1/itemType";
 import type {Content} from "@guardian/content-api-models/v1/content";
 import {ContentType} from "@guardian/content-api-models/v1/contentType";
-import type {Callback, KinesisStreamBatchResponse, KinesisStreamEvent, KinesisStreamRecord} from "aws-lambda";
+import type {
+  Callback,
+  EventBridgeEvent,
+  KinesisStreamBatchResponse,
+  KinesisStreamEvent,
+  KinesisStreamRecord
+} from "aws-lambda";
 import formatISO from "date-fns/formatISO";
 import {registerMetric} from "@recipes-api/cwmetrics";
 import {deserializeEvent} from "@recipes-api/lib/capi";
@@ -11,6 +17,7 @@ import {handler, processRecord} from "./main";
 import {handleDeletedContent, handleTakedown} from "./takedown_processor";
 import {handleContentUpdate} from "./update_processor";
 import {handleContentUpdateRetrievable} from "./update_retrievable_processor";
+import {CrierEvent} from "./eventbridge_models";
 
 jest.mock("@recipes-api/lib/capi", () => ({
   deserializeEvent: jest.fn(),
@@ -262,19 +269,29 @@ describe("main.processRecord", () => {
 describe("main.handler", () => {
 
   it("should call registerMetric", async () => {
-    //@ts-ignore
-    const testReq: KinesisStreamRecord = {
-      //@ts-ignore
-      kinesis: {
-        data: "base64-would-be-here"
+    const testReq:CrierEvent = {
+        "capi-models": "25.0.0",
+        "channels": [
+          "open",
+          "feast",
+          "editions",
+          "newsletters"
+        ],
+        "event": "GFR1ay1uZXdzL2FydGljbGUvMjAyNC9qdWwv… (73324 chars)"
       }
-    }
 
-    const eventMock: KinesisStreamEvent = {
-      Records: [
-        testReq
-      ],
-    };
+    const eventMock:EventBridgeEvent<string, CrierEvent> =
+    {
+      "account": "308506855511",
+      "detail": testReq,
+      "detail-type": "content-update",
+      "id": "d8acb3c0-2426-43f3-beb5-bdf2f2c973b5",
+      "region": "eu-west-1",
+      "resources": [],
+      "source": "crier",
+      "time": "2024-07-10T13:10:44Z",
+      "version": "0"
+    }
 
     const contextMock = {
       awsRequestId: "",
