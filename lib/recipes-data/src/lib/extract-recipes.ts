@@ -4,16 +4,26 @@ import type {Blocks} from "@guardian/content-api-models/v1/blocks";
 import type {Content} from "@guardian/content-api-models/v1/content";
 import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
+import type {Sponsorship} from "@guardian/content-api-models/v1/sponsorship";
 import {registerMetric} from "@recipes-api/cwmetrics";
 import type {Contributor, RecipeReferenceWithoutChecksum} from './models';
-import { handleFreeTextContribs, type RecipeWithImageData, replaceImageUrlsWithFastly } from "./transform";
+import {
+  addSponsorsTransform,
+  handleFreeTextContribs,
+  replaceImageUrlsWithFastly
+} from "./transform";
+import type {
+  RecipeTransformationFunction,
+  RecipeWithImageData
+} from "./transform";
 
 export async function extractAllRecipesFromArticle(content: Content): Promise<RecipeReferenceWithoutChecksum[]> {
   if (content.type == ContentType.ARTICLE && content.blocks) {
+    const sponsorship = content.tags.flatMap(t => t.activeSponsorships ?? [])
     const articleBlocks: Blocks = content.blocks
-    const getAllMainBlockRecipesIfPresent = extractRecipeData(content.id, articleBlocks.main as Block)
+    const getAllMainBlockRecipesIfPresent = extractRecipeData(content.id, articleBlocks.main as Block, sponsorship)
     const bodyBlocks = articleBlocks.body as Block[]
-    const getAllBodyBlocksRecipesIfPresent = bodyBlocks.flatMap(bodyBlock => extractRecipeData(content.id, bodyBlock))
+    const getAllBodyBlocksRecipesIfPresent = bodyBlocks.flatMap(bodyBlock => extractRecipeData(content.id, bodyBlock, sponsorship))
     const recipes = getAllMainBlockRecipesIfPresent.concat(getAllBodyBlocksRecipesIfPresent)
     const failureCount = recipes.filter(recp => !recp).length
     await registerMetric("FailedRecipes", failureCount)
@@ -26,13 +36,13 @@ export async function extractAllRecipesFromArticle(content: Content): Promise<Re
 }
 
 
-export function extractRecipeData(canonicalId: string, block: Block): Array<RecipeReferenceWithoutChecksum | null> {
+export function extractRecipeData(canonicalId: string, block: Block, sponsorship: Sponsorship[]): Array<RecipeReferenceWithoutChecksum | null> {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- to fix error when elements are undefined , example if main block does not have any elements.
   if (!block?.elements) return [];
   else {
     return block.elements
       .filter(elem => elem.type === ElementType.RECIPE)
-      .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson as string))
+      .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson as string, sponsorship))
   }
 }
 
@@ -55,12 +65,20 @@ function determineRecipeUID(recipeIdField: string, canonicalId: string): string 
   }
 }
 
-function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeReferenceWithoutChecksum | null {
+function parseJsonBlob(canonicalId: string, recipeJson: string, sponsorship: Sponsorship[]): RecipeReferenceWithoutChecksum | null {
   try {
-    const recipeData = JSON.parse(recipeJson) as (Record<string, unknown> & {contributors: Array<string | Contributor>} & RecipeWithImageData);
-    const updatedRecipe = replaceImageUrlsWithFastly(
-      handleFreeTextContribs(recipeData)
-    );
+    const recipeData = JSON.parse(recipeJson) as (Record<string, unknown> & {
+      contributors: Array<string | Contributor>;
+    } & RecipeWithImageData);
+
+    const transforms: RecipeTransformationFunction[] = [
+      handleFreeTextContribs,
+      replaceImageUrlsWithFastly,
+      addSponsorsTransform(sponsorship),
+    ];
+
+    const updatedRecipe = transforms.reduce((acc, transform) => transform(acc), recipeData);
+
     const rerendedJson = JSON.stringify(updatedRecipe);
 
     if (!recipeData.id) {
@@ -68,7 +86,7 @@ function parseJsonBlob(canonicalId: string, recipeJson: string): RecipeReference
       return null
     } else {
       return <RecipeReferenceWithoutChecksum>{
-        recipeUID: determineRecipeUID(recipeData.id , canonicalId),
+        recipeUID: determineRecipeUID(recipeData.id, canonicalId),
         jsonBlob: rerendedJson
       }
     }
