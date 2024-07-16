@@ -17,7 +17,7 @@ export async function importCurationData(content:string|Buffer, region: string, 
     CacheControl: "max-age=120; stale-while-revalidate=10; stale-if-error=300"
   });
 
-  console.log("Uploading new curation data...");
+  console.log(`Uploading new curation data to ${Bucket}/${Key}`);
   await s3client.send(req);
   console.log("Done. Flushing CDN cache...");
   await sendFastlyPurgeRequestWithRetries(Key, FastlyApiKey as string, "hard");
