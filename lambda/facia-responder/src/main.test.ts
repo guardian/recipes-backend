@@ -8,7 +8,7 @@ jest.mock("@recipes-api/lib/recipes-data", ()=>({
 
 const message = {
   id: "D9AEEA41-F8DB-4FC8-A0DA-275571EA7331",
-  edition: "northern",
+  edition: "feast-northern-hemisphere",
   version: "v1",
   issueDate: "2024-01-02",
   fronts: {

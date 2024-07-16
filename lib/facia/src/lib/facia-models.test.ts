@@ -5,7 +5,7 @@ describe("facia-models", ()=>{
   it("should be able to validate real data", ()=>{
     const rawContent = {
       id: "D9AEEA41-F8DB-4FC8-A0DA-275571EA7331",
-      edition: "northern",
+      edition: "feast-northern-hemisphere",
       version: "v1",
       issueDate: "2024-01-02",
       fronts: {

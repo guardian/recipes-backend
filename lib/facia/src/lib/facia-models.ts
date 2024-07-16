@@ -52,10 +52,19 @@ export const FeastAppContainer = z.object({
 
 export type FeastAppContainer = z.infer<typeof FeastAppContainer>;
 
-export type Edition = "northern"|"southern";
-export const Edition = z.custom<Edition>((val)=>{
-  return val === "northern" || val === "southern"
-});
+const AvailableEditions = [
+	'feast-northern-hemisphere',
+	'feast-southern-hemisphere',
+] as const;
+export type Edition = (typeof AvailableEditions)[number];
+export const Edition = z.custom<Edition>(
+	(val) => AvailableEditions.includes(val),
+	{
+		message: `Edition name must be one of the following: ${AvailableEditions.join(
+			', ',
+		)}`,
+	},
+);
 
 const DateString = z.custom<string>((val)=>{
   try {
