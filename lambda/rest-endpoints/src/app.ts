@@ -2,9 +2,9 @@ import bodyParser from 'body-parser';
 import {renderFile as ejs} from "ejs";
 import express from 'express';
 import type {Request} from 'express';
-import {recipeByUID } from "@recipes-api/lib/recipes-data";
+import {deployCurationData, recipeByUID } from "@recipes-api/lib/recipes-data";
 import {getBodyContentAsJson, validateDateParam} from "./helpers";
-import {importNewData} from "./submit-data";
+import {FeastAppContainer} from "@recipes-api/lib/facia";
 
 export const app = express();
 app.set('view engine', 'ejs');
@@ -63,7 +63,17 @@ router.post('/api/curation/:edition/:front', (req: Request<CurationParams>, resp
       return;
     }
 
-    importNewData(textContent, req.params.edition, req.params.front, dateval)
+    //For the time being, this check is only advisory as we are not 100% confident that the models represent everything that MEP can send
+    //When we move to Fronts this will be mandatory
+    try {
+      FeastAppContainer.parse(JSON.parse(textContent));
+    } catch (err) {
+      console.warn(`We were sent content that did not validate: `, err);
+      console.warn("Data we got: ");
+      console.warn(textContent);
+    }
+
+    deployCurationData(textContent, req.params.edition, req.params.front, dateval)
       .then(() => {
         return resp.status(200).json({status: "ok"})
       })

@@ -1,8 +1,8 @@
 import type {PutObjectCommand} from "@aws-sdk/client-s3";
 import { S3Client} from "@aws-sdk/client-s3";
 import {mockClient} from "aws-sdk-client-mock";
-import {sendFastlyPurgeRequestWithRetries} from "@recipes-api/lib/recipes-data";
-import {importNewData} from "./submit-data";
+import {deployCurationData} from "./curation";
+import { sendFastlyPurgeRequestWithRetries } from './fastly';
 import MockedFn = jest.MockedFn;
 
 const s3Mock = mockClient(S3Client);
@@ -23,7 +23,7 @@ jest.mock("process", ()=>{
   }
 });
 
-jest.mock("@recipes-api/lib/recipes-data", ()=>({
+jest.mock("./fastly", ()=>({
   sendFastlyPurgeRequestWithRetries: jest.fn(),
 }));
 
@@ -34,7 +34,7 @@ describe("importNewData", ()=>{
   });
 
   it("should upload the data to the right place and flush the CDN cache", async ()=>{
-    await importNewData("test-content", "some-region", "some-variant", null);
+    await deployCurationData("test-content", "some-region", "some-variant", null);
 
     expect(s3Mock.calls().length).toEqual(1);
     const uploadArgs = s3Mock.call(0).firstArg as PutObjectCommand;
@@ -51,7 +51,7 @@ describe("importNewData", ()=>{
   it("should respect the date parameter if given", async ()=>{
     const d = new Date(2021, 5, 5); //Note - actually 5th Jun - due to Date() constructor weirdness
 
-    await importNewData("test-content", "some-region", "some-variant", d);
+    await deployCurationData("test-content", "some-region", "some-variant", d);
 
     expect(s3Mock.calls().length).toEqual(1);
     const uploadArgs = s3Mock.call(0).firstArg as PutObjectCommand;
