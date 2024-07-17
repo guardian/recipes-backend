@@ -10,6 +10,7 @@ import type {Contributor, RecipeReferenceWithoutChecksum} from './models';
 import {
   addSponsorsTransform,
   handleFreeTextContribs,
+  replaceCanonicalArticle,
   replaceImageUrlsWithFastly
 } from "./transform";
 import type {
@@ -75,6 +76,7 @@ function parseJsonBlob(canonicalId: string, recipeJson: string, sponsorship: Spo
       handleFreeTextContribs,
       replaceImageUrlsWithFastly,
       addSponsorsTransform(sponsorship),
+      replaceCanonicalArticle(canonicalId)
     ];
 
     const updatedRecipe = transforms.reduce((acc, transform) => transform(acc), recipeData);

@@ -68,6 +68,13 @@ export const addSponsorsTransform: (sponsors: Sponsorship[]) => RecipeTransforma
   })
 }
 
+export const replaceCanonicalArticle: (
+	canonicalArticle: string,
+) => RecipeTransformationFunction = (canonicalArticle) => (recipeData) => ({
+	...recipeData,
+	canonicalArticle,
+});
+
 /**
  * Replace the featured and preview image URLs, which are by convention full-resolution crops,
  * with Fastly resizer urls. Allows us to serve lower resolution assets to the app.
