@@ -1,9 +1,9 @@
-import {importCurationData} from "@recipes-api/lib/recipes-data";
+import {deployCurationData} from "@recipes-api/lib/recipes-data";
 import {ZodError} from "zod";
 import {handler} from "./main";
 
 jest.mock("@recipes-api/lib/recipes-data", ()=>({
-  importCurationData: jest.fn()
+  deployCurationData: jest.fn()
 }));
 
 const message = {
@@ -63,7 +63,7 @@ describe("main", ()=>{
     // @ts-ignore
     await handler(rec, null, null);
 
-    const importCurationDataMock = importCurationData as jest.Mock;
+    const importCurationDataMock = deployCurationData as jest.Mock;
     expect(importCurationDataMock.mock.calls.length).toEqual(2);
     expect(importCurationDataMock.mock.calls[0][0]).toEqual(JSON.stringify(message.fronts["all-recipes"]));
     expect(importCurationDataMock.mock.calls[0][1]).toEqual(message.edition);

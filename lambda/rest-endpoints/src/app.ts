@@ -2,7 +2,7 @@ import bodyParser from 'body-parser';
 import {renderFile as ejs} from "ejs";
 import express from 'express';
 import type {Request} from 'express';
-import {importCurationData, recipeByUID } from "@recipes-api/lib/recipes-data";
+import {deployCurationData, recipeByUID } from "@recipes-api/lib/recipes-data";
 import {getBodyContentAsJson, validateDateParam} from "./helpers";
 import {FeastAppContainer} from "@recipes-api/lib/facia";
 
@@ -73,7 +73,7 @@ router.post('/api/curation/:edition/:front', (req: Request<CurationParams>, resp
       console.warn(textContent);
     }
 
-    importCurationData(textContent, req.params.edition, req.params.front, dateval)
+    deployCurationData(textContent, req.params.edition, req.params.front, dateval)
       .then(() => {
         return resp.status(200).json({status: "ok"})
       })
