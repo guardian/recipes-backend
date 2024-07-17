@@ -40,6 +40,7 @@ export const replaceFastlyUrl = (
 
 export type RecipeWithImageData = {
   id: string;
+  canonicalArticle: string;
   featuredImage: RecipeImage | string; // the latter is an old image format that appears in our test fixtures
   previewImage?: RecipeImage | string;
 };
@@ -67,6 +68,13 @@ export const addSponsorsTransform: (sponsors: Sponsorship[]) => RecipeTransforma
     })
   })
 }
+
+export const replaceCanonicalArticle: (
+	canonicalArticle: string,
+) => RecipeTransformationFunction = (canonicalArticle) => (recipeData) => ({
+	...recipeData,
+	canonicalArticle,
+});
 
 /**
  * Replace the featured and preview image URLs, which are by convention full-resolution crops,

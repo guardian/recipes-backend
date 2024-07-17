@@ -2,6 +2,7 @@ import type { RecipeImage } from "./models";
 
 export type RecipeFixture = Record<string, unknown> & {
 	id: string;
+	canonicalArticle: string;
 	featuredImage: RecipeImage;
 	previewImage?: RecipeImage;
 };
