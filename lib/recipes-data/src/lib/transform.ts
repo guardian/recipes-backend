@@ -40,6 +40,7 @@ export const replaceFastlyUrl = (
 
 export type RecipeWithImageData = {
   id: string;
+  canonicalArticle: string;
   featuredImage: RecipeImage | string; // the latter is an old image format that appears in our test fixtures
   previewImage?: RecipeImage | string;
 };
