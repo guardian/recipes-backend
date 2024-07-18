@@ -1,18 +1,25 @@
 import {EventType} from "@guardian/content-api-models/crier/event/v1/eventType";
 import {ItemType} from "@guardian/content-api-models/crier/event/v1/itemType";
-import type {KinesisStreamHandler, KinesisStreamRecord} from "aws-lambda";
+//import type {KinesisStreamHandler, KinesisStreamRecord} from "aws-lambda";
+import type {EventBridgeHandler} from "aws-lambda"
 import {registerMetric} from "@recipes-api/cwmetrics";
 import {deserializeEvent} from "@recipes-api/lib/capi";
 import {retrieveIndexData, writeIndexData} from "@recipes-api/lib/recipes-data";
 import {handleDeletedContent, handleTakedown} from "./takedown_processor";
 import {handleContentUpdate} from "./update_processor";
 import {handleContentUpdateRetrievable} from "./update_retrievable_processor";
+import {CrierEvent} from "./eventbridge_models";
 
 const filterProductionMonitoring: boolean = process.env["FILTER_PRODUCTION_MONITORING"] ? process.env["FILTER_PRODUCTION_MONITORING"].toLowerCase() == "yes" : false;
 
-export async function processRecord(r: KinesisStreamRecord): Promise<number> {
+export async function processRecord(r: CrierEvent): Promise<number> {
+  if(r.channels && !r.channels.includes("feast")) {
+    console.error(`Received a CrierEvent for channels ${r.channels}, which did not include Feast! This is a configuration bug :(`);
+    return 0;
+  }
+
   try {
-    const evt = deserializeEvent(r.kinesis.data);
+    const evt = deserializeEvent(r.event);
 
     //we're only interested in content updates
     if (evt.itemType != ItemType.CONTENT) return 0;
@@ -48,9 +55,9 @@ export async function processRecord(r: KinesisStreamRecord): Promise<number> {
   }
 }
 
-export const handler: KinesisStreamHandler = async (event) => {
-  const updatesPerEvent = await Promise.all(event.Records.map((r) => processRecord(r)));
-  const updatesTotal = updatesPerEvent.reduce((acc, current) => acc + current, 0);
+export const handler: EventBridgeHandler<string, CrierEvent, void> = async (event) => {
+  const updatesTotal = await processRecord(event.detail);
+
   if (updatesTotal > 0) {
     console.log(`Processed updates for ${updatesTotal} recipes, rebuilding the index json`);
     await registerMetric("UpdatesTotalOfArticle", updatesTotal)
