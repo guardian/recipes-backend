@@ -15,6 +15,14 @@ const getFastlyUrl = (
   extension: string
 ) => `https://i.guim.co.uk/img/media/${imageId}/${cropId}/master/${originalWidth}.${extension}?width=${desiredWidth}&dpr=${dpr}&s=none`;
 
+const getFastlyTemplateUrl = (
+	imageId: string,
+	cropId: string,
+	dpr: number,
+	originalWidth: number,
+  extension: string
+) => `https://i.guim.co.uk/img/media/${imageId}/${cropId}/master/${originalWidth}.${extension}?width=#{width}&dpr=${dpr}&s=none`;
+
 export const replaceFastlyUrl = (
   recipeId: string,
   image: RecipeImage,
@@ -32,10 +40,11 @@ export const replaceFastlyUrl = (
 
   const {mediaId, cropId, width, extension} = cropData;
 
-  return {
-    ...image,
-    url: getFastlyUrl(mediaId, cropId, dpr, desiredWidth, width, extension),
-  };
+	return {
+		...image,
+		url: getFastlyUrl(mediaId, cropId, dpr, desiredWidth, width, extension),
+		templateUrl: getFastlyTemplateUrl(mediaId, cropId, dpr, width, extension),
+	};
 };
 
 export type RecipeWithImageData = {
