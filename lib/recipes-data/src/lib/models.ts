@@ -128,17 +128,18 @@ export function recipeReferenceFromIndexEntry(entry: RecipeIndexEntry, jsonBlob:
 }
 
 export type RecipeImage = {
-  url: string;
-  mediaId?: string;
-  cropId?: string;
-  source?: string;
-  photographer?: string;
-  imageType?: string;
-  caption?: string;
-  mediaApiUri?: string;
-  displayCredit?: boolean;
-  width?: number;
-  height?: number;
+	url: string;
+  templateUrl?: string; // Contains #{width} so that device can request image at needed size
+	mediaId?: string;
+	cropId?: string;
+	source?: string;
+	photographer?: string;
+	imageType?: string;
+	caption?: string;
+	mediaApiUri?: string;
+	displayCredit?: boolean;
+	width?: number;
+	height?: number;
 };
 
 export type {RecipeDatabaseKey, RecipeDatabaseEntry, RecipeIndex, RecipeReference, RecipeReferenceWithoutChecksum};
