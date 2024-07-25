@@ -40,7 +40,12 @@ export async function handleContentUpdateRetrievable(retrievable:RetrievableCont
 {
   if(retrievable.contentType!=ContentType.ARTICLE) return 0;  //no point processing live-blogs etc.
 
-  const capiResponse = await retrieveContent(retrievable.capiUrl);
+  // TO FIX UPSTREAM – Crier returns a path that does not include channelled content, giving a 404
+  // if the content is not on open. We modify the path manually here to fix. Crier should return a path
+  // that is scoped to the appropriate channel if the content is not on open.
+  const capiUrl = new URL(retrievable.capiUrl);
+  const capiResponse = await retrieveContent(`${capiUrl.protocol}//${capiUrl.hostname}/channel/feast/item${capiUrl.pathname}`);
+
   switch(capiResponse.action) {
     case PollingAction.CONTENT_EXISTS:
       //Great, we have it - but should check if this has now been superceded
