@@ -28,7 +28,7 @@ export async function notifyFaciaTool(
 ): Promise<void> {
 	const payload = JSON.stringify({ event } as PublicationStatusEventEnvelope);
 
-	console.log(`Publishing publish event to SNS: ${payload}`);
+	console.log(`Publishing publish event to SNS: ${payload} to ${faciaPublicationStatusTopicArn} via ${faciaPublicationStatusRoleArn}`);
 
 	const sns = new SNS({
 		region: 'eu-west-1',
