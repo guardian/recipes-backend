@@ -105,8 +105,9 @@ export class RecipesBackend extends GuStack {
 			'faciaPublishStatusSNSTopicParam',
 			{
 				default: `/${this.stage}/${this.stack}/${app}/facia-status-sns-topic-arn`,
+        fromSSM: true,
 				type: 'String',
-				description: 'Topic ARN for publication status messages',
+				description: 'The ARN of the facia-tool SNS topic that receives publication status messages',
 			},
 		);
 
@@ -115,8 +116,9 @@ export class RecipesBackend extends GuStack {
 			'faciaPublishStatusSNSTopicRoleParam',
 			{
 				default: `/${this.stage}/${this.stack}/${app}/facia-status-sns-topic-role-arn`,
+        fromSSM: true,
 				type: 'String',
-				description: 'Topic role ARN for publication status messages',
+				description: 'The ARN of role that permits us to write to faciaPublishStatusSNSTopic',
 			},
 		);
 

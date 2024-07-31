@@ -79,13 +79,13 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     },
     "faciaPublishStatusSNSTopicParam": {
       "Default": "/TEST/content-api/recipes-responder/facia-status-sns-topic-arn",
-      "Description": "Topic ARN for publication status messages",
-      "Type": "String",
+      "Description": "The ARN of the facia-tool SNS topic that receives publication status messages",
+      "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "faciaPublishStatusSNSTopicRoleParam": {
       "Default": "/TEST/content-api/recipes-responder/facia-status-sns-topic-role-arn",
-      "Description": "Topic role ARN for publication status messages",
-      "Type": "String",
+      "Description": "The ARN of role that permits us to write to faciaPublishStatusSNSTopic",
+      "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "faciaSNSTopicParam": {
       "Default": "/TEST/content-api/recipes-responder/facia-sns-topic-arn",
@@ -1651,7 +1651,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Ref": "faciaPublishStatusSNSTopicRoleParam",
             },
             "FACIA_PUBLISH_STATUS_TOPIC_ARN": {
-              "Ref": "faciaSNSTopicParam",
+              "Ref": "faciaPublishStatusSNSTopicParam",
             },
             "FASTLY_API_KEY": {
               "Ref": "fastlyKey",

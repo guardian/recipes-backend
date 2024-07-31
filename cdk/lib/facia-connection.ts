@@ -27,6 +27,7 @@ export class FaciaConnection extends Construct {
 		id: string,
 		{
 			faciaPublishSNSTopicARN,
+			faciaPublishStatusSNSTopicARN,
 			faciaPublishStatusSNSRoleARN,
 			externalParameters,
 			fastlyKeyParam,
@@ -39,7 +40,7 @@ export class FaciaConnection extends Construct {
 		const faciaPublishStatusSNSTopic = Topic.fromTopicArn(
 			this,
 			'faciaPublishStatusSNSTopic',
-			faciaPublishSNSTopicARN,
+			faciaPublishStatusSNSTopicARN,
 		);
 
 		const faciaPublishStatusSNSRole = Role.fromRoleArn(
@@ -104,6 +105,7 @@ export class FaciaConnection extends Construct {
 					actions: ['s3:PutObject', 's3:ListObjects'],
 				}),
 				new PolicyStatement({
+					effect: Effect.ALLOW,
 					actions: ['sts:AssumeRole'],
 					resources: [faciaPublishStatusSNSRole.roleArn],
 				}),
