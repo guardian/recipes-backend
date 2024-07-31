@@ -2639,6 +2639,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Ref": "storeRecipeTableC3AD84B7",
             },
             "LAST_UPDATED_INDEX": "idxArticleLastUpdated",
+            "OUTGOING_EVENT_BUS": "crier-eventbus-content-api-crier-v2-TEST",
             "STACK": "content-api",
             "STAGE": "TEST",
             "STATIC_BUCKET": {
@@ -2808,6 +2809,30 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Effect": "Allow",
               "Resource": {
                 "Ref": "TelemetryCrossAcctRole",
+              },
+            },
+            {
+              "Action": "events:PutEvents",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":events:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":event-bus/crier-eventbus-content-api-crier-v2-TEST",
+                  ],
+                ],
               },
             },
             {
