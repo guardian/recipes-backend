@@ -17,6 +17,12 @@ You need to have a large number of environment variables set for the tools to wo
 4. Once you have the file, run `source environ-CODE` to set up the environment variables you need to target the CODE environment.
 5. You can now run the tools outlined below.
 
+## Testing
+
+Run tests in every project with `npm run test`.
+
+For a tighter feedback loop, run individual projects or files, and watch, with `npm run test -- [project-name] [--test-file file-name] [--watch]`, for example `npm run test -- recipes-data --test-file transform.test.ts --watch`.
+
 ## How do I re-index content from CAPI out to Feast?
 
 1. Set up for local operations, as above
@@ -85,6 +91,16 @@ npm run update-cdk
 ```
 
 Will update the CDK snapshot and allow the tests to pass again
+
+## Running projects
+
+Build, test and lint with `npm run build`, `npm run test`, and `npm run lint`. This will run the relevant command for every project.
+
+To run commands against individual projects, use NX. It's installed as a project dependency, and there's a handy alias to run it via NPM: `npm run nx`.
+
+For example, to run the tests in the `lib-recipes-data` project in watch mode, use `npm run nx -- run lib-recipes-data:test --watch`.
+
+See the [NX documentation](https://nx.dev/nx-api/nx/documents) for other commands.
 
 ## How does it work?
 

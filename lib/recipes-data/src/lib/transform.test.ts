@@ -86,8 +86,8 @@ describe('Recipe transforms', () => {
 			assertImageUrls(
 				recipes[0],
 				transformedRecipeReference,
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_2412_5626_3375/master/2000.jpg?width=700&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_257_5626_6188/master/2000.jpg?width=300&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=700&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=300&dpr=1&s=none',
 			);
 		});
 
@@ -97,8 +97,8 @@ describe('Recipe transforms', () => {
 			assertImageUrls(
 				recipes[1],
 				transformedRecipeReference,
-				'https://i.guim.co.uk/img/media/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/master/2000.jpg?width=700&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/master/2000.jpg?width=300&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/master/7328.jpg?width=700&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/master/7328.jpg?width=300&dpr=1&s=none',
 			);
 		});
 
@@ -116,12 +116,12 @@ describe('Recipe transforms', () => {
 			assertImageUrls(
 				recipes[0],
 				transformedRecipeReference,
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_2412_5626_3375/master/2000.jpg?width=700&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_257_5626_6188/master/2000.jpg?width=300&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=700&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=300&dpr=1&s=none',
 			);
 		});
 
-    it('should failover if the mediaId is not present', () => {
+    it('should derive media ids from image URL, succeeding if the mediaId is not present', () => {
 			const { mediaId: _, ...featuredImage } = recipes[0].featuredImage;
 			const recipeWithFeaturedImageWithoutCropId = {
 				...recipes[0],
@@ -135,10 +135,33 @@ describe('Recipe transforms', () => {
 			assertImageUrls(
 				recipes[0],
 				transformedRecipeReference,
-				'https://media.guim.co.uk/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/2000.jpg',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_257_5626_6188/master/2000.jpg?width=300&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=700&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=300&dpr=1&s=none',
 			);
 		});
+
+    it('should respect image extensions', () => {
+			const recipeWithFeaturedImageWithoutCropId = {
+				...recipes[0],
+				featuredImage: {
+          ...recipes[0].featuredImage,
+          url: 'https://media.guim.co.uk/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/2000.png'
+        },
+
+			};
+
+			const transformedRecipeReference = replaceImageUrlsWithFastly(
+				recipeWithFeaturedImageWithoutCropId,
+			);
+
+			assertImageUrls(
+				recipes[0],
+				transformedRecipeReference,
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.png?width=700&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=300&dpr=1&s=none',
+			);
+		});
+
 
 		it("should backfill the preview image if there isn't one", () => {
 			const { previewImage: _, ...recipeWithoutPreview } = recipes[0];
@@ -149,27 +172,8 @@ describe('Recipe transforms', () => {
 			assertImageUrls(
 				recipeWithoutPreview,
 				transformedRecipeReference,
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_2412_5626_3375/master/2000.jpg?width=700&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_2412_5626_3375/master/2000.jpg?width=300&dpr=1&s=none',
-			);
-		});
-
-		it('should attempt to extract cropId from original URL if the featured image is missing a cropId', () => {
-			const { cropId: _, ...featuredImage } = recipes[0].featuredImage;
-			const recipeWithFeaturedImageWithoutCropId = {
-				...recipes[0],
-				featuredImage,
-			};
-
-			const transformedRecipeReference = replaceImageUrlsWithFastly(
-				recipeWithFeaturedImageWithoutCropId,
-			);
-
-			assertImageUrls(
-				recipeWithFeaturedImageWithoutCropId,
-				transformedRecipeReference,
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/2000.jpg?width=700&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_257_5626_6188/master/2000.jpg?width=300&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=700&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=300&dpr=1&s=none',
 			);
 		});
 
@@ -187,9 +191,8 @@ describe('Recipe transforms', () => {
 			assertImageUrls(
 				recipeWithPreviewImageWithoutCropId,
 				transformedRecipeReference,
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_2412_5626_3375/master/2000.jpg?width=700&dpr=1&s=none',
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/2000.jpg?width=300&dpr=1&s=none',
-			);
+        'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=700&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=300&dpr=1&s=none',			);
 		});
 
 		it('should not attempt to extract a crop from the original URL if the featured image URL is not a guim URL', () => {
@@ -209,7 +212,7 @@ describe('Recipe transforms', () => {
 			assertImageUrls(
 				recipeWithPreviewImageWithoutCropId,
 				transformedRecipeReference,
-				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/0_2412_5626_3375/master/2000.jpg?width=700&dpr=1&s=none',
+				'https://i.guim.co.uk/img/media/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/master/4754.jpg?width=700&dpr=1&s=none',
 				'https://cdn.road.cc/sites/default/files/styles/main_width/public/Wat-duck.png',
 			);
 		});

@@ -50,3 +50,7 @@ jobs:
               - dist/lambda/recipes-responder.zip
             recipes-backend-rest-endpoints:
               - dist/lambda/rest-endpoints.zip
+            recipes-publish-todays-curation:
+              - dist/lambda/publish-todays-curation.zip
+            recipes-facia-responder:
+              - dist/lambda/facia-responder.zip

@@ -18,7 +18,7 @@ jest.mock("./config", ()=>({
 }));
 
 const fakeUpdate:RetrievableContent = {
-  capiUrl: "api:///path/to/article",
+  capiUrl: "https://api.com/path/to/article",
   id: "path/to/article",
   contentType: ContentType.ARTICLE,
 }
@@ -49,7 +49,13 @@ describe('handleContentUpdateRetrievable',  ()=> {
     // @ts-ignore -- Typescript doesn't know that this is a mock
     expect(callCAPI.mock.calls.length).toEqual(1);
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(callCAPI.mock.calls[0][0]).toEqual(fakeUpdate.capiUrl + "?show-fields=internalRevision&show-blocks=all&show-channels=all&api-key=fake-api-key&format=thrift");
+    expect(callCAPI.mock.calls[0][0]).toEqual(
+			fakeUpdate.capiUrl.replace(
+				'/path/to/article',
+				'/channel/feast/item/path/to/article',
+			) +
+				'?show-fields=internalRevision&show-blocks=all&show-channels=all&api-key=fake-api-key&format=thrift',
+		);
     // @ts-ignore -- Typescript doesn't know that this is a mock
     expect(handleContentUpdate.mock.calls.length).toEqual(1);
     // @ts-ignore -- Typescript doesn't know that this is a mock

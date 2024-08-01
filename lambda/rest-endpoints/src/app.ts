@@ -2,20 +2,22 @@ import bodyParser from 'body-parser';
 import {renderFile as ejs} from "ejs";
 import express from 'express';
 import type {Request} from 'express';
-import {recipeByUID } from "@recipes-api/lib/recipes-data";
-import {getBodyContentAsJson} from "./helpers";
-import {importNewData} from "./submit-data";
+import {deployCurationData, recipeByUID } from "@recipes-api/lib/recipes-data";
+import {getBodyContentAsJson, validateDateParam} from "./helpers";
+import {FeastAppContainer} from "@recipes-api/lib/facia";
 
 export const app = express();
 app.set('view engine', 'ejs');
 app.engine('.ejs', ejs);
 
 const router = express.Router();
-router.use(bodyParser.json());
+router.use(bodyParser.json({
+  limit: '1mb'
+}));
 
 interface CurationParams {
-  region: string;
-  variant: string;
+  edition: string;
+  front: string;
 }
 
 /**
@@ -25,19 +27,29 @@ interface CurationParams {
 function validateCurationParams(params: CurationParams) {
   const checker = /[^\\w]+/;
 
-  if(!params.region.match(checker) || !params.variant.match(checker)) {
+  if(!params.edition.match(checker) || !params.front.match(checker)) {
     throw new Error("Invalid region parameter");
   }
 }
 
-router.post('/api/curation/:region/:variant', (req: Request<CurationParams>, resp)=>{
+router.post('/api/curation/:edition/:front', (req: Request<CurationParams>, resp)=>{
   if(req.header("Content-Type") != "application/json") {
     resp.status(405).json({status: "error", detail: "wrong content type"});
     return;
   }
 
+  let dateval:Date|null = null;
+
   try {
-    validateCurationParams(req.params)
+    dateval = req.query.date ? validateDateParam(req.query.date as string) : null;
+  } catch {
+    console.log("Provided querystring ", req.query, " did not validate");
+    resp.status(400).json({status: "error", "detail": "invalid querystring parameters. date must be specified in YYYY-MM-DD format"})
+    return;
+  }
+
+  try {
+    validateCurationParams(req.params);
   } catch(err) {
     console.log("Provided params ", req.params, " did not validate");
     resp.status(400).json({status: "error", "detail": "invalid regionalisation parameters. region and variant must be basic strings with no punctuation etc."})
@@ -51,7 +63,17 @@ router.post('/api/curation/:region/:variant', (req: Request<CurationParams>, res
       return;
     }
 
-    importNewData(textContent, req.params.region, req.params.variant)
+    //For the time being, this check is only advisory as we are not 100% confident that the models represent everything that MEP can send
+    //When we move to Fronts this will be mandatory
+    try {
+      FeastAppContainer.parse(JSON.parse(textContent));
+    } catch (err) {
+      console.warn(`We were sent content that did not validate: `, err);
+      console.warn("Data we got: ");
+      console.warn(textContent);
+    }
+
+    deployCurationData(textContent, req.params.edition, req.params.front, dateval)
       .then(() => {
         return resp.status(200).json({status: "ok"})
       })
@@ -95,6 +117,9 @@ router.get('/api/content/by-uid/:recipeUID', (req: Request<RecipeIdParams>, resp
       resp.status(404).json({status: "not found", detail: "No recipe found with that UID"});
       return;
     }
+  }).catch((err)=>{
+    console.error(err);
+    resp.status(500).json({status: "error", detail: "there was an internal error fetching the recipe. See server-side logs."})
   });
 });
 

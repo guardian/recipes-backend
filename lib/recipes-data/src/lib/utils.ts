@@ -37,7 +37,28 @@ export function nowTime():Date {
   return new Date();
 }
 
-export const extractCropIdFromGuimUrl = (url: string): string | undefined =>
-	url.match(
-		/https:\/\/.*?\/(?<id>.*?)\/(?<cropId>\d{1,4}_\d{1,4}_\d{1,4}_\d{1,4})\/(?<fileName>.*?)$/,
-	)?.groups?.cropId;
+export const extractCropDataFromGuimUrl = (
+	url: string,
+): { mediaId: string; cropId: string; width: number; extension: string } | undefined => {
+  // Some capturing groups here are not needed – they're added to make the regex a bit more comprehensible.
+	const match = url.match(
+		/https:\/\/.*\/(?<mediaId>.*?)\/(?<cropId>\d{1,4}_\d{1,4}_(?<width>\d{1,4})_\d{1,4})\/(?<fileName>.*?)\.(?<extension>.*?)(?<queryParams>\?.*)?$/,
+	);
+
+	if (!match?.groups) {
+		return;
+	}
+
+	const { mediaId, cropId, width, extension } = match.groups;
+
+	if (!mediaId || !cropId || !width || !extension) {
+		return;
+	}
+
+	return {
+    mediaId,
+		cropId,
+		width: parseInt(width),
+    extension
+	};
+};

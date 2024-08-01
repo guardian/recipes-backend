@@ -2,6 +2,7 @@ import type { RecipeImage } from "./models";
 
 export type RecipeFixture = Record<string, unknown> & {
 	id: string;
+	canonicalArticle: string;
 	featuredImage: RecipeImage;
 	previewImage?: RecipeImage;
 };
@@ -21,7 +22,7 @@ export const recipes = [
 		previewImage: {
 			url: 'https://media.guim.co.uk/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/2000.jpg',
 			mediaId: '87a7591d5260e962ad459d56771f50fc0ce05f14',
-			cropId: '0_257_5626_6188',
+			cropId: '360_1725_4754_4754',
 			source: 'The Observer',
 			photographer: 'Romas Foord',
 			caption: 'Hot honey and ricotta on toast.',
@@ -34,7 +35,7 @@ export const recipes = [
 		featuredImage: {
 			url: 'https://media.guim.co.uk/87a7591d5260e962ad459d56771f50fc0ce05f14/360_1725_4754_4754/2000.jpg',
 			mediaId: '87a7591d5260e962ad459d56771f50fc0ce05f14',
-			cropId: '0_2412_5626_3375',
+			cropId: '360_1725_4754_4754',
 			source: 'The Observer',
 			photographer: 'Romas Foord',
 			caption: 'Hot honey and ricotta on toast.',

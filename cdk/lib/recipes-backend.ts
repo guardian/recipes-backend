@@ -1,15 +1,18 @@
+import {GuScheduledLambda} from "@guardian/cdk";
 import type {GuStackProps} from "@guardian/cdk/lib/constructs/core";
 import {GuParameter, GuStack} from "@guardian/cdk/lib/constructs/core";
 import {GuLambdaFunction} from "@guardian/cdk/lib/constructs/lambda";
-import {GuKinesisLambdaExperimental} from "@guardian/cdk/lib/experimental/patterns";
-import {StreamRetry} from "@guardian/cdk/lib/utils/lambda";
-import {type App, aws_sns, Duration} from "aws-cdk-lib";
+import {type App, aws_events_targets, aws_sns, Duration} from "aws-cdk-lib";
 import {Alarm, ComparisonOperator, TreatMissingData, Unit} from "aws-cdk-lib/aws-cloudwatch";
 import {SnsAction} from "aws-cdk-lib/aws-cloudwatch-actions";
+import {EventBus, Rule, Schedule} from "aws-cdk-lib/aws-events";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {Architecture, Runtime} from "aws-cdk-lib/aws-lambda";
+import {LambdaDestination} from "aws-cdk-lib/aws-s3-notifications";
+import {Queue} from "aws-cdk-lib/aws-sqs";
 import {DataStore} from "./datastore";
 import {ExternalParameters} from "./external_parameters";
+import {FaciaConnection} from "./facia-connection";
 import {RestEndpoints} from "./rest-endpoints";
 import {StaticServing} from "./static-serving";
 
@@ -17,6 +20,7 @@ export class RecipesBackend extends GuStack {
   constructor(scope: App, id: string, props: GuStackProps) {
     super(scope, id, props);
 
+    const app = "recipes-responder";
     const serving = new StaticServing(this, "static");
     const store = new DataStore(this, "store");
 
@@ -47,6 +51,8 @@ export class RecipesBackend extends GuStack {
         })
       ]
     });
+    const externalParameters = new ExternalParameters(this, "externals");
+    const nonUrgentAlarmTopic = aws_sns.Topic.fromTopicArn(this, "nonurgent-alarm", externalParameters.nonUrgentAlarmTopicArn.stringValue);
 
     //This is a nicer way to pick up the stream name - but CDK won't compile
     //when using the name token for the kinesis stream name below.
@@ -59,36 +65,35 @@ export class RecipesBackend extends GuStack {
 
     const capiKeyParam = new GuParameter(this, "capiKey", {
       fromSSM: true,
-      default: `/${this.stage}/${this.stack}/recipes-responder/capi-key`
+      default: `/${this.stage}/${this.stack}/${app}/capi-key`
     })
 
     const fastlyKeyParam = new GuParameter(this, "fastlyKey", {
       fromSSM: true,
-      default: `/${this.stage}/${this.stack}/recipes-responder/fastly-key`
+      default: `/${this.stage}/${this.stack}/${app}/fastly-key`
     })
 
     const telemetryXAR = new GuParameter(this, "TelemetryCrossAcctRole", {
       fromSSM: true,
-      default: `/${this.stage}/${this.stack}/recipes-responder/telemetryXAR`,
+      default: `/${this.stage}/${this.stack}/${app}/telemetryXAR`,
       description: "Cross-account role to allow data submissions"
     });
     const telemetryTopic = new GuParameter(this, "TelemetryTopic", {
       fromSSM: true,
-      default: `/${this.stage}/${this.stack}/recipes-responder/telemetryTopic`,
+      default: `/${this.stage}/${this.stack}/${app}/telemetryTopic`,
       description: "ARN of the SNS topic to use for data submissions"
     });
 
+		const faciaSNSTopicARNParam = new GuParameter(this, 'faciaSNSTopicParam', {
+			default: `/${this.stage}/${this.stack}/${app}/facia-sns-topic-arn`,
+			fromSSM: true,
+			description: 'The ARN of the facia-tool SNS topic that emits curation notifications',
+		});
+
     const contentUrlBase = this.stage === "CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com";
 
-    const updaterLambda = new GuKinesisLambdaExperimental(this, "updaterLambda", {
-      monitoringConfiguration: {noMonitoring: true},
-      existingKinesisStream: {
-        externalKinesisStreamName: `content-api-firehose-v2-${this.stage}`,
-      },
-      errorHandlingConfiguration: {
-        retryBehaviour: StreamRetry.maxAttempts(5),
-        bisectBatchOnError: true,
-      },
+    const updaterLambda = new GuLambdaFunction(this, "updaterLambda", {
+      functionName: `recipe-responder-${this.stack}-${this.stage}`,
       environment: {
         CAPI_KEY: capiKeyParam.valueAsString,
         INDEX_TABLE: store.table.tableName,
@@ -123,10 +128,41 @@ export class RecipesBackend extends GuStack {
         })
       ],
       runtime: Runtime.NODEJS_18_X,
-      app: "recipes-responder",
+      app,
       handler: "main.handler",
-      fileName: "recipes-responder.zip",
+      fileName: `${app}.zip`,
       timeout: lambdaTimeout
+    });
+
+    const eventBus = EventBus.fromEventBusName(this, "CrierEventBus", `crier-eventbus-content-api-crier-v2-${this.stage}`);
+    const responderDLQ = new Queue(this, "RecipeResponcerDLQ", {
+      queueName: `recipe-responder-${this.stage}-DLQ`
+    });
+
+    new Rule(this, "CrierConnection", {
+      eventBus,
+      description: `Connect recipe responder ${this.stage} to Crier`,
+      eventPattern: {
+        "source": ["crier"],
+        "detail": {
+          "channels": ["feast"]
+        }
+      },
+      targets: [
+        new aws_events_targets.LambdaFunction(updaterLambda, {
+          deadLetterQueue: responderDLQ,
+          maxEventAge: Duration.minutes(30),
+          retryAttempts: 5,
+        }),
+      ]
+    });
+
+    new FaciaConnection(this, "RecipesFacia", {
+      fastlyKeyParam,
+      serving,
+      externalParameters,
+      faciaSNSTopicARN: faciaSNSTopicARNParam.valueAsString,
+      contentUrlBase
     });
 
     new RestEndpoints(this, "RestEndpoints", {
@@ -147,13 +183,55 @@ export class RecipesBackend extends GuStack {
         statistic: "Maximum",
         unit: Unit.MILLISECONDS
       }),
-      evaluationPeriods: 3,// when happens atleast 3 times
+      evaluationPeriods: 3,// when happens at least 3 times
     })
 
-    const externalParameters = new ExternalParameters(this, "externals");
-    //const urgentAlarmTopic = aws_sns.Topic.fromTopicArn(this, "urgent-alarm", externalParameters.urgentAlarmTopicArn.stringValue);
-    const nonUrgentAlarmTopic = aws_sns.Topic.fromTopicArn(this, "nonurgent-alarm", externalParameters.nonUrgentAlarmTopicArn.stringValue);
-    durationAlarm.addAlarmAction(new SnsAction(nonUrgentAlarmTopic))
+    durationAlarm.addAlarmAction(new SnsAction(nonUrgentAlarmTopic));
+
+    const publishTodaysCurationLambda = new GuScheduledLambda(this, "PublishTodaysCuration", {
+      app: "recipes-publish-todays-curation",
+      architecture: Architecture.ARM_64,
+      fileName: "publish-todays-curation.zip",
+      functionName: `PublishTodaysCuration-${props.stage}`,
+      handler: "main.handler",
+      initialPolicy: [
+        new PolicyStatement({
+          effect: Effect.DENY,
+          actions: ["*"],
+          resources: [serving.staticBucket.bucketArn + "/content/*"]
+        }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["s3:PutObject", "s3:GetObject"],
+          resources: [serving.staticBucket.bucketArn + "/*"]
+        }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["s3:ListBucket"],
+          resources: [serving.staticBucket.bucketArn]
+        })
+      ],
+      memorySize: 256,
+      monitoringConfiguration: {
+        noMonitoring: true,
+      },
+      rules: [{
+        schedule: Schedule.cron({hour: "0", minute: "1"}),
+        description: "Update Feast app daily curation at midnight"
+      }],
+      runtime: Runtime.NODEJS_18_X,
+      timeout: Duration.seconds(10),
+      environment: {
+        STATIC_BUCKET: serving.staticBucket.bucketName,
+        FASTLY_API_KEY: fastlyKeyParam.valueAsString,
+        CONTENT_URL_BASE: contentUrlBase,
+      }
+    });
+
+    serving.staticBucket.addObjectCreatedNotification(
+      new LambdaDestination(publishTodaysCurationLambda),
+      {suffix: "curation.json",}
+    );
   }
 
 }
