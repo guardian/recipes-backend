@@ -1,1 +1,1 @@
-export const CapiKey = process.env["CAPI_KEY"]
+export const CapiKey = process.env["CAPI_KEY"];

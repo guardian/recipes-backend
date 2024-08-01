@@ -3,7 +3,7 @@ import {CloudWatchClient, PutMetricDataCommand, StandardUnit} from "@aws-sdk/cli
 
 const cwClient = new CloudWatchClient({region: process.env["AWS_REGION"]});
 
-export type KnownMetric = "FailedRecipes" | "SuccessfulRecipes" | "UpdatesTotalOfArticle";
+export type KnownMetric = "FailedRecipes" | "SuccessfulRecipes" | "UpdatesTotalOfArticle" | "FailedAnnouncements";
 
 
 export async function registerMetric(metricName: KnownMetric, value: number) {
