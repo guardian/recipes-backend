@@ -6,6 +6,7 @@ export * from './lib/extract-recipes';
 export * from './lib/telemetry';
 export * from './lib/curation';
 export * from './lib/constants';
+export * from './lib/eventbus';
 
 export {sendFastlyPurgeRequestWithRetries} from './lib/fastly';
 export {awaitableDelay, calculateChecksum, makeCapiDateTime} from './lib/utils';

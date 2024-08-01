@@ -2,15 +2,14 @@ import type {Content} from "@guardian/content-api-models/v1/content";
 import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import type {RecipeReference} from "@recipes-api/lib/recipes-data";
 import {
+  announce_new_recipe,
   calculateChecksum,
   extractAllRecipesFromArticle,
   insertNewRecipe,
   publishRecipeContent,
   recipesToTakeDown,
-  removeRecipeVersion,
-  sendTelemetryEvent
-} from "@recipes-api/lib/recipes-data";
-import {announce_new_recipe} from "./eventbus";
+  removeRecipeVersion
+, sendTelemetryEvent } from "@recipes-api/lib/recipes-data";
 
 /**
  * Pushes new content into the service

@@ -14,7 +14,6 @@ jest.mock("./config", () => ({
 }));
 
 const mockDynamoClient = mockClient(DynamoDBClient);
-const ddbClient = new DynamoDBClient(); //this is actually a mock now
 
 function makeRecptBatch(length: number): RecipeDatabaseKey[] {
   const results: RecipeDatabaseKey[] = [];

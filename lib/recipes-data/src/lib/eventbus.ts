@@ -1,8 +1,8 @@
 import * as process from "process";
 import {EventBridgeClient,PutEventsCommand} from "@aws-sdk/client-eventbridge";
 import {registerMetric} from "@recipes-api/cwmetrics";
-import type {RecipeIndexEntry, RecipeReference} from "@recipes-api/lib/recipes-data";
 import {OutgoingEventBus} from "./config";
+import type { RecipeIndexEntry, RecipeReference } from './models';
 
 const ebClient = new EventBridgeClient({region: process.env["AWS_REGION"]});
 
@@ -36,7 +36,7 @@ export async function announce_new_recipe(updated:RecipeReference[], removedList
     Time: new Date(),             //Timestamp
     Source: "recipe-responder",   //Identity of sender
     Resources: [],                //Affected AWS resources
-    DetailType: "recipe-update",   //What happened
+    DetailType: "recipe-delete",   //What happened
     Detail: JSON.stringify({
       "checksum": ent.checksum,
       "uid": ent.recipeUID,
