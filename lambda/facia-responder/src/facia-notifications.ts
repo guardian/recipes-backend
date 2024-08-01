@@ -34,7 +34,7 @@ export async function notifyFaciaTool(
 		region: 'eu-west-1',
 		credentials: new TemporaryCredentials({
 			RoleArn: faciaPublicationStatusRoleArn,
-			RoleSessionName: 'front-assume-role-access-for-sns',
+			RoleSessionName: 'recipes-backend-assume-role-access-for-sns',
 		}),
 	});
 
