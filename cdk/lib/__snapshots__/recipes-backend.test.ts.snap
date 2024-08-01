@@ -1423,7 +1423,6 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     "RecipeResponderDLQ4E2B8219": {
       "DeletionPolicy": "Delete",
       "Properties": {
-        "QueueName": "recipe-responder-TEST-DLQ",
         "Tags": [
           {
             "Key": "gu:cdk:version",

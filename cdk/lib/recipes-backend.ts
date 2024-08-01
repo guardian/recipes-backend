@@ -165,7 +165,7 @@ export class RecipesBackend extends GuStack {
     });
 
     const responderDLQ = new Queue(this, "RecipeResponderDLQ", {
-      queueName: `recipe-responder-${this.stage}-DLQ`
+      //queueName: `recipe-responder-${this.stage}-DLQ`
     });
 
     new Rule(this, "CrierConnection", {
