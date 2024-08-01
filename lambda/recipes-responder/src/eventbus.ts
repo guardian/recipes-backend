@@ -24,7 +24,15 @@ export async function announce_new_recipe(updated:RecipeReference[], removedList
       EventBusName: OutgoingEventBus,
     }));
 
-  const removals = removedList.map(ent=>({
+  const updatedUIDs = updated.map((_)=>_.recipeUID);
+
+  //OK this would be more efficient with sets or a map, but the numbers are going to be so small
+  //it's not worth worrying about here.
+  const actualRemovals = removedList.filter((removedEntry)=>
+    !updatedUIDs.includes(removedEntry.recipeUID)
+  );
+
+  const removals = actualRemovals.map(ent=>({
     Time: new Date(),             //Timestamp
     Source: "recipe-responder",   //Identity of sender
     Resources: [],                //Affected AWS resources
