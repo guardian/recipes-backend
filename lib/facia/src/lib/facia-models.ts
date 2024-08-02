@@ -1,14 +1,14 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 //This should mirror FeastAppModel in Facia backend
 export const RecipeIdentifier = z.object({
-  id: z.string()
-})
+	id: z.string(),
+});
 
 export type RecipeIdentifier = z.infer<typeof RecipeIdentifier>;
 
 export const Recipe = z.object({
-  recipe: RecipeIdentifier
+	recipe: RecipeIdentifier,
 });
 
 export type Recipe = z.infer<typeof Recipe>;
@@ -28,8 +28,8 @@ export const Chef = z.object({
 export type Chef = z.infer<typeof Chef>;
 
 export const Palette = z.object({
-  backgroundHex: z.string().optional(),
-  foregroundHex: z.string().optional(),
+	backgroundHex: z.string().optional(),
+	foregroundHex: z.string().optional(),
 });
 
 export type Palette = z.infer<typeof Palette>;
@@ -74,22 +74,30 @@ export const Edition = z.custom<Edition>(
 	},
 );
 
-const DateString = z.custom<string>((val)=>{
-  try {
-    const d = Date.parse(val as string);
-    return !isNaN(d)
-  } catch {
-    return false
-  }
+const DateString = z.custom<string>((val) => {
+	try {
+		const d = Date.parse(val as string);
+		return !isNaN(d);
+	} catch {
+		return false;
+	}
 });
 
-export const FeastCuration = z.object({
-  id: z.string(),
-  edition: Edition,
-  issueDate: DateString,
-  version: z.string(),
-  fronts: z.record(z.string(), z.array(FeastAppContainer))
+export const FeastCurationEnvelope = z.object({
+	id: z.string(),
+	edition: Edition,
+	issueDate: DateString,
+	version: z.string(),
 });
+
+export type FeastCurationEnvelope = z.infer<typeof FeastCurationEnvelope>;
+
+export const FeastCuration = z.intersection(
+	FeastCurationEnvelope,
+	z.object({
+		fronts: z.record(z.string(), z.array(FeastAppContainer)),
+	}),
+);
 
 export type FeastCuration = z.infer<typeof FeastCuration>;
 export const MiseEnPlaceData = z.array(FeastAppContainer);
