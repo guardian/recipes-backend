@@ -1,6 +1,9 @@
 import { SNS } from '@aws-sdk/client-sns';
-import { TemporaryCredentials } from 'aws-sdk';
-import { faciaPublicationStatusRoleArn, faciaPublicationStatusTopicArn } from './config';
+import { fromTemporaryCredentials } from '@aws-sdk/credential-providers';
+import {
+	faciaPublicationStatusRoleArn,
+	faciaPublicationStatusTopicArn,
+} from './config';
 
 // The publication status event we send over SNS.
 type PublicationStatusEventEnvelope = {
@@ -28,13 +31,17 @@ export async function notifyFaciaTool(
 ): Promise<void> {
 	const payload = JSON.stringify({ event } as PublicationStatusEventEnvelope);
 
-	console.log(`Publishing publish event to SNS: ${payload} to ${faciaPublicationStatusTopicArn} via ${faciaPublicationStatusRoleArn}`);
+	console.log(
+		`Publishing publish event to SNS: ${payload} to ${faciaPublicationStatusTopicArn} via ${faciaPublicationStatusRoleArn}`,
+	);
 
 	const sns = new SNS({
 		region: 'eu-west-1',
-		credentials: new TemporaryCredentials({
-			RoleArn: faciaPublicationStatusRoleArn,
-			RoleSessionName: 'recipes-backend-assume-role-access-for-sns',
+		credentials: fromTemporaryCredentials({
+			params: {
+				RoleArn: faciaPublicationStatusRoleArn,
+				RoleSessionName: 'recipes-backend-assume-role-access-for-sns',
+			},
 		}),
 	});
 
