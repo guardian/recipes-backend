@@ -32,3 +32,6 @@ export const TelemetryTopic = process.env["TELEMETRY_TOPIC"]
 export const PreviewImageWidth = process.env["PREVIEW_IMAGE_WIDTH"] ? parseInt(process.env["PREVIEW_IMAGE_WIDTH"]) : 1600;
 export const FeaturedImageWidth = process.env["FEATURED_IMAGE_WIDTH"] ? parseInt(process.env["FEATURED_IMAGE_WIDTH"]) : 1600;
 export const ImageDpr = process.env["IMAGE_DPR"] ? parseInt(process.env["IMAGE_DPR"]) : 1;
+
+//Used by eventbus
+export const OutgoingEventBus = process.env["OUTGOING_EVENT_BUS"];

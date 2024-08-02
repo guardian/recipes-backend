@@ -127,62 +127,59 @@ export class RecipesBackend extends GuStack {
 				? 'recipes.code.dev-guardianapis.com'
 				: 'recipes.guardianapis.com';
 
-		const updaterLambda = new GuLambdaFunction(this, 'updaterLambda', {
-			functionName: `recipe-responder-${this.stack}-${this.stage}`,
-			environment: {
-				CAPI_KEY: capiKeyParam.valueAsString,
-				INDEX_TABLE: store.table.tableName,
-				LAST_UPDATED_INDEX: store.lastUpdatedIndexName,
-				CONTENT_URL_BASE: contentUrlBase,
-				DEBUG_LOGS: 'true',
-				FASTLY_API_KEY: fastlyKeyParam.valueAsString,
-				STATIC_BUCKET: serving.staticBucket.bucketName,
-				TELEMETRY_XAR: telemetryXAR.valueAsString,
-				TELEMETRY_TOPIC: telemetryTopic.valueAsString,
-			},
-			initialPolicy: [
-				new PolicyStatement({
-					effect: Effect.ALLOW,
-					actions: ['s3:PutObject', 's3:DeleteObject'],
-					resources: [serving.staticBucket.bucketArn + '/*'],
-				}),
-				new PolicyStatement({
-					effect: Effect.ALLOW,
-					actions: [
-						'dynamodb:Scan',
-						'dynamodb:Query',
-						'dynamodb:BatchWriteItem',
-						'dynamodb:DeleteItem',
-						'dynamodb:PutItem',
-					],
-					resources: [store.table.tableArn, store.table.tableArn + '/index/*'],
-				}),
-				new PolicyStatement({
-					effect: Effect.ALLOW,
-					resources: ['*'],
-					actions: ['cloudwatch:PutMetricData'],
-				}),
-				new PolicyStatement({
-					effect: Effect.ALLOW,
-					actions: ['sts:AssumeRole'],
-					resources: [telemetryXAR.valueAsString],
-				}),
-			],
-			runtime: Runtime.NODEJS_18_X,
-			app,
-			handler: 'main.handler',
-			fileName: `${app}.zip`,
-			timeout: lambdaTimeout,
-		});
+    const eventBus = EventBus.fromEventBusName(this, "CrierEventBus", `crier-eventbus-content-api-crier-v2-${this.stage}`);
 
-		const eventBus = EventBus.fromEventBusName(
-			this,
-			'CrierEventBus',
-			`crier-eventbus-content-api-crier-v2-${this.stage}`,
-		);
-		const responderDLQ = new Queue(this, 'RecipeResponcerDLQ', {
-			queueName: `recipe-responder-${this.stage}-DLQ`,
-		});
+    const updaterLambda = new GuLambdaFunction(this, "updaterLambda", {
+      functionName: `recipe-responder-${this.stack}-${this.stage}`,
+      environment: {
+        CAPI_KEY: capiKeyParam.valueAsString,
+        INDEX_TABLE: store.table.tableName,
+        LAST_UPDATED_INDEX: store.lastUpdatedIndexName,
+        CONTENT_URL_BASE: contentUrlBase,
+        DEBUG_LOGS: "true",
+        FASTLY_API_KEY: fastlyKeyParam.valueAsString,
+        STATIC_BUCKET: serving.staticBucket.bucketName,
+        TELEMETRY_XAR: telemetryXAR.valueAsString,
+        TELEMETRY_TOPIC: telemetryTopic.valueAsString,
+        OUTGOING_EVENT_BUS: eventBus.eventBusName,
+      },
+      initialPolicy: [
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["s3:PutObject", "s3:DeleteObject"],
+          resources: [serving.staticBucket.bucketArn + "/*"]
+        }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["dynamodb:Scan", "dynamodb:Query", "dynamodb:BatchWriteItem", "dynamodb:DeleteItem", "dynamodb:PutItem"],
+          resources: [store.table.tableArn, store.table.tableArn + "/index/*"]
+        }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          resources: ["*"],
+          actions: ["cloudwatch:PutMetricData"]
+        }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["sts:AssumeRole"],
+          resources: [telemetryXAR.valueAsString]
+        }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["events:PutEvents"],
+          resources: [eventBus.eventBusArn]
+        })
+      ],
+      runtime: Runtime.NODEJS_18_X,
+      app,
+      handler: "main.handler",
+      fileName: `${app}.zip`,
+      timeout: lambdaTimeout
+    });
+
+    const responderDLQ = new Queue(this, "RecipeResponderDLQ", {
+      queueName: `recipe-responder-${this.stage}-DLQ`
+    });
 
 		new Rule(this, 'CrierConnection', {
 			eventBus,
