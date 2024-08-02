@@ -4,6 +4,7 @@ import {
 	faciaPublicationStatusRoleArn,
 	faciaPublicationStatusTopicArn,
 } from './config';
+import { getErrorMessage } from './util';
 
 // The publication status event we send over SNS.
 type PublicationStatusEventEnvelope = {
@@ -45,10 +46,14 @@ export async function notifyFaciaTool(
 		}),
 	});
 
-	const sendStatus = await sns.publish({
-		TopicArn: faciaPublicationStatusTopicArn,
-		Message: payload,
-	});
+	try {
+		const sendStatus = await sns.publish({
+			TopicArn: faciaPublicationStatusTopicArn,
+			Message: payload,
+		});
 
-	console.log(`SNS status publish response: ${JSON.stringify(sendStatus)}`);
+		console.log(`SNS status publish response: ${JSON.stringify(sendStatus)}`);
+	} catch (e) {
+		console.error(`Failed to publish to SNS: ${getErrorMessage(e)}`);
+	}
 }

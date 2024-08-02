@@ -3,6 +3,7 @@ import { deployCurationData } from '@recipes-api/lib/recipes-data';
 import type { SNSMessage, SQSHandler, SQSRecord } from 'aws-lambda';
 import format from 'date-fns/format';
 import { notifyFaciaTool } from './facia-notifications';
+import { getErrorMessage } from './util';
 
 function parseMesssage(from: SQSRecord): facia.FeastCuration {
 	const parsedSNSMessage = JSON.parse(from.body) as SNSMessage; // will throw if the content is not valid;
@@ -61,7 +62,3 @@ export const handler: SQSHandler = async (event) => {
 		});
 	}
 };
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- this function must handle an any type
-const getErrorMessage = (e: any) =>
-	e instanceof Error ? e.message : String(e);
