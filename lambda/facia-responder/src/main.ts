@@ -42,7 +42,7 @@ export const handler: SQSHandler = async (event) => {
 		try {
 			await deployCuration(newCuration);
 		} catch (e) {
-			void notifyFaciaTool({
+			return notifyFaciaTool({
 				edition: newCuration.edition,
 				issueDate: newCuration.issueDate,
 				version: newCuration.version,
@@ -52,7 +52,7 @@ export const handler: SQSHandler = async (event) => {
 			});
 		}
 
-		void notifyFaciaTool({
+		return notifyFaciaTool({
 			edition: newCuration.edition,
 			issueDate: newCuration.issueDate,
 			version: newCuration.version,
