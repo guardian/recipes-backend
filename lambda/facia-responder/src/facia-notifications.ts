@@ -1,4 +1,4 @@
-import { SNS } from '@aws-sdk/client-sns';
+import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 import { fromTemporaryCredentials } from '@aws-sdk/credential-providers';
 import {
 	faciaPublicationStatusRoleArn,
@@ -36,7 +36,7 @@ export async function notifyFaciaTool(
 		`Publishing publish event to SNS: ${payload} to ${faciaPublicationStatusTopicArn} via ${faciaPublicationStatusRoleArn}`,
 	);
 
-	const sns = new SNS({
+	const sns = new SNSClient({
 		region: 'eu-west-1',
 		credentials: fromTemporaryCredentials({
 			params: {
@@ -47,10 +47,12 @@ export async function notifyFaciaTool(
 	});
 
 	try {
-		const sendStatus = await sns.publish({
-			TopicArn: faciaPublicationStatusTopicArn,
-			Message: payload,
-		});
+		const sendStatus = await sns.send(
+			new PublishCommand({
+				TopicArn: faciaPublicationStatusTopicArn,
+				Message: payload,
+			}),
+		);
 
 		console.log(`SNS status publish response: ${JSON.stringify(sendStatus)}`);
 	} catch (e) {
