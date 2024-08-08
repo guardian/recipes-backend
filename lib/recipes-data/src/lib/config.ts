@@ -16,7 +16,7 @@ export const FastlyApiKey = process.env["FASTLY_API_KEY"];
 //Used by s3.ts
 export const StaticBucketName = mandatoryParameter("STATIC_BUCKET");
 
-function mandatoryParameter(name:string):string {
+export function mandatoryParameter(name:string):string {
   if(process.env[name]) {
     return process.env[name] as string;
   } else {
