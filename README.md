@@ -144,6 +144,10 @@ Because it's not (yet) a client requirement.  At the time of writing, the desire
 
 This may be revisited in future.
 
+### Auth
+
+Endpoints which require authentication use [API Gateway API keys](https://eu-west-1.console.aws.amazon.com/apigateway/main/api-keys?api=unselected&region=eu-west-1#): one is created for each client, and included in a [usage plan](https://eu-west-1.console.aws.amazon.com/apigateway/main/usage-plans?api=unselected&region=eu-west-1) to give access to an instance of the recipes backend (e.g. CODE or PROD).
+
 ## What's in the box?
 
 ### lambda/recipes-responder
