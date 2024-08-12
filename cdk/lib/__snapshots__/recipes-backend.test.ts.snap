@@ -353,7 +353,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
             "DeadLetterConfig": {
               "Arn": {
                 "Fn::GetAtt": [
-                  "RecipeResponcerDLQF19E09A3",
+                  "RecipeResponderDLQ4E2B8219",
                   "Arn",
                 ],
               },
@@ -1420,7 +1420,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::IAM::Policy",
     },
-    "RecipeResponcerDLQF19E09A3": {
+    "RecipeResponderDLQ4E2B8219": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "QueueName": "recipe-responder-TEST-DLQ",
@@ -1446,7 +1446,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
     },
-    "RecipeResponcerDLQPolicyB88FED23": {
+    "RecipeResponderDLQPolicy20D599C4": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1468,7 +1468,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               },
               "Resource": {
                 "Fn::GetAtt": [
-                  "RecipeResponcerDLQF19E09A3",
+                  "RecipeResponderDLQ4E2B8219",
                   "Arn",
                 ],
               },
@@ -1479,7 +1479,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         },
         "Queues": [
           {
-            "Ref": "RecipeResponcerDLQF19E09A3",
+            "Ref": "RecipeResponderDLQ4E2B8219",
           },
         ],
       },

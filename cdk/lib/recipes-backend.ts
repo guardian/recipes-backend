@@ -157,7 +157,7 @@ export class RecipesBackend extends GuStack {
     });
 
     const eventBus = EventBus.fromEventBusName(this, "CrierEventBus", `crier-eventbus-content-api-crier-v2-${this.stage}`);
-    const responderDLQ = new Queue(this, "RecipeResponcerDLQ", {
+    const responderDLQ = new Queue(this, "RecipeResponderDLQ", {
       queueName: `recipe-responder-${this.stage}-DLQ`
     });
 
