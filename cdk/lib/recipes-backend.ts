@@ -84,33 +84,33 @@ export class RecipesBackend extends GuStack {
       description: "ARN of the SNS topic to use for data submissions"
     });
 
-	const faciaSNSTopicARNParam = new GuParameter(this, 'faciaSNSTopicParam', {
-		default: `/${this.stage}/${this.stack}/${app}/facia-sns-topic-arn`,
-		fromSSM: true,
-		description: 'The ARN of the facia-tool SNS topic that emits curation notifications',
-	});
+    const faciaSNSTopicARNParam = new GuParameter(this, 'faciaSNSTopicParam', {
+      default: `/${this.stage}/${this.stack}/${app}/facia-sns-topic-arn`,
+      fromSSM: true,
+      description: 'The ARN of the facia-tool SNS topic that emits curation notifications',
+    });
 
-	const faciaPublishStatusSNSTopicParam = new GuParameter(
-		this,
-		'faciaPublishStatusSNSTopicParam',
-		{
-			default: `/${this.stage}/${this.stack}/${app}/facia-status-sns-topic-arn`,
-	fromSSM: true,
-			type: 'String',
-			description: 'The ARN of the facia-tool SNS topic that receives publication status messages',
-		},
-	);
+    const faciaPublishStatusSNSTopicParam = new GuParameter(
+      this,
+      'faciaPublishStatusSNSTopicParam',
+      {
+        default: `/${this.stage}/${this.stack}/${app}/facia-status-sns-topic-arn`,
+    fromSSM: true,
+        type: 'String',
+        description: 'The ARN of the facia-tool SNS topic that receives publication status messages',
+      },
+    );
 
-	const faciaPublishStatusSNSRoleARNParam = new GuParameter(
-		this,
-		'faciaPublishStatusSNSTopicRoleParam',
-		{
-			default: `/${this.stage}/${this.stack}/${app}/facia-status-sns-topic-role-arn`,
-	fromSSM: true,
-			type: 'String',
-			description: 'The ARN of role that permits us to write to faciaPublishStatusSNSTopic',
-		},
-	);
+    const faciaPublishStatusSNSRoleARNParam = new GuParameter(
+      this,
+      'faciaPublishStatusSNSTopicRoleParam',
+      {
+        default: `/${this.stage}/${this.stack}/${app}/facia-status-sns-topic-role-arn`,
+    fromSSM: true,
+        type: 'String',
+        description: 'The ARN of role that permits us to write to faciaPublishStatusSNSTopic',
+      },
+    );
 
     const contentUrlBase = this.stage === "CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com";
 
@@ -184,10 +184,10 @@ export class RecipesBackend extends GuStack {
       serving,
       externalParameters,
       faciaPublishSNSTopicARN: faciaSNSTopicARNParam.valueAsString,
-	  faciaPublishStatusSNSTopicARN:
-		faciaPublishStatusSNSTopicParam.valueAsString,
-	  faciaPublishStatusSNSRoleARN:
-		faciaPublishStatusSNSRoleARNParam.valueAsString,
+      faciaPublishStatusSNSTopicARN:
+      faciaPublishStatusSNSTopicParam.valueAsString,
+      faciaPublishStatusSNSRoleARN:
+      faciaPublishStatusSNSRoleARNParam.valueAsString,
       contentUrlBase
     });
 
