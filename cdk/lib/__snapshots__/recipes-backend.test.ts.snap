@@ -11,6 +11,8 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "GuParameter",
       "GuParameter",
       "GuParameter",
+      "GuParameter",
+      "GuParameter",
       "GuLambdaFunction",
       "GuLambdaFunction",
       "GuLambdaErrorPercentageAlarm",
@@ -73,6 +75,16 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     },
     "externalsurgentalarmarnParameterCE71CB92": {
       "Default": "/account/content-api-common/alarms/urgent-alarm-topic",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "faciaPublishStatusSNSTopicParam": {
+      "Default": "/TEST/content-api/recipes-responder/facia-status-sns-topic-arn",
+      "Description": "The ARN of the facia-tool SNS topic that receives publication status messages",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "faciaPublishStatusSNSTopicRoleParam": {
+      "Default": "/TEST/content-api/recipes-responder/facia-status-sns-topic-role-arn",
+      "Description": "The ARN of role that permits us to write to faciaPublishStatusSNSTopic",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "faciaSNSTopicParam": {
@@ -341,7 +353,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
             "DeadLetterConfig": {
               "Arn": {
                 "Fn::GetAtt": [
-                  "RecipeResponcerDLQF19E09A3",
+                  "RecipeResponderDLQ4E2B8219",
                   "Arn",
                 ],
               },
@@ -1408,7 +1420,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::IAM::Policy",
     },
-    "RecipeResponcerDLQF19E09A3": {
+    "RecipeResponderDLQ4E2B8219": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "QueueName": "recipe-responder-TEST-DLQ",
@@ -1434,7 +1446,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
     },
-    "RecipeResponcerDLQPolicyB88FED23": {
+    "RecipeResponderDLQPolicy20D599C4": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1456,7 +1468,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               },
               "Resource": {
                 "Fn::GetAtt": [
-                  "RecipeResponcerDLQF19E09A3",
+                  "RecipeResponderDLQ4E2B8219",
                   "Arn",
                 ],
               },
@@ -1467,7 +1479,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         },
         "Queues": [
           {
-            "Ref": "RecipeResponcerDLQF19E09A3",
+            "Ref": "RecipeResponderDLQ4E2B8219",
           },
         ],
       },
@@ -1560,7 +1572,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::SQS::QueuePolicy",
     },
-    "RecipesFaciaConnectionRecipesBackendRecipesFaciafaciaSNSTopic4A8496A449BAE420": {
+    "RecipesFaciaConnectionRecipesBackendRecipesFaciafaciaPublishSNSTopicA854730B0579B71E": {
       "DependsOn": [
         "RecipesFaciaConnectionPolicyC7CB124D",
       ],
@@ -1635,6 +1647,12 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "Variables": {
             "APP": "recipes-facia-responder",
             "CONTENT_URL_BASE": "recipes.guardianapis.com",
+            "FACIA_PUBLISH_STATUS_ROLE_ARN": {
+              "Ref": "faciaPublishStatusSNSTopicRoleParam",
+            },
+            "FACIA_PUBLISH_STATUS_TOPIC_ARN": {
+              "Ref": "faciaPublishStatusSNSTopicParam",
+            },
             "FASTLY_API_KEY": {
               "Ref": "fastlyKey",
             },
@@ -1902,6 +1920,13 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     "/*",
                   ],
                 ],
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "faciaPublishStatusSNSTopicRoleParam",
               },
             },
             {
