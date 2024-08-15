@@ -89,7 +89,8 @@ function parseJsonBlob(canonicalId: string, recipeJson: string, sponsorship: Spo
     } else {
       return <RecipeReferenceWithoutChecksum>{
         recipeUID: determineRecipeUID(recipeData.id, canonicalId),
-        jsonBlob: rerendedJson
+        jsonBlob: rerendedJson,
+        sponsorshipCount: sponsorship.length
       }
     }
 
