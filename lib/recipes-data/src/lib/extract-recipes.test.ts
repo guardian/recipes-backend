@@ -4,8 +4,8 @@ import {ElementType} from "@guardian/content-api-models/v1/elementType";
 import type {Sponsorship} from "@guardian/content-api-models/v1/sponsorship";
 import {SponsorshipType} from "@guardian/content-api-models/v1/sponsorshipType";
 import {extractRecipeData} from "./extract-recipes";
+import type {RecipeWithImageData} from "./transform";
 import {makeCapiDateTime} from './utils';
-import { RecipeWithImageData } from "./transform";
 
 jest.mock('./config', () => ({
   FeaturedImageWidth: 700,
@@ -497,6 +497,7 @@ describe("extractRecipeData", () => {
     expect(data).toHaveProperty("sponsors[0].sponsorshipType", "Sponsored")
     expect(data).toHaveProperty("sponsors[0].sponsorLink", "https://theguardian.org/")
     expect(data).not.toHaveProperty("sponsors[0].targeting")
+    expect(result[0]?.sponsorshipCount).toEqual(1)
   })
 
   it("should work when block containing recipe element but not sponsored, means no sponsor data available", () => {
@@ -592,6 +593,7 @@ describe("extractRecipeData", () => {
     expect(sponsorsExists).toBe(false)
     expect(data).not.toHaveProperty("sponsors[0].sponsorshipType")
     expect(data).not.toHaveProperty("sponsors[0].sponsorLink")
+    expect(result[0]?.sponsorshipCount).toEqual(0)
   })
 
 
