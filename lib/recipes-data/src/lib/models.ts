@@ -110,7 +110,8 @@ export function RecipeIndexEntryFromDynamo(raw: Record<string, AttributeValue>):
     checksum: raw["recipeVersion"].S ?? "",
     recipeUID: raw["recipeUID"].S ?? "",
     capiArticleId: raw["capiArticleId"].S ?? "",
-    sponsorshipCount: parseInt(raw["sponsorshipCount"].N ?? "0"),
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- on old records, `raw["sponsorshipCount"]` _can_ return `null` even though eslint thinks it can't.
+    sponsorshipCount: parseInt(raw["sponsorshipCount"]?.N ?? "0"),
   }
 }
 
