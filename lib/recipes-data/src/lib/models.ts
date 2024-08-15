@@ -78,7 +78,8 @@ export function RecipeDatabaseEntryFromDynamo(raw: Record<string, AttributeValue
     recipeUID: raw["recipeUID"].S ?? "",
     lastUpdated: raw["lastUpdated"].S ? parseISO(raw["lastUpdated"].S) : new Date(1970, 0, 0),
     recipeVersion: raw["recipeVersion"].S ?? "",
-    sponsorshipCount: parseInt(raw["sponsorshipCount"].N ?? "0"),
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- on old records, `raw["sponsorshipCount"]` _can_ return `null` even though eslint thinks it can't.
+    sponsorshipCount: parseInt(raw["sponsorshipCount"]?.N ?? "0"),
   };
 }
 
