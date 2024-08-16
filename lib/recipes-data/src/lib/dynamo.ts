@@ -35,7 +35,7 @@ async function retrieveIndexPage(ExclusiveStartKey?: DynamoRecord): Promise<Data
   };
 }
 
-export async function retrieveIndexData(): Promise<RecipeIndex> {
+export async function retrieveIndexData(filterUnSponsorRecipes?: boolean): Promise<RecipeIndex> {
   let nextKey: DynamoRecord | undefined = undefined;
   const recipes: RecipeIndexEntry[] = [];
 
@@ -45,7 +45,13 @@ export async function retrieveIndexData(): Promise<RecipeIndex> {
     recipes.push(...page.recipes);
   } while (nextKey);
 
-  return {schemaVersion: 1, recipes, lastUpdated: new Date()}
+  if (filterUnSponsorRecipes) {
+    const nonSponsoredRecipes = recipes.filter(r => r.sponsorshipCount == 0)
+    return {schemaVersion: 1, recipes: nonSponsoredRecipes, lastUpdated: new Date()}
+  } else {
+    return {schemaVersion: 1, recipes, lastUpdated: new Date()}
+  }
+
 }
 
 export async function recipesforArticle(articleCanonicalId: string): Promise<RecipeIndexEntry[]> {

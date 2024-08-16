@@ -1,6 +1,6 @@
 import * as process from "process";
 import {DeleteObjectCommand, NoSuchKey, PutObjectCommand, S3Client, S3ServiceException} from "@aws-sdk/client-s3";
-import {StaticBucketName as Bucket, FastlyApiKey, MaximumRetries } from "./config";
+import {StaticBucketName as Bucket, FastlyApiKey, MaximumRetries} from "./config";
 import {FastlyError, sendFastlyPurgeRequest, sendFastlyPurgeRequestWithRetries} from "./fastly";
 import type {RecipeIndex, RecipeReference} from './models';
 import {awaitableDelay} from "./utils";
@@ -100,14 +100,14 @@ export async function removeRecipeContent(recipeSHA: string, purgeType?: "soft" 
  * Writes the built index data out to S3
  * @param indexData built indexdata object. Get this from `retrieveIndexData`
  */
-export async function writeIndexData(indexData: RecipeIndex) {
+export async function writeIndexData(indexData: RecipeIndex, key?: string) {
   console.log("Marshalling data...");
   const formattedData = JSON.stringify(indexData);
 
   console.log("Done. Writing to S3...");
   const req = new PutObjectCommand({
     Bucket,
-    Key: "index.json",
+    Key: key,
     Body: formattedData,
     ContentType: "application/json",
     CacheControl: makeCacheControl(3600), //cache for up to 60mins
