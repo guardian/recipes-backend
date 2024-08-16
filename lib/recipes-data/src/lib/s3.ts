@@ -115,6 +115,6 @@ export async function writeIndexData(indexData: RecipeIndex, key: string) {
 
   await s3Client.send(req);
   console.log("Done. Purging CDN...");
-  await sendFastlyPurgeRequest("index.json", FastlyApiKey ?? "");//todo we need to change to key?
+  await sendFastlyPurgeRequest(key, FastlyApiKey ?? "");
   console.log("Done.");
 }
