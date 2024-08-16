@@ -1,6 +1,5 @@
 import {EventType} from "@guardian/content-api-models/crier/event/v1/eventType";
 import {ItemType} from "@guardian/content-api-models/crier/event/v1/itemType";
-//import type {KinesisStreamHandler, KinesisStreamRecord} from "aws-lambda";
 import type {EventBridgeHandler} from "aws-lambda"
 import {registerMetric} from "@recipes-api/cwmetrics";
 import {deserializeEvent} from "@recipes-api/lib/capi";

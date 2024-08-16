@@ -100,7 +100,7 @@ export async function removeRecipeContent(recipeSHA: string, purgeType?: "soft" 
  * Writes the built index data out to S3
  * @param indexData built indexdata object. Get this from `retrieveIndexData`
  */
-export async function writeIndexData(indexData: RecipeIndex, key?: string) {
+export async function writeIndexData(indexData: RecipeIndex, key: string) {
   console.log("Marshalling data...");
   const formattedData = JSON.stringify(indexData);
 
@@ -115,6 +115,6 @@ export async function writeIndexData(indexData: RecipeIndex, key?: string) {
 
   await s3Client.send(req);
   console.log("Done. Purging CDN...");
-  await sendFastlyPurgeRequest("index.json", FastlyApiKey ?? "");
+  await sendFastlyPurgeRequest("index.json", FastlyApiKey ?? "");//todo we need to change to key?
   console.log("Done.");
 }

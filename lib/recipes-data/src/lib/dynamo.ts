@@ -35,7 +35,7 @@ async function retrieveIndexPage(ExclusiveStartKey?: DynamoRecord): Promise<Data
   };
 }
 
-export async function retrieveIndexData(filterUnSponsorRecipes?: boolean): Promise<RecipeIndex> {
+export async function retrieveIndexData(filterUnSponsorRecipes: boolean): Promise<RecipeIndex> {
   let nextKey: DynamoRecord | undefined = undefined;
   const recipes: RecipeIndexEntry[] = [];
 
