@@ -4,7 +4,7 @@ import type {EventBridgeHandler} from "aws-lambda"
 import {registerMetric} from "@recipes-api/cwmetrics";
 import {deserializeEvent} from "@recipes-api/lib/capi";
 import {retrieveIndexData, writeIndexData} from "@recipes-api/lib/recipes-data";
-import {INDEX_JSON, V2_INDEX_JSON} from "../src/constant"
+import {INDEX_JSON, V2_INDEX_JSON} from "./constants"
 import type {CrierEvent} from "./eventbridge_models";
 import {handleDeletedContent, handleTakedown} from "./takedown_processor";
 import {handleContentUpdate} from "./update_processor";

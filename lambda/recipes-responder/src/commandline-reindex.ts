@@ -2,7 +2,7 @@ import {parseArgs} from "node:util";
 import type {RecipeIndex} from "@recipes-api/lib/recipes-data";
 import {recipeByUID, retrieveIndexData, writeIndexData} from "@recipes-api/lib/recipes-data";
 import {CapiKey} from "./config";
-import {INDEX_JSON, V2_INDEX_JSON} from "./constant";
+import {INDEX_JSON, V2_INDEX_JSON} from "./constants";
 import {handleContentUpdate} from "./update_processor";
 import {PollingAction, retrieveContent} from "./update_retrievable_processor";
 

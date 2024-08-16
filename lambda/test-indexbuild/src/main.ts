@@ -2,7 +2,7 @@ import {DynamoDBClient} from "@aws-sdk/client-dynamodb";
 import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
 import type {Handler} from "aws-lambda";
 import {type RecipeIndex, retrieveIndexData} from "@recipes-api/lib/recipes-data";
-import {INDEX_JSON, V2_INDEX_JSON} from "../../recipes-responder/src/constant";
+import {INDEX_JSON, V2_INDEX_JSON} from "../../recipes-responder/src/constants";
 import {StaticBucketName as Bucket} from "./config";
 
 
