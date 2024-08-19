@@ -34,7 +34,7 @@ export class DataStore extends Construct {
       encryption: TableEncryption.AWS_MANAGED,
     });
 
-    this.lastUpdatedIndexName = "idxArticleLastUpdated2";
+    this.lastUpdatedIndexName = "idxArticleLastUpdated";
 
     table.addGlobalSecondaryIndex({
       partitionKey: {
