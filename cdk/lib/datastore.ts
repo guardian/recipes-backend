@@ -34,7 +34,7 @@ export class DataStore extends Construct {
       encryption: TableEncryption.AWS_MANAGED,
     });
 
-    this.lastUpdatedIndexName = "idxArticleLastUpdated";
+    this.lastUpdatedIndexName = "idxArticleLastUpdated2";
 
     table.addGlobalSecondaryIndex({
       partitionKey: {
@@ -45,9 +45,8 @@ export class DataStore extends Construct {
         name: "lastUpdated",
         type: AttributeType.STRING,
       },
-      projectionType: ProjectionType.INCLUDE,
+      projectionType: ProjectionType.ALL,
       indexName: this.lastUpdatedIndexName,
-      nonKeyAttributes: ["recipeVersion"]   //recipeVersion corresponds to `Current SHA` in the document
     });
 
     this.recipeUIDIndexName = "idxRecipeUID";

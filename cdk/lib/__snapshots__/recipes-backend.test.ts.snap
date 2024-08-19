@@ -2275,7 +2275,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "BillingMode": "PAY_PER_REQUEST",
         "GlobalSecondaryIndexes": [
           {
-            "IndexName": "idxArticleLastUpdated",
+            "IndexName": "idxArticleLastUpdated2",
             "KeySchema": [
               {
                 "AttributeName": "capiArticleId",
@@ -2287,10 +2287,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               },
             ],
             "Projection": {
-              "NonKeyAttributes": [
-                "recipeVersion",
-              ],
-              "ProjectionType": "INCLUDE",
+              "ProjectionType": "ALL",
             },
           },
           {
@@ -2369,7 +2366,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
             "INDEX_TABLE": {
               "Ref": "storeRecipeTableC3AD84B7",
             },
-            "LAST_UPDATED_INDEX": "idxArticleLastUpdated",
+            "LAST_UPDATED_INDEX": "idxArticleLastUpdated2",
             "STACK": "content-api",
             "STAGE": "TEST",
             "STATIC_BUCKET": {
@@ -2641,7 +2638,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
             "INDEX_TABLE": {
               "Ref": "storeRecipeTableC3AD84B7",
             },
-            "LAST_UPDATED_INDEX": "idxArticleLastUpdated",
+            "LAST_UPDATED_INDEX": "idxArticleLastUpdated2",
             "STACK": "content-api",
             "STAGE": "TEST",
             "STATIC_BUCKET": {
