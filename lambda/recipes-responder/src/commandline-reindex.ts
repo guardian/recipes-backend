@@ -1,5 +1,5 @@
 import {parseArgs} from "node:util";
-import type {RecipeIndex} from "@recipes-api/lib/recipes-data";
+import type { RecipeIndex} from "@recipes-api/lib/recipes-data";
 import {recipeByUID, retrieveIndexData, writeIndexData} from "@recipes-api/lib/recipes-data";
 import {CapiKey} from "./config";
 import {INDEX_JSON, V2_INDEX_JSON} from "./constants";
@@ -10,41 +10,41 @@ const oldLog = console.log;
 const oldError = console.error;
 const oldDebug = console.debug;
 
-global.console.log = (...args: unknown[]) => oldLog("\x1b[34m ", ...args, "\x1b[0m");
+global.console.log = (...args: unknown[])=>oldLog("\x1b[34m ", ...args, "\x1b[0m");
 global.console.error = (...args: unknown[]) => oldError("\x1b[31m ", ...args, "\x1b[0m");
 // Silence the debug logger.  If you want debug logs back, just uncomment `oldDebug` and remove `undefined`.
 global.console.debug = (...args: unknown[]) => undefined //oldDebug("\x1b[30m ", ...args, "\x1b[0m")
 
-async function getQueryUri(maybeCapiUri?: string, maybeComposerId?: string, maybeRecipeUid?: string): Promise<string> {
-  const capiBase = process.env["STAGE"] == "PROD" ? "https://content.guardianapis.com" : "https://content.code.dev-guardianapis.com";
+async function getQueryUri(maybeCapiUri?:string, maybeComposerId?:string, maybeRecipeUid?: string):Promise<string> {
+  const capiBase = process.env["STAGE"]=="PROD" ? "https://content.guardianapis.com" : "https://content.code.dev-guardianapis.com";
 
-  if (maybeRecipeUid) {
+  if(maybeRecipeUid) {
     const indexEntry = await recipeByUID(maybeRecipeUid);
-    if (indexEntry) {
+    if(indexEntry) {
       console.log(`Recipe ${maybeRecipeUid} belongs to CAPI article ${indexEntry.capiArticleId}`);
       return `${capiBase}/${indexEntry.capiArticleId}`
     } else {
       throw new Error(`Could not find a recipe with ID ${maybeRecipeUid}. Are you sure you are querying the right environment?`)
     }
-  } else if (maybeCapiUri) {
-    if (maybeCapiUri.startsWith("http")) {
+  } else if(maybeCapiUri) {
+    if(maybeCapiUri.startsWith("http")) {
       return maybeCapiUri;
     } else {
       return `${capiBase}/${maybeCapiUri}`;
     }
-  } else if (maybeComposerId) {
+  } else if(maybeComposerId) {
     return `${capiBase}/internal-code/composer/${maybeComposerId}`
   } else {
     throw new Error("You must specify either recipe UID, capi URI or composer ID")
   }
 }
 
-async function reindex(queryUri: string): Promise<void> {
+async function reindex(queryUri:string):Promise<void> {
   const pollingResult = await retrieveContent(queryUri);
-  switch (pollingResult.action) {
+  switch(pollingResult.action) {
     case PollingAction.CONTENT_EXISTS:
       console.log(`Found article with title '${pollingResult.content?.webTitle ?? ""}' published ${pollingResult.content?.webPublicationDate?.iso8601 ?? ""}`);
-      if (pollingResult.content) {
+      if(pollingResult.content) {
         await handleContentUpdate(pollingResult.content);
       } else {
         throw new Error("Got a positive result but no content?? This must be a bug :(");
@@ -55,35 +55,10 @@ async function reindex(queryUri: string): Promise<void> {
   }
 }
 
-async function indexing(index: RecipeIndex, test?: boolean) {
-  console.log(`Re-index all: index was last updated at ${index.lastUpdated.toISOString()}`);
-  const articleIdSet = index.recipes.reduce<Set<string>>((idSet, entry) => (
-    idSet.add(entry.capiArticleId)
-  ), new Set<string>());
-
-  const articleIdList = Array.from(articleIdSet.values());
-
-  console.log(`Re-index all: Found ${index.recipes.length} recipes to re-index across ${articleIdList.length} articles`);
-  if (test) {
-    console.log("Not performing any operations as --test was specified")
-  } else {
-    const total = articleIdList.length;
-    let i = 1;
-    for (const articleId of articleIdList) {
-      console.log("------------------------------------------------------");
-      console.log(`Article ${i} / ${total}...\n`);
-      const queryUri = await getQueryUri(articleId, undefined, undefined);
-      await reindex(queryUri);
-      console.log("------------------------------------------------------\n");
-      i++;
-    }
-  }
-}
-
 async function main() {
 //Parse the commandline arguments
   const {
-    values: {help, composerId, capiUri, recipeUid, all, test, indexOnly, unSponsoredOnly},
+    values: {help, composerId, capiUri, recipeUid, all, test, indexOnly},
   } = parseArgs({
     options: {
       help: {
@@ -110,10 +85,6 @@ async function main() {
       indexOnly: {
         type: "boolean",
         short: "i"
-      },
-      unSponsoredOnly: {
-        type: "boolean",
-        short: "uns"
       }
     }
   });
@@ -139,19 +110,40 @@ async function main() {
     process.exit(1);
   }
 
-  if (process.env["STACK"]) {
+  if(process.env["STACK"]) {
     const msg = `Performing re-index operations on ${process.env["STAGE"] ?? ""}`;
 
-    if (process.env["STAGE"] == "PROD") console.error(msg); else console.log(msg);
+    if(process.env["STAGE"]=="PROD") console.error(msg); else console.log(msg);
     console.log("------------------------------------------------------\n");
   }
 
-  if (all && !indexOnly) {
-    const indexDataForAllRecipes = await retrieveIndexData();
-    await indexing(indexDataForAllRecipes, test)
-  } else if (!indexOnly) {
+  if(all && !indexOnly) {
+    const index = await retrieveIndexData();
+    console.log(`Re-index all: index was last updated at ${index.lastUpdated.toISOString()}`);
+    const articleIdSet = index.recipes.reduce<Set<string>>((idSet, entry)=>(
+      idSet.add(entry.capiArticleId)
+    ), new Set<string>());
+
+    const articleIdList = Array.from(articleIdSet.values());
+
+    console.log(`Re-index all: Found ${index.recipes.length} recipes to re-index across ${articleIdList.length} articles`);
+    if(test) {
+      console.log("Not performing any operations as --test was specified")
+    } else {
+      const total = articleIdList.length;
+      let i = 1;
+      for (const articleId of articleIdList) {
+        console.log("------------------------------------------------------");
+        console.log(`Article ${i} / ${total}...\n`);
+        const queryUri = await getQueryUri(articleId, undefined, undefined);
+        await reindex(queryUri);
+        console.log("------------------------------------------------------\n");
+        i++;
+      }
+    }
+  } else if(!indexOnly) {
     const queryUri = await getQueryUri(capiUri, composerId, recipeUid);
-    if (test) {
+    if(test) {
       console.log("Not performing any operations as --test was specified")
     } else {
       await reindex(queryUri);
@@ -160,16 +152,22 @@ async function main() {
 
   console.log("------------------------------------------------------");
   console.log("Rebuilding index...");
-  const indexDataForAllRecipes = await retrieveIndexData();
-  await indexing(indexDataForAllRecipes, test)
-
+  const indexData = await retrieveIndexData();
+  console.log("(including all recipes...)");
+  await writeIndexData(indexData, V2_INDEX_JSON);
+  console.log("(excluding sponsored recipes...)");
+  const indexWithoutSponsored:RecipeIndex = {
+    ...indexData,
+    recipes: indexData.recipes.filter(r=>r.sponsorshipCount===0)
+  }
+  await writeIndexData(indexWithoutSponsored, INDEX_JSON);
   console.log("Finished rebuilding index");
 }
 
-main().then(() => {
+main().then(()=>{
   console.log("Completed");
   process.exit(0);
-}).catch((err) => {
+}).catch((err)=>{
   console.error(err);
   process.exit(2);
 })
