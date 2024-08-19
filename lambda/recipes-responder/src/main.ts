@@ -61,8 +61,12 @@ export const handler: EventBridgeHandler<string, CrierEvent, void> = async (even
   if (updatesTotal > 0) {
     console.log(`Processed updates for ${updatesTotal} recipes, rebuilding the index json`);
     await registerMetric("UpdatesTotalOfArticle", updatesTotal)
-    const indexDataForUnSponsoredRecipes = await retrieveIndexData(true);
-    const indexDataForAllRecipes = await retrieveIndexData(false);
+    const indexDataForAllRecipes = await retrieveIndexData();
+    const indexDataForUnSponsoredRecipes = {
+      ...indexDataForAllRecipes,
+      recipes: indexDataForAllRecipes.recipes.filter(r=>r.sponsorshipCount===0)
+    }
+
     await writeIndexData(indexDataForUnSponsoredRecipes, INDEX_JSON);
     await writeIndexData(indexDataForAllRecipes, V2_INDEX_JSON);
     console.log("Finished rebuilding index");

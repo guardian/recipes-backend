@@ -99,15 +99,16 @@ export async function removeRecipeContent(recipeSHA: string, purgeType?: "soft" 
 /**
  * Writes the built index data out to S3
  * @param indexData built indexdata object. Get this from `retrieveIndexData`
+ * @param Key filename to write in S3
  */
-export async function writeIndexData(indexData: RecipeIndex, key: string) {
+export async function writeIndexData(indexData: RecipeIndex, Key: string) {
   console.log("Marshalling data...");
   const formattedData = JSON.stringify(indexData);
 
-  console.log("Done. Writing to S3...");
+  console.log(`Done. Writing to s3://${Bucket}/${Key}...`);
   const req = new PutObjectCommand({
     Bucket,
-    Key: key,
+    Key,
     Body: formattedData,
     ContentType: "application/json",
     CacheControl: makeCacheControl(3600), //cache for up to 60mins
@@ -115,6 +116,6 @@ export async function writeIndexData(indexData: RecipeIndex, key: string) {
 
   await s3Client.send(req);
   console.log("Done. Purging CDN...");
-  await sendFastlyPurgeRequest(key, FastlyApiKey ?? "");
+  await sendFastlyPurgeRequest(Key, FastlyApiKey ?? "");
   console.log("Done.");
 }

@@ -147,13 +147,8 @@ async function main() {
   }
 
   if (all && !indexOnly) {
-    if (unSponsoredOnly) {
-      const indexDataForUnSponsoredRecipes = await retrieveIndexData(true);
-      await indexing(indexDataForUnSponsoredRecipes, test)
-    } else {
-      const indexDataForAllRecipes = await retrieveIndexData(false);
-      await indexing(indexDataForAllRecipes, test)
-    }
+    const indexDataForAllRecipes = await retrieveIndexData();
+    await indexing(indexDataForAllRecipes, test)
   } else if (!indexOnly) {
     const queryUri = await getQueryUri(capiUri, composerId, recipeUid);
     if (test) {
@@ -165,13 +160,9 @@ async function main() {
 
   console.log("------------------------------------------------------");
   console.log("Rebuilding index...");
-  if (unSponsoredOnly) {
-    const indexDataForUnSponsoredRecipes = await retrieveIndexData(true);
-    await indexing(indexDataForUnSponsoredRecipes, test)
-  } else {
-    const indexDataForAllRecipes = await retrieveIndexData(false);
-    await indexing(indexDataForAllRecipes, test)
-  }
+  const indexDataForAllRecipes = await retrieveIndexData();
+  await indexing(indexDataForAllRecipes, test)
+
   console.log("Finished rebuilding index");
 }
 
