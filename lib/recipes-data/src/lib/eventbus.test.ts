@@ -26,24 +26,28 @@ describe("announce_new_recipe", ()=>{
       {
         checksum: "recep-1-cs",
         recipeUID: "recep-1-uid",
-        jsonBlob: "recep-1-content"
+        jsonBlob: "recep-1-content",
+        sponsorshipCount: 0,
       },
       {
         checksum: "recep-2-cs-updated",
         recipeUID: "recep-2-uid",
-        jsonBlob: "recep-2-content"
+        jsonBlob: "recep-2-content",
+        sponsorshipCount: 0,
       },
     ];
     const removals:RecipeIndexEntry[] = [
       {
         checksum: "recep-2-cs-old", //"recep-2" is updated, so been taken down and replaced with a new checksum
         recipeUID: "recep-2-uid",
-        capiArticleId: "xxxxxxxxxx"
+        capiArticleId: "xxxxxxxxxx",
+        sponsorshipCount: 0,
       },
       {
         checksum: "recep-3-cs",
         recipeUID: "recep-3-uid",
-        capiArticleId: "yyyyyyyyy"
+        capiArticleId: "yyyyyyyyy",
+        sponsorshipCount: 0,
       }
     ];
 
