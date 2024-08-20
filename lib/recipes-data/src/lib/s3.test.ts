@@ -12,33 +12,34 @@ import {awaitableDelay} from "./utils";
 
 const s3Mock = mockClient(S3Client);
 
-jest.mock("./config", ()=>({
+jest.mock("./config", () => ({
   StaticBucketName: "contentbucket",
   MaximumRetries: 5,
   FastlyApiKey: "fake-api-key",
 }));
 
-jest.mock("./utils", ()=>({
+jest.mock("./utils", () => ({
   awaitableDelay: jest.fn(),
 }));
 
-jest.mock("./fastly", ()=>({
+jest.mock("./fastly", () => ({
   sendFastlyPurgeRequestWithRetries: jest.fn(),
 }));
 
-describe("s3.publishRecipeContent", ()=>{
-  beforeEach(()=>{
+describe("s3.publishRecipeContent", () => {
+  beforeEach(() => {
     s3Mock.reset();
     jest.resetAllMocks();
   });
 
-  it("should upload the given content to S3 with correct headers", async ()=>{
+  it("should upload the given content to S3 with correct headers", async () => {
     s3Mock.on(PutObjectCommand).resolves({});
 
     await publishRecipeContent({
       recipeUID: "some-uid-here",
       jsonBlob: "this-is-json",
-      checksum: "xxxyyyzzz"
+      checksum: "xxxyyyzzz",
+      sponsorshipCount: 0,
     });
 
     expect(s3Mock.calls().length).toEqual(1);
@@ -55,7 +56,7 @@ describe("s3.publishRecipeContent", ()=>{
     expect(sendFastlyPurgeRequestWithRetries.mock.calls[0][1]).toEqual(FastlyApiKey);
   });
 
-  it("should retry any S3ServiceException up to MaximumRetries then throw the error", async()=>{
+  it("should retry any S3ServiceException up to MaximumRetries then throw the error", async () => {
     // @ts-ignore -- the S3ServiceException is malformed, but we are not reading the data anyway.
     s3Mock.on(PutObjectCommand).rejects(new S3ServiceException({$fault: "client", $metadata: undefined, name: "test"}));
 
@@ -65,18 +66,19 @@ describe("s3.publishRecipeContent", ()=>{
     await expect(publishRecipeContent({
       recipeUID: "some-uid-here",
       jsonBlob: "this-is-json",
-      checksum: "xxxyyyzzz"
+      checksum: "xxxyyyzzz",
+      sponsorshipCount: 0,
     })).rejects.toThrow(Error("Could not write to S3, see logs for details."));
 
     expect(s3Mock.calls().length).toEqual(MaximumRetries);
     expect(s3Mock.commandCalls(DeleteObjectCommand).length).toEqual(0);
     // @ts-ignore - typescript doesn't know that this is a mock
-    expect(awaitableDelay.mock.calls.length).toEqual(MaximumRetries-1); //on the last send, we don't wait but throw immediately
+    expect(awaitableDelay.mock.calls.length).toEqual(MaximumRetries - 1); //on the last send, we don't wait but throw immediately
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(sendFastlyPurgeRequestWithRetries.mock.calls.length).toEqual(0); //nothing to purge if the upload failed
   });
 
-  it("should immediately throw an error if it's not an S3ServiceException", async()=>{
+  it("should immediately throw an error if it's not an S3ServiceException", async () => {
     s3Mock.on(PutObjectCommand).rejects(new Error("this is a test"));
 
     // @ts-ignore -- typescript doesn't know that this is a mock
@@ -85,7 +87,8 @@ describe("s3.publishRecipeContent", ()=>{
     await expect(publishRecipeContent({
       recipeUID: "some-uid-here",
       jsonBlob: "this-is-json",
-      checksum: "xxxyyyzzz"
+      checksum: "xxxyyyzzz",
+      sponsorshipCount: 0,
     })).rejects.toThrow(Error);
 
     expect(s3Mock.calls().length).toEqual(1);
@@ -95,13 +98,13 @@ describe("s3.publishRecipeContent", ()=>{
   })
 });
 
-describe("s3.removeRecipeContent", ()=>{
-  beforeEach(()=>{
+describe("s3.removeRecipeContent", () => {
+  beforeEach(() => {
     s3Mock.reset();
     jest.resetAllMocks();
   });
 
-  it("should delete the given content from S3 and purge the CDN cache", async ()=>{
+  it("should delete the given content from S3 and purge the CDN cache", async () => {
     s3Mock.on(DeleteObjectCommand).resolves({});
 
     await removeRecipeContent("xxxyyyzzz");
@@ -122,9 +125,14 @@ describe("s3.removeRecipeContent", ()=>{
     expect(sendFastlyPurgeRequestWithRetries.mock.calls[0][2]).toEqual("hard");
   });
 
-  it("should retry a general S3ServiceException up to MaximumRetries then throw the error", async ()=>{
+  it("should retry a general S3ServiceException up to MaximumRetries then throw the error", async () => {
     // @ts-ignore -- the S3ServiceException is malformed, but we are not reading the data anyway.
-    s3Mock.on(DeleteObjectCommand).rejects(new S3ServiceException({$fault: "client", $metadata: undefined, name: "test"}));
+    s3Mock.on(DeleteObjectCommand).rejects(new S3ServiceException({
+      $fault: "client",
+      // @ts-ignore -- this value is not read anywhere in the test
+      $metadata: undefined,
+      name: "test"
+    }));
 
     // @ts-ignore -- typescript doesn't know that this is a mock
     awaitableDelay.mockReturnValue(Promise.resolve());
@@ -134,12 +142,12 @@ describe("s3.removeRecipeContent", ()=>{
     expect(s3Mock.commandCalls(PutObjectCommand).length).toEqual(0);
     expect(s3Mock.commandCalls(DeleteObjectCommand).length).toEqual(MaximumRetries);
     // @ts-ignore - typescript doesn't know that this is a mock
-    expect(awaitableDelay.mock.calls.length).toEqual(MaximumRetries-1); //on the last send, we don't wait but throw immediately
+    expect(awaitableDelay.mock.calls.length).toEqual(MaximumRetries - 1); //on the last send, we don't wait but throw immediately
     //@ts-ignore -- Typescript doesn't know that this is a mock
     expect(sendFastlyPurgeRequestWithRetries.mock.calls.length).toEqual(0);
   });
 
-  it("should return without error on a NoSuchKey exception", async ()=>{
+  it("should return without error on a NoSuchKey exception", async () => {
     // @ts-ignore -- the exception is malformed but we don't need to worry about the contents
     s3Mock.on(DeleteObjectCommand).rejects(new NoSuchKey({$metadata: undefined, message: "This is a test"}));
 
@@ -154,7 +162,7 @@ describe("s3.removeRecipeContent", ()=>{
     expect(awaitableDelay.mock.calls.length).toEqual(0);
   });
 
-  it("should immediately break on a generalised exception", async ()=>{
+  it("should immediately break on a generalised exception", async () => {
     s3Mock.on(DeleteObjectCommand).rejects(new Error("this is a test"));
 
     // @ts-ignore -- typescript doesn't know that this is a mock

@@ -1,38 +1,29 @@
-import {DynamoDBClient} from "@aws-sdk/client-dynamodb";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-// eslint-disable-next-line import/no-unresolved -- this works from root tsconfig but eslint keeps complaining :-(
-import { type RecipeIndex, retrieveIndexData } from "@recipes-api/lib/recipes-data";
-import type { Handler } from "aws-lambda";
-import { StaticBucketName as Bucket } from "./config";
+import type {Handler} from "aws-lambda";
+import {INDEX_JSON, retrieveIndexData, V2_INDEX_JSON, writeIndexData} from "@recipes-api/lib/recipes-data";
 
 
-const dynamoClient = new DynamoDBClient({region: process.env["AWS_REGION"]});
-const s3Client = new S3Client({region: process.env["AWS_REGION"]});
-
-async function writeIndexData(indexData:RecipeIndex)
-{
-  console.log("Marshalling data...");
-  const formattedData = JSON.stringify(indexData);
-
-  console.log("Done. Writing to S3...");
-  const req = new PutObjectCommand({
-    Bucket,
-    Key: "index.json",
-    Body: formattedData,
-    ContentType: "application/json",
-    //TODO: set up cache control
-  });
-
-  await s3Client.send(req);
-  console.log("Done.")
-}
-
-export const handler:Handler = async ()=>{
+export const handler: Handler = async () => {
   console.log("Index test starting up");
 
   console.log("Retrieving index data...");
-  const indexData = await retrieveIndexData();
+  const indexDataForAllRecipes = await retrieveIndexData();
+  const indexDataForUnSponsoredRecipes = {
+    ...indexDataForAllRecipes,
+    recipes: indexDataForAllRecipes.recipes.filter(r => r.sponsorshipCount === 0)
+  }
+  console.log(`Length of unsponsored: ${indexDataForUnSponsoredRecipes.recipes.length}`)
+
+  console.log(`Length of sponsored: ${indexDataForAllRecipes.recipes.length}`);
+
+  console.log(`Dump of sponsored recipe index entries follows: `);
+  for (const entry of indexDataForAllRecipes.recipes) {
+    if (!indexDataForUnSponsoredRecipes.recipes.find(r => r.capiArticleId === entry.capiArticleId)) {
+      console.log(entry);
+    }
+  }
+
   console.log("Done.")
-  await writeIndexData(indexData);
+  await writeIndexData(indexDataForUnSponsoredRecipes, INDEX_JSON);
+  await writeIndexData(indexDataForAllRecipes, V2_INDEX_JSON);
   console.log("All completed.");
 }

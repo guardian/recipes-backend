@@ -14,15 +14,14 @@ import {awaitableDelay, nowTime} from "./utils";
 
 const client = new DynamoDBClient({region: process.env["AWS_REGION"]});
 
-type DynamoRecord =  Record<string, AttributeValue>;
+type DynamoRecord = Record<string, AttributeValue>;
 
 interface DataPage {
   ExclusiveStartKey?: DynamoRecord;
   recipes: RecipeIndexEntry[];
 }
 
-async function retrieveIndexPage(ExclusiveStartKey? : DynamoRecord): Promise<DataPage>
-{
+async function retrieveIndexPage(ExclusiveStartKey?: DynamoRecord): Promise<DataPage> {
   const req = new ScanCommand({
     ExclusiveStartKey,
     IndexName,
@@ -36,21 +35,20 @@ async function retrieveIndexPage(ExclusiveStartKey? : DynamoRecord): Promise<Dat
   };
 }
 
-export async function retrieveIndexData() : Promise<RecipeIndex> {
-   let nextKey: DynamoRecord|undefined = undefined;
-   const recipes: RecipeIndexEntry[] = [];
+export async function retrieveIndexData(): Promise<RecipeIndex> {
+  let nextKey: DynamoRecord | undefined = undefined;
+  const recipes: RecipeIndexEntry[] = [];
 
-   do {
-      const page = await retrieveIndexPage(nextKey);
-      nextKey = page.ExclusiveStartKey;
-      recipes.push(...page.recipes);
-    } while (nextKey);
+  do {
+    const page = await retrieveIndexPage(nextKey);
+    nextKey = page.ExclusiveStartKey;
+    recipes.push(...page.recipes);
+  } while (nextKey);
 
-   return {schemaVersion: 1, recipes, lastUpdated: new Date()}
+  return {schemaVersion: 1, recipes, lastUpdated: new Date()}
 }
 
-export async function recipesforArticle(articleCanonicalId: string): Promise<RecipeIndexEntry[]>
-{
+export async function recipesforArticle(articleCanonicalId: string): Promise<RecipeIndexEntry[]> {
   const req = new QueryCommand({
     TableName,
     KeyConditionExpression: "capiArticleId=:artId",
@@ -63,8 +61,7 @@ export async function recipesforArticle(articleCanonicalId: string): Promise<Rec
   return response.Items ? response.Items.map(RecipeIndexEntryFromDynamo) : [];
 }
 
-export async function recipeByUID(recipeUID:string): Promise<RecipeIndexEntry|null>
-{
+export async function recipeByUID(recipeUID: string): Promise<RecipeIndexEntry | null> {
   const req = new QueryCommand({
     TableName,
     KeyConditionExpression: "recipeUID=:uid",
@@ -75,7 +72,7 @@ export async function recipeByUID(recipeUID:string): Promise<RecipeIndexEntry|nu
   });
 
   const response = await client.send(req);
-  return response.Items && response.Items.length>0 ? RecipeIndexEntryFromDynamo(response.Items[0]) : null
+  return response.Items && response.Items.length > 0 ? RecipeIndexEntryFromDynamo(response.Items[0]) : null
 }
 
 /**
@@ -87,10 +84,9 @@ export async function recipeByUID(recipeUID:string): Promise<RecipeIndexEntry|nu
  * @param recipeUID uid of the recipe to remove
  * @param recipeChecksum if this is set, then we perform a "conditional delete" that will only remove the record if the recipeVersion field matches this value
  */
-export async function removeRecipe(canonicalArticleId:string, recipeUID: string, recipeChecksum?:string):Promise<DeleteItemCommandOutput|null>
-{
-  const ExpressionAttributeValues:Record<string,AttributeValue> = {};
-  if(recipeChecksum) {
+export async function removeRecipe(canonicalArticleId: string, recipeUID: string, recipeChecksum?: string): Promise<DeleteItemCommandOutput | null> {
+  const ExpressionAttributeValues: Record<string, AttributeValue> = {};
+  if (recipeChecksum) {
     ExpressionAttributeValues[":ver"] = {S: recipeChecksum};
   }
 
@@ -106,8 +102,8 @@ export async function removeRecipe(canonicalArticleId:string, recipeUID: string,
 
   try {
     return client.send(req)
-  } catch(err) {
-    if(err instanceof ConditionalCheckFailedException) {
+  } catch (err) {
+    if (err instanceof ConditionalCheckFailedException) {
       console.log(`INFO [${canonicalArticleId}] - not removing ${recipeUID} because version does not match ${recipeChecksum ?? "(no version)"}`);
       return null;
     } else {
@@ -123,8 +119,7 @@ export async function removeRecipe(canonicalArticleId:string, recipeUID: string,
  * @param client
  * @param canonicalArticleId
  */
-export async function removeAllRecipeIndexEntriesForArticle(canonicalArticleId: string): Promise<RecipeIndexEntry[]>
-{
+export async function removeAllRecipeIndexEntriesForArticle(canonicalArticleId: string): Promise<RecipeIndexEntry[]> {
   const req = new QueryCommand({
     TableName,
     KeyConditionExpression: "capiArticleId=:artId",
@@ -134,19 +129,19 @@ export async function removeAllRecipeIndexEntriesForArticle(canonicalArticleId: 
   });
 
   const contentToRemove = await client.send(req);
-  if(contentToRemove.Count===0 || !contentToRemove.Items) {
+  if (contentToRemove.Count === 0 || !contentToRemove.Items) {
     console.log(`No recipes to take down for article ${canonicalArticleId}`);
     return []
   } else {
-    const entries:RecipeIndexEntry[] = contentToRemove.Items
+    const entries: RecipeIndexEntry[] = contentToRemove.Items
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- dbEntry["recipeUID"] _can_ be undefined in reality
-      .filter(dbEntry=>!!dbEntry["recipeUID"]?.S)
+      .filter(dbEntry => !!dbEntry["recipeUID"]?.S)
       .map(RecipeIndexEntryFromDynamo);
 
-    const recepts:RecipeDatabaseKey[] = contentToRemove.Items
+    const recepts: RecipeDatabaseKey[] = contentToRemove.Items
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- dbEntry["recipeUID"] _can_ be undefined in reality
-      .filter(dbEntry=>!!dbEntry["recipeUID"]?.S)
-      .map(dbEntry=>({
+      .filter(dbEntry => !!dbEntry["recipeUID"]?.S)
+      .map(dbEntry => ({
         capiArticleId: canonicalArticleId,
         recipeUID: dbEntry["recipeUID"].S as string
       }));
@@ -156,10 +151,9 @@ export async function removeAllRecipeIndexEntriesForArticle(canonicalArticleId: 
   }
 }
 
-async function bulkRemovePage(page:WriteRequest[], others:WriteRequest[], retryCount:number):Promise<void>
-{
-  if(page.length==0) {
-    if(others.length==0) {
+async function bulkRemovePage(page: WriteRequest[], others: WriteRequest[], retryCount: number): Promise<void> {
+  if (page.length == 0) {
+    if (others.length == 0) {
       //we are done. Shouldn't get here, but meh.
       return
     } else {
@@ -168,7 +162,7 @@ async function bulkRemovePage(page:WriteRequest[], others:WriteRequest[], retryC
     }
   }
 
-  const RequestItems:Record<string, WriteRequest[]> = {};
+  const RequestItems: Record<string, WriteRequest[]> = {};
   RequestItems[TableName as string] = page;
 
   const req = new BatchWriteItemCommand({
@@ -177,17 +171,17 @@ async function bulkRemovePage(page:WriteRequest[], others:WriteRequest[], retryC
   const result = await client.send(req);
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- the check for !!result.UnprocessedItems[TableName as string] is actually necessary
-  if(result.UnprocessedItems && !!result.UnprocessedItems[TableName as string] && result.UnprocessedItems[TableName as string].length > 0) {
-    if(retryCount > MaximumRetries) {
+  if (result.UnprocessedItems && !!result.UnprocessedItems[TableName as string] && result.UnprocessedItems[TableName as string].length > 0) {
+    if (retryCount > MaximumRetries) {
       console.error(`ERROR Could not remove items after maximum number of attempts, giving up.`);
       throw new Error("Unable to remove all items");
     }
     console.log(`WARNING Could not remove all items on attempt ${retryCount}. Pausing before trying again...`);
     await awaitableDelay();
-    return bulkRemovePage(result.UnprocessedItems[TableName as string], others, retryCount+1);
-  } else if(others.length>0) {
+    return bulkRemovePage(result.UnprocessedItems[TableName as string], others, retryCount + 1);
+  } else if (others.length > 0) {
     const nextPage = others.slice(0, 25);
-    const nextOthers = others.length>25 ? others.slice(25) : [];
+    const nextOthers = others.length > 25 ? others.slice(25) : [];
     return bulkRemovePage(nextPage, nextOthers, 0);
   } else {
     return
@@ -199,9 +193,8 @@ async function bulkRemovePage(page:WriteRequest[], others:WriteRequest[], retryC
  * This is more efficient than removing each one manually.
  * @param receps array of RecipeDatabaseKey[] identifying the recipes to remove from the index
  */
-export async function bulkRemoveRecipe(receps:RecipeDatabaseKey[]):Promise<void>
-{
-  const requests:WriteRequest[] = receps.map(recep=>({
+export async function bulkRemoveRecipe(receps: RecipeDatabaseKey[]): Promise<void> {
+  const requests: WriteRequest[] = receps.map(recep => ({
     DeleteRequest: {
       Key: {
         capiArticleId: {S: recep.capiArticleId},
@@ -210,22 +203,22 @@ export async function bulkRemoveRecipe(receps:RecipeDatabaseKey[]):Promise<void>
     }
   }));
 
-  if(requests.length>25) {
+  if (requests.length > 25) {
     return bulkRemovePage(requests.slice(0, 25), requests.slice(25), 0)
   } else {
     return bulkRemovePage(requests, [], 0);
   }
 }
 
-export async function insertNewRecipe(canonicalArticleId: string, entry:RecipeIndexEntry):Promise<void>
-{
+export async function insertNewRecipe(canonicalArticleId: string, entry: RecipeIndexEntry): Promise<void> {
   const req = new PutItemCommand({
     TableName,
     Item: {
       capiArticleId: {S: canonicalArticleId},
       recipeUID: {S: entry.recipeUID},
       recipeVersion: {S: entry.checksum},
-      lastUpdated: {S: formatISO(nowTime()) },
+      sponsorshipCount: {N: entry.sponsorshipCount.toString()},
+      lastUpdated: {S: formatISO(nowTime())},
     }
   });
   await client.send(req);

@@ -1,4 +1,4 @@
-import type { AttributeValue } from "@aws-sdk/client-dynamodb";
+import type {AttributeValue} from "@aws-sdk/client-dynamodb";
 import {formatISO, parseISO} from "date-fns";
 
 /**
@@ -13,9 +13,10 @@ interface RecipeDatabaseKey {
  * RecipeIndexEntry represents a whole data record from the dynamo table containing the up-to-date index data.
  * Note that you may find it more efficient to only retrieve the fields you need rather than the whole thing.
  */
-interface RecipeDatabaseEntry extends RecipeDatabaseKey{
+interface RecipeDatabaseEntry extends RecipeDatabaseKey {
   lastUpdated: Date;
   recipeVersion: string;
+  sponsorshipCount: number;
 }
 
 /**
@@ -25,16 +26,18 @@ export interface RecipeIndexEntry {
   checksum: string;
   recipeUID: string;
   capiArticleId: string;
+  sponsorshipCount: number;
 }
 
-export function RecipeDatabaseEntryToIndex(from:RecipeDatabaseEntry):RecipeIndexEntry
-{
+export function RecipeDatabaseEntryToIndex(from: RecipeDatabaseEntry): RecipeIndexEntry {
   return {
     checksum: from.recipeVersion,
     recipeUID: from.recipeUID,
     capiArticleId: from.capiArticleId,
+    sponsorshipCount: from.sponsorshipCount,
   }
 }
+
 /**
  * RecipeIndex is the shape of the data that is sent out as the recipe index, containing an array of RecipeIndexEntry
  */
@@ -51,16 +54,17 @@ interface RecipeIndex {
 interface RecipeReferenceWithoutChecksum {
   recipeUID: string;
   jsonBlob: string;
+  sponsorshipCount: number;
 }
 
 /**
  * RecipeReference has all three main constituents for a recipe - the immutable ID, the version ID and the json content
  */
-interface RecipeReference extends RecipeReferenceWithoutChecksum{
+interface RecipeReference extends RecipeReferenceWithoutChecksum {
   checksum: string;
 }
 
-export type Contributor = { "type": "contributor"; "tagId": string } | { "type": "freetext"; "text": string};
+export type Contributor = { "type": "contributor"; "tagId": string } | { "type": "freetext"; "text": string };
 
 /**
  * Helper function to un-marshal a raw dynamo record into a RecipeDatabaseEntry structure.
@@ -74,6 +78,8 @@ export function RecipeDatabaseEntryFromDynamo(raw: Record<string, AttributeValue
     recipeUID: raw["recipeUID"].S ?? "",
     lastUpdated: raw["lastUpdated"].S ? parseISO(raw["lastUpdated"].S) : new Date(1970, 0, 0),
     recipeVersion: raw["recipeVersion"].S ?? "",
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- on old records, `raw["sponsorshipCount"]` _can_ return `null` even though eslint thinks it can't.
+    sponsorshipCount: parseInt(raw["sponsorshipCount"]?.N ?? "0"),
   };
 }
 
@@ -86,8 +92,9 @@ export function RecipeDatabaseEntryToDynamo(ent: RecipeDatabaseEntry): Record<st
   return {
     capiArticleId: {S: ent.capiArticleId},
     recipeUID: {S: ent.recipeUID},
-    lastUpdated: {S: formatISO(ent.lastUpdated) },
-    recipeVersion: {S: ent.recipeVersion }
+    lastUpdated: {S: formatISO(ent.lastUpdated)},
+    recipeVersion: {S: ent.recipeVersion},
+    sponsorshipCount: {N: ent.sponsorshipCount.toString()}
   }
 }
 
@@ -99,11 +106,13 @@ export function RecipeDatabaseEntryToDynamo(ent: RecipeDatabaseEntry): Record<st
  * @param raw - a raw Dynamo record from the API
  * @return a RecipeIndexEntry subset record
  */
-export function RecipeIndexEntryFromDynamo(raw:Record<string, AttributeValue>): RecipeIndexEntry {
+export function RecipeIndexEntryFromDynamo(raw: Record<string, AttributeValue>): RecipeIndexEntry {
   return {
     checksum: raw["recipeVersion"].S ?? "",
     recipeUID: raw["recipeUID"].S ?? "",
-    capiArticleId: raw["capiArticleId"].S ?? ""
+    capiArticleId: raw["capiArticleId"].S ?? "",
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- on old records, `raw["sponsorshipCount"]` _can_ return `null` even though eslint thinks it can't.
+    sponsorshipCount: parseInt(raw["sponsorshipCount"]?.N ?? "0"),
   }
 }
 
@@ -114,23 +123,22 @@ export function RecipeIndexEntryFromDynamo(raw:Record<string, AttributeValue>): 
  * @param entry RecipeIndexEntry to upgrade
  * @param jsonBlob the json content to add to it
  */
-export function recipeReferenceFromIndexEntry(entry: RecipeIndexEntry, jsonBlob:string):RecipeReference
-{
+export function recipeReferenceFromIndexEntry(entry: RecipeIndexEntry, jsonBlob: string): RecipeReference {
   return {...entry, jsonBlob}
 }
 
 export type RecipeImage = {
-	url: string;
-	mediaId?: string;
-	cropId?: string;
-	source?: string;
-	photographer?: string;
-	imageType?: string;
-	caption?: string;
-	mediaApiUri?: string;
-	displayCredit?: boolean;
-	width?: number;
-	height?: number;
+  url: string;
+  mediaId?: string;
+  cropId?: string;
+  source?: string;
+  photographer?: string;
+  imageType?: string;
+  caption?: string;
+  mediaApiUri?: string;
+  displayCredit?: boolean;
+  width?: number;
+  height?: number;
 };
 
-export type { RecipeDatabaseKey, RecipeDatabaseEntry,RecipeIndex, RecipeReference, RecipeReferenceWithoutChecksum };
+export type {RecipeDatabaseKey, RecipeDatabaseEntry, RecipeIndex, RecipeReference, RecipeReferenceWithoutChecksum};
