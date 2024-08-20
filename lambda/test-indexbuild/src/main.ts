@@ -1,6 +1,5 @@
 import type {Handler} from "aws-lambda";
-import {retrieveIndexData, writeIndexData} from "@recipes-api/lib/recipes-data";
-import {INDEX_JSON, V2_INDEX_JSON} from "../../recipes-responder/src/constants";
+import {INDEX_JSON, retrieveIndexData, V2_INDEX_JSON, writeIndexData} from "@recipes-api/lib/recipes-data";
 
 
 export const handler: Handler = async () => {
@@ -10,7 +9,7 @@ export const handler: Handler = async () => {
   const indexDataForAllRecipes = await retrieveIndexData();
   const indexDataForUnSponsoredRecipes = {
     ...indexDataForAllRecipes,
-    recipes: indexDataForAllRecipes.recipes.filter(r=>r.sponsorshipCount===0)
+    recipes: indexDataForAllRecipes.recipes.filter(r => r.sponsorshipCount === 0)
   }
   console.log(`Length of unsponsored: ${indexDataForUnSponsoredRecipes.recipes.length}`)
 
@@ -18,7 +17,7 @@ export const handler: Handler = async () => {
 
   console.log(`Dump of sponsored recipe index entries follows: `);
   for (const entry of indexDataForAllRecipes.recipes) {
-    if(!indexDataForUnSponsoredRecipes.recipes.find(r=>r.capiArticleId===entry.capiArticleId)) {
+    if (!indexDataForUnSponsoredRecipes.recipes.find(r => r.capiArticleId === entry.capiArticleId)) {
       console.log(entry);
     }
   }

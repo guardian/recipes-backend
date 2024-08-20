@@ -3,8 +3,7 @@ import {ItemType} from "@guardian/content-api-models/crier/event/v1/itemType";
 import type {EventBridgeHandler} from "aws-lambda"
 import {registerMetric} from "@recipes-api/cwmetrics";
 import {deserializeEvent} from "@recipes-api/lib/capi";
-import {retrieveIndexData, writeIndexData} from "@recipes-api/lib/recipes-data";
-import {INDEX_JSON, V2_INDEX_JSON} from "./constants"
+import {INDEX_JSON, retrieveIndexData, V2_INDEX_JSON, writeIndexData } from "@recipes-api/lib/recipes-data";
 import type {CrierEvent} from "./eventbridge_models";
 import {handleDeletedContent, handleTakedown} from "./takedown_processor";
 import {handleContentUpdate} from "./update_processor";
@@ -64,7 +63,7 @@ export const handler: EventBridgeHandler<string, CrierEvent, void> = async (even
     const indexDataForAllRecipes = await retrieveIndexData();
     const indexDataForUnSponsoredRecipes = {
       ...indexDataForAllRecipes,
-      recipes: indexDataForAllRecipes.recipes.filter(r=>r.sponsorshipCount===0)
+      recipes: indexDataForAllRecipes.recipes.filter(r => r.sponsorshipCount === 0)
     }
 
     await writeIndexData(indexDataForUnSponsoredRecipes, INDEX_JSON);
