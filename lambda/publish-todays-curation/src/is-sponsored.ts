@@ -1,16 +1,16 @@
 import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb';
+import {indexTableName} from "./config";
 
 interface RecipeItem {
 	sponsorshipCount?: { N: string };
 }
 
 export async function isSponsored(
-	recipeUID: string,
-	tableName: string,
+	recipeUID: string
 ): Promise<boolean> {
 	const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 	const req = new QueryCommand({
-		TableName: tableName,
+		TableName: indexTableName,
 		IndexName: 'idxRecipeUID',
 		KeyConditionExpression: 'recipeUID = :uid',
 		ExpressionAttributeValues: {
@@ -23,6 +23,6 @@ export async function isSponsored(
 		const item = response.Items[0] as RecipeItem;
 		return !!item.sponsorshipCount?.N && parseInt(item.sponsorshipCount.N) > 0;
 	} else {
-    throw new Error(`ERROR [${recipeUID}] - valid recipe not found in ${tableName}`);
+    throw new Error(`ERROR [${recipeUID}] - valid recipe not found in ${indexTableName}`);
 	}
 }
