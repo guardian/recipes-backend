@@ -5,14 +5,6 @@ import { isSponsored } from './is-sponsored';
 const dynamoClientMock = mockClient(DynamoDBClient);
 
 describe('isSponsored', () => {
-	const consoleLogSpy = jest
-		.spyOn(console, 'log')
-		.mockImplementation(jest.fn());
-
-	afterAll(() => {
-		consoleLogSpy.mockRestore();
-	});
-
 	it('should return true when the sponsorshipCount field exists for the recipe and has the value true', async () => {
 		dynamoClientMock.on(QueryCommand).resolves({
 			Items: [{ recipeUID: { S: 'id-1' }, sponsorshipCount: { N: '1' } }],
@@ -41,20 +33,13 @@ describe('isSponsored', () => {
 		dynamoClientMock.on(QueryCommand).resolves({
 			Items: [],
 		});
-		const result = await isSponsored('id-1', 'TEST-TABLE');
-		expect(result).toBe(false);
-		expect(consoleLogSpy).toHaveBeenCalledWith(
+		await expect(isSponsored('id-1', 'TEST-TABLE')).rejects.toThrow(
 			'ERROR [id-1] - valid recipe not found in TEST-TABLE',
 		);
 	});
 
-	it('should return false when an error occurs during the query', async () => {
+	it('should throw error when an error occurs during the query', async () => {
 		dynamoClientMock.on(QueryCommand).rejects(new Error('Query failed'));
-		const result = await isSponsored('id-1', 'TEST-TABLE');
-		expect(result).toBe(false);
-		expect(consoleLogSpy).toHaveBeenCalledWith(
-			'ERROR [id-1] - error retrieving recipe from TEST-TABLE',
-			new Error('Query failed'),
-		);
+		await expect(isSponsored('id-1', 'TEST-TABLE')).rejects.toThrow();
 	});
 });
