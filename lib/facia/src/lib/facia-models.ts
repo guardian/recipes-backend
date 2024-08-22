@@ -13,12 +13,16 @@ export const Recipe = z.object({
 
 export type Recipe = z.infer<typeof Recipe>;
 
-export const Chef = z.object({
+export const ChefData = z.object({
   backgroundHex: z.string().optional(),
   id: z.string(),
   image: z.string().optional(),
   bio: z.string().optional(),
   foregroundHex: z.string().optional()
+});
+
+export const Chef = z.object({
+  chef: ChefData
 });
 
 export type Chef = z.infer<typeof Chef>;
@@ -28,9 +32,9 @@ export const Palette = z.object({
   foregroundHex: z.string().optional(),
 });
 
-export type Palette = z.infer<typeof Chef>;
+export type Palette = z.infer<typeof Palette>;
 
-export const SubCollection = z.object({
+export const SubCollectionData = z.object({
   byline: z.string().optional(),
   darkPalette: Palette.optional(),
   image: z.string().optional(),
@@ -39,12 +43,16 @@ export const SubCollection = z.object({
   recipes: z.array(z.string())
 });
 
+export const SubCollection = z.object({
+  collection: SubCollectionData,
+});
+
 export type SubCollection = z.infer<typeof SubCollection>;
 
 export type ContainerItem = SubCollection | Chef | Recipe;
 
 export const FeastAppContainer = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   title: z.string(),
   body: z.string().optional(),
   items: z.array(z.union([SubCollection, Chef, Recipe]))
@@ -84,3 +92,5 @@ export const FeastCuration = z.object({
 });
 
 export type FeastCuration = z.infer<typeof FeastCuration>;
+export const MiseEnPlaceData = z.array(FeastAppContainer);
+export type MiseEnPlaceDataFormat = z.infer<typeof MiseEnPlaceData>;
