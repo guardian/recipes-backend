@@ -38,7 +38,7 @@ export const SubCollectionData = z.object({
   byline: z.string().optional(),
   darkPalette: Palette.optional(),
   image: z.string().optional(),
-  title: z.string().optional(),
+  title: z.string(),
   lightPalette: Palette.optional(),
   recipes: z.array(z.string())
 });
@@ -53,7 +53,7 @@ export type ContainerItem = SubCollection | Chef | Recipe;
 
 export const FeastAppContainer = z.object({
   id: z.string().optional(),
-  title: z.string().optional(),
+  title: z.string(),
   body: z.string().optional(),
   items: z.array(z.union([SubCollection, Chef, Recipe]))
 });
