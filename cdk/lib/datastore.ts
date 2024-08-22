@@ -56,9 +56,8 @@ export class DataStore extends Construct {
         name: "recipeUID",
         type: AttributeType.STRING
       },
-      projectionType: ProjectionType.INCLUDE,
+      projectionType: ProjectionType.ALL,
       indexName: this.recipeUIDIndexName,
-      nonKeyAttributes: ["recipeVersion"]
     })
     this.table = table;
   }
