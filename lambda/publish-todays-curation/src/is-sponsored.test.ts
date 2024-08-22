@@ -2,11 +2,6 @@ import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb';
 import { mockClient } from 'aws-sdk-client-mock';
 import { isSponsored } from './is-sponsored';
 
-jest.mock('./config', () => ({
-	Stack: 'TEST-STACK',
-	Stage: 'TEST-STAGE',
-}));
-
 const dynamoClientMock = mockClient(DynamoDBClient);
 
 describe('isSponsored', () => {
@@ -22,7 +17,7 @@ describe('isSponsored', () => {
 		dynamoClientMock.on(QueryCommand).resolves({
 			Items: [{ recipeUID: { S: 'id-1' }, sponsorshipCount: { N: '1' } }],
 		});
-		const result = await isSponsored('id-1');
+		const result = await isSponsored('id-1', 'TEST-TABLE');
 		expect(result).toBe(true);
 	});
 
@@ -30,7 +25,7 @@ describe('isSponsored', () => {
 		dynamoClientMock.on(QueryCommand).resolves({
 			Items: [{ recipeUID: { S: 'id-1' }, sponsorshipCount: { N: '0' } }],
 		});
-		const result = await isSponsored('id-1');
+		const result = await isSponsored('id-1', 'TEST-TABLE');
 		expect(result).toBe(false);
 	});
 
@@ -38,7 +33,7 @@ describe('isSponsored', () => {
 		dynamoClientMock.on(QueryCommand).resolves({
 			Items: [{ recipeUID: { S: 'id-1' } }],
 		});
-		const result = await isSponsored('id-1');
+		const result = await isSponsored('id-1', 'TEST-TABLE');
 		expect(result).toBe(false);
 	});
 
@@ -46,19 +41,19 @@ describe('isSponsored', () => {
 		dynamoClientMock.on(QueryCommand).resolves({
 			Items: [],
 		});
-		const result = await isSponsored('id-1');
+		const result = await isSponsored('id-1', 'TEST-TABLE');
 		expect(result).toBe(false);
 		expect(consoleLogSpy).toHaveBeenCalledWith(
-			'ERROR [id-1] - valid recipe not found in recipes-backend-indexstore-TEST-STAGE',
+			'ERROR [id-1] - valid recipe not found in TEST-TABLE',
 		);
 	});
 
 	it('should return false when an error occurs during the query', async () => {
 		dynamoClientMock.on(QueryCommand).rejects(new Error('Query failed'));
-		const result = await isSponsored('id-1');
+		const result = await isSponsored('id-1', 'TEST-TABLE');
 		expect(result).toBe(false);
 		expect(consoleLogSpy).toHaveBeenCalledWith(
-			'ERROR [id-1] - error retrieving recipe from recipes-backend-indexstore-TEST-STAGE',
+			'ERROR [id-1] - error retrieving recipe from TEST-TABLE',
 			new Error('Query failed'),
 		);
 	});

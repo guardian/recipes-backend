@@ -1,13 +1,10 @@
 import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb';
-import { Stack, Stage } from './config';
 
 interface RecipeItem {
 	sponsorshipCount?: { N: string };
 }
 
-export async function isSponsored(recipeUID: string): Promise<boolean> {
-	const maybePreview = Stack.endsWith('-preview') ? '-preview' : '';
-	const tableName = `recipes-backend${maybePreview}-indexstore-${Stage}`;
+export async function isSponsored(recipeUID: string, tableName: string): Promise<boolean> {
 	try {
 		const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 		const req = new QueryCommand({
