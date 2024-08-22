@@ -22,18 +22,20 @@ export async function isSponsored(recipeUID: string): Promise<boolean> {
 		const response = await client.send(req);
 		if (response.Items && response.Items.length > 0) {
 			const item = response.Items[0] as RecipeItem;
-			if (item.sponsorshipCount?.N && parseInt(item.sponsorshipCount.N) > 0) {
-				return true;
-			}
+			return (
+				!!item.sponsorshipCount?.N && parseInt(item.sponsorshipCount.N) > 0
+			);
 		} else {
-      console.log(`ERROR [${recipeUID}] - valid recipe not found in ${tableName}`);
-      return false;
-    }
+			console.log(
+				`ERROR [${recipeUID}] - valid recipe not found in ${tableName}`,
+			);
+			return false;
+		}
 	} catch (error) {
 		console.log(
 			`ERROR [${recipeUID}] - error retrieving recipe from ${tableName}`,
 			error,
 		);
+		return false;
 	}
-	return false;
 }

@@ -18,12 +18,20 @@ describe('isSponsored', () => {
 		consoleLogSpy.mockRestore();
 	});
 
-	it('should return the value of sponsorshipCount when the field exists for the recipe', async () => {
+	it('should return true when the sponsorshipCount field exists for the recipe and has the value true', async () => {
 		dynamoClientMock.on(QueryCommand).resolves({
 			Items: [{ recipeUID: { S: 'id-1' }, sponsorshipCount: { N: '1' } }],
 		});
 		const result = await isSponsored('id-1');
 		expect(result).toBe(true);
+	});
+
+	it('should return false when the sponsorshipCount field exists for the recipe and has the value false', async () => {
+		dynamoClientMock.on(QueryCommand).resolves({
+			Items: [{ recipeUID: { S: 'id-1' }, sponsorshipCount: { N: '0' } }],
+		});
+		const result = await isSponsored('id-1');
+		expect(result).toBe(false);
 	});
 
 	it('should return false where the sponsorshipCount field does not exist for the recipe', async () => {
