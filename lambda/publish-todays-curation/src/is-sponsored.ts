@@ -25,7 +25,10 @@ export async function isSponsored(recipeUID: string): Promise<boolean> {
 			if (item.sponsorshipCount?.N && parseInt(item.sponsorshipCount.N) > 0) {
 				return true;
 			}
-		}
+		} else {
+      console.log(`ERROR [${recipeUID}] - valid recipe not found in ${tableName}`);
+      return false;
+    }
 	} catch (error) {
 		console.log(
 			`ERROR [${recipeUID}] - error retrieving recipe from ${tableName}`,
