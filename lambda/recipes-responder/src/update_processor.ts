@@ -2,14 +2,14 @@ import type {Content} from "@guardian/content-api-models/v1/content";
 import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import type {RecipeReference} from "@recipes-api/lib/recipes-data";
 import {
+  announceNewRecipe,
   calculateChecksum,
   extractAllRecipesFromArticle,
   insertNewRecipe,
   publishRecipeContent,
   recipesToTakeDown,
-  removeRecipeVersion,
-  sendTelemetryEvent
-} from "@recipes-api/lib/recipes-data";
+  removeRecipeVersion
+, sendTelemetryEvent } from "@recipes-api/lib/recipes-data";
 
 /**
  * Pushes new content into the service
@@ -56,6 +56,14 @@ export async function handleContentUpdate(content: Content): Promise<number> {
     console.log(`INFO [${content.id}] - publishing ${allRecipes.length} new/updated recipes to the service`)
     await Promise.all(allRecipes.map(recep => publishRecipe(content.id, recep)))
 
+    console.log(`INFO [${content.id}] - sending notification of new/updated recipes`);
+
+    try {
+      await announceNewRecipe(allRecipes, entriesToRemove);
+    } catch(e) {
+      const err = e as Error;
+      console.error(`Unable to announce updates: ${err.toString()}`);
+    }
     console.log(`INFO [${content.id}] - Done`);
     return allRecipes.length + entriesToRemove.length;
   } catch (err) {

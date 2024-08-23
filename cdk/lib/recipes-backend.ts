@@ -114,6 +114,8 @@ export class RecipesBackend extends GuStack {
 
     const contentUrlBase = this.stage === "CODE" ? "recipes.code.dev-guardianapis.com" : "recipes.guardianapis.com";
 
+    const eventBus = EventBus.fromEventBusName(this, "CrierEventBus", `crier-eventbus-content-api-crier-v2-${this.stage}`);
+
     const updaterLambda = new GuLambdaFunction(this, "updaterLambda", {
       functionName: `recipe-responder-${this.stack}-${this.stage}`,
       environment: {
@@ -126,6 +128,7 @@ export class RecipesBackend extends GuStack {
         STATIC_BUCKET: serving.staticBucket.bucketName,
         TELEMETRY_XAR: telemetryXAR.valueAsString,
         TELEMETRY_TOPIC: telemetryTopic.valueAsString,
+        OUTGOING_EVENT_BUS: eventBus.eventBusName,
       },
       initialPolicy: [
         new PolicyStatement({
@@ -147,6 +150,11 @@ export class RecipesBackend extends GuStack {
           effect: Effect.ALLOW,
           actions: ["sts:AssumeRole"],
           resources: [telemetryXAR.valueAsString]
+        }),
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["events:PutEvents"],
+          resources: [eventBus.eventBusArn]
         })
       ],
       runtime: Runtime.NODEJS_18_X,
@@ -156,7 +164,6 @@ export class RecipesBackend extends GuStack {
       timeout: lambdaTimeout
     });
 
-    const eventBus = EventBus.fromEventBusName(this, "CrierEventBus", `crier-eventbus-content-api-crier-v2-${this.stage}`);
     const responderDLQ = new Queue(this, "RecipeResponderDLQ", {
       queueName: `recipe-responder-${this.stage}-DLQ`
     });

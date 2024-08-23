@@ -2,6 +2,7 @@ import {recipesforArticle, removeAllRecipeIndexEntriesForArticle, removeRecipe} 
 import type { RecipeIndexEntry } from './models';
 import {removeRecipeContent} from "./s3";
 import {sendTelemetryEvent} from "./telemetry";
+import {announceNewRecipe} from "./eventbus";
 
 enum TakedownMode {
   AllVersions,
@@ -61,6 +62,14 @@ export async function removeAllRecipesForArticle(canonicalArticleId: string): Pr
   const removedEntries = await removeAllRecipeIndexEntriesForArticle(canonicalArticleId);
   console.log(`Taken down article ${canonicalArticleId} had ${removedEntries.length} recipes in it which will also be removed`);
   await Promise.all(removedEntries.map(recep=>removeRecipeContent(recep.checksum, "hard")));
+
+  try {
+    await announceNewRecipe([], removedEntries)
+  } catch(e) {
+    const err = e as Error;
+    console.error(`Unable to announce takedowns: ${err.toString()}`);
+  }
+
   try {
     await Promise.all(removedEntries.map(recep=>sendTelemetryEvent("TakenDown", recep.recipeUID, "")));
   } catch(err) {

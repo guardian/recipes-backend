@@ -1,7 +1,7 @@
 import type {DeletedContent} from "@guardian/content-api-models/crier/event/v1/deletedContent";
 import type {Event} from "@guardian/content-api-models/crier/event/v1/event"
-import {removeAllRecipesForArticle} from "@recipes-api/lib/recipes-data";
 import {ItemType} from "@guardian/content-api-models/crier/event/v1/itemType";
+import {removeAllRecipesForArticle} from "@recipes-api/lib/recipes-data";
 
 export async function handleTakedown(evt:Event):Promise<number> {
   console.log("takedown payload: ", JSON.stringify(evt));
