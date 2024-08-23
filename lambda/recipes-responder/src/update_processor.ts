@@ -2,7 +2,7 @@ import type {Content} from "@guardian/content-api-models/v1/content";
 import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import type {RecipeReference} from "@recipes-api/lib/recipes-data";
 import {
-  announce_new_recipe,
+  announceNewRecipe,
   calculateChecksum,
   extractAllRecipesFromArticle,
   insertNewRecipe,
@@ -59,9 +59,10 @@ export async function handleContentUpdate(content: Content): Promise<number> {
     console.log(`INFO [${content.id}] - sending notification of new/updated recipes`);
 
     try {
-      await announce_new_recipe(allRecipes, entriesToRemove);
+      await announceNewRecipe(allRecipes, entriesToRemove);
     } catch(e) {
-      console.error("Unable to announce updates");
+      const err = e as Error;
+      console.error(`Unable to announce updates: ${err.toString()}`);
     }
     console.log(`INFO [${content.id}] - Done`);
     return allRecipes.length + entriesToRemove.length;

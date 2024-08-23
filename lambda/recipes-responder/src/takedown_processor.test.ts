@@ -3,7 +3,7 @@ import {EventType} from "@guardian/content-api-models/crier/event/v1/eventType";
 import {ItemType} from "@guardian/content-api-models/crier/event/v1/itemType";
 import Int64 from "node-int64";
 import {awaitableDelay, removeAllRecipesForArticle} from "@recipes-api/lib/recipes-data";
-import {announce_new_recipe} from "../../../lib/recipes-data/src/lib/eventbus";
+import {announceNewRecipe} from "../../../lib/recipes-data/src/lib/eventbus";
 import {handleTakedown} from "./takedown_processor";
 
 jest.mock("@recipes-api/lib/recipes-data", ()=>({

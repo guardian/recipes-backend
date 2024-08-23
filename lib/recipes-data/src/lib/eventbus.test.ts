@@ -1,7 +1,7 @@
 import {EventBridgeClient, PutEventsCommand} from "@aws-sdk/client-eventbridge";
 import {mockClient} from "aws-sdk-client-mock";
 import {registerMetric} from "@recipes-api/cwmetrics";
-import {announce_new_recipe} from "./eventbus";
+import {announceNewRecipe} from "./eventbus";
 import type { RecipeIndexEntry, RecipeReference} from "./models";
 import Mock = jest.Mock;
 
@@ -65,7 +65,7 @@ describe("announce_new_recipe", ()=>{
         }
       ]
     })
-    const result = await announce_new_recipe(updates,removals);
+    const result = await announceNewRecipe(updates,removals);
     expect(result).toEqual(3);
 
     expect(mockEbClient.commandCalls(PutEventsCommand).length).toEqual(1);

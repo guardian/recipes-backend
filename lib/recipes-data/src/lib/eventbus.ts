@@ -6,7 +6,7 @@ import type { RecipeIndexEntry, RecipeReference } from './models';
 
 const ebClient = new EventBridgeClient({region: process.env["AWS_REGION"]});
 
-export async function announce_new_recipe(updated:RecipeReference[], removedList:RecipeIndexEntry[]) {
+export async function announceNewRecipe(updated:RecipeReference[], removedList:RecipeIndexEntry[]) {
   if(!OutgoingEventBus || OutgoingEventBus =="") {
     throw new Error("Could not announce to EventBridge - please set OUTGOING_EVENT_BUS to an event bus name in the config");
   }

@@ -5,7 +5,7 @@ import type {
   RecipeReferenceWithoutChecksum
 } from "@recipes-api/lib/recipes-data";
 import {
-  announce_new_recipe,
+  announceNewRecipe,
   calculateChecksum,
   extractAllRecipesFromArticle,
   insertNewRecipe,
@@ -25,7 +25,7 @@ jest.mock("@recipes-api/lib/recipes-data", () => ({
   recipesToTakeDown: jest.fn(),
   removeRecipeVersion: jest.fn(),
   sendTelemetryEvent: jest.fn(),
-  announce_new_recipe: jest.fn(),
+  announceNewRecipe: jest.fn(),
 }));
 
 const fakeContent: Content = {
@@ -157,7 +157,7 @@ describe("update_processor.handleContentUpdate", () => {
     expect((sendTelemetryEvent as Mock).mock.calls[0][0]).toEqual("PublishedData");
 
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(announce_new_recipe.mock.calls.length).toEqual(1);
+    expect(announceNewRecipe.mock.calls.length).toEqual(1);
   });
 
   it("should ignore a piece of content that is not an article", async () => {
@@ -204,7 +204,7 @@ describe("update_processor.handleContentUpdate", () => {
     expect((sendTelemetryEvent as Mock).mock.calls.length).toEqual(0);
 
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(announce_new_recipe.mock.calls.length).toEqual(0);
+    expect(announceNewRecipe.mock.calls.length).toEqual(0);
   });
 
   it("should be fine if there is no recipe content", async () => {
@@ -236,7 +236,7 @@ describe("update_processor.handleContentUpdate", () => {
     expect((sendTelemetryEvent as Mock).mock.calls.length).toEqual(0);
 
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(announce_new_recipe.mock.calls.length).toEqual(0);
+    expect(announceNewRecipe.mock.calls.length).toEqual(0);
   });
 
   it("should publish as normal if the telemetry fails", async () => {
@@ -353,7 +353,7 @@ describe("update_processor.handleContentUpdate", () => {
     expect((sendTelemetryEvent as Mock).mock.calls[0][0]).toEqual("PublishedData");
 
     // @ts-ignore -- Typescript doesn't know that this is a mock
-    expect(announce_new_recipe.mock.calls.length).toEqual(1);
+    expect(announceNewRecipe.mock.calls.length).toEqual(1);
   });
 
 });
