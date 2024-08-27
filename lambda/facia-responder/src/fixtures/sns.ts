@@ -39,10 +39,34 @@ export const validMessage = {
 	Message: JSON.stringify(validMessageContent),
 };
 
-export const brokenMessage = {
+export const messageWithBrokenIssueDate = {
 	...validMessage,
 	Message: JSON.stringify({
 		...validMessageContent,
 		issueDate: 'dfsdfsjk',
+	}),
+};
+
+export const messageWithMissingFrontsTitle = {
+	...validMessage,
+	Message: JSON.stringify({
+		...validMessageContent,
+		fronts: {
+			...validMessageContent.fronts,
+			'all-recipes': [
+				{
+					id: 'd353e2de-1a65-45de-85ca-d229bc1fafad',
+					title: null,
+					body: '',
+					items: [
+						{
+							recipe: {
+								id: '14129325',
+							},
+						},
+					],
+				},
+			],
+		},
 	}),
 };

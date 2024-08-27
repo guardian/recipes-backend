@@ -2,7 +2,8 @@ import { deployCurationData } from '@recipes-api/lib/recipes-data';
 import { ZodError } from 'zod';
 import { notifyFaciaTool } from './facia-notifications';
 import {
-	brokenMessage,
+	messageWithBrokenIssueDate,
+	messageWithMissingFrontsTitle,
 	validMessage,
 	validMessageContent,
 } from './fixtures/sns';
@@ -77,29 +78,71 @@ describe('main', () => {
 		});
 	});
 
-	it('should not accept valid json that does not match schema', async () => {
+	it('should not accept valid envelope json, failing with an error', async () => {
 		const rec = {
 			Records: [
 				{
 					eventSource: 'sqs',
 					awsRegion: 'xx-north-n',
 					messageId: 'BDB66A64-F095-4F4D-9B6A-135173E262A5',
-					body: JSON.stringify(brokenMessage),
+					body: JSON.stringify(messageWithBrokenIssueDate),
 				},
 			],
 		};
 
-		const expectedError = new ZodError([
-			{
-				code: 'custom',
-				fatal: true,
-				path: ['issueDate'],
-				message: 'Invalid input',
-			},
-		]);
+		const expectedError = new Error(
+			`Error parsing message envelope: ${JSON.stringify({
+				issues: [
+					{
+						code: 'custom',
+						fatal: true,
+						path: ['issueDate'],
+						message: 'Invalid input',
+					},
+				],
+				name: 'ZodError',
+			})}`,
+		);
 
 		// @ts-ignore
 		await expect(() => handler(rec, null, null)).rejects.toEqual(expectedError);
+	});
+
+	it('should not accept valid fronts json, failing and reporting the error to the Fronts publication queue', async () => {
+		const rec = {
+			Records: [
+				{
+					eventSource: 'sqs',
+					awsRegion: 'xx-north-n',
+					messageId: 'BDB66A64-F095-4F4D-9B6A-135173E262A5',
+					body: JSON.stringify(messageWithMissingFrontsTitle),
+				},
+			],
+		};
+
+		// @ts-ignore
+		await handler(rec, null, null);
+
+		expect(importCurationDataMock.mock.calls.length).toEqual(0);
+
+		expect(notifyFaciaToolMock.mock.calls[0][0]).toMatchObject({
+			edition: 'feast-northern-hemisphere',
+			issueDate: '2024-01-02',
+			message: `Failed to publish this issue. Error: ${JSON.stringify({
+				issues: [
+					{
+						code: 'invalid_type',
+						expected: 'string',
+						received: 'null',
+						path: ['fronts', 'all-recipes', 0, 'title'],
+						message: 'Expected string, received null',
+					},
+				],
+				name: 'ZodError',
+			})}`,
+			status: 'Failed',
+			version: 'v1',
+		});
 	});
 
 	it('should not accept invalid json', async () => {

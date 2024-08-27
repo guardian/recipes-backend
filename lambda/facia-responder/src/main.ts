@@ -52,6 +52,9 @@ export const handler: SQSHandler = async (event) => {
 		// by the Lambda runtime and we will continue running
 		const messageBody = getMessageBodyAsObject(rec);
 
+		// We parse the message in two phases, first extracting the message envelope,
+		// and then the fronts data. In this way, if extracting the fronts data fails,
+		// we can use the envelope data to post the error message back to the Fronts tool.
 		const maybeMessageEnvelope = parseFeastCurationEnvelope(messageBody);
 		if (!maybeMessageEnvelope.success) {
 			throw new Error(
@@ -61,9 +64,12 @@ export const handler: SQSHandler = async (event) => {
 			);
 		}
 
-		const maybeFronts = parseFeastCuration(rec);
 		const { edition, issueDate, version } = maybeMessageEnvelope.data;
+
+		const maybeFronts = parseFeastCuration(messageBody);
+
 		if (!maybeFronts.success) {
+			console.error(maybeFronts.error);
 			return notifyFaciaTool({
 				edition,
 				issueDate,
