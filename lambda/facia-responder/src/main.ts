@@ -94,6 +94,7 @@ export const handler: SQSHandler = async (event) => {
 				timestamp: Date.now(),
 			});
 		} catch (e) {
+      console.error(e);
 			return notifyFaciaTool({
 				edition,
 				issueDate,
