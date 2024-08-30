@@ -60,20 +60,6 @@ export const FeastAppContainer = z.object({
 
 export type FeastAppContainer = z.infer<typeof FeastAppContainer>;
 
-const AvailableEditions = [
-	'feast-northern-hemisphere',
-	'feast-southern-hemisphere',
-] as const;
-export type Edition = (typeof AvailableEditions)[number];
-export const Edition = z.custom<Edition>(
-	(val) => AvailableEditions.includes(val),
-	{
-		message: `Edition name must be one of the following: ${AvailableEditions.join(
-			', ',
-		)}`,
-	},
-);
-
 const DateString = z.custom<string>((val) => {
 	try {
 		const d = Date.parse(val as string);
@@ -85,7 +71,7 @@ const DateString = z.custom<string>((val) => {
 
 export const FeastCurationEnvelope = z.object({
 	id: z.string(),
-	edition: Edition,
+	edition: z.string(),
 	issueDate: DateString,
 	version: z.string(),
 });
