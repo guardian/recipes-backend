@@ -72,6 +72,9 @@ const DateString = z.custom<string>((val) => {
 export const FeastCurationEnvelope = z.object({
 	id: z.string(),
 	edition: z.string(),
+	// The path to publish the issue under, e.g. 'northern', 'southern'.
+	// If it is not present, we can fall back to the `edition`.
+	path: z.string().optional(),
 	issueDate: DateString,
 	version: z.string(),
 });
