@@ -36,11 +36,12 @@ export type Palette = z.infer<typeof Palette>;
 
 export const SubCollectionData = z.object({
 	byline: z.string().optional(),
+	body: z.string().optional(),
 	darkPalette: Palette.optional(),
 	image: z.string().optional(),
 	title: z.string(),
 	lightPalette: Palette.optional(),
-	recipes: z.array(z.string())
+	recipes: z.array(z.string()),
 });
 
 export const SubCollection = z.object({
