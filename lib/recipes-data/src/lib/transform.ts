@@ -1,5 +1,6 @@
 import type {Sponsorship} from "@guardian/content-api-models/v1/sponsorship";
 import {SponsorshipType} from "@guardian/content-api-models/v1/sponsorshipType";
+import {formatISO} from "date-fns";
 import {FeaturedImageWidth, ImageDpr, PreviewImageWidth} from './config';
 import type {Contributor, RecipeImage} from './models';
 import {extractCropDataFromGuimUrl} from './utils';
@@ -67,6 +68,19 @@ export const addSponsorsTransform: (sponsors: Sponsorship[]) => RecipeTransforma
       }
     })
   })
+}
+
+export interface RecipeDates {
+  lastModified?: Date;
+  firstPublished?: Date;
+  published?: Date;
+}
+
+export const addPublicationDateTransform: (dates: RecipeDates) => RecipeTransformationFunction = dates => {
+  return (recipeData) => ({
+    ...recipeData,
+    publicationDate: formatISO(dates.published)
+  });
 }
 
 export const replaceCanonicalArticle: (

@@ -8,6 +8,7 @@ import type {Sponsorship} from "@guardian/content-api-models/v1/sponsorship";
 import {registerMetric} from "@recipes-api/cwmetrics";
 import type {Contributor, RecipeReferenceWithoutChecksum} from './models';
 import {
+  addPublicationDateTransform,
   addSponsorsTransform,
   handleFreeTextContribs,
   replaceCanonicalArticle,
@@ -66,7 +67,7 @@ function determineRecipeUID(recipeIdField: string, canonicalId: string): string 
   }
 }
 
-function parseJsonBlob(canonicalId: string, recipeJson: string, sponsorship: Sponsorship[]): RecipeReferenceWithoutChecksum | null {
+function parseJsonBlob(canonicalId: string, recipeJson: string, sponsorship: Sponsorship[], pubDate:Date): RecipeReferenceWithoutChecksum | null {
   try {
     const recipeData = JSON.parse(recipeJson) as (Record<string, unknown> & {
       contributors: Array<string | Contributor>;
@@ -76,6 +77,7 @@ function parseJsonBlob(canonicalId: string, recipeJson: string, sponsorship: Spo
       handleFreeTextContribs,
       replaceImageUrlsWithFastly,
       addSponsorsTransform(sponsorship),
+      addPublicationDateTransform(pubDate),
       replaceCanonicalArticle(canonicalId)
     ];
 
