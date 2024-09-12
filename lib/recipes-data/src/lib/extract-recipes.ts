@@ -6,9 +6,9 @@ import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
 import type {Sponsorship} from "@guardian/content-api-models/v1/sponsorship";
 import {registerMetric} from "@recipes-api/cwmetrics";
-import type {Contributor, RecipeReferenceWithoutChecksum} from './models';
+import type {Contributor, RecipeDates, RecipeReferenceWithoutChecksum} from './models';
 import {
-  addPublicationDateTransform,
+  addRecipeDatesTransform,
   addSponsorsTransform,
   handleFreeTextContribs,
   replaceCanonicalArticle,
@@ -18,6 +18,7 @@ import type {
   RecipeTransformationFunction,
   RecipeWithImageData
 } from "./transform";
+import { capiDateTimeToDate } from "./utils";
 
 export async function extractAllRecipesFromArticle(content: Content): Promise<RecipeReferenceWithoutChecksum[]> {
   if (content.type == ContentType.ARTICLE && content.blocks) {
@@ -42,9 +43,14 @@ export function extractRecipeData(canonicalId: string, block: Block, sponsorship
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- to fix error when elements are undefined , example if main block does not have any elements.
   if (!block?.elements) return [];
   else {
+    const recipeDates: RecipeDates = {
+      lastModifiedDate: capiDateTimeToDate(block.lastModifiedDate),
+      firstPublishedDate: capiDateTimeToDate(block.firstPublishedDate),
+      publishedDate: capiDateTimeToDate(block.publishedDate)
+    }
     return block.elements
       .filter(elem => elem.type === ElementType.RECIPE)
-      .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson as string, sponsorship))
+      .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson as string, sponsorship, recipeDates))
   }
 }
 
@@ -67,7 +73,7 @@ function determineRecipeUID(recipeIdField: string, canonicalId: string): string 
   }
 }
 
-function parseJsonBlob(canonicalId: string, recipeJson: string, sponsorship: Sponsorship[], pubDate:Date): RecipeReferenceWithoutChecksum | null {
+function parseJsonBlob(canonicalId: string, recipeJson: string, sponsorship: Sponsorship[], recipeDates: RecipeDates): RecipeReferenceWithoutChecksum | null {
   try {
     const recipeData = JSON.parse(recipeJson) as (Record<string, unknown> & {
       contributors: Array<string | Contributor>;
@@ -77,7 +83,7 @@ function parseJsonBlob(canonicalId: string, recipeJson: string, sponsorship: Spo
       handleFreeTextContribs,
       replaceImageUrlsWithFastly,
       addSponsorsTransform(sponsorship),
-      addPublicationDateTransform(pubDate),
+      addRecipeDatesTransform(recipeDates),
       replaceCanonicalArticle(canonicalId)
     ];
 

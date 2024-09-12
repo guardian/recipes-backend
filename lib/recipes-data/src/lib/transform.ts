@@ -2,7 +2,7 @@ import type {Sponsorship} from "@guardian/content-api-models/v1/sponsorship";
 import {SponsorshipType} from "@guardian/content-api-models/v1/sponsorshipType";
 import {formatISO} from "date-fns";
 import {FeaturedImageWidth, ImageDpr, PreviewImageWidth} from './config';
-import type {Contributor, RecipeImage} from './models';
+import type {Contributor, RecipeDates, RecipeImage} from './models';
 import {extractCropDataFromGuimUrl} from './utils';
 
 export type RecipeTransformationFunction = (recipeData: Record<string, unknown>) => Record<string, unknown>;
@@ -70,16 +70,12 @@ export const addSponsorsTransform: (sponsors: Sponsorship[]) => RecipeTransforma
   })
 }
 
-export interface RecipeDates {
-  lastModified?: Date;
-  firstPublished?: Date;
-  published?: Date;
-}
-
-export const addPublicationDateTransform: (dates: RecipeDates) => RecipeTransformationFunction = dates => {
+export const addRecipeDatesTransform: (recipeDates: RecipeDates) => RecipeTransformationFunction = recipeDates => {
   return (recipeData) => ({
     ...recipeData,
-    publicationDate: formatISO(dates.published)
+    ...(recipeDates.lastModifiedDate && { lastModifiedDate: formatISO(recipeDates.lastModifiedDate) }),
+    ...(recipeDates.firstPublishedDate && { firstPublishedDate: formatISO(recipeDates.firstPublishedDate) }),
+    ...(recipeDates.publishedDate && { publishedDate: formatISO(recipeDates.publishedDate) }),
   });
 }
 

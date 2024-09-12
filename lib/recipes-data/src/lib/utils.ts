@@ -30,6 +30,13 @@ export function makeCapiDateTime(from: string): CapiDateTime {
   }
 }
 
+export function capiDateTimeToDate(date: CapiDateTime | undefined): Date | undefined {
+  if (!date) {
+    return undefined;
+  }
+  return new Date(date.dateTime.toNumber());
+}
+
 /**
  * Returns new Date().  Why? So we can mock it out easily in testing.
  */
