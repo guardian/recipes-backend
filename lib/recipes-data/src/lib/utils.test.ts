@@ -1,5 +1,7 @@
+import type { CapiDateTime } from '@guardian/content-api-models/v1/capiDateTime';
 import type {RecipeReferenceWithoutChecksum} from './models';
-import {calculateChecksum, extractCropDataFromGuimUrl} from './utils';
+import {calculateChecksum, capiDateTimeToDate, extractCropDataFromGuimUrl} from './utils';
+import Int64 from 'node-int64';
 
 jest.mock('./config', () => ({}));
 
@@ -151,5 +153,20 @@ describe('extractCropIdFromGuimUrl', () => {
 
   it('should not give a crop id for a non-image URL', () => {
     expect(extractCropDataFromGuimUrl('https://google.com')).toBe(undefined);
+  });
+});
+
+describe('capiDateTimeToDate', () => {
+  it('should return undefined if the input is undefined', () => {
+    expect(capiDateTimeToDate(undefined)).toBe(undefined);
+  });
+
+  it('should return the date if the input is defined', () => {
+    const date = new Date();
+    const capiDateTime: CapiDateTime = {
+      dateTime: new Int64(date.getTime()),
+      iso8601: date.toISOString(),
+    };
+    expect(capiDateTimeToDate(capiDateTime)).toEqual(date);
   });
 });
