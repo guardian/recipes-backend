@@ -73,9 +73,9 @@ export const addSponsorsTransform: (sponsors: Sponsorship[]) => RecipeTransforma
 export const addRecipeDatesTransform: (recipeDates: RecipeDates) => RecipeTransformationFunction = recipeDates => {
   return (recipeData) => ({
     ...recipeData,
-    ...(recipeDates.lastModifiedDate && { lastModifiedDate: formatISO(recipeDates.lastModifiedDate) }),
-    ...(recipeDates.firstPublishedDate && { firstPublishedDate: formatISO(recipeDates.firstPublishedDate) }),
-    ...(recipeDates.publishedDate && { publishedDate: formatISO(recipeDates.publishedDate) }),
+    ...(recipeDates.lastModifiedDate && { lastModifiedDate: recipeDates.lastModifiedDate.toISOString() }),
+    ...(recipeDates.firstPublishedDate && { firstPublishedDate: recipeDates.firstPublishedDate.toISOString() }),
+    ...(recipeDates.publishedDate && { publishedDate: recipeDates.publishedDate.toISOString() }),
   });
 }
 

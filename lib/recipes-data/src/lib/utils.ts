@@ -34,7 +34,7 @@ export function capiDateTimeToDate(date: CapiDateTime | undefined): Date | undef
   if (!date) {
     return undefined;
   }
-  return new Date(date.dateTime.toNumber());
+  return new Date(date.iso8601);
 }
 
 /**
