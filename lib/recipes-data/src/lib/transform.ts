@@ -1,6 +1,5 @@
 import type {Sponsorship} from "@guardian/content-api-models/v1/sponsorship";
 import {SponsorshipType} from "@guardian/content-api-models/v1/sponsorshipType";
-import {formatISO} from "date-fns";
 import {FeaturedImageWidth, ImageDpr, PreviewImageWidth} from './config';
 import type {Contributor, RecipeDates, RecipeImage} from './models';
 import {extractCropDataFromGuimUrl} from './utils';

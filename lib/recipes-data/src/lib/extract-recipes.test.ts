@@ -7,7 +7,6 @@ import Int64 from 'node-int64';
 import { extractRecipeData } from './extract-recipes';
 import type { RecipeWithImageData } from './transform';
 import { capiDateTimeToDate, makeCapiDateTime } from './utils';
-import { RecipeDates } from './models';
 
 jest.mock('./config', () => ({
 	FeaturedImageWidth: 700,
