@@ -1,6 +1,7 @@
+import {ProvisionedThroughputExceededException} from "@aws-sdk/client-dynamodb";
 import {v4 as uuid} from "uuid";
-import {getBodyContentAsJson, recursivelyGetIdList, validateDateParam} from "./helpers";
 import {multipleRecipesByUid} from "@recipes-api/lib/recipes-data";
+import {getBodyContentAsJson, recursivelyGetIdList, validateDateParam} from "./helpers";
 
 jest.mock("./config");
 jest.mock("@recipes-api/lib/recipes-data");
@@ -74,5 +75,34 @@ describe("app.recursivelyGetIdList", ()=>{
     expect(results.map(e=>e.recipeUID)).toEqual(uidList);
     //we expect there to have been 3 parallel batches
     expect((multipleRecipesByUid as jest.Mock).mock.calls.length).toEqual(3);
+  });
+
+  it("should retry if ProvisionedThroughputExceeded is caught", async ()=>{
+    (multipleRecipesByUid as jest.Mock).mockImplementation((idList:string[])=>{
+      const shouldCrash = Math.random();
+      if(shouldCrash<0.05) {
+        // @ts-ignore -- $metadata should not be null, but we are not reading it anyway
+        throw new ProvisionedThroughputExceededException({$metadata: null, message: "This is a test"})
+      } else {
+        return idList.map((uuid) => ({
+          checksum: `cs-for-${uuid}`,
+          recipeUID: uuid,
+          capiArticleId: `article-for-${uuid}`,
+          sponsorshipCount: 0
+        }))
+      }
+    });
+
+    const uidList:string[] = [];
+
+    for(let i=0; i<120; i++) {
+      uidList.push(uuid());
+    }
+
+    const results = await recursivelyGetIdList(uidList, []);
+    expect(results.length).toEqual(120);
+    expect(results.map(e=>e.recipeUID)).toEqual(uidList);
+    //we expect there to have been 3 parallel batches
+    expect((multipleRecipesByUid as jest.Mock).mock.calls.length).toBeGreaterThanOrEqual(3);
   })
 })

@@ -1,5 +1,6 @@
 import type { RecipeIndexEntry} from "@recipes-api/lib/recipes-data";
 import {multipleRecipesByUid} from "@recipes-api/lib/recipes-data";
+import {ProvisionedThroughputExceededException} from "@aws-sdk/client-dynamodb";
 
 export function getBodyContentAsJson(body:unknown): string {
   if(body instanceof Buffer) {
@@ -52,7 +53,7 @@ export async function recursivelyGetIdList(uidList:string[], prevResults: Recipe
   } catch(err) {
     //FIXME doh how to properly detect ThroughputException?
     console.warn(err);
-    if(err.toString().includes("ProvisionedThroughputException")) {
+    if(err instanceof ProvisionedThroughputExceededException) {
       const nextAttempt = attempt ? attempt + 1 : 1;
       if(nextAttempt>maxAttempts) {
         console.error(`Unable to make request after ${maxAttempts} attempts, giving up`);
