@@ -3,7 +3,7 @@ import {renderFile as ejs} from "ejs";
 import express from 'express';
 import type {Request} from 'express';
 import {deployCurationData, multipleRecipesByUid, recipeByUID, RecipeIndexEntry} from "@recipes-api/lib/recipes-data";
-import {getBodyContentAsJson, validateDateParam} from "./helpers";
+import {getBodyContentAsJson, recursivelyGetIdList, validateDateParam} from "./helpers";
 import {FeastAppContainer, Recipe} from "@recipes-api/lib/facia";
 
 export const app = express();
@@ -122,41 +122,6 @@ router.get('/api/content/by-uid/:recipeUID', (req: Request<RecipeIdParams>, resp
     resp.status(500).json({status: "error", detail: "there was an internal error fetching the recipe. See server-side logs."})
   });
 });
-
-function asyncTimeout(timeout:number) {
-  return new Promise((resolve)=>setTimeout(resolve, timeout));
-}
-
-async function recursivelyGetIdList(uidList:string[], prevResults: RecipeIndexEntry[], attempt?:number): Promise<RecipeIndexEntry[]> {
-  const batchSize = 50; //ok so this is finger-in-the-air
-  const maxAttempts = 10;
-
-  const toLookUp = uidList.slice(0, batchSize);
-  try {
-    const results = await multipleRecipesByUid(toLookUp);
-    if(toLookUp.length==uidList.length) { //we got everything
-      return prevResults.concat(results);
-    } else {
-      return recursivelyGetIdList(uidList.slice(batchSize), prevResults.concat(results), 0)
-    }
-  } catch(err) {
-    //FIXME doh how to properly detect ThroughputException?
-    console.warn(err);
-    if(err.toString().includes("ProvisionedThroughputException")) {
-      const nextAttempt = attempt ? attempt + 1 : 1;
-      if(nextAttempt>maxAttempts) {
-        console.error(`Unable to make request after ${maxAttempts} attempts, giving up`);
-        throw err;
-      }
-
-      console.warn(`Attempt ${nextAttempt} - caught ProvisionedThroughputException`);
-      await asyncTimeout(100 + (20**nextAttempt));
-      return recursivelyGetIdList(uidList, prevResults, nextAttempt);
-    } else {
-      throw err;
-    }
-  }
-}
 
 router.get('/api/content/by-uid', (req, resp) => {
   const idListParam = req.query["ids"] as string | undefined;

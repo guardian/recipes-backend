@@ -1,4 +1,9 @@
-import {getBodyContentAsJson, validateDateParam} from "./helpers";
+import {v4 as uuid} from "uuid";
+import {getBodyContentAsJson, recursivelyGetIdList, validateDateParam} from "./helpers";
+import {multipleRecipesByUid} from "@recipes-api/lib/recipes-data";
+
+jest.mock("./config");
+jest.mock("@recipes-api/lib/recipes-data");
 
 describe("app.getBodyContentAsJson", ()=>{
   it("should pass back a string as-is", ()=>{
@@ -41,4 +46,33 @@ describe("app.validateDateParam", ()=>{
     ).toThrow("Invalid year");
   });
 
+});
+
+describe("app.recursivelyGetIdList", ()=>{
+  beforeEach(()=>{
+    jest.resetAllMocks();
+  });
+
+  it("should batch up requests and send to the dynamo layer", async ()=>{
+    (multipleRecipesByUid as jest.Mock).mockImplementation((idList:string[])=>{
+      return idList.map((uuid)=>({
+        checksum: `cs-for-${uuid}`,
+        recipeUID: uuid,
+        capiArticleId: `article-for-${uuid}`,
+        sponsorshipCount: 0
+      }))
+    });
+
+    const uidList:string[] = [];
+
+    for(let i=0; i<120; i++) {
+      uidList.push(uuid());
+    }
+
+    const results = await recursivelyGetIdList(uidList, []);
+    expect(results.length).toEqual(120);
+    expect(results.map(e=>e.recipeUID)).toEqual(uidList);
+    //we expect there to have been 3 parallel batches
+    expect((multipleRecipesByUid as jest.Mock).mock.calls.length).toEqual(3);
+  })
 })

@@ -1,3 +1,6 @@
+import type { RecipeIndexEntry} from "@recipes-api/lib/recipes-data";
+import {multipleRecipesByUid} from "@recipes-api/lib/recipes-data";
+
 export function getBodyContentAsJson(body:unknown): string {
   if(body instanceof Buffer) {
     return body.toString('utf-8')
@@ -27,5 +30,40 @@ export function validateDateParam(dateParam:string):Date|null {
     if(day<1 || day>31) throw new Error("Invalid number of days");
 
     return new Date(year,month-1,day);
+  }
+}
+
+function asyncTimeout(timeout:number) {
+  return new Promise((resolve)=>setTimeout(resolve, timeout));
+}
+
+export async function recursivelyGetIdList(uidList:string[], prevResults: RecipeIndexEntry[], attempt?:number): Promise<RecipeIndexEntry[]> {
+  const batchSize = 50; //ok so this is finger-in-the-air
+  const maxAttempts = 10;
+
+  const toLookUp = uidList.slice(0, batchSize);
+  try {
+    const results = await multipleRecipesByUid(toLookUp);
+    if(toLookUp.length==uidList.length) { //we got everything
+      return prevResults.concat(results);
+    } else {
+      return recursivelyGetIdList(uidList.slice(batchSize), prevResults.concat(results), 0)
+    }
+  } catch(err) {
+    //FIXME doh how to properly detect ThroughputException?
+    console.warn(err);
+    if(err.toString().includes("ProvisionedThroughputException")) {
+      const nextAttempt = attempt ? attempt + 1 : 1;
+      if(nextAttempt>maxAttempts) {
+        console.error(`Unable to make request after ${maxAttempts} attempts, giving up`);
+        throw err;
+      }
+
+      console.warn(`Attempt ${nextAttempt} - caught ProvisionedThroughputException`);
+      await asyncTimeout(100 + (20**nextAttempt));
+      return recursivelyGetIdList(uidList, prevResults, nextAttempt);
+    } else {
+      throw err;
+    }
   }
 }
