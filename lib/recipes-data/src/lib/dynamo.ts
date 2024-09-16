@@ -75,6 +75,17 @@ export async function recipeByUID(recipeUID: string): Promise<RecipeIndexEntry |
   return response.Items && response.Items.length > 0 ? RecipeIndexEntryFromDynamo(response.Items[0]) : null
 }
 
+export async function multipleRecipesByUid(uidList: string[]): Promise<RecipeIndexEntry[]> {
+  console.debug(`Lookup request for ${uidList.length} ids`);
+
+  const results = await Promise.all(
+    uidList.map(recipeByUID)
+  );
+
+  //Filter out any "not found"
+  return results.filter(result=>!!result) as RecipeIndexEntry[];
+}
+
 /**
  * Remove a single recipe from the index.
  *
