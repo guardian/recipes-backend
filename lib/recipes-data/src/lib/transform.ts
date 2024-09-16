@@ -7,49 +7,49 @@ import {extractCropDataFromGuimUrl} from './utils';
 export type RecipeTransformationFunction = (recipeData: Record<string, unknown>) => Record<string, unknown>;
 
 const getFastlyUrl = ({
-	imageId,
-	cropId,
-	dpr,
-	desiredWidth,
-	originalWidth,
-	extension,
-}: {
-	imageId: string;
-	cropId: string;
-	dpr: number;
-	desiredWidth: number;
-	originalWidth: number;
-	extension: string;
+                        imageId,
+                        cropId,
+                        dpr,
+                        desiredWidth,
+                        originalWidth,
+                        extension,
+                      }: {
+  imageId: string;
+  cropId: string;
+  dpr: number;
+  desiredWidth: number;
+  originalWidth: number;
+  extension: string;
 }) =>
-	`https://i.guim.co.uk/img/media/${imageId}/${cropId}/master/${originalWidth}.${extension}?width=${desiredWidth}&dpr=${dpr}&s=none`;
+  `https://i.guim.co.uk/img/media/${imageId}/${cropId}/master/${originalWidth}.${extension}?width=${desiredWidth}&dpr=${dpr}&s=none`;
 
 const getFastlyTemplateUrl = ({
-	imageId,
-	cropId,
-	dpr,
-	originalWidth,
-	extension,
-}: {
-	imageId: string;
-	cropId: string;
-	dpr: number;
-	originalWidth: number;
-	extension: string;
+                                imageId,
+                                cropId,
+                                dpr,
+                                originalWidth,
+                                extension,
+                              }: {
+  imageId: string;
+  cropId: string;
+  dpr: number;
+  originalWidth: number;
+  extension: string;
 }) =>
-	`https://i.guim.co.uk/img/media/${imageId}/${cropId}/master/${originalWidth}.${extension}?width=#{width}&quality=#{quality}&dpr=${dpr}&s=none`;
+  `https://i.guim.co.uk/img/media/${imageId}/${cropId}/master/${originalWidth}.${extension}?width=#{width}&quality=#{quality}&dpr=${dpr}&s=none`;
 
 export const replaceFastlyUrl = ({
-	recipeId,
-	image,
-	desiredWidth,
-	dpr,
-}: {
-	recipeId: string;
-	image: RecipeImage;
-	desiredWidth: number;
-	dpr: number;
+                                   recipeId,
+                                   image,
+                                   desiredWidth,
+                                   dpr,
+                                 }: {
+  recipeId: string;
+  image: RecipeImage;
+  desiredWidth: number;
+  dpr: number;
 }): RecipeImage => {
-	const cropData = extractCropDataFromGuimUrl(image.url);
+  const cropData = extractCropDataFromGuimUrl(image.url);
 
   if (!cropData) {
     console.warn(
@@ -60,24 +60,24 @@ export const replaceFastlyUrl = ({
 
   const {mediaId, cropId, width, extension} = cropData;
 
-	return {
-		...image,
-		url: getFastlyUrl({
-			imageId: mediaId,
-			cropId,
-			dpr,
-			desiredWidth,
-			originalWidth: width,
-			extension,
-		}),
-		templateURL: getFastlyTemplateUrl({
-			imageId: mediaId,
-			cropId,
-			dpr,
-			originalWidth: width,
-			extension,
-		}),
-	};
+  return {
+    ...image,
+    url: getFastlyUrl({
+      imageId: mediaId,
+      cropId,
+      dpr,
+      desiredWidth,
+      originalWidth: width,
+      extension,
+    }),
+    templateUrl: getFastlyTemplateUrl({
+      imageId: mediaId,
+      cropId,
+      dpr,
+      originalWidth: width,
+      extension,
+    }),
+  };
 };
 
 export type RecipeWithImageData = {
@@ -112,10 +112,10 @@ export const addSponsorsTransform: (sponsors: Sponsorship[]) => RecipeTransforma
 }
 
 export const replaceCanonicalArticle: (
-	canonicalArticle: string,
+  canonicalArticle: string,
 ) => RecipeTransformationFunction = (canonicalArticle) => (recipeData) => ({
-	...recipeData,
-	canonicalArticle,
+  ...recipeData,
+  canonicalArticle,
 });
 
 /**
@@ -132,31 +132,31 @@ export const replaceImageUrlsWithFastly = <R extends Record<string, unknown> & R
     return recipe;
   }
 
-	try {
-		return {
-			...recipe,
-			previewImage: replaceFastlyUrl({
-				recipeId: recipe.id,
-				image: recipe.previewImage ?? recipe.featuredImage,
-				desiredWidth: PreviewImageWidth,
-				dpr: ImageDpr,
-    }),
-			featuredImage: replaceFastlyUrl({
-				recipeId: recipe.id,
-				image: recipe.featuredImage,
-				desiredWidth: FeaturedImageWidth,
-				dpr: ImageDpr,
-    }),
-		};
-	} catch (err) {
-		if (err instanceof Error) {
-			console.warn(
-				`Could not replace preview image url with fastly resizer url for recipe ${recipe.id} - ${err.message}`,
-				err,
-			);
-		}
-		return recipe;
-	}
+  try {
+    return {
+      ...recipe,
+      previewImage: replaceFastlyUrl({
+        recipeId: recipe.id,
+        image: recipe.previewImage ?? recipe.featuredImage,
+        desiredWidth: PreviewImageWidth,
+        dpr: ImageDpr,
+      }),
+      featuredImage: replaceFastlyUrl({
+        recipeId: recipe.id,
+        image: recipe.featuredImage,
+        desiredWidth: FeaturedImageWidth,
+        dpr: ImageDpr,
+      }),
+    };
+  } catch (err) {
+    if (err instanceof Error) {
+      console.warn(
+        `Could not replace preview image url with fastly resizer url for recipe ${recipe.id} - ${err.message}`,
+        err,
+      );
+    }
+    return recipe;
+  }
 };
 
 /**
