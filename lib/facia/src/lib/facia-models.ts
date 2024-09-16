@@ -36,11 +36,12 @@ export type Palette = z.infer<typeof Palette>;
 
 export const SubCollectionData = z.object({
 	byline: z.string().optional(),
+	body: z.string().optional(),
 	darkPalette: Palette.optional(),
 	image: z.string().optional(),
 	title: z.string(),
 	lightPalette: Palette.optional(),
-	recipes: z.array(z.string())
+	recipes: z.array(z.string()),
 });
 
 export const SubCollection = z.object({
@@ -60,20 +61,6 @@ export const FeastAppContainer = z.object({
 
 export type FeastAppContainer = z.infer<typeof FeastAppContainer>;
 
-const AvailableEditions = [
-	'feast-northern-hemisphere',
-	'feast-southern-hemisphere',
-] as const;
-export type Edition = (typeof AvailableEditions)[number];
-export const Edition = z.custom<Edition>(
-	(val) => AvailableEditions.includes(val),
-	{
-		message: `Edition name must be one of the following: ${AvailableEditions.join(
-			', ',
-		)}`,
-	},
-);
-
 const DateString = z.custom<string>((val) => {
 	try {
 		const d = Date.parse(val as string);
@@ -85,7 +72,10 @@ const DateString = z.custom<string>((val) => {
 
 export const FeastCurationEnvelope = z.object({
 	id: z.string(),
-	edition: Edition,
+	edition: z.string(),
+	// The path to publish the issue under, e.g. 'northern', 'southern'.
+	// If it is not present, we can fall back to the `edition`.
+	path: z.string().optional(),
 	issueDate: DateString,
 	version: z.string(),
 });

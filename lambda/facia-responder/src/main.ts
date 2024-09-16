@@ -26,16 +26,18 @@ function parseFeastCuration(
 
 async function deployCuration(curation: facia.FeastCuration) {
 	const issueDate = new Date(curation.issueDate);
+	const region = curation.path ?? curation.edition;
 	for (const frontName of Object.keys(curation.fronts)) {
 		console.log(
-			`Deploying new front for ${frontName} in ${
-				curation.edition as string
-			} on ${format(issueDate, 'yyyy-MM-dd')}`,
+			`Deploying new front for ${frontName} in ${region} on ${format(
+				issueDate,
+				'yyyy-MM-dd',
+			)}`,
 		);
 		const serializedFront = JSON.stringify(curation.fronts[frontName]);
 		await deployCurationData(
 			serializedFront,
-			curation.edition,
+			region,
 			frontName,
 			issueDate,
 		);
