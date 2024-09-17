@@ -1,5 +1,4 @@
 import { deployCurationData } from '@recipes-api/lib/recipes-data';
-import { ZodError } from 'zod';
 import { notifyFaciaTool } from './facia-notifications';
 import {
 	messageWithBrokenIssueDate,

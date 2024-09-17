@@ -2,8 +2,6 @@ import * as process from 'process';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { removeAllRecipesForArticle } from '@recipes-api/lib/recipes-data';
 
-const dynamoClient = new DynamoDBClient();
-
 function checkArgs(args: string[]) {
 	args.forEach((arg) => {
 		if (!process.env[arg]) {

@@ -2,7 +2,6 @@ import type { Event } from '@guardian/content-api-models/crier/event/v1/event';
 import { EventType } from '@guardian/content-api-models/crier/event/v1/eventType';
 import { ItemType } from '@guardian/content-api-models/crier/event/v1/itemType';
 import {
-	announceNewRecipe,
 	awaitableDelay,
 	removeAllRecipesForArticle,
 } from '@recipes-api/lib/recipes-data';

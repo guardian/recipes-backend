@@ -13,7 +13,7 @@ import { PollingAction, retrieveContent } from './update_retrievable_processor';
 
 const oldLog = console.log;
 const oldError = console.error;
-const oldDebug = console.debug;
+// const oldDebug = console.debug;
 
 global.console.log = (...args: unknown[]) =>
 	oldLog('\x1b[34m ', ...args, '\x1b[0m');

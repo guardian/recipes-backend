@@ -9,7 +9,6 @@ import type {
 	Callback,
 	EventBridgeEvent,
 	KinesisStreamBatchResponse,
-	KinesisStreamEvent,
 	KinesisStreamRecord,
 } from 'aws-lambda';
 import formatISO from 'date-fns/formatISO';
@@ -116,7 +115,7 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
-		const result = await processRecord(testReq);
+		await processRecord(testReq);
 		//@ts-ignore
 		expect(handleTakedown.mock.calls.length).toEqual(0);
 		//@ts-ignore
@@ -150,7 +149,7 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
-		const result = await processRecord(testReq);
+		await processRecord(testReq);
 		//@ts-ignore
 		expect(handleTakedown.mock.calls.length).toEqual(0);
 		//@ts-ignore
@@ -195,7 +194,7 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
-		const result = await processRecord(testReq);
+		await processRecord(testReq);
 		//@ts-ignore
 		expect(handleTakedown.mock.calls.length).toEqual(0);
 		//@ts-ignore
@@ -330,7 +329,7 @@ describe('main.handler', () => {
 			}
 		};
 
-		const response = await handler(eventMock, contextMock, callbackMock);
+		await handler(eventMock, contextMock, callbackMock);
 		expect(registerMetric).toHaveBeenCalled();
 		expect(registerMetric).toBeCalledTimes(1);
 	});
