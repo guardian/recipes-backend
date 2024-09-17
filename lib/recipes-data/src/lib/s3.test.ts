@@ -176,9 +176,7 @@ describe('s3.removeRecipeContent', () => {
 		// @ts-ignore -- the exception is malformed but we don't need to worry about the contents
 		s3Mock
 			.on(DeleteObjectCommand)
-			.rejects(
-				new NoSuchKey({ $metadata: {}, message: 'This is a test' }),
-			);
+			.rejects(new NoSuchKey({ $metadata: {}, message: 'This is a test' }));
 
 		// @ts-ignore -- typescript doesn't know that this is a mock
 		awaitableDelay.mockReturnValue(Promise.resolve());

@@ -9,9 +9,9 @@ import { getBodyContentAsJson, validateDateParam } from './helpers';
 export const app = express();
 app.set('view engine', 'ejs');
 app.engine('.ejs', (filePath, options, callback) => {
-  ejs(filePath, options)
-    .then(result => callback(null, result))
-    .catch(err => callback(err));
+	ejs(filePath, options)
+		.then((result) => callback(null, result))
+		.catch((err) => callback(err));
 });
 
 const router = express.Router();
@@ -103,7 +103,8 @@ router.post(
 					return resp.status(200).json({ status: 'ok' });
 				})
 				.catch((err: unknown) => {
-          const errorString = (err instanceof Error) ? err.toString() : String(err);
+					const errorString =
+						err instanceof Error ? err.toString() : String(err);
 					console.error(err);
 
 					return resp

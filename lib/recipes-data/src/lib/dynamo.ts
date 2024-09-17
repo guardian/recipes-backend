@@ -222,11 +222,7 @@ async function bulkRemovePage(
 			`WARNING Could not remove all items on attempt ${retryCount}. Pausing before trying again...`,
 		);
 		await awaitableDelay();
-		return bulkRemovePage(
-			unprocessedItems,
-			others,
-			retryCount + 1,
-		);
+		return bulkRemovePage(unprocessedItems, others, retryCount + 1);
 	} else if (others.length > 0) {
 		const nextPage = others.slice(0, 25);
 		const nextOthers = others.length > 25 ? others.slice(25) : [];
