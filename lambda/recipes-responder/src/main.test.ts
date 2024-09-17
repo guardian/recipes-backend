@@ -312,9 +312,9 @@ describe('main.handler', () => {
 			getRemainingTimeInMillis(): number {
 				return 0;
 			},
-			done(error?: Error, result?: unknown): void {},
-			fail(error: Error | string): void {},
-			succeed(messageOrObject: unknown, object?: unknown): void {},
+			done: jest.fn(),
+			fail: jest.fn(),
+			succeed: jest.fn(),
 		};
 
 		const callbackMock: Callback<KinesisStreamBatchResponse | void> = (
