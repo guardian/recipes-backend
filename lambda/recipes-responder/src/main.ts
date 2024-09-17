@@ -23,7 +23,7 @@ const filterProductionMonitoring: boolean = process.env[
 export async function processRecord(r: CrierEvent): Promise<number> {
 	if (r.channels && !r.channels.includes('feast')) {
 		console.error(
-			`Received a CrierEvent for channels ${r.channels}, which did not include Feast! This is a configuration bug :(`,
+			`Received a CrierEvent for channels ${r.channels.join()}, which did not include Feast! This is a configuration bug :(`,
 		);
 		return 0;
 	}
