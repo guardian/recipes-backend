@@ -1,8 +1,8 @@
-import * as facia from '@recipes-api/lib/facia';
-import { deployCurationData } from '@recipes-api/lib/recipes-data';
 import type { SNSMessage, SQSHandler, SQSRecord } from 'aws-lambda';
 import format from 'date-fns/format';
 import type { SafeParseReturnType } from 'zod';
+import * as facia from '@recipes-api/lib/facia';
+import { deployCurationData } from '@recipes-api/lib/recipes-data';
 import { notifyFaciaTool } from './facia-notifications';
 import { getErrorMessage } from './util';
 

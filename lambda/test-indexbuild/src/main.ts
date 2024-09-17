@@ -1,10 +1,10 @@
+import type { Handler } from 'aws-lambda';
 import {
 	INDEX_JSON,
 	retrieveIndexData,
 	V2_INDEX_JSON,
 	writeIndexData,
 } from '@recipes-api/lib/recipes-data';
-import type { Handler } from 'aws-lambda';
 
 export const handler: Handler = async () => {
 	console.log('Index test starting up');

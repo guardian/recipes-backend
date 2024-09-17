@@ -1,5 +1,6 @@
 import { EventType } from '@guardian/content-api-models/crier/event/v1/eventType';
 import { ItemType } from '@guardian/content-api-models/crier/event/v1/itemType';
+import type { EventBridgeHandler } from 'aws-lambda';
 import { registerMetric } from '@recipes-api/cwmetrics';
 import { deserializeEvent } from '@recipes-api/lib/capi';
 import {
@@ -8,7 +9,6 @@ import {
 	V2_INDEX_JSON,
 	writeIndexData,
 } from '@recipes-api/lib/recipes-data';
-import type { EventBridgeHandler } from 'aws-lambda';
 import type { CrierEvent } from './eventbridge_models';
 import { handleDeletedContent, handleTakedown } from './takedown_processor';
 import { handleContentUpdate } from './update_processor';

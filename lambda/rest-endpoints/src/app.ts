@@ -1,9 +1,9 @@
-import { FeastAppContainer } from '@recipes-api/lib/facia';
-import { deployCurationData, recipeByUID } from '@recipes-api/lib/recipes-data';
 import bodyParser from 'body-parser';
 import { renderFile as ejs } from 'ejs';
 import express from 'express';
 import type { Request } from 'express';
+import { FeastAppContainer } from '@recipes-api/lib/facia';
+import { deployCurationData, recipeByUID } from '@recipes-api/lib/recipes-data';
 import { getBodyContentAsJson, validateDateParam } from './helpers';
 
 export const app = express();

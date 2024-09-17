@@ -4,8 +4,8 @@ import {
 	NotFound,
 	S3Client,
 } from '@aws-sdk/client-s3';
-import { sendFastlyPurgeRequestWithRetries } from '@recipes-api/lib/recipes-data';
 import { format, formatISO } from 'date-fns';
+import { sendFastlyPurgeRequestWithRetries } from '@recipes-api/lib/recipes-data';
 import { Bucket, FastlyApiKey } from './config';
 
 const s3Client = new S3Client({ region: process.env['AWS_REGION'] });

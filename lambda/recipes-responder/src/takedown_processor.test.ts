@@ -1,11 +1,11 @@
 import type { Event } from '@guardian/content-api-models/crier/event/v1/event';
 import { EventType } from '@guardian/content-api-models/crier/event/v1/eventType';
 import { ItemType } from '@guardian/content-api-models/crier/event/v1/itemType';
+import Int64 from 'node-int64';
 import {
 	awaitableDelay,
 	removeAllRecipesForArticle,
 } from '@recipes-api/lib/recipes-data';
-import Int64 from 'node-int64';
 import { handleTakedown } from './takedown_processor';
 
 jest.mock('@recipes-api/lib/recipes-data', () => ({

@@ -6,8 +6,8 @@ import {
 	S3Client,
 	S3ServiceException,
 } from '@aws-sdk/client-s3';
-import { sendFastlyPurgeRequestWithRetries } from '@recipes-api/lib/recipes-data';
 import { mockClient } from 'aws-sdk-client-mock';
+import { sendFastlyPurgeRequestWithRetries } from '@recipes-api/lib/recipes-data';
 import { Bucket, Today } from './config';
 import {
 	activateCuration,

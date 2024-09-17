@@ -2,8 +2,8 @@ import {
 	EventBridgeClient,
 	PutEventsCommand,
 } from '@aws-sdk/client-eventbridge';
-import { registerMetric } from '@recipes-api/cwmetrics';
 import { mockClient } from 'aws-sdk-client-mock';
+import { registerMetric } from '@recipes-api/cwmetrics';
 import { announceNewRecipe } from './eventbus';
 import type { RecipeIndexEntry, RecipeReference } from './models';
 import Mock = jest.Mock;

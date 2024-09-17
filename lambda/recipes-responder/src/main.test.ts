@@ -3,8 +3,6 @@ import { EventType } from '@guardian/content-api-models/crier/event/v1/eventType
 import { ItemType } from '@guardian/content-api-models/crier/event/v1/itemType';
 import type { Content } from '@guardian/content-api-models/v1/content';
 import { ContentType } from '@guardian/content-api-models/v1/contentType';
-import { registerMetric } from '@recipes-api/cwmetrics';
-import { deserializeEvent } from '@recipes-api/lib/capi';
 import type {
 	Callback,
 	EventBridgeEvent,
@@ -12,6 +10,8 @@ import type {
 	KinesisStreamRecord,
 } from 'aws-lambda';
 import formatISO from 'date-fns/formatISO';
+import { registerMetric } from '@recipes-api/cwmetrics';
+import { deserializeEvent } from '@recipes-api/lib/capi';
 import type { CrierEvent } from './eventbridge_models';
 import { handler, processRecord } from './main';
 import { handleDeletedContent, handleTakedown } from './takedown_processor';
