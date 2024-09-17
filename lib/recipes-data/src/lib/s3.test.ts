@@ -66,7 +66,7 @@ describe('s3.publishRecipeContent', () => {
 		s3Mock.on(PutObjectCommand).rejects(
 			new S3ServiceException({
 				$fault: 'client',
-				$metadata: undefined,
+				$metadata: {},
 				name: 'test',
 			}),
 		);
@@ -150,7 +150,7 @@ describe('s3.removeRecipeContent', () => {
 			new S3ServiceException({
 				$fault: 'client',
 				// @ts-ignore -- this value is not read anywhere in the test
-				$metadata: undefined,
+				$metadata: {},
 				name: 'test',
 			}),
 		);
@@ -177,7 +177,7 @@ describe('s3.removeRecipeContent', () => {
 		s3Mock
 			.on(DeleteObjectCommand)
 			.rejects(
-				new NoSuchKey({ $metadata: undefined, message: 'This is a test' }),
+				new NoSuchKey({ $metadata: {}, message: 'This is a test' }),
 			);
 
 		// @ts-ignore -- typescript doesn't know that this is a mock
