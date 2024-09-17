@@ -1,6 +1,6 @@
 {
 	"extends": ["../../.eslintrc.json", "plugin:prettier/recommended"],
-	"ignorePatterns": ["!**/*"],
+	"ignorePatterns": ["!**/*", "jest.config.ts"],
 	"overrides": [
 		{
 			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
