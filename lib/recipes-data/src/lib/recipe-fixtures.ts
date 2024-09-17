@@ -1,4 +1,4 @@
-import type { RecipeImage } from "./models";
+import type { RecipeImage } from './models';
 
 export type RecipeFixture = Record<string, unknown> & {
 	id: string;
