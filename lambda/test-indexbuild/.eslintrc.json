@@ -1,21 +1,27 @@
 {
-	"extends": ["../../.eslintrc.json"],
+	"extends": ["../../.eslintrc.json", "plugin:prettier/recommended"],
 	"ignorePatterns": ["!**/*"],
 	"overrides": [
 		{
 			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-			"rules": {}
+			"rules": {
+				"prettier/prettier": "error"
+			}
 		},
 		{
 			"files": ["*.ts", "*.tsx"],
-      "parserOptions": {
-        "project": ["lambda/test-indexbuild/tsconfig.app.json"]
-      },
-			"rules": {}
+			"parserOptions": {
+				"project": ["lambda/test-indexbuild/tsconfig.app.json"]
+			},
+			"rules": {
+				"prettier/prettier": "error"
+			}
 		},
 		{
 			"files": ["*.js", "*.jsx"],
-			"rules": {}
+			"rules": {
+				"prettier/prettier": "error"
+			}
 		}
 	]
 }
