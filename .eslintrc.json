@@ -5,7 +5,6 @@
 	"overrides": [
 		{
 			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-			"extends": ["plugin:prettier/recommended"],
 			"rules": {
 				"@nx/enforce-module-boundaries": [
 					"error",
@@ -19,8 +18,7 @@
 							}
 						]
 					}
-				],
-				"prettier/prettier": "error"
+				]
 			}
 		},
 		{
@@ -29,9 +27,7 @@
 				"plugin:@nx/typescript",
 				"@guardian/eslint-config-typescript"
 			],
-			"rules": {
-				"prettier/prettier": "error"
-			}
+			"rules": {}
 		},
 		{
 			"files": ["*.js", "*.jsx"],
@@ -39,18 +35,14 @@
 				"plugin:@nx/javascript",
 				"@guardian/eslint-config-typescript"
 			],
-			"rules": {
-				"prettier/prettier": "error"
-			}
+			"rules": {}
 		},
 		{
 			"files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "*.spec.jsx"],
 			"env": {
 				"jest": true
 			},
-			"rules": {
-				"prettier/prettier": "error"
-			}
+			"rules": {}
 		}
 	]
 }
