@@ -1,10 +1,11 @@
 import bodyParser from 'body-parser';
+import {formatISO} from "date-fns";
 import {renderFile as ejs} from "ejs";
 import express from 'express';
 import type {Request} from 'express';
-import {deployCurationData, multipleRecipesByUid, recipeByUID, RecipeIndexEntry} from "@recipes-api/lib/recipes-data";
+import {FeastAppContainer} from "@recipes-api/lib/facia";
+import {deployCurationData, recipeByUID} from "@recipes-api/lib/recipes-data";
 import {getBodyContentAsJson, recursivelyGetIdList, validateDateParam} from "./helpers";
-import {FeastAppContainer, Recipe} from "@recipes-api/lib/facia";
 
 export const app = express();
 app.set('view engine', 'ejs');
@@ -111,7 +112,9 @@ router.get('/api/content/by-uid/:recipeUID', (req: Request<RecipeIdParams>, resp
 
   recipeByUID(req.params.recipeUID).then(result=>{
     if(result) {
-      resp.redirect(`/content/${result.checksum}`);
+      resp
+        .setHeader("Cache-Control", "max-age=300, public, stale-while-revalidate=60")
+        .redirect(`/content/${result.checksum}`);
       return;
     } else {
       resp.status(404).json({status: "not found", detail: "No recipe found with that UID"});
@@ -132,11 +135,16 @@ router.get('/api/content/by-uid', (req, resp) => {
 
   const idList = idListParam.split(",");
   recursivelyGetIdList(idList, []).then(results=> {
-    resp.status(200).json({"status": "ok", "resolved": results.length, "requested": idList.length, results: results});
+    resp
+      .status(200)
+      .setHeader("Cache-Control", "max-age=300, stale-while-revalidate=60")
+      .json({"status": "ok", "resolved": results.length, "requested": idList.length, results: results})
+    ;
   }).catch((err)=>{
     console.error(err);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- just logging for the time being
-    resp.status(500).json({status: "internal_error", detail: err.toString()})
+
+    const timestamp = formatISO(new Date());
+    resp.status(500).json({status: "internal_error", detail: `An error occurred at ${timestamp}. See the server logs for details.`})
   });
 
 });
