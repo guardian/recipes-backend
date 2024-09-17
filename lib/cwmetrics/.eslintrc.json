@@ -18,7 +18,7 @@
 			}
 		},
 		{
-			"files": ["*.test.ts", "*.test.tsx"],
+			"files": ["*.spec.ts", "*.test.ts", "*.spec.tsx", "*.test.tsx"],
 			"parserOptions": {
 				"project": ["lib/cwmetrics/tsconfig.spec.json"]
 			},
