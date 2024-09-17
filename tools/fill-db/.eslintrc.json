@@ -1,20 +1,26 @@
 {
-	"extends": ["../../.eslintrc.json"],
+	"extends": ["../../.eslintrc.json", "plugin:prettier/recommended"],
 	"overrides": [
 		{
 			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-			"rules": {}
+			"rules": {
+				"prettier/prettier": "error"
+			}
 		},
 		{
 			"files": ["*.ts", "*.tsx"],
 			"parserOptions": {
 				"project": ["tools/fill-db/tsconfig.app.json"]
 			},
-			"rules": {}
+			"rules": {
+				"prettier/prettier": "error"
+			}
 		},
 		{
 			"files": ["*.js", "*.jsx"],
-			"rules": {}
+			"rules": {
+				"prettier/prettier": "error"
+			}
 		}
 	],
 	"settings": {

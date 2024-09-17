@@ -1,24 +1,30 @@
 {
-	"extends": ["../.eslintrc.json"],
+	"extends": ["../.eslintrc.json", "plugin:prettier/recommended"],
 	"ignorePatterns": ["!**/*", "jest.config.ts"],
 	"overrides": [
 		{
 			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-			"rules": {},
+			"rules": {
+				"prettier/prettier": "error"
+			},
 			"parserOptions": {
 				"project": "cdk/tsconfig.json"
 			}
 		},
 		{
 			"files": ["*.ts", "*.tsx"],
-			"rules": {},
+			"rules": {
+				"prettier/prettier": "error"
+			},
 			"parserOptions": {
 				"project": "cdk/tsconfig.json"
 			}
 		},
 		{
 			"files": ["*.js", "*.jsx"],
-			"rules": {}
+			"rules": {
+				"prettier/prettier": "error"
+			}
 		}
 	]
 }
