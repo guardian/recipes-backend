@@ -8,7 +8,11 @@ import { getBodyContentAsJson, validateDateParam } from './helpers';
 
 export const app = express();
 app.set('view engine', 'ejs');
-app.engine('.ejs', ejs);
+app.engine('.ejs', (filePath, options, callback) => {
+  ejs(filePath, options)
+    .then(result => callback(null, result))
+    .catch(err => callback(err));
+});
 
 const router = express.Router();
 router.use(
