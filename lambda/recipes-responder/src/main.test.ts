@@ -312,9 +312,9 @@ describe('main.handler', () => {
 			getRemainingTimeInMillis(): number {
 				return 0;
 			},
-			done(error?: Error, result?: any): void {},
+			done(error?: Error, result?: unknown): void {},
 			fail(error: Error | string): void {},
-			succeed(messageOrObject: any, object?: any): void {},
+			succeed(messageOrObject: unknown, object?: unknown): void {},
 		};
 
 		const callbackMock: Callback<KinesisStreamBatchResponse | void> = (

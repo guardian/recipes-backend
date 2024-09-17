@@ -98,12 +98,13 @@ router.post(
 				.then(() => {
 					return resp.status(200).json({ status: 'ok' });
 				})
-				.catch((err) => {
+				.catch((err: unknown) => {
+          const errorString = (err instanceof Error) ? err.toString() : String(err);
 					console.error(err);
 
 					return resp
 						.status(500)
-						.json({ status: 'error', detail: err.toString() });
+						.json({ status: 'error', detail: errorString });
 				});
 		} catch (err) {
 			console.error('Could not parse incoming data as json: ', err);

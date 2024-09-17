@@ -1,5 +1,4 @@
 import * as process from 'process';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { removeAllRecipesForArticle } from '@recipes-api/lib/recipes-data';
 
 function checkArgs(args: string[]) {

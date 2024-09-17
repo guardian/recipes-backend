@@ -124,10 +124,12 @@ function parseJsonBlob(
 				sponsorshipCount: sponsorship.length,
 			};
 		}
-	} catch (err) {
-		console.error(
-			`Recipe from ${canonicalId} was not parsable: ${err.toString()}`,
-		);
+	} catch (err: unknown) {
+		if (err instanceof Error) {
+			console.error(
+				`Recipe from ${canonicalId} was not parsable: ${err.toString()}`,
+			);
+		}
 		console.error(`Content was ${recipeJson}`);
 		return null;
 	}
