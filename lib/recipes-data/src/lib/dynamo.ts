@@ -209,12 +209,9 @@ async function bulkRemovePage(
 		RequestItems,
 	});
 	const result = await client.send(req);
+	const unprocessedItems = result.UnprocessedItems?.[TableName as string];
 
-	if (
-		result.UnprocessedItems &&
-		!!result.UnprocessedItems[TableName as string] &&
-		result.UnprocessedItems[TableName as string].length > 0
-	) {
+	if (unprocessedItems && unprocessedItems.length > 0) {
 		if (retryCount > MaximumRetries) {
 			console.error(
 				`ERROR Could not remove items after maximum number of attempts, giving up.`,
@@ -226,7 +223,7 @@ async function bulkRemovePage(
 		);
 		await awaitableDelay();
 		return bulkRemovePage(
-			result.UnprocessedItems[TableName as string],
+			unprocessedItems,
 			others,
 			retryCount + 1,
 		);
