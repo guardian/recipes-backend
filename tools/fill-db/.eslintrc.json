@@ -22,5 +22,13 @@
 				"prettier/prettier": "error"
 			}
 		}
-	]
+	],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": ["tools/fill-db/tsconfig.app.json", "tools/fill-db/tsconfig.spec.json"]
+      }
+    }
+  }
 }

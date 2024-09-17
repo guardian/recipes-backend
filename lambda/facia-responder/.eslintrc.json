@@ -36,5 +36,13 @@
 				"prettier/prettier": "error"
 			}
 		}
-	]
+	],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": ["lambda/facia-responder/tsconfig.app.json", "lambda/facia-responder/tsconfig.spec.json"]
+      }
+    }
+  }
 }
