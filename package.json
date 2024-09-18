@@ -5,7 +5,7 @@
   "scripts": {
     "update-cdk": "nx run cdk:update",
     "build": "nx run-many --target=build --skip-nx-cache",
-    "test": "nx run-many --target=test",
+    "test": "CONTENT_URL_BASE=fake-base STATIC_BUCKET=fake-bucket nx run-many --target=test",
     "lint": "nx run-many --target=lint",
     "manual-takedown": "nx run tools-manual-takedown:run",
     "commandline-reindex": "nx run lambda-recipes-responder:commandline-reindex -- ",
