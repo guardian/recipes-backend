@@ -38,13 +38,14 @@ export async function validateAllCuration(
 						DateFormat,
 					)}`,
 				);
-				if (throwOnAbsent)
+				if (throwOnAbsent) {
 					throw new Error(
 						`Missing some curation for ${format(
 							date,
 							DateFormat,
 						)}. Consult the logs for more detail.`,
 					);
+				}
 			}
 			return maybeInfo;
 		}),

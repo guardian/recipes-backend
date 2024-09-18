@@ -42,8 +42,9 @@ export async function processRecord(r: CrierEvent): Promise<number> {
 				if (
 					filterProductionMonitoring &&
 					evt.payloadId.startsWith('production-monitoring')
-				)
+				) {
 					return 0;
+				}
 				return handleTakedown(evt);
 			case EventType.UPDATE:
 			case EventType.RETRIEVABLEUPDATE:

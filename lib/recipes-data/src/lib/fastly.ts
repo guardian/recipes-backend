@@ -40,10 +40,12 @@ export async function sendFastlyPurgeRequest(
 	apiKey: string,
 	purgeType?: PurgeType,
 ) {
-	if (!ContentPrefix)
+	if (!ContentPrefix) {
 		throw new Error('Cannot purge because CONTENT_URL_BASE is not set');
-	if (!apiKey || apiKey == '')
+	}
+	if (!apiKey || apiKey == '') {
 		throw new Error('Cannot purge because Fastly API key is not set');
+	}
 
 	const urlToPurge = [
 		'https://api.fastly.com/purge',
@@ -73,8 +75,9 @@ export async function sendFastlyPurgeRequest(
 
 	switch (response.status) {
 		case 200:
-			if (DebugLogsEnabled)
+			if (DebugLogsEnabled) {
 				console.log(`Purge of ${contentPath} successful: ${content}`);
+			}
 			break;
 		case 404:
 			console.warn(
@@ -112,8 +115,9 @@ export async function sendFastlyPurgeRequestWithRetries(
 				nextRetry > MaximumRetries ||
 				!MaximumRetries ||
 				isNaN(MaximumRetries)
-			)
+			) {
 				throw err; //we give up! it ain't gonna work.
+			}
 			await awaitableDelay();
 			return sendFastlyPurgeRequestWithRetries(
 				contentPath,
