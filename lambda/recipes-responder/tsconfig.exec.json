@@ -4,11 +4,11 @@
 		"outDir": "../../dist/out-tsc",
 		"module": "commonjs",
 		"types": ["node"],
-    "paths": {
-      "@recipes-api/cwmetrics": ["lib/cwmetrics/src/index.ts"],
-      "@recipes-api/lib/capi": ["lib/capi/src/index.ts"],
-      "@recipes-api/lib/recipes-data": ["lib/recipes-data/src/index.ts"]
-    }
+		"paths": {
+			"@recipes-api/cwmetrics": ["lib/cwmetrics/src/index.ts"],
+			"@recipes-api/lib/capi": ["lib/capi/src/index.ts"],
+			"@recipes-api/lib/recipes-data": ["lib/recipes-data/src/index.ts"]
+		}
 	},
 	"exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],
 	"include": ["src/**/*.ts"]

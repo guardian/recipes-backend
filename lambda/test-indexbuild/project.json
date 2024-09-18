@@ -4,33 +4,33 @@
 	"sourceRoot": "lambda/test-indexbuild/src",
 	"projectType": "application",
 	"targets": {
-    "build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["zip -r ../test-indexbuild-lambda.zip *"],
-        "cwd": "dist/lambda/test-indexbuild"
-      },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "transpile"
-        }
-      ]
-    },
+		"build": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": ["zip -r ../test-indexbuild-lambda.zip *"],
+				"cwd": "dist/lambda/test-indexbuild"
+			},
+			"dependsOn": [
+				{
+					"projects": "self",
+					"target": "transpile"
+				}
+			]
+		},
 		"transpile": {
 			"executor": "@nx/esbuild:esbuild",
 			"outputs": ["{options.outputPath}"],
 			"defaultConfiguration": "production",
 			"options": {
 				"platform": "node",
-        "external": ["@aws-sdk/*"],
+				"external": ["@aws-sdk/*"],
 				"outputPath": "dist/lambda/test-indexbuild",
 				"format": ["cjs"],
 				"bundle": true,
 				"main": "lambda/test-indexbuild/src/main.ts",
 				"tsConfig": "lambda/test-indexbuild/tsconfig.app.json",
 				"generatePackageJson": true,
-        "thirdParty": true,
+				"thirdParty": true,
 				"esbuildOptions": {
 					"sourcemap": true,
 					"outExtension": {
@@ -41,7 +41,7 @@
 			"configurations": {
 				"development": {},
 				"production": {
-          "minify": true,
+					"minify": true,
 					"esbuildOptions": {
 						"sourcemap": false,
 						"outExtension": {

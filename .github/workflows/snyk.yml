@@ -16,4 +16,4 @@ jobs:
       NODE_VERSION_FILE: ./.nvmrc
       EXCLUDE: project.json
     secrets:
-       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

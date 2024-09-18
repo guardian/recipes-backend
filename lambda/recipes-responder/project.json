@@ -4,41 +4,43 @@
 	"sourceRoot": "lambda/recipes-responder/src",
 	"projectType": "application",
 	"targets": {
-    "commandline-reindex": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["ts-node --project tsconfig.exec.json -r tsconfig-paths/register src/commandline-reindex.ts"],
-        "cwd": "lambda/recipes-responder"
-      }
-    },
-    "build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["zip -r ../recipes-responder.zip *"],
-        "cwd": "dist/lambda/recipes-responder"
-      },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "transpile"
-        }
-      ]
-    },
+		"commandline-reindex": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": [
+					"ts-node --project tsconfig.exec.json -r tsconfig-paths/register src/commandline-reindex.ts"
+				],
+				"cwd": "lambda/recipes-responder"
+			}
+		},
+		"build": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": ["zip -r ../recipes-responder.zip *"],
+				"cwd": "dist/lambda/recipes-responder"
+			},
+			"dependsOn": [
+				{
+					"projects": "self",
+					"target": "transpile"
+				}
+			]
+		},
 		"transpile": {
 			"executor": "@nx/esbuild:esbuild",
 			"outputs": ["{options.outputPath}"],
 			"defaultConfiguration": "production",
 			"options": {
 				"platform": "node",
-        "external": ["@aws-sdk/*"],
+				"external": ["@aws-sdk/*"],
 				"outputPath": "dist/lambda/recipes-responder",
 				"format": ["cjs"],
 				"bundle": true,
 				"main": "lambda/recipes-responder/src/main.ts",
 				"tsConfig": "lambda/recipes-responder/tsconfig.app.json",
 				"assets": ["lambda/recipes-responder/src/assets"],
-        "generatePackageJson": true,
-        "thirdParty": true,
+				"generatePackageJson": true,
+				"thirdParty": true,
 				"esbuildOptions": {
 					"sourcemap": true,
 					"outExtension": {
