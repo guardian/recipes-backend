@@ -72,7 +72,7 @@ describe('main', () => {
 		expect(notifyFaciaToolMock.mock.calls[0][0]).toMatchObject({
 			edition: 'feast-northern-hemisphere',
 			issueDate: '2024-01-02',
-			message: 'This issue has been published',
+			message: "This issue has been published but its date is in the past so it can only be seen in the Fronts Preview tool",
 			status: 'Published',
 			version: 'v1',
 		});

@@ -10,7 +10,12 @@ describe("generatePublicationMessage", ()=>{
   });
 
   it("should include the issue date if the issueDate is not today", ()=>{
-    const result = generatePublicationMessage("2023-02-10");
+    const result = generatePublicationMessage("2023-02-10", new Date(2023, 1, 1));
     expect(result).toContain("Fri, 6th Feb 2023")
-  })
+  });
+
+  it("should warn if the issue date is in the past", ()=>{
+    const result = generatePublicationMessage("2023-02-10", new Date(2024, 1, 1));
+    expect(result).toContain("This issue has been published but its date is in the past so it can only be seen in the Fronts Preview tool")
+  });
 })
