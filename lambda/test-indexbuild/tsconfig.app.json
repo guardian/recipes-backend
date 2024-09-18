@@ -1,6 +1,6 @@
 {
 	"extends": "./tsconfig.json",
-  "composite": true,
+	"composite": true,
 	"compilerOptions": {
 		"outDir": "../../dist/out-tsc",
 		"module": "ES2020",

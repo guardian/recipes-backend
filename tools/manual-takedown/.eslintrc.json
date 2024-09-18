@@ -25,12 +25,15 @@
 			"rules": {}
 		}
 	],
-  "settings": {
-    "import/resolver": {
-      "typescript": {
-        "alwaysTryTypes": true,
-        "project": ["tools/manual-takedown/tsconfig.app.json", "tools/manual-takedown/tsconfig.spec.json"]
-      }
-    }
-  }
+	"settings": {
+		"import/resolver": {
+			"typescript": {
+				"alwaysTryTypes": true,
+				"project": [
+					"tools/manual-takedown/tsconfig.app.json",
+					"tools/manual-takedown/tsconfig.spec.json"
+				]
+			}
+		}
+	}
 }

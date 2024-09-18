@@ -4,19 +4,19 @@
 	"sourceRoot": "lambda/publish-todays-curation/src",
 	"projectType": "application",
 	"targets": {
-    "build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["zip -r ../publish-todays-curation.zip *"],
-        "cwd": "dist/lambda/publish-todays-curation"
-      },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "transpile"
-        }
-      ]
-    },
+		"build": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": ["zip -r ../publish-todays-curation.zip *"],
+				"cwd": "dist/lambda/publish-todays-curation"
+			},
+			"dependsOn": [
+				{
+					"projects": "self",
+					"target": "transpile"
+				}
+			]
+		},
 		"transpile": {
 			"executor": "@nx/esbuild:esbuild",
 			"outputs": ["{options.outputPath}"],
@@ -25,13 +25,13 @@
 				"platform": "node",
 				"outputPath": "dist/lambda/publish-todays-curation",
 				"format": ["cjs"],
-        "external": ["@aws-sdk/*"],
+				"external": ["@aws-sdk/*"],
 				"bundle": true,
 				"main": "lambda/publish-todays-curation/src/main.ts",
 				"tsConfig": "lambda/publish-todays-curation/tsconfig.app.json",
 				"assets": ["lambda/publish-todays-curation/src/assets"],
-        "generatePackageJson": true,
-        "thirdParty": true,
+				"generatePackageJson": true,
+				"thirdParty": true,
 				"esbuildOptions": {
 					"sourcemap": true,
 					"outExtension": {

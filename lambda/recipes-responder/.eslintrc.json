@@ -30,12 +30,15 @@
 			"rules": {}
 		}
 	],
-  "settings": {
-    "import/resolver": {
-      "typescript": {
-        "alwaysTryTypes": true,
-        "project": ["lambda/recipes-responder/tsconfig.app.json", "lambda/recipes-responder/tsconfig.spec.json"]
-      }
-    }
-  }
+	"settings": {
+		"import/resolver": {
+			"typescript": {
+				"alwaysTryTypes": true,
+				"project": [
+					"lambda/recipes-responder/tsconfig.app.json",
+					"lambda/recipes-responder/tsconfig.spec.json"
+				]
+			}
+		}
+	}
 }

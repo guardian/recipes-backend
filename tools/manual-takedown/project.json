@@ -17,7 +17,7 @@
 				"tsConfig": "tools/manual-takedown/tsconfig.app.json",
 				"assets": ["tools/manual-takedown/src/assets"],
 				"generatePackageJson": true,
-        "thirdParty": true,
+				"thirdParty": true,
 				"esbuildOptions": {
 					"sourcemap": true,
 					"outExtension": {
@@ -30,7 +30,7 @@
 				"production": {
 					"esbuildOptions": {
 						"sourcemap": false,
-            "minify": true,
+						"minify": true,
 						"outExtension": {
 							".js": ".js"
 						}

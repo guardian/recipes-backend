@@ -1,6 +1,6 @@
 {
 	"extends": "../../tsconfig.base.json",
-  "composite": true,
+	"composite": true,
 	"files": [],
 	"include": [],
 	"references": [

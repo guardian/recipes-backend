@@ -30,12 +30,15 @@
 			"rules": {}
 		}
 	],
-  "settings": {
-    "import/resolver": {
-      "typescript": {
-        "alwaysTryTypes": true,
-        "project": ["lambda/rest-endpoints/tsconfig.app.json", "lambda/rest-endpoints/tsconfig.spec.json"]
-      }
-    }
-  }
+	"settings": {
+		"import/resolver": {
+			"typescript": {
+				"alwaysTryTypes": true,
+				"project": [
+					"lambda/rest-endpoints/tsconfig.app.json",
+					"lambda/rest-endpoints/tsconfig.spec.json"
+				]
+			}
+		}
+	}
 }
