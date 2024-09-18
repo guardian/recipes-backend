@@ -51,7 +51,6 @@ export async function recursivelyGetIdList(uidList:string[], prevResults: Recipe
       return recursivelyGetIdList(uidList.slice(batchSize), prevResults.concat(results), 0)
     }
   } catch(err) {
-    //FIXME doh how to properly detect ThroughputException?
     console.warn(err);
     if(err instanceof ProvisionedThroughputExceededException) {
       const nextAttempt = attempt ? attempt + 1 : 1;
