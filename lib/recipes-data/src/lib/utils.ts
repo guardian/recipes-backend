@@ -31,10 +31,7 @@ export function makeCapiDateTime(from: string): CapiDateTime {
 }
 
 export function capiDateTimeToDate(date: CapiDateTime | undefined): Date | undefined {
-  if (!date) {
-    return undefined;
-  }
-  return new Date(date.iso8601);
+  return date ? new Date(date.iso8601) : undefined
 }
 
 /**
