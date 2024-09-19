@@ -45,13 +45,24 @@ export function extractRecipeData(content: Content, block: Block, sponsorship: S
   else {
     const recipeDates: RecipeDates = {
       lastModifiedDate: capiDateTimeToDate(block.lastModifiedDate),
-      firstPublishedDate: capiDateTimeToDate(block.firstPublishedDate),
-      publishedDate: capiDateTimeToDate(block.publishedDate)
+      firstPublishedDate: getFirstPublishedDate(block, content),
+      publishedDate: getPublishedDate(block, content)
     }
     return block.elements
       .filter(elem => elem.type === ElementType.RECIPE)
       .map(recp => parseJsonBlob(content.id, recp.recipeTypeData?.recipeJson as string, sponsorship, recipeDates))
   }
+}
+
+function getFirstPublishedDate(block: Block, content: Content): Date | undefined {
+  return block.firstPublishedDate ? capiDateTimeToDate(block.firstPublishedDate) :
+    (content.fields?.firstPublicationDate ? capiDateTimeToDate(content.fields.firstPublicationDate) : undefined);
+}
+
+function getPublishedDate(block: Block, content: Content): Date | undefined {
+  const feastChannel = content.channels?.find(channel => channel.channelId === 'feast');
+  return block.publishedDate ? capiDateTimeToDate(block.publishedDate) :
+    (feastChannel?.fields.publicationDate ? capiDateTimeToDate(feastChannel.fields.publicationDate) : undefined);
 }
 
 /**
