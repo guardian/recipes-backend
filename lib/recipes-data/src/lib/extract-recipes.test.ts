@@ -1,6 +1,6 @@
 import type { Sponsorship } from '@guardian/content-api-models/v1/sponsorship';
 import { extractRecipeData } from './extract-recipes';
-import { activeSponsorships, block, canonicalId, invalidRecipeElements, multipleRecipeElements, noRecipeElements, recipeDates, singleRecipeElement } from './recipe-fixtures';
+import { activeSponsorships, block, content, invalidRecipeElements, multipleRecipeElements, noRecipeElements, recipeDates, singleRecipeElement } from './recipe-fixtures';
 import type { RecipeWithImageData } from './transform';
 import { capiDateTimeToDate } from './utils';
 
@@ -13,7 +13,7 @@ jest.mock('./config', () => ({
 describe('extractRecipeData', () => {
 	it('should work when block containing single recipe element', () => {
 		const testBlock = { ...block, elements: singleRecipeElement };
-		const result = extractRecipeData(canonicalId, testBlock, []);
+		const result = extractRecipeData(content, testBlock, []);
 		expect(result.length).toEqual(1);
 		expect(result[0]?.recipeUID).toEqual(
 			'62ac3f0f98f6495cbefd72c11fac6d1e26390e99',
@@ -34,7 +34,7 @@ describe('extractRecipeData', () => {
 
 	it('should work when block containing multiple recipe elements', () => {
 		const testBlock = { ...block, elements: multipleRecipeElements}
-		const result = extractRecipeData(canonicalId, testBlock, []);
+		const result = extractRecipeData(content, testBlock, []);
 		expect(result.length).toEqual(3);
 		expect(result[2]?.recipeUID).toEqual(
 			'62ac3f0f98f6495cbefd72c11fac6d1e26390e99',
@@ -55,20 +55,20 @@ describe('extractRecipeData', () => {
 
 	it('should work when block containing no recipe elements ', () => {
 		const testBlock = { ...block, elements: noRecipeElements}
-		const result = extractRecipeData(canonicalId, testBlock, []);
+		const result = extractRecipeData(content, testBlock, []);
 		expect(result.length).toEqual(0);
 	});
 
 	it('should return empty array when block has got invalid recipe element (no ID field) ', () => {
 		const testBlock = { ...block, elements: invalidRecipeElements}
-		const recipesFound = extractRecipeData(canonicalId, testBlock, []);
+		const recipesFound = extractRecipeData(content, testBlock, []);
 		expect(recipesFound).toEqual([null]);
 		expect(recipesFound.length).toEqual(1);
 	});
 
 	it('should work when block containing recipe element and is sponsored, means we have sponsorship data as well', () => {
 		const testBlock = { ...block, elements: singleRecipeElement };
-		const result = extractRecipeData(canonicalId, testBlock, activeSponsorships);
+		const result = extractRecipeData(content, testBlock, activeSponsorships);
 		expect(result.length).toEqual(1);
 		expect(result[0]?.recipeUID).toEqual(
 			'62ac3f0f98f6495cbefd72c11fac6d1e26390e99',
@@ -88,7 +88,7 @@ describe('extractRecipeData', () => {
 	it('should work when block containing recipe element but not sponsored, means no sponsor data available', () => {
 		const testBlock = { ...block, elements: singleRecipeElement };
 		const activeSponsorships: Sponsorship[] = [];
-		const result = extractRecipeData(canonicalId, testBlock, activeSponsorships);
+		const result = extractRecipeData(content, testBlock, activeSponsorships);
 		expect(result.length).toEqual(1);
 		expect(result[0]?.recipeUID).toEqual(
 			'62ac3f0f98f6495cbefd72c11fac6d1e26390e99',
@@ -103,8 +103,9 @@ describe('extractRecipeData', () => {
 
 	it('should update the canonicalArticle with the content ID', () => {
 		const canonicalId = 'a-new-path';
+    const testContent = { ...content, id: canonicalId };
     const testBlock = { ...block, elements: singleRecipeElement };
-		const result = extractRecipeData(canonicalId, testBlock, []);
+		const result = extractRecipeData(testContent, testBlock, []);
 		expect(result.length).toEqual(1);
 		const data = JSON.parse(
 			result[0]?.jsonBlob as string,
@@ -114,7 +115,7 @@ describe('extractRecipeData', () => {
 
 	it('should add recipe dates where specified', () => {
 		const testBlock = { ...block, elements: singleRecipeElement, ...recipeDates };
-		const result = extractRecipeData(canonicalId, testBlock, []);
+		const result = extractRecipeData(content, testBlock, []);
 		expect(result.length).toEqual(1);
 		expect(result[0]?.recipeUID).toEqual(
 			'62ac3f0f98f6495cbefd72c11fac6d1e26390e99',
@@ -143,7 +144,7 @@ describe('extractRecipeData', () => {
 			publishedDate: undefined,
 		};
 		const testBlock = { ...block, elements: singleRecipeElement, ...recipeDates };
-		const result = extractRecipeData(canonicalId, testBlock, []);
+		const result = extractRecipeData(content, testBlock, []);
 		expect(result.length).toEqual(1);
 		expect(result[0]?.recipeUID).toEqual(
 			'62ac3f0f98f6495cbefd72c11fac6d1e26390e99',

@@ -1,6 +1,8 @@
 import { AssetType } from '@guardian/content-api-models/v1/assetType';
 import type { Block } from "@guardian/content-api-models/v1/block";
 import type { BlockElement } from '@guardian/content-api-models/v1/blockElement';
+import type { Content } from '@guardian/content-api-models/v1/content';
+import { ContentType } from '@guardian/content-api-models/v1/contentType';
 import { ElementType } from '@guardian/content-api-models/v1/elementType';
 import type { Sponsorship } from '@guardian/content-api-models/v1/sponsorship';
 import { SponsorshipType } from '@guardian/content-api-models/v1/sponsorshipType';
@@ -366,6 +368,17 @@ export const recipes = [
 
 export const canonicalId =
 'lifeandstyle/2018/jan/05/soba-noodle-salad-vegetables-spicy-sesame-dressing-recipe-thomasina-miers';
+
+export const content: Content = {
+  id: canonicalId,
+  type: ContentType.ARTICLE,
+  webTitle: 'Soba noodles with crisp rainbow vegetables and a spicy sesame seed dressing',
+  webUrl: `https://www.theguardian.com/${canonicalId}`,
+  apiUrl: `https://content.guardianapis.com/${canonicalId}`,
+  tags: [],
+  references: [],
+  isHosted: false,
+}
 
 export const block: Block = {
   id: '5a4b754ce4b0e33567c465c7',

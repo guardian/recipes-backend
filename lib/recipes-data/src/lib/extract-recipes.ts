@@ -24,9 +24,9 @@ export async function extractAllRecipesFromArticle(content: Content): Promise<Re
   if (content.type == ContentType.ARTICLE && content.blocks) {
     const sponsorship = content.tags.flatMap(t => t.activeSponsorships ?? [])
     const articleBlocks: Blocks = content.blocks
-    const getAllMainBlockRecipesIfPresent = extractRecipeData(content.id, articleBlocks.main as Block, sponsorship)
+    const getAllMainBlockRecipesIfPresent = extractRecipeData(content, articleBlocks.main as Block, sponsorship)
     const bodyBlocks = articleBlocks.body as Block[]
-    const getAllBodyBlocksRecipesIfPresent = bodyBlocks.flatMap(bodyBlock => extractRecipeData(content.id, bodyBlock, sponsorship))
+    const getAllBodyBlocksRecipesIfPresent = bodyBlocks.flatMap(bodyBlock => extractRecipeData(content, bodyBlock, sponsorship))
     const recipes = getAllMainBlockRecipesIfPresent.concat(getAllBodyBlocksRecipesIfPresent)
     const failureCount = recipes.filter(recp => !recp).length
     await registerMetric("FailedRecipes", failureCount)
@@ -39,7 +39,7 @@ export async function extractAllRecipesFromArticle(content: Content): Promise<Re
 }
 
 
-export function extractRecipeData(canonicalId: string, block: Block, sponsorship: Sponsorship[]): Array<RecipeReferenceWithoutChecksum | null> {
+export function extractRecipeData(content: Content, block: Block, sponsorship: Sponsorship[]): Array<RecipeReferenceWithoutChecksum | null> {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- to fix error when elements are undefined , example if main block does not have any elements.
   if (!block?.elements) return [];
   else {
@@ -50,7 +50,7 @@ export function extractRecipeData(canonicalId: string, block: Block, sponsorship
     }
     return block.elements
       .filter(elem => elem.type === ElementType.RECIPE)
-      .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson as string, sponsorship, recipeDates))
+      .map(recp => parseJsonBlob(content.id, recp.recipeTypeData?.recipeJson as string, sponsorship, recipeDates))
   }
 }
 
