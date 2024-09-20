@@ -4,7 +4,7 @@ import type { SNSMessage, SQSHandler, SQSRecord } from 'aws-lambda';
 import format from 'date-fns/format';
 import type { SafeParseReturnType } from 'zod';
 import { notifyFaciaTool } from './facia-notifications';
-import { getErrorMessage } from './util';
+import {generatePublicationMessage, getErrorMessage} from './util';
 
 function getMessageBodyAsObject(from: SQSRecord): unknown {
 	const parsedSNSMessage = JSON.parse(from.body) as SNSMessage; // will throw if the content is not valid;
@@ -92,7 +92,7 @@ export const handler: SQSHandler = async (event) => {
 				issueDate,
 				version,
 				status: 'Published',
-				message: 'This issue has been published',
+				message: generatePublicationMessage(issueDate),
 				timestamp: Date.now(),
 			});
 		} catch (e) {
