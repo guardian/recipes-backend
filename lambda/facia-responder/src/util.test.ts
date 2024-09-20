@@ -11,7 +11,7 @@ describe("generatePublicationMessage", ()=>{
 
   it("should include the issue date if the issueDate is not today", ()=>{
     const result = generatePublicationMessage("2023-02-10", new Date(2023, 1, 1));
-    expect(result).toContain("Fri, 6th Feb 2023")
+    expect(result).toContain("Fri, 10th Feb 2023")
   });
 
   it("should warn if the issue date is in the past", ()=>{

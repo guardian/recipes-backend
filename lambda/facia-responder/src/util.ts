@@ -5,7 +5,7 @@ export const getErrorMessage = (e: any) =>
 	e instanceof Error ? e.message : String(e);
 
 function fancifyIssueDate(issueDate:Date) {
-    return format(issueDate, "eee, eo MMM yyyy")
+    return format(issueDate, "eee, do MMM yyyy")
 }
 
 export function generatePublicationMessage(issueDate:string, overrideDate?: Date) {
