@@ -1,6 +1,6 @@
 import type { Sponsorship } from '@guardian/content-api-models/v1/sponsorship';
-import { extractRecipeData } from './extract-recipes';
-import { activeSponsorships, block, content, invalidRecipeElements, multipleRecipeElements, noRecipeElements, recipeDates, singleRecipeElement } from './recipe-fixtures';
+import { extractRecipeData, getFirstPublishedDate, getPublishedDate } from './extract-recipes';
+import { activeSponsorships, block, content, feastChannel, feastChannelNoDate, fields, invalidRecipeElements, multipleRecipeElements, nonFeastChannel, noRecipeElements, recipeDates, singleRecipeElement } from './recipe-fixtures';
 import type { RecipeWithImageData } from './transform';
 import { capiDateTimeToDate } from './utils';
 
@@ -163,3 +163,60 @@ describe('extractRecipeData', () => {
 		expect(result[0]?.jsonBlob).toEqual(expected);
 	});
 });
+
+describe('getFirstPublishedDate', () => {
+  it('should return value of firstPublishedDate from the block if it exists', () => {
+		const testBlock = { ...block, elements: singleRecipeElement, ...recipeDates };
+    const testContent = { ...content, ...fields }
+    const firstPublishedDate = getFirstPublishedDate(testBlock, testContent)
+    expect(firstPublishedDate).toEqual(new Date(recipeDates.firstPublishedDate.iso8601));
+  })
+
+  it('should return value of firstPublishedDate from content.fields if it exists and not defined in the block', () => {
+		const testBlock = { ...block, elements: singleRecipeElement };
+    const testContent = { ...content, ...fields }
+    const firstPublishedDate = getFirstPublishedDate(testBlock, testContent)
+    expect(firstPublishedDate).toEqual(capiDateTimeToDate(fields.fields.firstPublicationDate));
+  })
+
+  it('should return undefined if firstPublishedDate does not exist in either the block or content.fields', () => {
+		const testBlock = { ...block, elements: singleRecipeElement };
+    const testFields = {};
+    const testContent = { ...content, ...testFields }
+    const firstPublishedDate = getFirstPublishedDate(testBlock, testContent)
+    expect(firstPublishedDate).toEqual(undefined);
+  })
+})
+
+describe('getPublishedDate', () => {
+  it('should return publishedDate from the block if it exists', () => {
+		const testBlock = { ...block, elements: singleRecipeElement, ...recipeDates };
+    const testContent = { ...content, ...fields }
+    const publishedDate = getPublishedDate(testBlock, testContent)
+    expect(publishedDate).toEqual(new Date(recipeDates.publishedDate.iso8601));
+  })
+
+  it('should return publicationDate from the Feast channel if it exists and not defined in the block', () => {
+		const testBlock = { ...block, elements: singleRecipeElement };
+    const testChannels = { channels: [...nonFeastChannel, ...feastChannel] };
+    const testContent = { ...content, ...testChannels }
+    const publishedDate = getPublishedDate(testBlock, testContent)
+    expect(publishedDate).toEqual(new Date('2024-09-17T11:00:28Z'));
+  })
+
+  it('should return undefined if not defined in the block and no Feast channel exists', () => {
+		const testBlock = { ...block, elements: singleRecipeElement };
+    const testChannels = { channels: [...nonFeastChannel] };
+    const testContent = { ...content, ...testChannels }
+    const publishedDate = getPublishedDate(testBlock, testContent)
+    expect(publishedDate).toEqual(undefined);
+  })
+
+  it('should return undefined if not defined in the block, and a Feast channel exists but no publicationDate is defined', () => {
+		const testBlock = { ...block, elements: singleRecipeElement };
+    const testChannels = { channels: [...nonFeastChannel, ...feastChannelNoDate] };
+    const testContent = { ...content, ...testChannels }
+    const publishedDate = getPublishedDate(testBlock, testContent)
+    expect(publishedDate).toEqual(undefined);
+  })
+})

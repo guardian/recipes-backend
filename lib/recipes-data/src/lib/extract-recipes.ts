@@ -54,12 +54,12 @@ export function extractRecipeData(content: Content, block: Block, sponsorship: S
   }
 }
 
-function getFirstPublishedDate(block: Block, content: Content): Date | undefined {
+export function getFirstPublishedDate(block: Block, content: Content): Date | undefined {
   return block.firstPublishedDate ? capiDateTimeToDate(block.firstPublishedDate) :
     (content.fields?.firstPublicationDate ? capiDateTimeToDate(content.fields.firstPublicationDate) : undefined);
 }
 
-function getPublishedDate(block: Block, content: Content): Date | undefined {
+export function getPublishedDate(block: Block, content: Content): Date | undefined {
   const feastChannel = content.channels?.find(channel => channel.channelId === 'feast');
   return block.publishedDate ? capiDateTimeToDate(block.publishedDate) :
     (feastChannel?.fields.publicationDate ? capiDateTimeToDate(feastChannel.fields.publicationDate) : undefined);
