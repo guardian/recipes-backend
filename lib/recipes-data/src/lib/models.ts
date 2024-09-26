@@ -64,6 +64,15 @@ interface RecipeReference extends RecipeReferenceWithoutChecksum {
   checksum: string;
 }
 
+/**
+ * RecipeDates is a subset of the RecipeReference structure, containing date fields that may be useful for sorting search results
+ */
+export interface RecipeDates {
+  lastModifiedDate?: Date;
+  firstPublishedDate?: Date;
+  publishedDate?: Date;
+}
+
 export type Contributor = { "type": "contributor"; "tagId": string } | { "type": "freetext"; "text": string };
 
 /**

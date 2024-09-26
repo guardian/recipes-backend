@@ -6,8 +6,9 @@ import {ContentType} from "@guardian/content-api-models/v1/contentType";
 import {ElementType} from "@guardian/content-api-models/v1/elementType";
 import type {Sponsorship} from "@guardian/content-api-models/v1/sponsorship";
 import {registerMetric} from "@recipes-api/cwmetrics";
-import type {Contributor, RecipeReferenceWithoutChecksum} from './models';
+import type {Contributor, RecipeDates, RecipeReferenceWithoutChecksum} from './models';
 import {
+  addRecipeDatesTransform,
   addSponsorsTransform,
   handleFreeTextContribs,
   replaceCanonicalArticle,
@@ -17,14 +18,15 @@ import type {
   RecipeTransformationFunction,
   RecipeWithImageData
 } from "./transform";
+import { capiDateTimeToDate } from "./utils";
 
 export async function extractAllRecipesFromArticle(content: Content): Promise<RecipeReferenceWithoutChecksum[]> {
   if (content.type == ContentType.ARTICLE && content.blocks) {
     const sponsorship = content.tags.flatMap(t => t.activeSponsorships ?? [])
     const articleBlocks: Blocks = content.blocks
-    const getAllMainBlockRecipesIfPresent = extractRecipeData(content.id, articleBlocks.main as Block, sponsorship)
+    const getAllMainBlockRecipesIfPresent = extractRecipeData(content, articleBlocks.main as Block, sponsorship)
     const bodyBlocks = articleBlocks.body as Block[]
-    const getAllBodyBlocksRecipesIfPresent = bodyBlocks.flatMap(bodyBlock => extractRecipeData(content.id, bodyBlock, sponsorship))
+    const getAllBodyBlocksRecipesIfPresent = bodyBlocks.flatMap(bodyBlock => extractRecipeData(content, bodyBlock, sponsorship))
     const recipes = getAllMainBlockRecipesIfPresent.concat(getAllBodyBlocksRecipesIfPresent)
     const failureCount = recipes.filter(recp => !recp).length
     await registerMetric("FailedRecipes", failureCount)
@@ -37,14 +39,30 @@ export async function extractAllRecipesFromArticle(content: Content): Promise<Re
 }
 
 
-export function extractRecipeData(canonicalId: string, block: Block, sponsorship: Sponsorship[]): Array<RecipeReferenceWithoutChecksum | null> {
+export function extractRecipeData(content: Content, block: Block, sponsorship: Sponsorship[]): Array<RecipeReferenceWithoutChecksum | null> {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- to fix error when elements are undefined , example if main block does not have any elements.
   if (!block?.elements) return [];
   else {
+    const recipeDates: RecipeDates = {
+      lastModifiedDate: capiDateTimeToDate(block.lastModifiedDate),
+      firstPublishedDate: getFirstPublishedDate(block, content),
+      publishedDate: getPublishedDate(block, content)
+    }
     return block.elements
       .filter(elem => elem.type === ElementType.RECIPE)
-      .map(recp => parseJsonBlob(canonicalId, recp.recipeTypeData?.recipeJson as string, sponsorship))
+      .map(recp => parseJsonBlob(content.id, recp.recipeTypeData?.recipeJson as string, sponsorship, recipeDates))
   }
+}
+
+export function getFirstPublishedDate(block: Block, content: Content): Date | undefined {
+  return block.firstPublishedDate ? capiDateTimeToDate(block.firstPublishedDate) :
+    (content.fields?.firstPublicationDate ? capiDateTimeToDate(content.fields.firstPublicationDate) : undefined);
+}
+
+export function getPublishedDate(block: Block, content: Content): Date | undefined {
+  const feastChannel = content.channels?.find(channel => channel.channelId === 'feast');
+  return block.publishedDate ? capiDateTimeToDate(block.publishedDate) :
+    (feastChannel?.fields.publicationDate ? capiDateTimeToDate(feastChannel.fields.publicationDate) : undefined);
 }
 
 /**
@@ -66,7 +84,7 @@ function determineRecipeUID(recipeIdField: string, canonicalId: string): string 
   }
 }
 
-function parseJsonBlob(canonicalId: string, recipeJson: string, sponsorship: Sponsorship[]): RecipeReferenceWithoutChecksum | null {
+function parseJsonBlob(canonicalId: string, recipeJson: string, sponsorship: Sponsorship[], recipeDates: RecipeDates): RecipeReferenceWithoutChecksum | null {
   try {
     const recipeData = JSON.parse(recipeJson) as (Record<string, unknown> & {
       contributors: Array<string | Contributor>;
@@ -76,6 +94,7 @@ function parseJsonBlob(canonicalId: string, recipeJson: string, sponsorship: Spo
       handleFreeTextContribs,
       replaceImageUrlsWithFastly,
       addSponsorsTransform(sponsorship),
+      addRecipeDatesTransform(recipeDates),
       replaceCanonicalArticle(canonicalId)
     ];
 

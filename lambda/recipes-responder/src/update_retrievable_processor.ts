@@ -26,7 +26,7 @@ export async function retrieveContent(capiUrl:string) :Promise<PollingResult>{
   }
 
   const params = [
-    `show-fields=internalRevision`,
+    `show-fields=internalRevision,lastModifiedDate,firstPublishedDate,publishedDate`,
     `show-blocks=all`,
     `show-channels=all`,
     `api-key=${CapiKey}`,
