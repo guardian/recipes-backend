@@ -85,7 +85,7 @@ export class FaciaConnection extends Construct {
 				STATIC_BUCKET: serving.staticBucket.bucketName,
 				CONTENT_URL_BASE: contentUrlBase,
 				FACIA_PUBLISH_STATUS_TOPIC_ARN: faciaPublishStatusSNSTopic.topicArn,
-				FACIA_PUBLISH_STATUS_ROLE_ARN: faciaPublishStatusSNSRole.roleArn
+				FACIA_PUBLISH_STATUS_ROLE_ARN: faciaPublishStatusSNSRole.roleArn,
 			},
 			fileName: 'facia-responder.zip',
 			functionName: `RecipesFaciaResponder-${scope.stage}`,

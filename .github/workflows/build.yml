@@ -27,7 +27,7 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
-      #      - run: npm run lint
+      - run: npm run lint
       - run: npm test
         env:
           STATIC_BUCKET: test

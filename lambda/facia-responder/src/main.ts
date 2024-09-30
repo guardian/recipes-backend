@@ -1,8 +1,8 @@
-import * as facia from '@recipes-api/lib/facia';
-import { deployCurationData } from '@recipes-api/lib/recipes-data';
 import type { SNSMessage, SQSHandler, SQSRecord } from 'aws-lambda';
 import format from 'date-fns/format';
 import type { SafeParseReturnType } from 'zod';
+import * as facia from '@recipes-api/lib/facia';
+import { deployCurationData } from '@recipes-api/lib/recipes-data';
 import { notifyFaciaTool } from './facia-notifications';
 import {generatePublicationMessage, getErrorMessage} from './util';
 
@@ -35,12 +35,7 @@ async function deployCuration(curation: facia.FeastCuration) {
 			)}`,
 		);
 		const serializedFront = JSON.stringify(curation.fronts[frontName]);
-		await deployCurationData(
-			serializedFront,
-			region,
-			frontName,
-			issueDate,
-		);
+		await deployCurationData(serializedFront, region, frontName, issueDate);
 	}
 }
 
@@ -96,7 +91,7 @@ export const handler: SQSHandler = async (event) => {
 				timestamp: Date.now(),
 			});
 		} catch (e) {
-      console.error(e);
+			console.error(e);
 			return notifyFaciaTool({
 				edition,
 				issueDate,

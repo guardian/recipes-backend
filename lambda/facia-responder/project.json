@@ -4,19 +4,19 @@
 	"sourceRoot": "lambda/facia-responder/src",
 	"projectType": "application",
 	"targets": {
-    "build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["zip -r ../facia-responder.zip *"],
-        "cwd": "dist/lambda/facia-responder"
-      },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "transpile"
-        }
-      ]
-    },
+		"build": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": ["zip -r ../facia-responder.zip *"],
+				"cwd": "dist/lambda/facia-responder"
+			},
+			"dependsOn": [
+				{
+					"projects": "self",
+					"target": "transpile"
+				}
+			]
+		},
 		"transpile": {
 			"executor": "@nx/esbuild:esbuild",
 			"outputs": ["{options.outputPath}"],
@@ -25,13 +25,13 @@
 				"platform": "node",
 				"outputPath": "dist/lambda/facia-responder",
 				"format": ["cjs"],
-        "external": ["@aws-sdk/*"],
+				"external": ["@aws-sdk/*"],
 				"bundle": true,
 				"main": "lambda/facia-responder/src/main.ts",
 				"tsConfig": "lambda/facia-responder/tsconfig.app.json",
 				"assets": [],
 				"generatePackageJson": true,
-        "thirdParty": true,
+				"thirdParty": true,
 				"esbuildOptions": {
 					"sourcemap": true,
 					"outExtension": {

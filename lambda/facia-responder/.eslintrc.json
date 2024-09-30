@@ -1,6 +1,6 @@
 {
 	"extends": ["../../.eslintrc.json"],
-	"ignorePatterns": ["!**/*"],
+	"ignorePatterns": ["!**/*", "jest.config.ts"],
 	"overrides": [
 		{
 			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -9,27 +9,36 @@
 		{
 			"files": ["*.ts", "*.tsx"],
 			"rules": {},
-      "parserOptions": {
-        "project": [
-          "lambda/facia-responder/tsconfig.app.json"
-        ]
-      }
+			"parserOptions": {
+				"project": ["lambda/facia-responder/tsconfig.app.json"]
+			}
 		},
-    {
-      "files": ["*.test.ts", "*.test.tsx"],
-      "parserOptions": {
-        "project": ["lambda/facia-responder/tsconfig.spec.json"]
-      },
-      "rules": {
-        "@typescript-eslint/no-unsafe-member-access": "off",
-        "@typescript-eslint/ban-ts-comment": "off",
-        "@typescript-eslint/prefer-ts-expect-error": "off",
-        "@typescript-eslint/no-unsafe-call": "off"
-      }
-    },
+		{
+			"files": ["*.test.ts", "*.test.tsx"],
+			"parserOptions": {
+				"project": ["lambda/facia-responder/tsconfig.spec.json"]
+			},
+			"rules": {
+				"@typescript-eslint/no-unsafe-member-access": "off",
+				"@typescript-eslint/ban-ts-comment": "off",
+				"@typescript-eslint/prefer-ts-expect-error": "off",
+				"@typescript-eslint/no-unsafe-call": "off"
+			}
+		},
 		{
 			"files": ["*.js", "*.jsx"],
 			"rules": {}
 		}
-	]
+	],
+	"settings": {
+		"import/resolver": {
+			"typescript": {
+				"alwaysTryTypes": true,
+				"project": [
+					"lambda/facia-responder/tsconfig.app.json",
+					"lambda/facia-responder/tsconfig.spec.json"
+				]
+			}
+		}
+	}
 }

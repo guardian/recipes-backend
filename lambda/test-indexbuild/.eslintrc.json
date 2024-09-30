@@ -1,6 +1,6 @@
 {
 	"extends": ["../../.eslintrc.json"],
-	"ignorePatterns": ["!**/*"],
+	"ignorePatterns": ["!**/*", "jest.config.ts"],
 	"overrides": [
 		{
 			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -8,14 +8,25 @@
 		},
 		{
 			"files": ["*.ts", "*.tsx"],
-      "parserOptions": {
-        "project": ["lambda/test-indexbuild/tsconfig.app.json"]
-      },
+			"parserOptions": {
+				"project": ["lambda/test-indexbuild/tsconfig.app.json"]
+			},
 			"rules": {}
 		},
 		{
 			"files": ["*.js", "*.jsx"],
 			"rules": {}
 		}
-	]
+	],
+	"settings": {
+		"import/resolver": {
+			"typescript": {
+				"alwaysTryTypes": true,
+				"project": [
+					"lambda/test-indexbuild/tsconfig.app.json",
+					"lambda/test-indexbuild/tsconfig.spec.json"
+				]
+			}
+		}
+	}
 }

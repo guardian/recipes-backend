@@ -1,6 +1,6 @@
 {
 	"extends": ["../../.eslintrc.json"],
-	"ignorePatterns": ["!**/*"],
+	"ignorePatterns": ["!**/*", "jest.config.ts"],
 	"overrides": [
 		{
 			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -8,25 +8,23 @@
 		},
 		{
 			"files": ["*.ts", "*.tsx"],
-      "parserOptions": {
-        "project": [
-          "lib/cwmetrics/tsconfig.lib.json"
-        ]
-      },
+			"parserOptions": {
+				"project": ["lib/cwmetrics/tsconfig.lib.json"]
+			},
 			"rules": {}
 		},
-    {
-      "files": ["*.test.ts", "*.test.tsx"],
-      "parserOptions": {
-        "project": ["lib/cwmetrics/tsconfig.spec.json"]
-      },
-      "rules": {
-        "@typescript-eslint/no-unsafe-member-access": "off",
-        "@typescript-eslint/ban-ts-comment": "off",
-        "@typescript-eslint/prefer-ts-expect-error": "off",
-        "@typescript-eslint/no-unsafe-call": "off"
-      }
-    },
+		{
+			"files": ["*.spec.ts", "*.test.ts", "*.spec.tsx", "*.test.tsx"],
+			"parserOptions": {
+				"project": ["lib/cwmetrics/tsconfig.spec.json"]
+			},
+			"rules": {
+				"@typescript-eslint/no-unsafe-member-access": "off",
+				"@typescript-eslint/ban-ts-comment": "off",
+				"@typescript-eslint/prefer-ts-expect-error": "off",
+				"@typescript-eslint/no-unsafe-call": "off"
+			}
+		},
 		{
 			"files": ["*.js", "*.jsx"],
 			"rules": {}

@@ -18,11 +18,11 @@ export const ChefData = z.object({
 	id: z.string(),
 	image: z.string().optional(),
 	bio: z.string().optional(),
-	foregroundHex: z.string().optional()
+	foregroundHex: z.string().optional(),
 });
 
 export const Chef = z.object({
-	chef: ChefData
+	chef: ChefData,
 });
 
 export type Chef = z.infer<typeof Chef>;
@@ -56,7 +56,7 @@ export const FeastAppContainer = z.object({
 	id: z.string().optional(),
 	title: z.string(),
 	body: z.string().optional(),
-	items: z.array(z.union([SubCollection, Chef, Recipe]))
+	items: z.array(z.union([SubCollection, Chef, Recipe])),
 });
 
 export type FeastAppContainer = z.infer<typeof FeastAppContainer>;

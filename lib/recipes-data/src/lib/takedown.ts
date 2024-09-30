@@ -1,12 +1,16 @@
-import {recipesforArticle, removeAllRecipeIndexEntriesForArticle, removeRecipe} from './dynamo';
+import {
+	recipesforArticle,
+	removeAllRecipeIndexEntriesForArticle,
+	removeRecipe,
+} from './dynamo';
+import { announceNewRecipe } from './eventbus';
 import type { RecipeIndexEntry } from './models';
-import {removeRecipeContent} from "./s3";
-import {sendTelemetryEvent} from "./telemetry";
-import {announceNewRecipe} from "./eventbus";
+import { removeRecipeContent } from './s3';
+import { sendTelemetryEvent } from './telemetry';
 
 enum TakedownMode {
-  AllVersions,
-  SpecificVersion
+	AllVersions,
+	SpecificVersion,
 }
 
 /**
@@ -17,14 +21,27 @@ enum TakedownMode {
  * @param mode Takedown mode. If `TakedownMode.AllVersions`, then any occurence of the content's uid is removed.
  * If `TakedownMode.SpecificVersion`, then the recipe is only removed if its checksum matches the one given in `recipe`
  */
-async function takeRecipeDown(canonicalArticleId: string, recipe: RecipeIndexEntry, mode:TakedownMode):Promise<void>
-{
-  console.log(`takeRecipeDown: removing recipe ${recipe.recipeUID} for ${canonicalArticleId} from the index`);
-  await removeRecipe(canonicalArticleId, recipe.recipeUID, mode==TakedownMode.AllVersions ? undefined : recipe.checksum);
+async function takeRecipeDown(
+	canonicalArticleId: string,
+	recipe: RecipeIndexEntry,
+	mode: TakedownMode,
+): Promise<void> {
+	console.log(
+		`takeRecipeDown: removing recipe ${recipe.recipeUID} for ${canonicalArticleId} from the index`,
+	);
+	await removeRecipe(
+		canonicalArticleId,
+		recipe.recipeUID,
+		mode == TakedownMode.AllVersions ? undefined : recipe.checksum,
+	);
 
-  console.log(`takeRecipeDown: removing content version ${recipe.checksum} for ${recipe.recipeUID} on ${canonicalArticleId} from the store`);
-  await removeRecipeContent(recipe.checksum);
-  console.log(`takeRecipeDown: complete for ${recipe.checksum} for ${recipe.recipeUID} on ${canonicalArticleId}`);
+	console.log(
+		`takeRecipeDown: removing content version ${recipe.checksum} for ${recipe.recipeUID} on ${canonicalArticleId} from the store`,
+	);
+	await removeRecipeContent(recipe.checksum);
+	console.log(
+		`takeRecipeDown: complete for ${recipe.checksum} for ${recipe.recipeUID} on ${canonicalArticleId}`,
+	);
 }
 
 /**
@@ -34,15 +51,20 @@ async function takeRecipeDown(canonicalArticleId: string, recipe: RecipeIndexEnt
  * @param canonicalArticleId
  * @param recipe
  */
-export async function removeRecipePermanently(canonicalArticleId: string, recipe: RecipeIndexEntry)
-{
-  await takeRecipeDown(canonicalArticleId, recipe, TakedownMode.AllVersions);
+export async function removeRecipePermanently(
+	canonicalArticleId: string,
+	recipe: RecipeIndexEntry,
+) {
+	await takeRecipeDown(canonicalArticleId, recipe, TakedownMode.AllVersions);
 
-  try {
-    await sendTelemetryEvent("TakenDown", recipe.recipeUID, "");
-  } catch(err) {
-    console.error(`ERROR [${canonicalArticleId}] - unable to send telemetry: `, err);
-  }
+	try {
+		await sendTelemetryEvent('TakenDown', recipe.recipeUID, '');
+	} catch (err) {
+		console.error(
+			`ERROR [${canonicalArticleId}] - unable to send telemetry: `,
+			err,
+		);
+	}
 }
 
 /**
@@ -52,30 +74,49 @@ export async function removeRecipePermanently(canonicalArticleId: string, recipe
  * @param canonicalArticleId
  * @param recipe
  */
-export async function removeRecipeVersion(canonicalArticleId: string, recipe: RecipeIndexEntry)
-{
-  return takeRecipeDown(canonicalArticleId, recipe, TakedownMode.SpecificVersion);
+export async function removeRecipeVersion(
+	canonicalArticleId: string,
+	recipe: RecipeIndexEntry,
+) {
+	return takeRecipeDown(
+		canonicalArticleId,
+		recipe,
+		TakedownMode.SpecificVersion,
+	);
 }
 
-export async function removeAllRecipesForArticle(canonicalArticleId: string): Promise<number>
-{
-  const removedEntries = await removeAllRecipeIndexEntriesForArticle(canonicalArticleId);
-  console.log(`Taken down article ${canonicalArticleId} had ${removedEntries.length} recipes in it which will also be removed`);
-  await Promise.all(removedEntries.map(recep=>removeRecipeContent(recep.checksum, "hard")));
+export async function removeAllRecipesForArticle(
+	canonicalArticleId: string,
+): Promise<number> {
+	const removedEntries =
+		await removeAllRecipeIndexEntriesForArticle(canonicalArticleId);
+	console.log(
+		`Taken down article ${canonicalArticleId} had ${removedEntries.length} recipes in it which will also be removed`,
+	);
+	await Promise.all(
+		removedEntries.map((recep) => removeRecipeContent(recep.checksum, 'hard')),
+	);
 
-  try {
-    await announceNewRecipe([], removedEntries)
-  } catch(e) {
-    const err = e as Error;
-    console.error(`Unable to announce takedowns: ${err.toString()}`);
-  }
+	try {
+		await announceNewRecipe([], removedEntries);
+	} catch (e) {
+		const err = e as Error;
+		console.error(`Unable to announce takedowns: ${err.toString()}`);
+	}
 
-  try {
-    await Promise.all(removedEntries.map(recep=>sendTelemetryEvent("TakenDown", recep.recipeUID, "")));
-  } catch(err) {
-    console.error(`ERROR [${canonicalArticleId}] - unable to send telemetry: `, err);
-  }
-  return removedEntries.length;
+	try {
+		await Promise.all(
+			removedEntries.map((recep) =>
+				sendTelemetryEvent('TakenDown', recep.recipeUID, ''),
+			),
+		);
+	} catch (err) {
+		console.error(
+			`ERROR [${canonicalArticleId}] - unable to send telemetry: `,
+			err,
+		);
+	}
+	return removedEntries.length;
 }
 
 /**
@@ -86,11 +127,13 @@ export async function removeAllRecipesForArticle(canonicalArticleId: string): Pr
  * @param recipeChecksumsToKeep list of the "new" recipes that are in the update (and should therefore be kept)
  * @return list of the recipes that were present in the current version but not in the update. These should be taken down.
  */
-export async function recipesToTakeDown(canonicalArticleId:string, recipeChecksumsToKeep: string[]):Promise<RecipeIndexEntry[]>
-{
-  const toKeepSet = new Set(recipeChecksumsToKeep);
-  const currentSet = await recipesforArticle(canonicalArticleId);
+export async function recipesToTakeDown(
+	canonicalArticleId: string,
+	recipeChecksumsToKeep: string[],
+): Promise<RecipeIndexEntry[]> {
+	const toKeepSet = new Set(recipeChecksumsToKeep);
+	const currentSet = await recipesforArticle(canonicalArticleId);
 
-  //ES6 does not give us a Set.difference method, unfortunately. So we have to do it here.
-  return currentSet.filter(rec=>!toKeepSet.has(rec.checksum));
+	//ES6 does not give us a Set.difference method, unfortunately. So we have to do it here.
+	return currentSet.filter((rec) => !toKeepSet.has(rec.checksum));
 }
