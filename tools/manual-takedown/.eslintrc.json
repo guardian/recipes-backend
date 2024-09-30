@@ -1,36 +1,28 @@
 {
-	"extends": ["../../.eslintrc.json", "plugin:prettier/recommended"],
+	"extends": ["../../.eslintrc.json"],
 	"ignorePatterns": ["!**/*", "jest.config.ts"],
 	"overrides": [
 		{
 			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-			"rules": {
-				"prettier/prettier": "error"
-			}
+			"rules": {}
 		},
 		{
 			"files": ["*.ts", "*.tsx"],
 			"parserOptions": {
 				"project": ["tools/manual-takedown/tsconfig.app.json"]
 			},
-			"rules": {
-				"prettier/prettier": "error"
-			}
+			"rules": {}
 		},
 		{
 			"files": ["*.test.ts", "*.test.tsx"],
 			"parserOptions": {
 				"project": ["tools/manual-takedown/tsconfig.spec.json"]
 			},
-			"rules": {
-				"prettier/prettier": "error"
-			}
+			"rules": {}
 		},
 		{
 			"files": ["*.js", "*.jsx"],
-			"rules": {
-				"prettier/prettier": "error"
-			}
+			"rules": {}
 		}
 	],
 	"settings": {

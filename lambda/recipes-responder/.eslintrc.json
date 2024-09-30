@@ -1,34 +1,10 @@
 {
-	"extends": ["../../.eslintrc.json", "plugin:prettier/recommended"],
+	"extends": ["../../.eslintrc.json"],
 	"ignorePatterns": ["!**/*", "jest.config.ts"],
 	"overrides": [
 		{
 			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-			"rules": {
-				"prettier/prettier": "error"
-			}
-		},
-		{
-			"files": ["*.ts", "*.tsx"],
-			"parserOptions": {
-				"project": ["lambda/recipes-responder/tsconfig.app.json"]
-			},
-			"rules": {
-				"prettier/prettier": "error"
-			}
-		},
-		{
-			"files": ["*.test.ts", "*.test.tsx"],
-			"parserOptions": {
-				"project": ["lambda/recipes-responder/tsconfig.spec.json"]
-			},
-			"rules": {
-				"@typescript-eslint/no-unsafe-member-access": "off",
-				"@typescript-eslint/ban-ts-comment": "off",
-				"@typescript-eslint/prefer-ts-expect-error": "off",
-				"@typescript-eslint/no-unsafe-call": "off",
-				"prettier/prettier": "error"
-			}
+			"rules": {}
 		},
 		{
 			"files": ["*.ts", "*.tsx"],
@@ -51,9 +27,7 @@
 		},
 		{
 			"files": ["*.js", "*.jsx"],
-			"rules": {
-				"prettier/prettier": "error"
-			}
+			"rules": {}
 		}
 	],
 	"settings": {
