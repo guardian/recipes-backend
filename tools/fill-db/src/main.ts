@@ -21,8 +21,8 @@ function createRecord(count: number): RecipeDatabaseEntry[] {
 	for (let i = 0; i < count; i++) {
 		out.push({
 			capiArticleId: `path/to/fake/recipe/${now.valueOf()}`,
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- uuid() is untyped so we must cast it here
-			recipeUID: uuid() as string,
+			 
+			recipeUID: uuid() ,
 			lastUpdated: now,
 			recipeVersion: Math.random().toString(36).slice(-10),
 			sponsorshipCount: 0,
