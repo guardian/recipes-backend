@@ -1,7 +1,7 @@
 import bodyParser from 'body-parser';
 import {formatISO} from "date-fns";
 import {renderFile as ejs} from "ejs";
-import express from 'express';
+import express, {Router} from 'express';
 import type {Request} from 'express';
 import {FeastAppContainer} from "@recipes-api/lib/facia";
 import {deployCurationData, recipeByUID} from "@recipes-api/lib/recipes-data";
@@ -9,9 +9,10 @@ import {getBodyContentAsJson, recursivelyGetIdList, validateDateParam} from "./h
 
 export const app = express();
 app.set('view engine', 'ejs');
+// eslint-disable-next-line @typescript-eslint/no-misused-promises -- required part of Express setup
 app.engine('.ejs', ejs);
 
-const router = express.Router();
+const router = Router();
 router.use(bodyParser.json({
   limit: '1mb'
 }));
