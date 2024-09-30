@@ -1,6 +1,6 @@
+import {ProvisionedThroughputExceededException} from "@aws-sdk/client-dynamodb";
 import type { RecipeIndexEntry} from "@recipes-api/lib/recipes-data";
 import {multipleRecipesByUid} from "@recipes-api/lib/recipes-data";
-import {ProvisionedThroughputExceededException} from "@aws-sdk/client-dynamodb";
 
 export function getBodyContentAsJson(body:unknown): string {
   if(body instanceof Buffer) {

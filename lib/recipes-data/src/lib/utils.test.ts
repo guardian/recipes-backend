@@ -1,7 +1,7 @@
 import type { CapiDateTime } from '@guardian/content-api-models/v1/capiDateTime';
+import Int64 from 'node-int64';
 import type {RecipeReferenceWithoutChecksum} from './models';
 import {calculateChecksum, capiDateTimeToDate, extractCropDataFromGuimUrl} from './utils';
-import Int64 from 'node-int64';
 
 jest.mock('./config', () => ({}));
 
