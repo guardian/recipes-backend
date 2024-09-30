@@ -50,7 +50,7 @@ export function extractRecipeData(content: Content, block: Block, sponsorship: S
     }
     return block.elements
   .filter(elem => elem.type === ElementType.RECIPE)
-  .map(recp => parseJsonBlob(content.id, recp.recipeTypeData?.recipeJson as string, sponsorship, recipeDates))
+  .map(  recp  => parseJsonBlob(content.id, recp.recipeTypeData?.recipeJson as string,  sponsorship, 	 recipeDates))
   }
 }
 
