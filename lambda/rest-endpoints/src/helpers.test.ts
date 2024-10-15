@@ -91,7 +91,7 @@ describe('app.recursivelyGetIdList', () => {
 				if (shouldCrash < 0.05) {
 					// @ts-ignore -- $metadata should not be null, but we are not reading it anyway
 					throw new ProvisionedThroughputExceededException({
-						$metadata: null,
+						$metadata: {},
 						message: 'This is a test',
 					});
 				} else {
