@@ -34,8 +34,10 @@ export function makeCapiDateTime(from: string): CapiDateTime {
 	};
 }
 
-export function capiDateTimeToDate(date: CapiDateTime | undefined): Date | undefined {
-  return date ? new Date(date.iso8601) : undefined
+export function capiDateTimeToDate(
+	date: CapiDateTime | undefined,
+): Date | undefined {
+	return date ? new Date(date.iso8601) : undefined;
 }
 
 /**
