@@ -107,9 +107,10 @@ router.post(
 				.catch((err) => {
 					console.error(err);
 
-					return resp
-						.status(500)
-						.json({ status: 'error', detail: err.toString() });
+					return (
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment -- err.toString() is untyped but OK
+						resp.status(500).json({ status: 'error', detail: err.toString() })
+					);
 				});
 		} catch (err) {
 			console.error('Could not parse incoming data as json: ', err);
