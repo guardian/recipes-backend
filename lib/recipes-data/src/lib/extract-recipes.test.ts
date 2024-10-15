@@ -1,6 +1,23 @@
 import type { Sponsorship } from '@guardian/content-api-models/v1/sponsorship';
-import { extractRecipeData, getFirstPublishedDate, getPublishedDate } from './extract-recipes';
-import { activeSponsorships, block, content, feastChannel, feastChannelNoDate, fields, invalidRecipeElements, multipleRecipeElements, nonFeastChannel, noRecipeElements, recipeDates, singleRecipeElement } from './recipe-fixtures';
+import {
+	extractRecipeData,
+	getFirstPublishedDate,
+	getPublishedDate,
+} from './extract-recipes';
+import {
+	activeSponsorships,
+	block,
+	content,
+	feastChannel,
+	feastChannelNoDate,
+	fields,
+	invalidRecipeElements,
+	multipleRecipeElements,
+	nonFeastChannel,
+	noRecipeElements,
+	recipeDates,
+	singleRecipeElement,
+} from './recipe-fixtures';
 import type { RecipeWithImageData } from './transform';
 import { capiDateTimeToDate } from './utils';
 
@@ -33,7 +50,7 @@ describe('extractRecipeData', () => {
 	});
 
 	it('should work when block containing multiple recipe elements', () => {
-		const testBlock = { ...block, elements: multipleRecipeElements}
+		const testBlock = { ...block, elements: multipleRecipeElements };
 		const result = extractRecipeData(content, testBlock, []);
 		expect(result.length).toEqual(3);
 		expect(result[2]?.recipeUID).toEqual(
@@ -54,13 +71,13 @@ describe('extractRecipeData', () => {
 	});
 
 	it('should work when block containing no recipe elements ', () => {
-		const testBlock = { ...block, elements: noRecipeElements}
+		const testBlock = { ...block, elements: noRecipeElements };
 		const result = extractRecipeData(content, testBlock, []);
 		expect(result.length).toEqual(0);
 	});
 
 	it('should return empty array when block has got invalid recipe element (no ID field) ', () => {
-		const testBlock = { ...block, elements: invalidRecipeElements}
+		const testBlock = { ...block, elements: invalidRecipeElements };
 		const recipesFound = extractRecipeData(content, testBlock, []);
 		expect(recipesFound).toEqual([null]);
 		expect(recipesFound.length).toEqual(1);
@@ -103,8 +120,8 @@ describe('extractRecipeData', () => {
 
 	it('should update the canonicalArticle with the content ID', () => {
 		const canonicalId = 'a-new-path';
-    const testContent = { ...content, id: canonicalId };
-    const testBlock = { ...block, elements: singleRecipeElement };
+		const testContent = { ...content, id: canonicalId };
+		const testBlock = { ...block, elements: singleRecipeElement };
 		const result = extractRecipeData(testContent, testBlock, []);
 		expect(result.length).toEqual(1);
 		const data = JSON.parse(
@@ -114,7 +131,11 @@ describe('extractRecipeData', () => {
 	});
 
 	it('should add recipe dates where specified', () => {
-		const testBlock = { ...block, elements: singleRecipeElement, ...recipeDates };
+		const testBlock = {
+			...block,
+			elements: singleRecipeElement,
+			...recipeDates,
+		};
 		const result = extractRecipeData(content, testBlock, []);
 		expect(result.length).toEqual(1);
 		expect(result[0]?.recipeUID).toEqual(
@@ -131,8 +152,8 @@ describe('extractRecipeData', () => {
 			contributors: ['profile/thomasina-miers'],
 			byline: [],
 			lastModifiedDate: capiDateTimeToDate(recipeDates.lastModifiedDate),
-      firstPublishedDate: capiDateTimeToDate(recipeDates.firstPublishedDate),
-      publishedDate: capiDateTimeToDate(recipeDates.publishedDate),
+			firstPublishedDate: capiDateTimeToDate(recipeDates.firstPublishedDate),
+			publishedDate: capiDateTimeToDate(recipeDates.publishedDate),
 		});
 		expect(result[0]?.jsonBlob).toEqual(expected);
 	});
@@ -143,7 +164,11 @@ describe('extractRecipeData', () => {
 			firstPublishedDate: undefined,
 			publishedDate: undefined,
 		};
-		const testBlock = { ...block, elements: singleRecipeElement, ...recipeDates };
+		const testBlock = {
+			...block,
+			elements: singleRecipeElement,
+			...recipeDates,
+		};
 		const result = extractRecipeData(content, testBlock, []);
 		expect(result.length).toEqual(1);
 		expect(result[0]?.recipeUID).toEqual(
@@ -165,58 +190,72 @@ describe('extractRecipeData', () => {
 });
 
 describe('getFirstPublishedDate', () => {
-  it('should return value of firstPublishedDate from the block if it exists', () => {
-		const testBlock = { ...block, elements: singleRecipeElement, ...recipeDates };
-    const testContent = { ...content, ...fields }
-    const firstPublishedDate = getFirstPublishedDate(testBlock, testContent)
-    expect(firstPublishedDate).toEqual(new Date(recipeDates.firstPublishedDate.iso8601));
-  })
+	it('should return value of firstPublishedDate from the block if it exists', () => {
+		const testBlock = {
+			...block,
+			elements: singleRecipeElement,
+			...recipeDates,
+		};
+		const testContent = { ...content, ...fields };
+		const firstPublishedDate = getFirstPublishedDate(testBlock, testContent);
+		expect(firstPublishedDate).toEqual(
+			new Date(recipeDates.firstPublishedDate.iso8601),
+		);
+	});
 
-  it('should return value of firstPublishedDate from content.fields if it exists and not defined in the block', () => {
+	it('should return value of firstPublishedDate from content.fields if it exists and not defined in the block', () => {
 		const testBlock = { ...block, elements: singleRecipeElement };
-    const testContent = { ...content, ...fields }
-    const firstPublishedDate = getFirstPublishedDate(testBlock, testContent)
-    expect(firstPublishedDate).toEqual(capiDateTimeToDate(fields.fields.firstPublicationDate));
-  })
+		const testContent = { ...content, ...fields };
+		const firstPublishedDate = getFirstPublishedDate(testBlock, testContent);
+		expect(firstPublishedDate).toEqual(
+			capiDateTimeToDate(fields.fields.firstPublicationDate),
+		);
+	});
 
-  it('should return undefined if firstPublishedDate does not exist in either the block or content.fields', () => {
+	it('should return undefined if firstPublishedDate does not exist in either the block or content.fields', () => {
 		const testBlock = { ...block, elements: singleRecipeElement };
-    const testFields = {};
-    const testContent = { ...content, ...testFields }
-    const firstPublishedDate = getFirstPublishedDate(testBlock, testContent)
-    expect(firstPublishedDate).toEqual(undefined);
-  })
-})
+		const testFields = {};
+		const testContent = { ...content, ...testFields };
+		const firstPublishedDate = getFirstPublishedDate(testBlock, testContent);
+		expect(firstPublishedDate).toEqual(undefined);
+	});
+});
 
 describe('getPublishedDate', () => {
-  it('should return publishedDate from the block if it exists', () => {
-		const testBlock = { ...block, elements: singleRecipeElement, ...recipeDates };
-    const testContent = { ...content, ...fields }
-    const publishedDate = getPublishedDate(testBlock, testContent)
-    expect(publishedDate).toEqual(new Date(recipeDates.publishedDate.iso8601));
-  })
+	it('should return publishedDate from the block if it exists', () => {
+		const testBlock = {
+			...block,
+			elements: singleRecipeElement,
+			...recipeDates,
+		};
+		const testContent = { ...content, ...fields };
+		const publishedDate = getPublishedDate(testBlock, testContent);
+		expect(publishedDate).toEqual(new Date(recipeDates.publishedDate.iso8601));
+	});
 
-  it('should return publicationDate from the Feast channel if it exists and not defined in the block', () => {
+	it('should return publicationDate from the Feast channel if it exists and not defined in the block', () => {
 		const testBlock = { ...block, elements: singleRecipeElement };
-    const testChannels = { channels: [...nonFeastChannel, ...feastChannel] };
-    const testContent = { ...content, ...testChannels }
-    const publishedDate = getPublishedDate(testBlock, testContent)
-    expect(publishedDate).toEqual(new Date('2024-09-17T11:00:28Z'));
-  })
+		const testChannels = { channels: [...nonFeastChannel, ...feastChannel] };
+		const testContent = { ...content, ...testChannels };
+		const publishedDate = getPublishedDate(testBlock, testContent);
+		expect(publishedDate).toEqual(new Date('2024-09-17T11:00:28Z'));
+	});
 
-  it('should return undefined if not defined in the block and no Feast channel exists', () => {
+	it('should return undefined if not defined in the block and no Feast channel exists', () => {
 		const testBlock = { ...block, elements: singleRecipeElement };
-    const testChannels = { channels: [...nonFeastChannel] };
-    const testContent = { ...content, ...testChannels }
-    const publishedDate = getPublishedDate(testBlock, testContent)
-    expect(publishedDate).toEqual(undefined);
-  })
+		const testChannels = { channels: [...nonFeastChannel] };
+		const testContent = { ...content, ...testChannels };
+		const publishedDate = getPublishedDate(testBlock, testContent);
+		expect(publishedDate).toEqual(undefined);
+	});
 
-  it('should return undefined if not defined in the block, and a Feast channel exists but no publicationDate is defined', () => {
+	it('should return undefined if not defined in the block, and a Feast channel exists but no publicationDate is defined', () => {
 		const testBlock = { ...block, elements: singleRecipeElement };
-    const testChannels = { channels: [...nonFeastChannel, ...feastChannelNoDate] };
-    const testContent = { ...content, ...testChannels }
-    const publishedDate = getPublishedDate(testBlock, testContent)
-    expect(publishedDate).toEqual(undefined);
-  })
-})
+		const testChannels = {
+			channels: [...nonFeastChannel, ...feastChannelNoDate],
+		};
+		const testContent = { ...content, ...testChannels };
+		const publishedDate = getPublishedDate(testBlock, testContent);
+		expect(publishedDate).toEqual(undefined);
+	});
+});

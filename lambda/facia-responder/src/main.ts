@@ -4,7 +4,7 @@ import type { SafeParseReturnType } from 'zod';
 import * as facia from '@recipes-api/lib/facia';
 import { deployCurationData } from '@recipes-api/lib/recipes-data';
 import { notifyFaciaTool } from './facia-notifications';
-import {generatePublicationMessage, getErrorMessage} from './util';
+import { generatePublicationMessage, getErrorMessage } from './util';
 
 function getMessageBodyAsObject(from: SQSRecord): unknown {
 	const parsedSNSMessage = JSON.parse(from.body) as SNSMessage; // will throw if the content is not valid;

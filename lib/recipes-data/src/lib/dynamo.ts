@@ -99,15 +99,15 @@ export async function recipeByUID(
 		: null;
 }
 
-export async function multipleRecipesByUid(uidList: string[]): Promise<RecipeIndexEntry[]> {
-  console.debug(`Lookup request for ${uidList.length} ids`);
+export async function multipleRecipesByUid(
+	uidList: string[],
+): Promise<RecipeIndexEntry[]> {
+	console.debug(`Lookup request for ${uidList.length} ids`);
 
-  const results = await Promise.all(
-    uidList.map(recipeByUID)
-  );
+	const results = await Promise.all(uidList.map(recipeByUID));
 
-  //Filter out any "not found"
-  return results.filter(result=>!!result) as RecipeIndexEntry[];
+	//Filter out any "not found"
+	return results.filter((result) => !!result) as RecipeIndexEntry[];
 }
 
 /**
