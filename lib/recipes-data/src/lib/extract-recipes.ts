@@ -11,6 +11,7 @@ import type {
 	RecipeDates,
 	RecipeReferenceWithoutChecksum,
 } from './models';
+import { igaSponsorship } from './recipe-fixtures';
 import {
 	addRecipeDatesTransform,
 	addSponsorsTransform,
@@ -28,7 +29,9 @@ export async function extractAllRecipesFromArticle(
 	content: Content,
 ): Promise<RecipeReferenceWithoutChecksum[]> {
 	if (content.type == ContentType.ARTICLE && content.blocks) {
-		const sponsorship = content.tags.flatMap((t) => t.activeSponsorships ?? []);
+		//TODO remove change when testing is over for IGA sponsorship tag on apps
+		//const sponsorship = content.tags.flatMap((t) => t.activeSponsorships ?? []);
+		const sponsorship = igaSponsorship;
 		const articleBlocks: Blocks = content.blocks;
 		const getAllMainBlockRecipesIfPresent = extractRecipeData(
 			content,
