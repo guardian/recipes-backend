@@ -13,7 +13,7 @@ import {
 	sendFastlyPurgeRequest,
 	sendFastlyPurgeRequestWithRetries,
 } from './fastly';
-import type { RecipeIndex, RecipeReference } from './models';
+import type { ChefInfoFile, RecipeIndex, RecipeReference } from './models';
 import { awaitableDelay } from './utils';
 
 const s3Client = new S3Client({ region: process.env['AWS_REGION'] });
@@ -209,4 +209,23 @@ export async function writeIndexData({
 		contentPrefix,
 	});
 	console.log('Done.');
+}
+
+export async function writeChefData(chefData: ChefInfoFile, Key: string) {
+	console.log('Marshalling data...');
+	const formattedData = JSON.stringify(chefData);
+
+	console.log(`Done. Writing to s3://${Bucket}/${Key}...`);
+	const req = new PutObjectCommand({
+		Bucket,
+		Key,
+		Body: formattedData,
+		ContentType: 'application.json',
+		CacheControl: DefaultCacheControlParams,
+	});
+
+	await s3Client.send(req);
+	console.log('Done. Purging CDN...');
+	await sendFastlyPurgeRequest(Key, FastlyApiKey ?? '');
+	console.log('Done');
 }
