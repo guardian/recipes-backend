@@ -469,7 +469,7 @@ def sort_filter_rules(json_obj):
             "Arn",
           ],
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs20.x",
         "Tags": [
           {
             "Key": "App",
@@ -1186,7 +1186,7 @@ def sort_filter_rules(json_obj):
             "Arn",
           ],
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs20.x",
         "Tags": [
           {
             "Key": "App",
@@ -1708,7 +1708,7 @@ def sort_filter_rules(json_obj):
             "Arn",
           ],
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs20.x",
         "Tags": [
           {
             "Key": "App",
@@ -2463,7 +2463,7 @@ def sort_filter_rules(json_obj):
             "Arn",
           ],
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs20.x",
         "Tags": [
           {
             "Key": "App",
@@ -2746,7 +2746,7 @@ def sort_filter_rules(json_obj):
             "Arn",
           ],
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs20.x",
         "Tags": [
           {
             "Key": "App",

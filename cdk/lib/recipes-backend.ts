@@ -33,7 +33,7 @@ export class RecipesBackend extends GuStack {
 
 		new GuLambdaFunction(this, 'testIndexLambda', {
 			fileName: 'test-indexbuild-lambda.zip',
-			runtime: Runtime.NODEJS_18_X,
+			runtime: Runtime.NODEJS_20_X,
 			architecture: Architecture.ARM_64,
 			app: 'recipes-backend-testindex',
 			handler: 'main.handler',
@@ -182,7 +182,7 @@ export class RecipesBackend extends GuStack {
 					resources: [eventBus.eventBusArn],
 				}),
 			],
-			runtime: Runtime.NODEJS_18_X,
+			runtime: Runtime.NODEJS_20_X,
 			app,
 			handler: 'main.handler',
 			fileName: `${app}.zip`,
@@ -283,7 +283,7 @@ export class RecipesBackend extends GuStack {
 						description: 'Update Feast app daily curation at midnight',
 					},
 				],
-				runtime: Runtime.NODEJS_18_X,
+				runtime: Runtime.NODEJS_20_X,
 				timeout: Duration.seconds(10),
 				environment: {
 					STATIC_BUCKET: serving.staticBucket.bucketName,
