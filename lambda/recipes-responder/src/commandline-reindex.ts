@@ -80,7 +80,7 @@ async function reindex(queryUri: string): Promise<void> {
 			break;
 		default:
 			console.error(`Unable to retrieve content from ${queryUri}`);
-      await new Promise((resolve)=>setTimeout(resolve, 2000))
+			await new Promise((resolve) => setTimeout(resolve, 2000));
 	}
 }
 
