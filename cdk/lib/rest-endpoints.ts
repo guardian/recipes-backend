@@ -44,7 +44,7 @@ export class RestEndpoints extends Construct {
 			handler: 'main.handler',
 			memorySize: 256,
 			monitoringConfiguration: { noMonitoring: true }, //for the time being
-			runtime: Runtime.NODEJS_18_X,
+			runtime: Runtime.NODEJS_20_X,
 			timeout: Duration.seconds(30),
 			initialPolicy: [
 				new PolicyStatement({

@@ -158,7 +158,7 @@ describe('main', () => {
 		};
 
 		const expectedError = new SyntaxError(
-			'Unexpected token b in JSON at position 0',
+			'Unexpected token \'b\', "blahblahbl"... is not valid JSON',
 		);
 		// @ts-ignore
 		await expect(() => handler(rec, null, null)).rejects.toEqual(expectedError);

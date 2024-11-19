@@ -111,7 +111,7 @@ export class FaciaConnection extends Construct {
 				}),
 			],
 			memorySize: 256,
-			runtime: Runtime.NODEJS_18_X,
+			runtime: Runtime.NODEJS_20_X,
 			timeout: Duration.seconds(10),
 		});
 	}
