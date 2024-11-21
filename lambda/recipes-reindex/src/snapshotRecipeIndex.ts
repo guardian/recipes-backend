@@ -46,8 +46,7 @@ export const snapshotRecipeIndexHandler: Handler<
 
 	return {
 		...state,
-		indexKey: Key,
+		indexObjectKey: Key,
 		currentIndex: 0,
-		lastIndex: recipeIndexSnapshotJson.recipes.length - 1,
 	};
 };

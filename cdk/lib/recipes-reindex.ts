@@ -18,13 +18,14 @@ import { Construct } from 'constructs';
 
 type RecipesReindexProps = {
 	contentUrlBase: string;
+	reindexBatchSize: number;
 };
 
 export class RecipesReindex extends Construct {
 	constructor(
 		scope: GuStack,
 		id: string,
-		{ contentUrlBase }: RecipesReindexProps,
+		{ contentUrlBase, reindexBatchSize }: RecipesReindexProps,
 	) {
 		super(scope, id);
 
@@ -42,12 +43,12 @@ export class RecipesReindex extends Construct {
 				description: 'Store a snapshot of the current recipe index in S3',
 				fileName: 'recipes-reindex.zip',
 				handler: 'main.snapshotRecipeIndexHandler',
-				functionName: `recipes-reindex-check-for-running-reindexes-${scope.stage}`,
+				functionName: `recipes-reindex-snapshot-recipe-index-${scope.stage}`,
 				runtime: Runtime.NODEJS_20_X,
 				initialPolicy: [
 					new PolicyStatement({
 						effect: Effect.ALLOW,
-						actions: ['s3:GetObject', 's3:PutObject'],
+						actions: ['s3:PutObject'],
 						resources: [snapshotBucket.bucketArn + '/*'],
 					}),
 				],
@@ -61,15 +62,32 @@ export class RecipesReindex extends Construct {
 			},
 		);
 
-		// const writeBatchToReindexQueue = new Function(
-		// 	this,
-		// 	'WriteBatchToReindexQueue',
-		// 	{
-		// 		runtime: Runtime.NODEJS_18_X,
-		// 		handler: 'writeBatchToReindexQueue.handler',
-		// 		code: Code.fromAsset('lambda'),
-		// 	},
-		// );
+		const writeBatchToReindexQueue = new GuLambdaFunction(
+			scope,
+			'WriteBatchToReindexQueueLambda',
+			{
+				app: 'recipes-reindex',
+				description: 'Write a batch of recipe ids to the reindex queue',
+				fileName: 'recipes-reindex.zip',
+				handler: 'main.writeBatchToReindexQueueHandler',
+				functionName: `recipes-reindex-write-batch-to-reindex-queue-${scope.stage}`,
+				runtime: Runtime.NODEJS_20_X,
+				initialPolicy: [
+					new PolicyStatement({
+						effect: Effect.ALLOW,
+						actions: ['s3:GetObject'],
+						resources: [snapshotBucket.bucketArn + '/*'],
+					}),
+				],
+				environment: {
+					RECIPE_INDEX_SNAPSHOT_BUCKET: snapshotBucket.bucketName,
+					REINDEX_BATCH_SIZE: reindexBatchSize.toString(),
+				},
+				architecture: Architecture.ARM_64,
+				timeout: Duration.seconds(30),
+				memorySize: 128,
+			},
+		);
 
 		// Define the Step Functions tasks
 		const checkForOtherRunningReindexesTask = new CustomState(
@@ -99,16 +117,17 @@ export class RecipesReindex extends Construct {
 			},
 		);
 
-		// const writeBatchToReindexQueueTask = new LambdaInvoke(
-		// 	this,
-		// 	'WriteBatchToReindexQueueTask',
-		// 	{
-		// 		lambdaFunction: writeBatchToReindexQueue,
-		// 		outputPath: '$.Payload',
-		// 	},
-		// );
+		const writeBatchToReindexQueueTask = new LambdaInvoke(
+			this,
+			'WriteBatchToReindexQueueTask',
+			{
+				lambdaFunction: writeBatchToReindexQueue,
+			},
+		);
 
-		snapshotOrderedIndexTask.next(new Succeed(this, 'Success'));
+		snapshotOrderedIndexTask
+			.next(writeBatchToReindexQueueTask)
+			.next(new Succeed(this, 'Success'));
 
 		const isOnlyRunningReindex = new Choice(this, 'IsOnlyRunningReindex')
 			.when(Condition.isNotPresent('$.Executions[1]'), snapshotOrderedIndexTask)
