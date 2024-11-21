@@ -90,5 +90,7 @@ export const FeastCuration = z.intersection(
 );
 
 export type FeastCuration = z.infer<typeof FeastCuration>;
+
+//TODO: need to check/test -  if we need removal of refernces of MEP from here as well?
 export const MiseEnPlaceData = z.array(FeastAppContainer);
 export type MiseEnPlaceDataFormat = z.infer<typeof MiseEnPlaceData>;
