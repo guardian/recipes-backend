@@ -2,12 +2,13 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import type { Handler } from 'aws-lambda';
 import { INDEX_JSON } from 'lib/recipes-data/src/lib/constants';
 import type { RecipeIndex } from 'lib/recipes-data/src/lib/models';
-import { ContentUrlBase, recipeIndexSnapshotBucket } from './config';
-import { recipeIndexSnapshotKey } from './constants';
+import { recipeIndexSnapshotKey } from '../constants';
+import { RecipeIndexSnapshotBucket } from '../sharedConfig';
 import type {
 	SnapshotRecipeIndexInput,
 	SnapshotRecipeIndexOutput,
-} from './types';
+} from '../types';
+import { ContentUrlBase } from './config';
 
 const s3Client = new S3Client({ region: process.env['AWS_REGION'] });
 
@@ -28,20 +29,20 @@ export const snapshotRecipeIndexHandler: Handler<
 	const Key = `${executionId}/${recipeIndexSnapshotKey}`;
 
 	const req = new PutObjectCommand({
-		Bucket: recipeIndexSnapshotBucket,
+		Bucket: RecipeIndexSnapshotBucket,
 		Key,
 		Body: JSON.stringify(recipeIndexSnapshotJson),
 		ContentType: 'application/json',
 	});
 
 	console.log(
-		`Writing recipe index for execution with ID ${executionId} to S3 at path ${recipeIndexSnapshotBucket}/${Key}`,
+		`Writing recipe index for execution with ID ${executionId} to S3 at path ${RecipeIndexSnapshotBucket}/${Key}`,
 	);
 
 	await s3Client.send(req);
 
 	console.log(
-		`Written recipe index for execution with ID ${executionId} to S3 at path ${recipeIndexSnapshotBucket}/${Key}`,
+		`Written recipe index for execution with ID ${executionId} to S3 at path ${RecipeIndexSnapshotBucket}/${Key}`,
 	);
 
 	return {

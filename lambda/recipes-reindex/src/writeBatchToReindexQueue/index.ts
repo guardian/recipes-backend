@@ -1,11 +1,12 @@
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import type { Handler } from 'aws-lambda';
 import type { RecipeIndex } from 'lib/recipes-data/src/lib/models';
-import { recipeIndexSnapshotBucket, reindexBatchSize } from './config';
+import { RecipeIndexSnapshotBucket } from '../sharedConfig';
 import type {
 	WriteBatchToReindexQueueInput,
 	WriteBatchToReindexQueueOutput,
-} from './types';
+} from '../types';
+import { ReindexBatchSize } from './config';
 
 const s3Client = new S3Client({ region: process.env['AWS_REGION'] });
 
@@ -16,11 +17,11 @@ export const writeBatchToReindexQueueHandler: Handler<
 	const { executionId, currentIndex, indexObjectKey, dryRun } = state;
 
 	const req = new GetObjectCommand({
-		Bucket: recipeIndexSnapshotBucket,
+		Bucket: RecipeIndexSnapshotBucket,
 		Key: indexObjectKey,
 	});
 
-	const pathToRecipeIndex = `${recipeIndexSnapshotBucket}/${indexObjectKey}`;
+	const pathToRecipeIndex = `${RecipeIndexSnapshotBucket}/${indexObjectKey}`;
 
 	console.log(
 		`Reading recipe index for execution with ID ${executionId} from S3 at path ${pathToRecipeIndex}`,
@@ -42,7 +43,7 @@ export const writeBatchToReindexQueueHandler: Handler<
 	) as RecipeIndex;
 
 	const nextIndex = Math.min(
-		currentIndex + reindexBatchSize + 1,
+		currentIndex + ReindexBatchSize + 1,
 		recipeIndexSnapshot.recipes.length,
 	);
 
