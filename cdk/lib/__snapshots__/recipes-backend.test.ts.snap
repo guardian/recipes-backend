@@ -554,24 +554,6 @@ def sort_filter_rules(json_obj):
         "PolicyDocument": {
           "Statement": [
             {
-              "Action": "s3:PutObject",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    {
-                      "Fn::GetAtt": [
-                        "staticstaticServing53194089",
-                        "Arn",
-                      ],
-                    },
-                    "/*/*/curation.json",
-                  ],
-                ],
-              },
-            },
-            {
               "Action": "dynamodb:Query",
               "Effect": "Allow",
               "Resource": [
