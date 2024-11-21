@@ -41,7 +41,7 @@ export class RecipesReindex extends Construct {
 				app: 'recipes-reindex',
 				description: 'Store a snapshot of the current recipe index in S3',
 				fileName: 'recipes-reindex.zip',
-				handler: 'main.snapshotRecipeIndex',
+				handler: 'main.snapshotRecipeIndexHandler',
 				functionName: `recipes-reindex-check-for-running-reindexes-${scope.stage}`,
 				runtime: Runtime.NODEJS_20_X,
 				initialPolicy: [
@@ -94,7 +94,7 @@ export class RecipesReindex extends Construct {
 			{
 				lambdaFunction: snapshotRecipeIndex,
 				payload: TaskInput.fromObject({
-					'executionId.$': '$$.Execution.Id',
+					'executionId.$': '$$.Execution.Name',
 				}),
 			},
 		);
