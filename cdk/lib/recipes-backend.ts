@@ -18,7 +18,7 @@ import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { DataStore } from './datastore';
 import { ExternalParameters } from './external_parameters';
 import { FaciaConnection } from './facia-connection';
-import { RecipeReindex } from './recipe-reindex';
+import { RecipesReindex } from './recipes-reindex';
 import { RestEndpoints } from './rest-endpoints';
 import { StaticServing } from './static-serving';
 
@@ -231,7 +231,7 @@ export class RecipesBackend extends GuStack {
 			dataStore: store,
 		});
 
-		new RecipeReindex(this, 'RecipeReindex', {});
+		new RecipesReindex(this, 'RecipeReindex');
 
 		const durationAlarm = new Alarm(this, 'DurationRuntimeAlarm', {
 			alarmDescription:

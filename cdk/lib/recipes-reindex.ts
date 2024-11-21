@@ -16,10 +16,8 @@ import {
 import { LambdaInvoke } from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import { Construct } from 'constructs';
 
-type RecipeReindexProps = {};
-
-export class RecipeReindex extends Construct {
-	constructor(scope: GuStack, id: string, _props: RecipeReindexProps) {
+export class RecipesReindex extends Construct {
+	constructor(scope: GuStack, id: string) {
 		super(scope, id);
 
 		const snapshotBucket = new Bucket(this, 'staticServing', {
