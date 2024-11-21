@@ -1,9 +1,9 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import format from 'date-fns/format';
-import { StaticBucketName as Bucket, FastlyApiKey } from './config';
+import { AwsRegion, StaticBucketName as Bucket, FastlyApiKey } from './config';
 import { sendFastlyPurgeRequestWithRetries } from './fastly';
 
-const s3client = new S3Client({ region: process.env['AWS_REGION'] });
+const s3client = new S3Client({ region: AwsRegion });
 
 export async function deployCurationData(
 	content: string | Buffer,
