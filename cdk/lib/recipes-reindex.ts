@@ -16,8 +16,16 @@ import {
 import { LambdaInvoke } from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import { Construct } from 'constructs';
 
+type RecipesReindexProps = {
+	contentUrlBase: string;
+};
+
 export class RecipesReindex extends Construct {
-	constructor(scope: GuStack, id: string) {
+	constructor(
+		scope: GuStack,
+		id: string,
+		{ contentUrlBase }: RecipesReindexProps,
+	) {
 		super(scope, id);
 
 		const snapshotBucket = new Bucket(this, 'staticServing', {
@@ -44,7 +52,8 @@ export class RecipesReindex extends Construct {
 					}),
 				],
 				environment: {
-					KEYS_TABLE: `bonobo-${scope.stage}-keys`,
+					CONTENT_URL_BASE: contentUrlBase,
+					RECIPE_INDEX_SNAPSHOT_BUCKET: snapshotBucket.bucketName,
 				},
 				architecture: Architecture.ARM_64,
 				timeout: Duration.seconds(30),

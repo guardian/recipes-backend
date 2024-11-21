@@ -2346,7 +2346,10 @@ def sort_filter_rules(json_obj):
         "Environment": {
           "Variables": {
             "APP": "recipes-reindex",
-            "KEYS_TABLE": "bonobo-TEST-keys",
+            "CONTENT_URL_BASE": "recipes.guardianapis.com",
+            "RECIPE_INDEX_SNAPSHOT_BUCKET": {
+              "Ref": "RecipeReindexstaticServingB64382C2",
+            },
             "STACK": "content-api",
             "STAGE": "TEST",
           },

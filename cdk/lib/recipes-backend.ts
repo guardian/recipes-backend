@@ -231,7 +231,7 @@ export class RecipesBackend extends GuStack {
 			dataStore: store,
 		});
 
-		new RecipesReindex(this, 'RecipeReindex');
+		new RecipesReindex(this, 'RecipeReindex', { contentUrlBase });
 
 		const durationAlarm = new Alarm(this, 'DurationRuntimeAlarm', {
 			alarmDescription:
