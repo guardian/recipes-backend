@@ -1,12 +1,11 @@
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import type { Handler } from 'aws-lambda';
 import type { RecipeIndex } from 'lib/recipes-data/src/lib/models';
-import { RecipeIndexSnapshotBucket } from '../sharedConfig';
 import type {
 	WriteBatchToReindexQueueInput,
 	WriteBatchToReindexQueueOutput,
 } from '../types';
-import { ReindexBatchSize } from './config';
+import { getConfig } from './config';
 
 const s3Client = new S3Client({ region: process.env['AWS_REGION'] });
 
@@ -15,6 +14,7 @@ export const writeBatchToReindexQueueHandler: Handler<
 	WriteBatchToReindexQueueOutput
 > = async (state) => {
 	const { executionId, currentIndex, indexObjectKey, dryRun } = state;
+	const { RecipeIndexSnapshotBucket, ReindexBatchSize } = getConfig();
 
 	const req = new GetObjectCommand({
 		Bucket: RecipeIndexSnapshotBucket,
@@ -51,7 +51,17 @@ export const writeBatchToReindexQueueHandler: Handler<
 		.slice(currentIndex, nextIndex)
 		.map(({ recipeUID }) => recipeUID);
 
-	await writeRecipeIdsToReindexQueue(recipeIdsToReindex, dryRun);
+	const dryRunMsg = '[DRY RUN]: ';
+
+	console.log(
+		`${dryRun ? dryRunMsg : ''} writing ${
+			recipeIdsToReindex.length
+		} recipe ids to the reindex queue, from index ${currentIndex} to index ${
+			nextIndex - 1
+		}`,
+	);
+
+	await writeRecipeIdsToReindexQueue(recipeIdsToReindex);
 
 	return {
 		...state,
@@ -59,13 +69,6 @@ export const writeBatchToReindexQueueHandler: Handler<
 	};
 };
 
-const writeRecipeIdsToReindexQueue = async (ids: string[], dryRun = false) => {
-	const dryRunMsg = '[DRY RUN]: ';
-	console.log(
-		`${dryRun ? dryRunMsg : ''} writing ${
-			ids.length
-		} recipe ides to the reindex queue`,
-	);
-
-	return Promise.resolve();
+const writeRecipeIdsToReindexQueue = async (ids: string[]) => {
+	return Promise.resolve(ids);
 };

@@ -1465,7 +1465,7 @@ def sort_filter_rules(json_obj):
                   "Arn",
                 ],
               },
-              "","Payload":{"executionId.$":"$$.Execution.Name"}}},"WriteBatchToReindexQueueTask":{"Next":"Success","Retry":[{"ErrorEquals":["Lambda.ClientExecutionTimeoutException","Lambda.ServiceException","Lambda.AWSLambdaException","Lambda.SdkClientException"],"IntervalSeconds":2,"MaxAttempts":6,"BackoffRate":2}],"Type":"Task","Resource":"arn:",
+              "","Payload":{"executionId.$":"$$.Execution.Name"}}},"WriteBatchToReindexQueueTask":{"Next":"Success","Retry":[{"ErrorEquals":["Lambda.ClientExecutionTimeoutException","Lambda.ServiceException","Lambda.AWSLambdaException","Lambda.SdkClientException"],"IntervalSeconds":2,"MaxAttempts":6,"BackoffRate":2}],"Type":"Task","InputPath":"$.Payload","Resource":"arn:",
               {
                 "Ref": "AWS::Partition",
               },
@@ -2384,12 +2384,12 @@ def sort_filter_rules(json_obj):
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "content-api/TEST/recipes-reindex/recipes-reindex.zip",
+          "S3Key": "content-api/TEST/recipes-reindex-snapshot-recipe-index/recipes-reindex.zip",
         },
         "Description": "Store a snapshot of the current recipe index in S3",
         "Environment": {
           "Variables": {
-            "APP": "recipes-reindex",
+            "APP": "recipes-reindex-snapshot-recipe-index",
             "CONTENT_URL_BASE": "recipes.guardianapis.com",
             "RECIPE_INDEX_SNAPSHOT_BUCKET": {
               "Ref": "RecipeReindexstaticServingB64382C2",
@@ -2414,7 +2414,7 @@ def sort_filter_rules(json_obj):
         "Tags": [
           {
             "Key": "App",
-            "Value": "recipes-reindex",
+            "Value": "recipes-reindex-snapshot-recipe-index",
           },
           {
             "Key": "gu:cdk:version",
@@ -2468,7 +2468,7 @@ def sort_filter_rules(json_obj):
         "Tags": [
           {
             "Key": "App",
-            "Value": "recipes-reindex",
+            "Value": "recipes-reindex-snapshot-recipe-index",
           },
           {
             "Key": "gu:cdk:version",
@@ -2547,7 +2547,7 @@ def sort_filter_rules(json_obj):
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/content-api/TEST/recipes-reindex/recipes-reindex.zip",
+                      "/content-api/TEST/recipes-reindex-snapshot-recipe-index/recipes-reindex.zip",
                     ],
                   ],
                 },
@@ -2568,7 +2568,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-reindex",
+                    ":parameter/TEST/content-api/recipes-reindex-snapshot-recipe-index",
                   ],
                 ],
               },
@@ -2591,7 +2591,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-reindex/*",
+                    ":parameter/TEST/content-api/recipes-reindex-snapshot-recipe-index/*",
                   ],
                 ],
               },
@@ -2621,12 +2621,12 @@ def sort_filter_rules(json_obj):
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "content-api/TEST/recipes-reindex/recipes-reindex.zip",
+          "S3Key": "content-api/TEST/recipes-reindex-write-batch-to-index-queue/recipes-reindex.zip",
         },
         "Description": "Write a batch of recipe ids to the reindex queue",
         "Environment": {
           "Variables": {
-            "APP": "recipes-reindex",
+            "APP": "recipes-reindex-write-batch-to-index-queue",
             "RECIPE_INDEX_SNAPSHOT_BUCKET": {
               "Ref": "RecipeReindexstaticServingB64382C2",
             },
@@ -2651,7 +2651,7 @@ def sort_filter_rules(json_obj):
         "Tags": [
           {
             "Key": "App",
-            "Value": "recipes-reindex",
+            "Value": "recipes-reindex-write-batch-to-index-queue",
           },
           {
             "Key": "gu:cdk:version",
@@ -2705,7 +2705,7 @@ def sort_filter_rules(json_obj):
         "Tags": [
           {
             "Key": "App",
-            "Value": "recipes-reindex",
+            "Value": "recipes-reindex-write-batch-to-index-queue",
           },
           {
             "Key": "gu:cdk:version",
@@ -2784,7 +2784,7 @@ def sort_filter_rules(json_obj):
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/content-api/TEST/recipes-reindex/recipes-reindex.zip",
+                      "/content-api/TEST/recipes-reindex-write-batch-to-index-queue/recipes-reindex.zip",
                     ],
                   ],
                 },
@@ -2805,7 +2805,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-reindex",
+                    ":parameter/TEST/content-api/recipes-reindex-write-batch-to-index-queue",
                   ],
                 ],
               },
@@ -2828,7 +2828,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-reindex/*",
+                    ":parameter/TEST/content-api/recipes-reindex-write-batch-to-index-queue/*",
                   ],
                 ],
               },

@@ -29,6 +29,9 @@ export class RecipesReindex extends Construct {
 	) {
 		super(scope, id);
 
+		const appBase = 'recipes-reindex';
+		const lambdaFileName = `${appBase}.zip`;
+
 		const snapshotBucket = new Bucket(this, 'staticServing', {
 			bucketName: `recipes-backend-reindex-snapshots-${scope.stage.toLowerCase()}`,
 			enforceSSL: true,
@@ -39,11 +42,11 @@ export class RecipesReindex extends Construct {
 			scope,
 			'SnapshotRecipeIndexLambda',
 			{
-				app: 'recipes-reindex',
+				app: `${appBase}-snapshot-recipe-index`,
 				description: 'Store a snapshot of the current recipe index in S3',
-				fileName: 'recipes-reindex.zip',
+				fileName: lambdaFileName,
 				handler: 'main.snapshotRecipeIndexHandler',
-				functionName: `recipes-reindex-snapshot-recipe-index-${scope.stage}`,
+				functionName: `${appBase}-snapshot-recipe-index-${scope.stage}`,
 				runtime: Runtime.NODEJS_20_X,
 				initialPolicy: [
 					new PolicyStatement({
@@ -66,11 +69,11 @@ export class RecipesReindex extends Construct {
 			scope,
 			'WriteBatchToReindexQueueLambda',
 			{
-				app: 'recipes-reindex',
+				app: `${appBase}-write-batch-to-index-queue`,
 				description: 'Write a batch of recipe ids to the reindex queue',
-				fileName: 'recipes-reindex.zip',
+				fileName: lambdaFileName,
 				handler: 'main.writeBatchToReindexQueueHandler',
-				functionName: `recipes-reindex-write-batch-to-reindex-queue-${scope.stage}`,
+				functionName: `${appBase}-write-batch-to-reindex-queue-${scope.stage}`,
 				runtime: Runtime.NODEJS_20_X,
 				initialPolicy: [
 					new PolicyStatement({
@@ -122,6 +125,7 @@ export class RecipesReindex extends Construct {
 			'WriteBatchToReindexQueueTask',
 			{
 				lambdaFunction: writeBatchToReindexQueue,
+				inputPath: '$.Payload',
 			},
 		);
 

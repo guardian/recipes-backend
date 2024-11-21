@@ -3,7 +3,6 @@ import * as process from 'process';
 import { mandatoryParameter } from './parameters';
 
 export const AwsRegion = process.env['AWS_REGION'];
-
 export const indexTableName = process.env['INDEX_TABLE'];
 export const lastUpdatedIndex = process.env['LAST_UPDATED_INDEX'];
 

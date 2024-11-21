@@ -3,12 +3,11 @@ import type { Handler } from 'aws-lambda';
 import { INDEX_JSON } from 'lib/recipes-data/src/lib/constants';
 import type { RecipeIndex } from 'lib/recipes-data/src/lib/models';
 import { recipeIndexSnapshotKey } from '../constants';
-import { RecipeIndexSnapshotBucket } from '../sharedConfig';
 import type {
 	SnapshotRecipeIndexInput,
 	SnapshotRecipeIndexOutput,
 } from '../types';
-import { ContentUrlBase } from './config';
+import { getConfig } from './config';
 
 const s3Client = new S3Client({ region: process.env['AWS_REGION'] });
 
@@ -16,6 +15,7 @@ export const snapshotRecipeIndexHandler: Handler<
 	SnapshotRecipeIndexInput,
 	SnapshotRecipeIndexOutput
 > = async (state) => {
+	const { ContentUrlBase, RecipeIndexSnapshotBucket } = getConfig();
 	const { executionId } = state;
 
 	const recipeIndexUrl = `https://${ContentUrlBase}/${INDEX_JSON}`;
