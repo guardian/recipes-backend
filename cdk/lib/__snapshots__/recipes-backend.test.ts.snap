@@ -2340,18 +2340,18 @@ def sort_filter_rules(json_obj):
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "content-api/TEST/recipe-reindex/recipe-reindex.zip",
+          "S3Key": "content-api/TEST/recipes-reindex/recipes-reindex.zip",
         },
         "Description": "Store a snapshot of the current recipe index in S3",
         "Environment": {
           "Variables": {
-            "APP": "recipe-reindex",
+            "APP": "recipes-reindex",
             "KEYS_TABLE": "bonobo-TEST-keys",
             "STACK": "content-api",
             "STAGE": "TEST",
           },
         },
-        "FunctionName": "recipe-reindex-check-for-running-reindexes-TEST",
+        "FunctionName": "recipes-reindex-check-for-running-reindexes-TEST",
         "Handler": "main.snapshotRecipeIndex",
         "LoggingConfig": {
           "LogFormat": "JSON",
@@ -2367,7 +2367,7 @@ def sort_filter_rules(json_obj):
         "Tags": [
           {
             "Key": "App",
-            "Value": "recipe-reindex",
+            "Value": "recipes-reindex",
           },
           {
             "Key": "gu:cdk:version",
@@ -2421,7 +2421,7 @@ def sort_filter_rules(json_obj):
         "Tags": [
           {
             "Key": "App",
-            "Value": "recipe-reindex",
+            "Value": "recipes-reindex",
           },
           {
             "Key": "gu:cdk:version",
@@ -2503,7 +2503,7 @@ def sort_filter_rules(json_obj):
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/content-api/TEST/recipe-reindex/recipe-reindex.zip",
+                      "/content-api/TEST/recipes-reindex/recipes-reindex.zip",
                     ],
                   ],
                 },
@@ -2524,7 +2524,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipe-reindex",
+                    ":parameter/TEST/content-api/recipes-reindex",
                   ],
                 ],
               },
@@ -2547,7 +2547,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipe-reindex/*",
+                    ":parameter/TEST/content-api/recipes-reindex/*",
                   ],
                 ],
               },
