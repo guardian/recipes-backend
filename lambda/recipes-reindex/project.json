@@ -1,14 +1,14 @@
 {
-	"name": "lambda/recipe-reindex",
+	"name": "lambda/recipes-reindex",
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
-	"sourceRoot": "lambda/recipe-reindex/src",
+	"sourceRoot": "lambda/recipes-reindex/src",
 	"projectType": "application",
 	"targets": {
 		"lint": {
 			"executor": "@nx/eslint:lint",
 			"outputs": ["{options.outputFile}"],
 			"options": {
-				"lintFilePatterns": ["lambda/recipe-reindex/**/*.ts"]
+				"lintFilePatterns": ["lambda/recipes-reindex/**/*.ts"]
 			}
 		},
 		"build": {
@@ -62,7 +62,7 @@
 			"executor": "@nx/jest:jest",
 			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
 			"options": {
-				"jestConfig": "lambda/recipe-reindex/jest.config.ts",
+				"jestConfig": "lambda/recipes-reindex/jest.config.ts",
 				"passWithNoTests": true
 			},
 			"configurations": {
