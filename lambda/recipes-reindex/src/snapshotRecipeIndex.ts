@@ -13,6 +13,8 @@ export const snapshotRecipeIndexHandler: Handler<
 	StepFnState,
 	StepFnState
 > = async (state) => {
+	console.log(state);
+
 	const recipeIndexSnapshotResponse = await fetch(
 		`${ContentUrlBase}/${INDEX_JSON}`,
 	);
@@ -30,6 +32,8 @@ export const snapshotRecipeIndexHandler: Handler<
 	console.log(`Writing recipe index for invocation <X> to S3`);
 
 	await s3Client.send(req);
+
+	console.log(`Written recipe index for invocation <X> to S3`);
 
 	return {
 		...state,
