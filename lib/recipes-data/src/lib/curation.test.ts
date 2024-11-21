@@ -7,21 +7,12 @@ import MockedFn = jest.MockedFn;
 
 const s3Mock = mockClient(S3Client);
 
-jest.mock('process', () => {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- typescript doesn't like 'any' value
-	const originalModule = jest.requireActual('process');
-
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return -- doesn't like 'any' value
-	return {
-		...originalModule,
-		env: {
-			CONTENT_URL_BASE: 'not-used',
-			STATIC_BUCKET: 'static-content-bucket',
-			AWS_REGION: 'some-aws-region',
-			FASTLY_API_KEY: 'blahblahblah',
-		},
-	};
-});
+jest.mock('./config', () => ({
+	ContentUrlBase: 'not-used',
+	StaticBucketName: 'static-content-bucket',
+	FastlyApiKey: 'blahblahblah',
+	AwsRegion: 'eu-west-1',
+}));
 
 jest.mock('./fastly', () => ({
 	sendFastlyPurgeRequestWithRetries: jest.fn(),
