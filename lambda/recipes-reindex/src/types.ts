@@ -7,10 +7,12 @@ export type SnapshotRecipeIndexInput = SharedStepFnState & {
 };
 
 export type SnapshotRecipeIndexOutput = SnapshotRecipeIndexInput & {
-	currentIndex: number;
+	nextIndex: number;
 	indexObjectKey: string;
 };
 
 export type WriteBatchToReindexQueueInput = SnapshotRecipeIndexOutput;
 
-export type WriteBatchToReindexQueueOutput = SnapshotRecipeIndexOutput;
+export type WriteBatchToReindexQueueOutput = SnapshotRecipeIndexOutput & {
+	lastIndex: number;
+};

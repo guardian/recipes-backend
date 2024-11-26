@@ -243,7 +243,7 @@ export class RecipesBackend extends GuStack {
 
 		new RecipesReindex(this, 'RecipeReindex', {
 			contentUrlBase,
-			reindexBatchSize: parseInt(reindexBatchSizeParam.valueAsString),
+			reindexBatchSize: reindexBatchSizeParam.valueAsString,
 		});
 
 		const durationAlarm = new Alarm(this, 'DurationRuntimeAlarm', {

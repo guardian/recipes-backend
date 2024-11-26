@@ -48,6 +48,6 @@ export const snapshotRecipeIndexHandler: Handler<
 	return {
 		...state,
 		indexObjectKey: Key,
-		currentIndex: 0,
+		nextIndex: 0,
 	};
 };

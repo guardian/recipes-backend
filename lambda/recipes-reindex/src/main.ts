@@ -1,2 +1,2 @@
-export * from './snapshotRecipeReindex/index';
-export * from './writeBatchToReindexQueue/index';
+export * from './snapshotRecipeReindex';
+export * from './writeBatchToReindexQueue';

@@ -12,13 +12,15 @@ import {
 	StateMachine,
 	Succeed,
 	TaskInput,
+	Wait,
+	WaitTime,
 } from 'aws-cdk-lib/aws-stepfunctions';
 import { LambdaInvoke } from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import { Construct } from 'constructs';
 
 type RecipesReindexProps = {
 	contentUrlBase: string;
-	reindexBatchSize: number;
+	reindexBatchSize: string;
 };
 
 export class RecipesReindex extends Construct {
@@ -129,9 +131,27 @@ export class RecipesReindex extends Construct {
 			},
 		);
 
+		const waitForThroughputAndWriteNextBatch = new Wait(
+			scope,
+			'WaitForThroughPut',
+			{
+				time: WaitTime.duration(Duration.seconds(1)),
+			},
+		).next(writeBatchToReindexQueueTask);
+
+		const isReindexComplete = new Choice(this, 'IsReindexComplete')
+			.when(
+				Condition.numberGreaterThanJsonPath(
+					'$.Payload.currentIndex',
+					'$.Payload.lastIndex',
+				),
+				new Succeed(this, 'Reindex complete'),
+			)
+			.otherwise(waitForThroughputAndWriteNextBatch);
+
 		snapshotOrderedIndexTask
 			.next(writeBatchToReindexQueueTask)
-			.next(new Succeed(this, 'Success'));
+			.next(isReindexComplete);
 
 		const isOnlyRunningReindex = new Choice(this, 'IsOnlyRunningReindex')
 			.when(Condition.isNotPresent('$.Executions[1]'), snapshotOrderedIndexTask)
@@ -145,10 +165,6 @@ export class RecipesReindex extends Construct {
 		// Define the state machine
 		const definition =
 			checkForOtherRunningReindexesTask.next(isOnlyRunningReindex);
-		// .next(snapshotOrderedIndexTask)
-		// .next(writeBatchToReindexQueueTask)
-		// .next(waitForThroughputTask)
-		// .next(writeBatchToReindexQueueTask)
 
 		const stateMachine = new StateMachine(this, 'ReindexingStateMachine', {
 			definition,

@@ -1465,7 +1465,7 @@ def sort_filter_rules(json_obj):
                   "Arn",
                 ],
               },
-              "","Payload":{"executionId.$":"$$.Execution.Name"}}},"WriteBatchToReindexQueueTask":{"Next":"Success","Retry":[{"ErrorEquals":["Lambda.ClientExecutionTimeoutException","Lambda.ServiceException","Lambda.AWSLambdaException","Lambda.SdkClientException"],"IntervalSeconds":2,"MaxAttempts":6,"BackoffRate":2}],"Type":"Task","InputPath":"$.Payload","Resource":"arn:",
+              "","Payload":{"executionId.$":"$$.Execution.Name"}}},"WriteBatchToReindexQueueTask":{"Next":"IsReindexComplete","Retry":[{"ErrorEquals":["Lambda.ClientExecutionTimeoutException","Lambda.ServiceException","Lambda.AWSLambdaException","Lambda.SdkClientException"],"IntervalSeconds":2,"MaxAttempts":6,"BackoffRate":2}],"Type":"Task","InputPath":"$.Payload","Resource":"arn:",
               {
                 "Ref": "AWS::Partition",
               },
@@ -1476,7 +1476,7 @@ def sort_filter_rules(json_obj):
                   "Arn",
                 ],
               },
-              "","Payload.$":"$"}},"Success":{"Type":"Succeed"}},"TimeoutSeconds":900}",
+              "","Payload.$":"$"}},"WaitForThroughPut":{"Type":"Wait","Seconds":1,"Next":"WriteBatchToReindexQueueTask"},"IsReindexComplete":{"Type":"Choice","Choices":[{"Variable":"$.Payload.currentIndex","NumericGreaterThanPath":"$.Payload.lastIndex","Next":"Reindex complete"}],"Default":"WaitForThroughPut"},"Reindex complete":{"Type":"Succeed"}},"TimeoutSeconds":900}",
             ],
           ],
         },
@@ -2630,7 +2630,9 @@ def sort_filter_rules(json_obj):
             "RECIPE_INDEX_SNAPSHOT_BUCKET": {
               "Ref": "RecipeReindexstaticServingB64382C2",
             },
-            "REINDEX_BATCH_SIZE": "NaN",
+            "REINDEX_BATCH_SIZE": {
+              "Ref": "reindexBatchSizeParam",
+            },
             "STACK": "content-api",
             "STAGE": "TEST",
           },

@@ -13,7 +13,13 @@ export const writeBatchToReindexQueueHandler: Handler<
 	WriteBatchToReindexQueueInput,
 	WriteBatchToReindexQueueOutput
 > = async (state) => {
-	const { executionId, currentIndex, indexObjectKey, dryRun } = state;
+	const {
+		executionId,
+		nextIndex: currentIndex,
+		indexObjectKey,
+		dryRun: _dryRun,
+	} = state;
+	const dryRun = _dryRun ?? true;
 	const { RecipeIndexSnapshotBucket, ReindexBatchSize } = getConfig();
 
 	const req = new GetObjectCommand({
@@ -42,30 +48,36 @@ export const writeBatchToReindexQueueHandler: Handler<
 		recipeIndexSnapshotJson,
 	) as RecipeIndex;
 
+	console.log(
+		`Received recipe index for execution with ID ${executionId} from S3 at path ${pathToRecipeIndex}, containing ${recipeIndexSnapshot.recipes.length} recipes.`,
+	);
+
 	const nextIndex = Math.min(
-		currentIndex + ReindexBatchSize + 1,
+		currentIndex + ReindexBatchSize,
 		recipeIndexSnapshot.recipes.length,
 	);
 
 	const recipeIdsToReindex = recipeIndexSnapshot.recipes
-		.slice(currentIndex, nextIndex)
+		.slice(nextIndex, nextIndex)
 		.map(({ recipeUID }) => recipeUID);
 
 	const dryRunMsg = '[DRY RUN]: ';
+	const writeMsg = `${
+		recipeIdsToReindex.length
+	} recipe ids to the reindex queue, from index ${nextIndex} to index ${
+		nextIndex - 1
+	} (batch size ${ReindexBatchSize})`;
 
-	console.log(
-		`${dryRun ? dryRunMsg : ''} writing ${
-			recipeIdsToReindex.length
-		} recipe ids to the reindex queue, from index ${currentIndex} to index ${
-			nextIndex - 1
-		}`,
-	);
+	console.log(`${dryRun ? dryRunMsg : ''} about to write ${writeMsg}`);
 
 	await writeRecipeIdsToReindexQueue(recipeIdsToReindex);
 
+	console.log(`${dryRun ? dryRunMsg : ''} completed writing ${writeMsg}`);
+
 	return {
 		...state,
-		currentIndex: nextIndex,
+		nextIndex: nextIndex,
+		lastIndex: recipeIndexSnapshot.recipes.length - 1,
 	};
 };
 
