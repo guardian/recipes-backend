@@ -1,0 +1,38 @@
+{
+  "extends": ["../../.eslintrc.json", "plugin:prettier/recommended"],
+  "ignorePatterns": ["!**/*", "jest.config.ts"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "prettier/prettier": "error"
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "parserOptions": {
+        "project": ["lambda/test-bundle-front-recipes/tsconfig.app.json"]
+      },
+      "rules": {
+        "prettier/prettier": "error"
+      }
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "rules": {
+        "prettier/prettier": "error"
+      }
+    }
+  ],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": [
+          "lambda/test-bundle-front-recipes/tsconfig.app.json",
+          "lambda/test-bundle-front-recipes/tsconfig.spec.json"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+	"name": "lambda/test-embellish-fronts",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "lambda/test-embellish-fronts/src",
+	"projectType": "application",
+	"targets": {
+		"build": {
+			"executor": "@nx/esbuild:esbuild",
+			"outputs": ["{options.outputPath}"],
+			"defaultConfiguration": "production",
+			"options": {
+				"platform": "node",
+				"outputPath": "dist/lambda/test-embellish-fronts",
+				"format": ["cjs"],
+				"bundle": false,
+				"main": "lambda/test-embellish-fronts/src/main.ts",
+				"tsConfig": "lambda/test-embellish-fronts/tsconfig.app.json",
+				"assets": ["lambda/test-embellish-fronts/src/assets"],
+				"generatePackageJson": true,
+				"esbuildOptions": {
+					"sourcemap": true,
+					"outExtension": {
+						".js": ".js"
+					}
+				}
+			},
+			"configurations": {
+				"development": {},
+				"production": {
+					"esbuildOptions": {
+						"sourcemap": false,
+						"outExtension": {
+							".js": ".js"
+						}
+					}
+				}
+			}
+		},
+		"serve": {
+			"executor": "@nx/js:node",
+			"defaultConfiguration": "development",
+			"options": {
+				"buildTarget": "lambda/test-embellish-fronts:build"
+			},
+			"configurations": {
+				"development": {
+					"buildTarget": "lambda/test-embellish-fronts:build:development"
+				},
+				"production": {
+					"buildTarget": "lambda/test-embellish-fronts:build:production"
+				}
+			}
+		},
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["lambda/test-embellish-fronts/**/*.ts"]
+			}
+		},
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "lambda/test-embellish-fronts/jest.config.ts",
+				"passWithNoTests": true
+			},
+			"configurations": {
+				"ci": {
+					"ci": true,
+					"codeCoverage": true
+				}
+			}
+		}
+	},
+	"tags": []
+}

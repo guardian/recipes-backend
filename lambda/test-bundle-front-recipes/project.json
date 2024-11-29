@@ -1,0 +1,77 @@
+{
+	"name": "lambda/test-bundle-front-recipes",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "lambda/test-bundle-front-recipes/src",
+	"projectType": "application",
+	"targets": {
+		"build": {
+			"executor": "@nx/esbuild:esbuild",
+			"outputs": ["{options.outputPath}"],
+			"defaultConfiguration": "production",
+			"options": {
+				"platform": "node",
+				"outputPath": "dist/lambda/test-bundle-front-recipes",
+				"format": ["cjs"],
+				"bundle": false,
+				"main": "lambda/test-bundle-front-recipes/src/main.ts",
+				"tsConfig": "lambda/test-bundle-front-recipes/tsconfig.app.json",
+				"assets": ["lambda/test-bundle-front-recipes/src/assets"],
+				"generatePackageJson": true,
+				"esbuildOptions": {
+					"sourcemap": true,
+					"outExtension": {
+						".js": ".js"
+					}
+				}
+			},
+			"configurations": {
+				"development": {},
+				"production": {
+					"esbuildOptions": {
+						"sourcemap": false,
+						"outExtension": {
+							".js": ".js"
+						}
+					}
+				}
+			}
+		},
+		"serve": {
+			"executor": "@nx/js:node",
+			"defaultConfiguration": "development",
+			"options": {
+				"buildTarget": "lambda/test-bundle-front-recipes:build"
+			},
+			"configurations": {
+				"development": {
+					"buildTarget": "lambda/test-bundle-front-recipes:build:development"
+				},
+				"production": {
+					"buildTarget": "lambda/test-bundle-front-recipes:build:production"
+				}
+			}
+		},
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["lambda/test-bundle-front-recipes/**/*.ts"]
+			}
+		},
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "lambda/test-bundle-front-recipes/jest.config.ts",
+				"passWithNoTests": true
+			},
+			"configurations": {
+				"ci": {
+					"ci": true,
+					"codeCoverage": true
+				}
+			}
+		}
+	},
+	"tags": []
+}
