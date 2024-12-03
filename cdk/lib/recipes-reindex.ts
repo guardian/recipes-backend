@@ -174,7 +174,9 @@ export class RecipesReindex extends Construct {
 		stateMachine.addToRolePolicy(
 			new PolicyStatement({
 				effect: Effect.ALLOW,
-				resources: ['*'],
+				resources: [
+					`arn:aws:states:eu-west-1:${scope.account}:execution:${stateMachine.stateMachineName}:*`,
+				],
 				actions: ['states:ListExecutions'],
 			}),
 		);
