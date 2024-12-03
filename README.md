@@ -71,6 +71,14 @@ caches flushed.
 **Note** The Feast app does _not_ show content "live"; it downloads and caches it. Therefore, even when a recipe is "taken down" it can still be
 seen by end-users until their app refreshes its content.
 
+## Refreshing credentials
+
+We use Fastly as our CDN fronting this content; unfortunately, this means that we need to provision a credential for it to access the static
+content and then manually rotate this credential.  See Fastly's docs at https://docs.fastly.com/en/guides/amazon-s3#using-an-amazon-s3-private-bucket for
+more information and check in with DevX security for the latest on our policies regarding credentials.
+
+You can find the credential rotation process here: [doc/Rotating Credentials.md](doc/Rotating%20Credentials.md)
+
 # Development and Deployment
 
 ## Running CDK
