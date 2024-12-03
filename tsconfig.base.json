@@ -17,9 +17,6 @@
 		"baseUrl": ".",
 		"paths": {
 			"@recipes-api/cwmetrics": ["lib/cwmetrics/src/index.ts"],
-			"@recipes-api/lambda/recipes-reindex": [
-				"lambda/recipes-reindex/src/index.ts"
-			],
 			"@recipes-api/lib/capi": ["lib/capi/src/index.ts"],
 			"@recipes-api/lib/facia": ["lib/facia/src/index.ts"],
 			"@recipes-api/lib/recipes-data": ["lib/recipes-data/src/index.ts"]
