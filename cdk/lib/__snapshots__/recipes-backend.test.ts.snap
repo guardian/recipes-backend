@@ -1476,7 +1476,7 @@ def sort_filter_rules(json_obj):
                   "Arn",
                 ],
               },
-              "","Payload.$":"$"}},"WaitForThroughPut":{"Type":"Wait","Seconds":1,"Next":"WriteBatchToReindexQueueTask"},"IsReindexComplete":{"Type":"Choice","Choices":[{"Variable":"$.Payload.currentIndex","NumericGreaterThanPath":"$.Payload.lastIndex","Next":"Reindex complete"}],"Default":"WaitForThroughPut"},"Reindex complete":{"Type":"Succeed"}},"TimeoutSeconds":900}",
+              "","Payload.$":"$"}},"WaitForThroughPut":{"Type":"Wait","Seconds":1,"Next":"WriteBatchToReindexQueueTask"},"IsReindexComplete":{"Type":"Choice","Choices":[{"Variable":"$.Payload.nextIndex","NumericGreaterThanPath":"$.Payload.lastIndex","Next":"Reindex complete"}],"Default":"WaitForThroughPut"},"Reindex complete":{"Type":"Succeed"}},"TimeoutSeconds":900}",
             ],
           ],
         },

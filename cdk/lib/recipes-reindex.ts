@@ -142,7 +142,7 @@ export class RecipesReindex extends Construct {
 		const isReindexComplete = new Choice(this, 'IsReindexComplete')
 			.when(
 				Condition.numberGreaterThanJsonPath(
-					'$.Payload.currentIndex',
+					'$.Payload.nextIndex',
 					'$.Payload.lastIndex',
 				),
 				new Succeed(this, 'Reindex complete'),
