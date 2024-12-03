@@ -8,6 +8,7 @@ import {
 	Choice,
 	Condition,
 	CustomState,
+	DefinitionBody,
 	Fail,
 	StateMachine,
 	Succeed,
@@ -170,7 +171,7 @@ export class RecipesReindex extends Construct {
 		// or `stateMachineName` will introduce circular dependencies.
 		const stateMachineName = `${appBase}-${scope.stage}-reindex-recipes`;
 		const stateMachine = new StateMachine(this, 'ReindexingStateMachine', {
-			definition,
+			definitionBody: DefinitionBody.fromChainable(definition),
 			stateMachineName,
 			timeout: Duration.minutes(15),
 		});
@@ -179,7 +180,7 @@ export class RecipesReindex extends Construct {
 			new PolicyStatement({
 				effect: Effect.ALLOW,
 				resources: [
-					`arn:aws:states:eu-west-1:${scope.account}:stateMachine:${stateMachineName}:*`,
+					`arn:aws:states:eu-west-1:${scope.account}:stateMachine:${stateMachineName}`,
 				],
 				actions: ['states:ListExecutions'],
 			}),
