@@ -1486,6 +1486,7 @@ def sort_filter_rules(json_obj):
             "Arn",
           ],
         },
+        "StateMachineName": "recipes-reindex-TEST-reindex-recipes",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -1602,7 +1603,18 @@ def sort_filter_rules(json_obj):
             {
               "Action": "states:ListExecutions",
               "Effect": "Allow",
-              "Resource": "*",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:states:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":execution:recipes-reindex-TEST-reindex-recipes:*",
+                  ],
+                ],
+              },
             },
           ],
           "Version": "2012-10-17",

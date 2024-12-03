@@ -166,8 +166,10 @@ export class RecipesReindex extends Construct {
 		const definition =
 			checkForOtherRunningReindexesTask.next(isOnlyRunningReindex);
 
+		const stateMachineName = `${appBase}-${scope.stage}-reindex-recipes`;
 		const stateMachine = new StateMachine(this, 'ReindexingStateMachine', {
 			definition,
+			stateMachineName,
 			timeout: Duration.minutes(15),
 		});
 
@@ -175,7 +177,7 @@ export class RecipesReindex extends Construct {
 			new PolicyStatement({
 				effect: Effect.ALLOW,
 				resources: [
-					`arn:aws:states:eu-west-1:${scope.account}:execution:${stateMachine.stateMachineName}:*`,
+					`arn:aws:states:eu-west-1:${scope.account}:execution:${stateMachineName}:*`,
 				],
 				actions: ['states:ListExecutions'],
 			}),
