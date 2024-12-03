@@ -49,11 +49,6 @@ export class RestEndpoints extends Construct {
 			initialPolicy: [
 				new PolicyStatement({
 					effect: Effect.ALLOW,
-					actions: ['s3:PutObject'],
-					resources: [`${servingBucket.bucketArn}/*/*/curation.json`],
-				}),
-				new PolicyStatement({
-					effect: Effect.ALLOW,
 					actions: ['dynamodb:Query'],
 					resources: [
 						`${dataStore.table.tableArn}`,

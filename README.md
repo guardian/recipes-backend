@@ -165,6 +165,10 @@ most of the actual logic lives in the library code imported into it
 
 A lambda function that rebuilds the index on-demand. This is incorporated from initial testing and will probably be removed.
 
+### lambda/rest-endpoints
+
+A lambda function initially used to POST the curation data for MEP to use it, now exists to support GET endpoint to get the most recent version of a given recipe ID, used by Fronts tool to resolve the recipe unique id to a checksum
+
 ### lib/capi
 
 Library functions to communicate with the Content Application Programmer's Interface. This is imported into the lambda code as `@recipes-api/lib/capi`.

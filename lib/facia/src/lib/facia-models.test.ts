@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'path';
 import type { Chef, Recipe } from './facia-models';
-import { FeastCuration, MiseEnPlaceData } from './facia-models';
+import { FeastAppCurationPayload, FeastCuration } from './facia-models';
 
 describe('facia-models', () => {
 	function loadFixture(name: string) {
@@ -64,7 +64,7 @@ describe('facia-models', () => {
 
 	it('should be able to validate real data from MEP', () => {
 		const data = loadFixture('real-curation-data.json');
-		const typedData = MiseEnPlaceData.parse(data);
+		const typedData = FeastAppCurationPayload.parse(data);
 
 		expect(typedData.length).toEqual(13);
 		expect(typedData[11].title).toEqual('Meet our cooks');

@@ -90,5 +90,6 @@ export const FeastCuration = z.intersection(
 );
 
 export type FeastCuration = z.infer<typeof FeastCuration>;
-export const MiseEnPlaceData = z.array(FeastAppContainer);
-export type MiseEnPlaceDataFormat = z.infer<typeof MiseEnPlaceData>;
+
+export const FeastAppCurationPayload = z.array(FeastAppContainer);
+export type FeastAppCurationPayload = z.infer<typeof FeastAppCurationPayload>;
