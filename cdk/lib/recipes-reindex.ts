@@ -179,7 +179,7 @@ export class RecipesReindex extends Construct {
 			new PolicyStatement({
 				effect: Effect.ALLOW,
 				resources: [
-					`arn:aws:states:eu-west-1:${scope.account}:execution:${stateMachineName}:*`,
+					`arn:aws:states:eu-west-1:${scope.account}:stateMachine:${stateMachineName}:*`,
 				],
 				actions: ['states:ListExecutions'],
 			}),

@@ -1611,7 +1611,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":execution:recipes-reindex-TEST-reindex-recipes:*",
+                    ":stateMachine:recipes-reindex-TEST-reindex-recipes:*",
                   ],
                 ],
               },
