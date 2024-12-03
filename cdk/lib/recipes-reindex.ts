@@ -94,7 +94,6 @@ export class RecipesReindex extends Construct {
 			},
 		);
 
-		// Define the Step Functions tasks
 		const checkForOtherRunningReindexesTask = new CustomState(
 			scope,
 			'checkForOtherRunningTasks',
@@ -166,6 +165,9 @@ export class RecipesReindex extends Construct {
 		const definition =
 			checkForOtherRunningReindexesTask.next(isOnlyRunningReindex);
 
+		// We define the name manually so we can construct the ARN manually and limit the scope
+		// of the ListExecutions permission to the state machine itself - using `stateMachineArn`
+		// or `stateMachineName` will introduce circular dependencies.
 		const stateMachineName = `${appBase}-${scope.stage}-reindex-recipes`;
 		const stateMachine = new StateMachine(this, 'ReindexingStateMachine', {
 			definition,
