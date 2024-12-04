@@ -21,14 +21,15 @@ import { Construct } from 'constructs';
 
 type RecipesReindexProps = {
 	contentUrlBase: string;
-	reindexBatchSize: string;
+	reindexBatchSize: number;
+	reindexWaitTime: number;
 };
 
 export class RecipesReindex extends Construct {
 	constructor(
 		scope: GuStack,
 		id: string,
-		{ contentUrlBase, reindexBatchSize }: RecipesReindexProps,
+		{ contentUrlBase, reindexBatchSize, reindexWaitTime }: RecipesReindexProps,
 	) {
 		super(scope, id);
 
@@ -135,7 +136,7 @@ export class RecipesReindex extends Construct {
 			scope,
 			'WaitForThroughPut',
 			{
-				time: WaitTime.duration(Duration.seconds(1)),
+				time: WaitTime.duration(Duration.seconds(reindexWaitTime)),
 			},
 		).next(writeBatchToReindexQueueTask);
 

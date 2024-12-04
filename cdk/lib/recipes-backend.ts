@@ -129,11 +129,18 @@ export class RecipesBackend extends GuStack {
 			this,
 			'reindexBatchSizeParam',
 			{
-				default: `/${this.stage}/${this.stack}/${app}/reindex-batch-size`,
-				fromSSM: true,
+				default: 100,
+				type: 'Number',
 				description: 'The size of the batches to write to the reindex stream',
 			},
 		);
+
+		const reindexWaitTimeParam = new GuParameter(this, 'reindexWaitTimeParam', {
+			default: 10,
+			type: 'Number',
+			description:
+				'The time to wait between sending batches of reindex messages',
+		});
 
 		const contentUrlBase =
 			this.stage === 'CODE'
@@ -243,7 +250,8 @@ export class RecipesBackend extends GuStack {
 
 		new RecipesReindex(this, 'RecipeReindex', {
 			contentUrlBase,
-			reindexBatchSize: reindexBatchSizeParam.valueAsString,
+			reindexBatchSize: reindexBatchSizeParam.valueAsNumber,
+			reindexWaitTime: reindexWaitTimeParam.valueAsNumber,
 		});
 
 		const durationAlarm = new Alarm(this, 'DurationRuntimeAlarm', {
