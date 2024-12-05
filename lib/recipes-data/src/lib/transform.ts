@@ -215,3 +215,25 @@ export function handleFreeTextContribs<
 
 	return { ...parsedRecipe, contributors: contributorTags, byline: freetexts };
 }
+
+/**
+ * Due to a snafu, older app versions want a field called `celebrationsIds` rather than `celebrationIds`.
+ * This transform copies the data from `celebrationIds`, only in the case where there is at least one member of the array.
+ * By avoiding changing recipes which do not have anything there, we avoid forcing the users to redownload the lot.
+ * @param recipeData
+ */
+export const temporaryCelebrationIdsFix: RecipeTransformationFunction = (
+	recipeData,
+) => {
+	const celebrationIds = recipeData['celebrationIds'] as string[] | undefined;
+
+	if (celebrationIds && celebrationIds.length > 0) {
+		console.debug(`Got ${celebrationIds.length} celebrationIds`);
+		return {
+			...recipeData,
+			celebrationsIds: celebrationIds,
+		};
+	} else {
+		return recipeData;
+	}
+};
