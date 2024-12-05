@@ -17,6 +17,7 @@ import {
 	handleFreeTextContribs,
 	replaceCanonicalArticle,
 	replaceImageUrlsWithFastly,
+	temporaryCelebrationIdsFix,
 } from './transform';
 import type {
 	RecipeTransformationFunction,
@@ -142,6 +143,7 @@ function parseJsonBlob(
 			addSponsorsTransform(sponsorship),
 			addRecipeDatesTransform(recipeDates),
 			replaceCanonicalArticle(canonicalId),
+			temporaryCelebrationIdsFix,
 		];
 
 		const updatedRecipe = transforms.reduce(
