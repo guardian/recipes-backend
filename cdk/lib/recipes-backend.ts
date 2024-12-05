@@ -18,6 +18,7 @@ import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { DataStore } from './datastore';
 import { ExternalParameters } from './external_parameters';
 import { FaciaConnection } from './facia-connection';
+import { RecipesReindex } from './recipes-reindex';
 import { RestEndpoints } from './rest-endpoints';
 import { StaticServing } from './static-serving';
 
@@ -124,6 +125,23 @@ export class RecipesBackend extends GuStack {
 			},
 		);
 
+		const reindexBatchSizeParam = new GuParameter(
+			this,
+			'reindexBatchSizeParam',
+			{
+				default: 100,
+				type: 'Number',
+				description: 'The size of the batches to write to the reindex stream',
+			},
+		);
+
+		const reindexWaitTimeParam = new GuParameter(this, 'reindexWaitTimeParam', {
+			default: 10,
+			type: 'Number',
+			description:
+				'The time to wait between sending batches of reindex messages',
+		});
+
 		const contentUrlBase =
 			this.stage === 'CODE'
 				? 'recipes.code.dev-guardianapis.com'
@@ -228,6 +246,12 @@ export class RecipesBackend extends GuStack {
 			fastlyKey: fastlyKeyParam.valueAsString,
 			contentUrlBase,
 			dataStore: store,
+		});
+
+		new RecipesReindex(this, 'RecipeReindex', {
+			contentUrlBase,
+			reindexBatchSize: reindexBatchSizeParam.valueAsNumber,
+			reindexWaitTime: reindexWaitTimeParam.valueAsNumber,
 		});
 
 		const durationAlarm = new Alarm(this, 'DurationRuntimeAlarm', {

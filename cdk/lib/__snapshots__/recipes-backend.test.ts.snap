@@ -13,10 +13,14 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "GuParameter",
       "GuParameter",
       "GuParameter",
+      "GuParameter",
+      "GuParameter",
       "GuLambdaFunction",
       "GuLambdaFunction",
       "GuLambdaErrorPercentageAlarm",
       "GuApiLambda",
+      "GuLambdaFunction",
+      "GuLambdaFunction",
       "GuScheduledLambda",
     ],
     "gu:cdk:version": "TEST",
@@ -95,6 +99,16 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     "fastlyKey": {
       "Default": "/TEST/content-api/recipes-responder/fastly-key",
       "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "reindexBatchSizeParam": {
+      "Default": 100,
+      "Description": "The size of the batches to write to the reindex stream",
+      "Type": "Number",
+    },
+    "reindexWaitTimeParam": {
+      "Default": 10,
+      "Description": "The time to wait between sending batches of reindex messages",
+      "Type": "Number",
     },
   },
   "Resources": {
@@ -1435,6 +1449,268 @@ def sort_filter_rules(json_obj):
       },
       "Type": "AWS::IAM::Policy",
     },
+    "RecipeReindexReindexingStateMachine721AD70A": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "RecipeReindexReindexingStateMachineRoleDefaultPolicy5971BC81",
+        "RecipeReindexReindexingStateMachineRoleD7C6E562",
+      ],
+      "Properties": {
+        "DefinitionString": {
+          "Fn::Join": [
+            "",
+            [
+              "{"StartAt":"checkForOtherRunningTasks","States":{"checkForOtherRunningTasks":{"Next":"IsOnlyRunningReindex","Type":"Task","Parameters":{"StatusFilter":"RUNNING","StateMachineArn.$":"$$.StateMachine.Id"},"Resource":"arn:aws:states:::aws-sdk:sfn:listExecutions"},"IsOnlyRunningReindex":{"Type":"Choice","Choices":[{"Variable":"$.Executions[1]","IsPresent":false,"Next":"SnapshotOrderedIndexTask"}],"Default":"Fail"},"Fail":{"Type":"Fail","Error":"ReindexingError","Cause":"Other reindexes running"},"SnapshotOrderedIndexTask":{"Next":"WriteBatchToReindexQueueTask","Retry":[{"ErrorEquals":["Lambda.ClientExecutionTimeoutException","Lambda.ServiceException","Lambda.AWSLambdaException","Lambda.SdkClientException"],"IntervalSeconds":2,"MaxAttempts":6,"BackoffRate":2}],"Type":"Task","Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::lambda:invoke","Parameters":{"FunctionName":"",
+              {
+                "Fn::GetAtt": [
+                  "SnapshotRecipeIndexLambdaA94048E1",
+                  "Arn",
+                ],
+              },
+              "","Payload":{"executionId.$":"$$.Execution.Name"}}},"WriteBatchToReindexQueueTask":{"Next":"IsReindexComplete","Retry":[{"ErrorEquals":["Lambda.ClientExecutionTimeoutException","Lambda.ServiceException","Lambda.AWSLambdaException","Lambda.SdkClientException"],"IntervalSeconds":2,"MaxAttempts":6,"BackoffRate":2}],"Type":"Task","InputPath":"$.Payload","Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::lambda:invoke","Parameters":{"FunctionName":"",
+              {
+                "Fn::GetAtt": [
+                  "WriteBatchToReindexQueueLambdaA86F9553",
+                  "Arn",
+                ],
+              },
+              "","Payload.$":"$"}},"WaitForThroughPut":{"Type":"Wait","Seconds":",
+              {
+                "Ref": "reindexWaitTimeParam",
+              },
+              ","Next":"WriteBatchToReindexQueueTask"},"IsReindexComplete":{"Type":"Choice","Choices":[{"Variable":"$.Payload.nextIndex","NumericGreaterThanPath":"$.Payload.lastIndex","Next":"Reindex complete"}],"Default":"WaitForThroughPut"},"Reindex complete":{"Type":"Succeed"}},"TimeoutSeconds":900}",
+            ],
+          ],
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "RecipeReindexReindexingStateMachineRoleD7C6E562",
+            "Arn",
+          ],
+        },
+        "StateMachineName": "recipes-reindex-TEST-reindex-recipes",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::StepFunctions::StateMachine",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "RecipeReindexReindexingStateMachineRoleD7C6E562": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "states.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "RecipeReindexReindexingStateMachineRoleDefaultPolicy5971BC81": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "SnapshotRecipeIndexLambdaA94048E1",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "SnapshotRecipeIndexLambdaA94048E1",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "WriteBatchToReindexQueueLambdaA86F9553",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "WriteBatchToReindexQueueLambdaA86F9553",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "states:ListExecutions",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:states:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stateMachine:recipes-reindex-TEST-reindex-recipes",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "RecipeReindexReindexingStateMachineRoleDefaultPolicy5971BC81",
+        "Roles": [
+          {
+            "Ref": "RecipeReindexReindexingStateMachineRoleD7C6E562",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "RecipeReindexreindexSnapshotBucketB9E1DA96": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "BucketName": "recipes-backend-reindex-snapshots-test",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "RecipeReindexreindexSnapshotBucketPolicyD598A49A": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "RecipeReindexreindexSnapshotBucketB9E1DA96",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "RecipeReindexreindexSnapshotBucketB9E1DA96",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "RecipeReindexreindexSnapshotBucketB9E1DA96",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
     "RecipeResponderDLQ4E2B8219": {
       "DeletionPolicy": "Delete",
       "Properties": {
@@ -2116,6 +2392,482 @@ def sort_filter_rules(json_obj):
         ],
       },
       "Type": "AWS::Lambda::EventSourceMapping",
+    },
+    "SnapshotRecipeIndexLambdaA94048E1": {
+      "DependsOn": [
+        "SnapshotRecipeIndexLambdaServiceRoleDefaultPolicy189EC0D5",
+        "SnapshotRecipeIndexLambdaServiceRole0F4E40F2",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
+            "Ref": "DistributionBucketName",
+          },
+          "S3Key": "content-api/TEST/recipes-reindex-snapshot-recipe-index/recipes-reindex.zip",
+        },
+        "Description": "Store a snapshot of the current recipe index in S3",
+        "Environment": {
+          "Variables": {
+            "APP": "recipes-reindex-snapshot-recipe-index",
+            "CONTENT_URL_BASE": "recipes.guardianapis.com",
+            "RECIPE_INDEX_SNAPSHOT_BUCKET": {
+              "Ref": "RecipeReindexreindexSnapshotBucketB9E1DA96",
+            },
+            "STACK": "content-api",
+            "STAGE": "TEST",
+          },
+        },
+        "FunctionName": "recipes-reindex-snapshot-recipe-index-TEST",
+        "Handler": "main.snapshotRecipeIndexHandler",
+        "LoggingConfig": {
+          "LogFormat": "JSON",
+        },
+        "MemorySize": 128,
+        "Role": {
+          "Fn::GetAtt": [
+            "SnapshotRecipeIndexLambdaServiceRole0F4E40F2",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "recipes-reindex-snapshot-recipe-index",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "Timeout": 30,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "SnapshotRecipeIndexLambdaServiceRole0F4E40F2": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "recipes-reindex-snapshot-recipe-index",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "SnapshotRecipeIndexLambdaServiceRoleDefaultPolicy189EC0D5": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:PutObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "RecipeReindexreindexSnapshotBucketB9E1DA96",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                      "/content-api/TEST/recipes-reindex-snapshot-recipe-index/recipes-reindex.zip",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/content-api/recipes-reindex-snapshot-recipe-index",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/content-api/recipes-reindex-snapshot-recipe-index/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "SnapshotRecipeIndexLambdaServiceRoleDefaultPolicy189EC0D5",
+        "Roles": [
+          {
+            "Ref": "SnapshotRecipeIndexLambdaServiceRole0F4E40F2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "WriteBatchToReindexQueueLambdaA86F9553": {
+      "DependsOn": [
+        "WriteBatchToReindexQueueLambdaServiceRoleDefaultPolicyFE28D3C1",
+        "WriteBatchToReindexQueueLambdaServiceRole4B52EB2F",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
+            "Ref": "DistributionBucketName",
+          },
+          "S3Key": "content-api/TEST/recipes-reindex-write-batch-to-index-queue/recipes-reindex.zip",
+        },
+        "Description": "Write a batch of recipe ids to the reindex queue",
+        "Environment": {
+          "Variables": {
+            "APP": "recipes-reindex-write-batch-to-index-queue",
+            "RECIPE_INDEX_SNAPSHOT_BUCKET": {
+              "Ref": "RecipeReindexreindexSnapshotBucketB9E1DA96",
+            },
+            "REINDEX_BATCH_SIZE": {
+              "Ref": "reindexBatchSizeParam",
+            },
+            "STACK": "content-api",
+            "STAGE": "TEST",
+          },
+        },
+        "FunctionName": "recipes-reindex-write-batch-to-reindex-queue-TEST",
+        "Handler": "main.writeBatchToReindexQueueHandler",
+        "LoggingConfig": {
+          "LogFormat": "JSON",
+        },
+        "MemorySize": 128,
+        "Role": {
+          "Fn::GetAtt": [
+            "WriteBatchToReindexQueueLambdaServiceRole4B52EB2F",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "recipes-reindex-write-batch-to-index-queue",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "Timeout": 30,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "WriteBatchToReindexQueueLambdaServiceRole4B52EB2F": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "recipes-reindex-write-batch-to-index-queue",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "content-api",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "WriteBatchToReindexQueueLambdaServiceRoleDefaultPolicyFE28D3C1": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "RecipeReindexreindexSnapshotBucketB9E1DA96",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                      "/content-api/TEST/recipes-reindex-write-batch-to-index-queue/recipes-reindex.zip",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/content-api/recipes-reindex-write-batch-to-index-queue",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/content-api/recipes-reindex-write-batch-to-index-queue/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "WriteBatchToReindexQueueLambdaServiceRoleDefaultPolicyFE28D3C1",
+        "Roles": [
+          {
+            "Ref": "WriteBatchToReindexQueueLambdaServiceRole4B52EB2F",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "staticcdnRead42C381A5": {
       "Properties": {

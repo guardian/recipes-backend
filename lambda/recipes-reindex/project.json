@@ -1,0 +1,77 @@
+{
+	"name": "lambda/recipes-reindex",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "lambda/recipes-reindex/src",
+	"projectType": "application",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["lambda/recipes-reindex/**/*.ts"]
+			}
+		},
+		"build": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": ["zip -r ../recipes-reindex.zip *"],
+				"cwd": "dist/lambda/recipes-reindex"
+			},
+			"dependsOn": [
+				{
+					"projects": "self",
+					"target": "transpile"
+				}
+			]
+		},
+		"transpile": {
+			"executor": "@nx/esbuild:esbuild",
+			"outputs": ["{options.outputPath}"],
+			"defaultConfiguration": "production",
+			"options": {
+				"platform": "node",
+				"external": ["@aws-sdk/*"],
+				"outputPath": "dist/lambda/recipes-reindex",
+				"format": ["cjs"],
+				"bundle": true,
+				"main": "lambda/recipes-reindex/src/main.ts",
+				"tsConfig": "lambda/recipes-reindex/tsconfig.app.json",
+				"assets": ["lambda/recipes-reindex/src/assets"],
+				"generatePackageJson": true,
+				"thirdParty": true,
+				"esbuildOptions": {
+					"sourcemap": true,
+					"outExtension": {
+						".js": ".js"
+					}
+				}
+			},
+			"configurations": {
+				"development": {},
+				"production": {
+					"esbuildOptions": {
+						"sourcemap": false,
+						"outExtension": {
+							".js": ".js"
+						}
+					}
+				}
+			}
+		},
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "lambda/recipes-reindex/jest.config.ts",
+				"passWithNoTests": true
+			},
+			"configurations": {
+				"ci": {
+					"ci": true,
+					"codeCoverage": true
+				}
+			}
+		}
+	},
+	"tags": []
+}

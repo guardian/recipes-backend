@@ -54,3 +54,7 @@ jobs:
               - dist/lambda/publish-todays-curation.zip
             recipes-facia-responder:
               - dist/lambda/facia-responder.zip
+            recipes-reindex-snapshot-recipe-index:
+              - dist/lambda/recipes-reindex.zip
+            recipes-reindex-write-batch-to-index-queue:
+              - dist/lambda/recipes-reindex.zip

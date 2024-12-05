@@ -1,8 +1,8 @@
 //Used by dynamo.ts
 import * as process from 'process';
+import { mandatoryParameter } from './parameters';
 
 export const AwsRegion = process.env['AWS_REGION'];
-
 export const indexTableName = process.env['INDEX_TABLE'];
 export const lastUpdatedIndex = process.env['LAST_UPDATED_INDEX'];
 
@@ -25,20 +25,6 @@ export const FastlyApiKey = process.env['FASTLY_API_KEY'];
 
 //Used by s3.ts
 export const StaticBucketName = mandatoryParameter('STATIC_BUCKET');
-
-export function mandatoryParameter(name: string): string {
-	if (process.env[name]) {
-		return process.env[name] as string;
-	} else {
-		if (process.env['CI']) {
-			return 'test';
-		} else {
-			throw new Error(
-				`You need to define the environment variable ${name} in the lambda config`,
-			);
-		}
-	}
-}
 
 //Used by telemetry
 export const TelemetryXAR = process.env['TELEMETRY_XAR'];
