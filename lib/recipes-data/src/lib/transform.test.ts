@@ -4,6 +4,7 @@ import { recipes } from './recipe-fixtures';
 import {
 	handleFreeTextContribs,
 	replaceImageUrlsWithFastly,
+	temporaryCelebrationIdsFix,
 } from './transform';
 
 jest.mock('./config', () => ({
@@ -242,6 +243,39 @@ describe('Recipe transforms', () => {
 				'https://cdn.road.cc/sites/default/files/styles/main_width/public/Wat-duck.png',
 				undefined,
 			);
+		});
+	});
+
+	describe('temporaryCelebrationIdsFix', () => {
+		it('should not change anything if celebrationIds is not present', () => {
+			const recipe = recipes[0];
+			recipe.celebrationIds = undefined;
+
+			const transformed = temporaryCelebrationIdsFix(recipe);
+			expect(transformed).toEqual(recipe);
+			expect(transformed.celebrationsIds).toBeUndefined();
+		});
+
+		it('should not change anything if celebrationIds is empty', () => {
+			const recipe = recipes[0];
+
+			const transformed = temporaryCelebrationIdsFix(recipe);
+			expect(transformed).toEqual(recipe);
+			expect(transformed.celebrationsIds).toBeUndefined();
+		});
+
+		it('should copy a non-empty celebrationIds to celebrationsIds', () => {
+			const recipe = recipes[0];
+			recipe.celebrationIds = ['christmas', 'new_year'];
+
+			const transformed = temporaryCelebrationIdsFix(recipe);
+			expect(transformed).not.toEqual(recipe);
+			expect(transformed.celebrationIds).toEqual(['christmas', 'new_year']);
+			expect(transformed.celebrationsIds).toEqual(['christmas', 'new_year']);
+
+			for (const k of Object.keys(recipe)) {
+				expect(transformed[k]).toEqual(recipe[k]);
+			}
 		});
 	});
 });
