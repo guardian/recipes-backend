@@ -166,6 +166,7 @@ async function main() {
 		else console.log(msg);
 		console.log('------------------------------------------------------\n');
 	}
+	const failedArticleIds: string[] = [];
 
 	if (all && !indexOnly) {
 		const index = await retrieveIndexData();
@@ -191,7 +192,14 @@ async function main() {
 				console.log('------------------------------------------------------');
 				console.log(`Article ${i} / ${total}...\n`);
 				const queryUri = await getQueryUri(articleId, undefined, undefined);
-				await reindex(queryUri);
+				try {
+					await reindex(queryUri);
+				} catch (e) {
+					console.error(
+						`Error reindexing ${queryUri}: ${(e as Error).toString()}`,
+					);
+					failedArticleIds.push(queryUri);
+				}
 				console.log('------------------------------------------------------\n');
 				i++;
 			}
@@ -217,6 +225,11 @@ async function main() {
 	};
 	await writeIndexData(indexWithoutSponsored, INDEX_JSON);
 	console.log('Finished rebuilding index');
+
+	if (failedArticleIds.length > 0) {
+		console.warn(`${failedArticleIds.length} failed to reindex:`);
+		failedArticleIds.forEach((capiId) => console.warn(`\t${capiId}`));
+	}
 }
 
 main()

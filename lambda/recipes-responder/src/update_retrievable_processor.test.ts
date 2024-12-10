@@ -56,7 +56,7 @@ describe('handleContentUpdateRetrievable', () => {
 				'/path/to/article',
 				'/channel/feast/item/path/to/article',
 			) +
-				'?show-fields=internalRevision,lastModifiedDate,firstPublishedDate,publishedDate&show-blocks=all&show-channels=all&api-key=fake-api-key&format=thrift',
+				'?show-fields=internalRevision,lastModifiedDate,firstPublishedDate,publishedDate&show-blocks=all&show-channels=all&show-tags=all&api-key=fake-api-key&format=thrift',
 		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(handleContentUpdate.mock.calls.length).toEqual(1);

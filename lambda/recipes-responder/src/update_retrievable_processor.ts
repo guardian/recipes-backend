@@ -31,6 +31,7 @@ export async function retrieveContent(capiUrl: string): Promise<PollingResult> {
 		`show-fields=internalRevision,lastModifiedDate,firstPublishedDate,publishedDate`,
 		`show-blocks=all`,
 		`show-channels=all`,
+		`show-tags=all`,
 		`api-key=${CapiKey}`,
 		`format=thrift`,
 	]
