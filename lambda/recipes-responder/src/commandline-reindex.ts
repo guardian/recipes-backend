@@ -7,6 +7,11 @@ import {
 	V2_INDEX_JSON,
 	writeIndexData,
 } from '@recipes-api/lib/recipes-data';
+import {
+	getContentPrefix,
+	getFastlyApiKey,
+	getStaticBucketName,
+} from 'lib/recipes-data/src/lib/config';
 import { CapiKey } from './config';
 import { handleContentUpdate } from './update_processor';
 import { PollingAction, retrieveContent } from './update_retrievable_processor';
@@ -59,7 +64,11 @@ async function getQueryUri(
 	}
 }
 
-async function reindex(queryUri: string): Promise<void> {
+async function reindex(
+	queryUri: string,
+	staticBucketName: string,
+	fastlyApiKey: string,
+): Promise<void> {
 	const pollingResult = await retrieveContent(queryUri);
 	switch (pollingResult.action) {
 		case PollingAction.CONTENT_EXISTS:
@@ -71,7 +80,11 @@ async function reindex(queryUri: string): Promise<void> {
 				}`,
 			);
 			if (pollingResult.content) {
-				await handleContentUpdate(pollingResult.content);
+				await handleContentUpdate(
+					pollingResult.content,
+					staticBucketName,
+					fastlyApiKey,
+				);
 			} else {
 				throw new Error(
 					'Got a positive result but no content?? This must be a bug :(',
@@ -85,6 +98,10 @@ async function reindex(queryUri: string): Promise<void> {
 }
 
 async function main() {
+	const staticBucketName = getStaticBucketName();
+	const contentPrefix = getContentPrefix();
+	const fastlyApiKey = getFastlyApiKey();
+
 	//Parse the commandline arguments
 	const {
 		values: { help, composerId, capiUri, recipeUid, all, test, indexOnly },
@@ -193,7 +210,7 @@ async function main() {
 				console.log(`Article ${i} / ${total}...\n`);
 				const queryUri = await getQueryUri(articleId, undefined, undefined);
 				try {
-					await reindex(queryUri);
+					await reindex(queryUri, staticBucketName, fastlyApiKey);
 				} catch (e) {
 					console.error(
 						`Error reindexing ${queryUri}: ${(e as Error).toString()}`,
@@ -209,7 +226,7 @@ async function main() {
 		if (test) {
 			console.log('Not performing any operations as --test was specified');
 		} else {
-			await reindex(queryUri);
+			await reindex(queryUri, staticBucketName, fastlyApiKey);
 		}
 	}
 
@@ -217,13 +234,25 @@ async function main() {
 	console.log('Rebuilding index...');
 	const indexData = await retrieveIndexData();
 	console.log('(including all recipes...)');
-	await writeIndexData(indexData, V2_INDEX_JSON);
+	await writeIndexData(
+		indexData,
+		V2_INDEX_JSON,
+		staticBucketName,
+		contentPrefix,
+		fastlyApiKey,
+	);
 	console.log('(excluding sponsored recipes...)');
 	const indexWithoutSponsored: RecipeIndex = {
 		...indexData,
 		recipes: indexData.recipes.filter((r) => r.sponsorshipCount === 0),
 	};
-	await writeIndexData(indexWithoutSponsored, INDEX_JSON);
+	await writeIndexData(
+		indexWithoutSponsored,
+		INDEX_JSON,
+		staticBucketName,
+		contentPrefix,
+		fastlyApiKey,
+	);
 	console.log('Finished rebuilding index');
 
 	if (failedArticleIds.length > 0) {

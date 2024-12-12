@@ -2,7 +2,15 @@ import type { SNSMessage, SQSHandler, SQSRecord } from 'aws-lambda';
 import format from 'date-fns/format';
 import type { SafeParseReturnType } from 'zod';
 import * as facia from '@recipes-api/lib/facia';
-import { deployCurationData } from '@recipes-api/lib/recipes-data';
+import {
+	deployCurationData,
+	getFastlyApiKey,
+	getStaticBucketName,
+} from '@recipes-api/lib/recipes-data';
+import {
+	getFaciaPublicationStatusRoleArn,
+	getFaciaPublicationStatusTopicArn,
+} from './config';
 import { notifyFaciaTool } from './facia-notifications';
 import { generatePublicationMessage, getErrorMessage } from './util';
 
@@ -24,7 +32,11 @@ function parseFeastCuration(
 	return facia.FeastCuration.safeParse(message);
 }
 
-async function deployCuration(curation: facia.FeastCuration) {
+async function deployCuration(
+	curation: facia.FeastCuration,
+	staticBucketName: string,
+	fastlyApiKey: string,
+) {
 	const issueDate = new Date(curation.issueDate);
 	const region = curation.path ?? curation.edition;
 	for (const frontName of Object.keys(curation.fronts)) {
@@ -35,11 +47,23 @@ async function deployCuration(curation: facia.FeastCuration) {
 			)}`,
 		);
 		const serializedFront = JSON.stringify(curation.fronts[frontName]);
-		await deployCurationData(serializedFront, region, frontName, issueDate);
+		await deployCurationData(
+			serializedFront,
+			region,
+			frontName,
+			issueDate,
+			staticBucketName,
+			fastlyApiKey,
+		);
 	}
 }
 
 export const handler: SQSHandler = async (event) => {
+	const staticBucketName = getStaticBucketName();
+	const fastlyApiKey = getFastlyApiKey();
+	const faciaPublicationStatusTopicArn = getFaciaPublicationStatusTopicArn();
+	const faciaPublicationStatusRoleArn = getFaciaPublicationStatusRoleArn();
+
 	for (const rec of event.Records) {
 		console.log(
 			`Received message with ID ${rec.messageId}, payload ${rec.body}`,
@@ -67,39 +91,51 @@ export const handler: SQSHandler = async (event) => {
 
 		if (!maybeFronts.success) {
 			console.error(maybeFronts.error);
-			return notifyFaciaTool({
-				edition,
-				issueDate,
-				version,
-				status: 'Failed',
-				message: `Failed to publish this issue. Error: ${JSON.stringify(
-					maybeFronts.error,
-				)}`,
-				timestamp: Date.now(),
-			});
+			return notifyFaciaTool(
+				{
+					edition,
+					issueDate,
+					version,
+					status: 'Failed',
+					message: `Failed to publish this issue. Error: ${JSON.stringify(
+						maybeFronts.error,
+					)}`,
+					timestamp: Date.now(),
+				},
+				faciaPublicationStatusTopicArn,
+				faciaPublicationStatusRoleArn,
+			);
 		}
 
 		try {
-			await deployCuration(maybeFronts.data);
+			await deployCuration(maybeFronts.data, staticBucketName, fastlyApiKey);
 
-			return notifyFaciaTool({
-				edition,
-				issueDate,
-				version,
-				status: 'Published',
-				message: generatePublicationMessage(issueDate),
-				timestamp: Date.now(),
-			});
+			return notifyFaciaTool(
+				{
+					edition,
+					issueDate,
+					version,
+					status: 'Published',
+					message: generatePublicationMessage(issueDate),
+					timestamp: Date.now(),
+				},
+				faciaPublicationStatusTopicArn,
+				faciaPublicationStatusRoleArn,
+			);
 		} catch (e) {
 			console.error(e);
-			return notifyFaciaTool({
-				edition,
-				issueDate,
-				version,
-				status: 'Failed',
-				message: `Failed to publish this issue. Error: ${getErrorMessage(e)}`,
-				timestamp: Date.now(),
-			});
+			return notifyFaciaTool(
+				{
+					edition,
+					issueDate,
+					version,
+					status: 'Failed',
+					message: `Failed to publish this issue. Error: ${getErrorMessage(e)}`,
+					timestamp: Date.now(),
+				},
+				faciaPublicationStatusTopicArn,
+				faciaPublicationStatusRoleArn,
+			);
 		}
 	}
 };

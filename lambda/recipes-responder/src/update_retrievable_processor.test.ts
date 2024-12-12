@@ -34,6 +34,9 @@ const fakeContent: Content = {
 	webUrl: 'web://path/to/content',
 };
 
+const staticBucketName = 'static-bucket';
+const fastlyApiKey = 'fastly-api-key';
+
 describe('handleContentUpdateRetrievable', () => {
 	beforeEach(() => {
 		jest.resetAllMocks();
@@ -47,7 +50,11 @@ describe('handleContentUpdateRetrievable', () => {
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		handleContentUpdate.mockReturnValue(Promise.resolve(3));
 
-		const recordCount = await handleContentUpdateRetrievable(fakeUpdate);
+		const recordCount = await handleContentUpdateRetrievable(
+			fakeUpdate,
+			staticBucketName,
+			fastlyApiKey,
+		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(callCAPI.mock.calls.length).toEqual(1);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
@@ -71,10 +78,14 @@ describe('handleContentUpdateRetrievable', () => {
 			Promise.resolve({ action: 0, content: fakeContent }),
 		);
 
-		const recordCount = await handleContentUpdateRetrievable({
-			...fakeUpdate,
-			contentType: ContentType.GALLERY,
-		});
+		const recordCount = await handleContentUpdateRetrievable(
+			{
+				...fakeUpdate,
+				contentType: ContentType.GALLERY,
+			},
+			staticBucketName,
+			fastlyApiKey,
+		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(callCAPI.mock.calls.length).toEqual(0);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
@@ -88,7 +99,13 @@ describe('handleContentUpdateRetrievable', () => {
 			Promise.resolve({ action: 4, content: fakeContent }),
 		);
 
-		await expect(handleContentUpdateRetrievable(fakeUpdate)).rejects.toEqual(
+		await expect(
+			handleContentUpdateRetrievable(
+				fakeUpdate,
+				staticBucketName,
+				fastlyApiKey,
+			),
+		).rejects.toEqual(
 			new Error(
 				'Could not handle retrievable update from CAPI: PollingAction code was 4. Allowing the lambda runtime to retry or DLQ.',
 			),
@@ -106,7 +123,11 @@ describe('handleContentUpdateRetrievable', () => {
 			Promise.resolve({ action: 1, content: fakeContent }),
 		);
 
-		const recordCount = await handleContentUpdateRetrievable(fakeUpdate);
+		const recordCount = await handleContentUpdateRetrievable(
+			fakeUpdate,
+			staticBucketName,
+			fastlyApiKey,
+		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(callCAPI.mock.calls.length).toEqual(1);
 		// @ts-ignore -- Typescript doesn't know that this is a mock

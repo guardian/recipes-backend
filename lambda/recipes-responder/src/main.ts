@@ -9,6 +9,11 @@ import {
 	V2_INDEX_JSON,
 	writeIndexData,
 } from '@recipes-api/lib/recipes-data';
+import {
+	getContentPrefix,
+	getFastlyApiKey,
+	getStaticBucketName,
+} from 'lib/recipes-data/src/lib/config';
 import type { CrierEvent } from './eventbridge_models';
 import { handleDeletedContent, handleTakedown } from './takedown_processor';
 import { handleContentUpdate } from './update_processor';
@@ -20,7 +25,11 @@ const filterProductionMonitoring: boolean = process.env[
 	? process.env['FILTER_PRODUCTION_MONITORING'].toLowerCase() == 'yes'
 	: false;
 
-export async function processRecord(r: CrierEvent): Promise<number> {
+export async function processRecord(
+	r: CrierEvent,
+	staticBucketName: string,
+	fastlyApiKey: string,
+): Promise<number> {
 	if (r.channels && !r.channels.includes('feast')) {
 		console.error(
 			`Received a CrierEvent for channels ${r.channels.join()}, which did not include Feast! This is a configuration bug :(`,
@@ -45,7 +54,7 @@ export async function processRecord(r: CrierEvent): Promise<number> {
 				) {
 					return 0;
 				}
-				return handleTakedown(evt);
+				return handleTakedown(evt, staticBucketName, fastlyApiKey);
 			case EventType.UPDATE:
 			case EventType.RETRIEVABLEUPDATE:
 				switch (evt.payload?.kind) {
@@ -53,10 +62,16 @@ export async function processRecord(r: CrierEvent): Promise<number> {
 						console.log('DEBUG Event had no payload');
 						break;
 					case 'content':
-						return handleContentUpdate(evt.payload.content);
+						return handleContentUpdate(
+							evt.payload.content,
+							staticBucketName,
+							fastlyApiKey,
+						);
 					case 'retrievableContent':
 						return handleContentUpdateRetrievable(
 							evt.payload.retrievableContent,
+							staticBucketName,
+							fastlyApiKey,
 						);
 					case 'deletedContent':
 						return handleDeletedContent(evt.payload.deletedContent);
@@ -79,7 +94,15 @@ export async function processRecord(r: CrierEvent): Promise<number> {
 export const handler: EventBridgeHandler<string, CrierEvent, void> = async (
 	event,
 ) => {
-	const updatesTotal = await processRecord(event.detail);
+	const contentPrefix = getContentPrefix();
+	const staticBucket = getStaticBucketName();
+	const fastlyApiKey = getFastlyApiKey();
+
+	const updatesTotal = await processRecord(
+		event.detail,
+		staticBucket,
+		fastlyApiKey,
+	);
 
 	if (updatesTotal > 0) {
 		console.log(
@@ -94,8 +117,20 @@ export const handler: EventBridgeHandler<string, CrierEvent, void> = async (
 			),
 		};
 
-		await writeIndexData(indexDataForUnSponsoredRecipes, INDEX_JSON);
-		await writeIndexData(indexDataForAllRecipes, V2_INDEX_JSON);
+		await writeIndexData(
+			indexDataForUnSponsoredRecipes,
+			INDEX_JSON,
+			contentPrefix,
+			staticBucket,
+			fastlyApiKey,
+		);
+		await writeIndexData(
+			indexDataForAllRecipes,
+			V2_INDEX_JSON,
+			staticBucket,
+			contentPrefix,
+			fastlyApiKey,
+		);
 		console.log('Finished rebuilding index');
 	} else {
 		console.log('No updates to recipes, so not touching index');

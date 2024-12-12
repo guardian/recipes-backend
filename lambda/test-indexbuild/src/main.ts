@@ -5,8 +5,17 @@ import {
 	V2_INDEX_JSON,
 	writeIndexData,
 } from '@recipes-api/lib/recipes-data';
+import {
+	getContentPrefix,
+	getFastlyApiKey,
+	getStaticBucketName,
+} from 'lib/recipes-data/src/lib/config';
 
 export const handler: Handler = async () => {
+	const staticBucketName = getStaticBucketName();
+	const contentPrefix = getContentPrefix();
+	const fastlyApiKey = getFastlyApiKey();
+
 	console.log('Index test starting up');
 
 	console.log('Retrieving index data...');
@@ -35,7 +44,19 @@ export const handler: Handler = async () => {
 	}
 
 	console.log('Done.');
-	await writeIndexData(indexDataForUnSponsoredRecipes, INDEX_JSON);
-	await writeIndexData(indexDataForAllRecipes, V2_INDEX_JSON);
+	await writeIndexData(
+		indexDataForUnSponsoredRecipes,
+		INDEX_JSON,
+		staticBucketName,
+		contentPrefix,
+		fastlyApiKey,
+	);
+	await writeIndexData(
+		indexDataForAllRecipes,
+		V2_INDEX_JSON,
+		staticBucketName,
+		contentPrefix,
+		fastlyApiKey,
+	);
 	console.log('All completed.');
 };

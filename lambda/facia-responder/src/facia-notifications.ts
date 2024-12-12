@@ -1,9 +1,5 @@
 import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 import { fromTemporaryCredentials } from '@aws-sdk/credential-providers';
-import {
-	faciaPublicationStatusRoleArn,
-	faciaPublicationStatusTopicArn,
-} from './config';
 import { getErrorMessage } from './util';
 
 // The publication status event we send over SNS.
@@ -29,6 +25,8 @@ export type PublicationStatusEvent = {
 
 export async function notifyFaciaTool(
 	event: PublicationStatusEvent,
+	faciaPublicationStatusTopicArn: string,
+	faciaPublicationStatusRoleArn: string,
 ): Promise<void> {
 	const payload = JSON.stringify({ event } as PublicationStatusEventEnvelope);
 

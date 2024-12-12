@@ -20,6 +20,8 @@ import {
 async function publishRecipe(
 	canonicalArticleId: string,
 	recep: RecipeReference,
+	staticBucketName: string,
+	fastlyApiKey: string,
 ): Promise<void> {
 	try {
 		await sendTelemetryEvent('PublishedData', recep.recipeUID, recep.jsonBlob);
@@ -29,7 +31,7 @@ async function publishRecipe(
 	console.log(
 		`INFO [${canonicalArticleId}] - pushing ${recep.recipeUID} @ ${recep.checksum} to S3...`,
 	);
-	await publishRecipeContent(recep);
+	await publishRecipeContent(recep, staticBucketName, fastlyApiKey);
 	console.log(`INFO [${canonicalArticleId}] - updating index table...`);
 	await insertNewRecipe(canonicalArticleId, {
 		recipeUID: recep.recipeUID,
@@ -45,7 +47,11 @@ async function publishRecipe(
  * @returns a number, representing the number of recipes that were added plus the number that were deleted (i.e., an
  * update counts as 1 add and 1 delete)
  */
-export async function handleContentUpdate(content: Content): Promise<number> {
+export async function handleContentUpdate(
+	content: Content,
+	staticBucketName: string,
+	fastlyApiKey: string,
+): Promise<number> {
 	try {
 		if (content.type != ContentType.ARTICLE) return 0; //no point processing live-blogs etc.
 
@@ -62,7 +68,9 @@ export async function handleContentUpdate(content: Content): Promise<number> {
 		);
 		if (allRecipes.length == 0 && entriesToRemove.length == 0) return 0; //no point hanging around and noising up the logs
 		await Promise.all(
-			entriesToRemove.map((recep) => removeRecipeVersion(content.id, recep)),
+			entriesToRemove.map((recep) =>
+				removeRecipeVersion(content.id, recep, staticBucketName, fastlyApiKey),
+			),
 		);
 		console.log(
 			`INFO [${content.id}] - ${entriesToRemove.length} removed/superceded recipes have been removed from the store`,
@@ -72,7 +80,9 @@ export async function handleContentUpdate(content: Content): Promise<number> {
 			`INFO [${content.id}] - publishing ${allRecipes.length} new/updated recipes to the service`,
 		);
 		await Promise.all(
-			allRecipes.map((recep) => publishRecipe(content.id, recep)),
+			allRecipes.map((recep) =>
+				publishRecipe(content.id, recep, staticBucketName, fastlyApiKey),
+			),
 		);
 
 		console.log(
