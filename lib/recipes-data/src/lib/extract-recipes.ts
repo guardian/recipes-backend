@@ -59,8 +59,9 @@ export function extractRecipeData(
 	sponsorship: Sponsorship[],
 ): Array<RecipeReferenceWithoutChecksum | null> {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- to fix error when elements are undefined , example if main block does not have any elements.
-	if (!block?.elements) return [];
-	else {
+	if (!block?.elements) {
+		return [];
+	} else {
 		const recipeDates: RecipeDates = {
 			lastModifiedDate: capiDateTimeToDate(block.lastModifiedDate),
 			firstPublishedDate: getFirstPublishedDate(block, content),

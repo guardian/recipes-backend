@@ -7,6 +7,7 @@ export * from './lib/telemetry';
 export * from './lib/curation';
 export * from './lib/constants';
 export * from './lib/eventbus';
+export * from './lib/config';
 
 export { sendFastlyPurgeRequestWithRetries } from './lib/fastly';
 export {

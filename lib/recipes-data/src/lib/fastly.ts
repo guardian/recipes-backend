@@ -1,6 +1,6 @@
 //This file is based on https://github.com/guardian/fastly-cache-purger/blob/5b718fd827acf2eabb94884d9df59645999fc2f5/src/main/scala/com/gu/fastly/Lambda.scala#L162
 //with reference to https://developer.fastly.com/reference/api/purging/ and https://docs.fastly.com/en/guides/authenticating-api-purge-requests
-import { ContentPrefix, DebugLogsEnabled, MaximumRetries } from './config';
+import { DebugLogsEnabled, MaximumRetries } from './config';
 import { awaitableDelay } from './utils';
 
 /** From the fastly docs at https://docs.fastly.com/en/fundamentals/what-is-purging:
@@ -38,18 +38,16 @@ function removeLeadingAndTrailingSlash(from: string): string {
 export async function sendFastlyPurgeRequest(
 	contentPath: string,
 	apiKey: string,
+	contentPrefix: string,
 	purgeType?: PurgeType,
 ) {
-	if (!ContentPrefix) {
-		throw new Error('Cannot purge because CONTENT_URL_BASE is not set');
-	}
 	if (!apiKey || apiKey == '') {
 		throw new Error('Cannot purge because Fastly API key is not set');
 	}
 
 	const urlToPurge = [
 		'https://api.fastly.com/purge',
-		removeLeadingAndTrailingSlash(ContentPrefix),
+		removeLeadingAndTrailingSlash(contentPrefix),
 		removeLeadingAndTrailingSlash(contentPath),
 	].join('/');
 
@@ -103,11 +101,17 @@ export async function sendFastlyPurgeRequest(
 export async function sendFastlyPurgeRequestWithRetries(
 	contentPath: string,
 	apiKey: string,
+	contentPrefix: string,
 	purgeType?: PurgeType,
 	retryCount?: number,
 ): Promise<void> {
 	try {
-		return sendFastlyPurgeRequest(contentPath, apiKey, purgeType);
+		return sendFastlyPurgeRequest(
+			contentPath,
+			apiKey,
+			contentPrefix,
+			purgeType,
+		);
 	} catch (err) {
 		if (err instanceof FastlyError) {
 			const nextRetry = retryCount ? retryCount + 1 : 1;
@@ -122,6 +126,7 @@ export async function sendFastlyPurgeRequestWithRetries(
 			return sendFastlyPurgeRequestWithRetries(
 				contentPath,
 				apiKey,
+				contentPrefix,
 				purgeType,
 				nextRetry,
 			);

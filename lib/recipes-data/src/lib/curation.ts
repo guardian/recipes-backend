@@ -1,6 +1,6 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import format from 'date-fns/format';
-import { AwsRegion, StaticBucketName as Bucket, FastlyApiKey } from './config';
+import { AwsRegion } from './config';
 import { sendFastlyPurgeRequestWithRetries } from './fastly';
 
 const s3client = new S3Client({ region: AwsRegion });
@@ -10,6 +10,8 @@ export async function deployCurationData(
 	region: string,
 	variant: string,
 	maybeDate: Date | null,
+	Bucket: string,
+	fastlyApiKey: string,
 ): Promise<void> {
 	const Key = maybeDate
 		? `${region}/${variant}/${format(maybeDate, 'yyyy-MM-dd')}/curation.json`
@@ -26,5 +28,5 @@ export async function deployCurationData(
 	console.log(`Uploading new curation data to ${Bucket}/${Key}`);
 	await s3client.send(req);
 	console.log('Done. Flushing CDN cache...');
-	await sendFastlyPurgeRequestWithRetries(Key, FastlyApiKey as string, 'hard');
+	await sendFastlyPurgeRequestWithRetries(Key, fastlyApiKey, 'hard');
 }

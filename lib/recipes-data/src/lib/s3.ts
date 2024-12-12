@@ -6,11 +6,7 @@ import {
 	S3Client,
 	S3ServiceException,
 } from '@aws-sdk/client-s3';
-import {
-	StaticBucketName as Bucket,
-	FastlyApiKey,
-	MaximumRetries,
-} from './config';
+import { MaximumRetries } from './config';
 import {
 	FastlyError,
 	sendFastlyPurgeRequest,
@@ -46,6 +42,8 @@ function makeCacheControl(
  */
 export async function publishRecipeContent(
 	recipe: RecipeReference,
+	Bucket: string,
+	fastlyApiKey: string,
 	attempt?: number,
 ): Promise<void> {
 	const realAttempt = attempt ?? 1;
@@ -69,7 +67,7 @@ export async function publishRecipeContent(
 	try {
 		await s3Client.send(req);
 		//TODO - check if "hard" or "soft" purging is the right option here
-		await sendFastlyPurgeRequestWithRetries(Key, FastlyApiKey ?? '', 'hard');
+		await sendFastlyPurgeRequestWithRetries(Key, fastlyApiKey, 'hard');
 	} catch (err) {
 		if (err instanceof S3ServiceException) {
 			console.warn(`Unable to write to S3 on attempt ${realAttempt}: `, err);
@@ -79,7 +77,12 @@ export async function publishRecipeContent(
 				realAttempt < MaximumRetries
 			) {
 				await awaitableDelay();
-				return publishRecipeContent(recipe, realAttempt + 1);
+				return publishRecipeContent(
+					recipe,
+					Bucket,
+					fastlyApiKey,
+					realAttempt + 1,
+				);
 			} else {
 				throw new Error('Could not write to S3, see logs for details.');
 			}
@@ -93,6 +96,8 @@ export async function publishRecipeContent(
 
 export async function removeRecipeContent(
 	recipeSHA: string,
+	Bucket: string,
+	fastlyApiKey: string,
 	purgeType?: 'soft' | 'hard',
 	attempt?: number,
 ): Promise<void> {
@@ -110,7 +115,7 @@ export async function removeRecipeContent(
 		await s3Client.send(req);
 		await sendFastlyPurgeRequestWithRetries(
 			Key,
-			FastlyApiKey ?? '',
+			fastlyApiKey,
 			purgeType ?? 'hard',
 		);
 	} catch (err) {
@@ -127,7 +132,13 @@ export async function removeRecipeContent(
 				realAttempt < MaximumRetries
 			) {
 				await awaitableDelay();
-				return removeRecipeContent(recipeSHA, purgeType, realAttempt + 1);
+				return removeRecipeContent(
+					recipeSHA,
+					Bucket,
+					fastlyApiKey,
+					purgeType,
+					realAttempt + 1,
+				);
 			} else {
 				throw new Error('Could not delete from S3, see logs for details.');
 			}
@@ -142,13 +153,19 @@ export async function removeRecipeContent(
  * @param indexData built indexdata object. Get this from `retrieveIndexData`
  * @param Key filename to write in S3
  */
-export async function writeIndexData(indexData: RecipeIndex, Key: string) {
+export async function writeIndexData(
+	indexData: RecipeIndex,
+	Key: string,
+	staticBucket: string,
+	contentPrefix: string,
+	fastlyApiKey: string,
+) {
 	console.log('Marshalling data...');
 	const formattedData = JSON.stringify(indexData);
 
-	console.log(`Done. Writing to s3://${Bucket}/${Key}...`);
+	console.log(`Done. Writing to s3://${staticBucket}/${Key}...`);
 	const req = new PutObjectCommand({
-		Bucket,
+		Bucket: staticBucket,
 		Key,
 		Body: formattedData,
 		ContentType: 'application/json',
@@ -157,6 +174,6 @@ export async function writeIndexData(indexData: RecipeIndex, Key: string) {
 
 	await s3Client.send(req);
 	console.log('Done. Purging CDN...');
-	await sendFastlyPurgeRequest(Key, FastlyApiKey ?? '');
+	await sendFastlyPurgeRequest(Key, fastlyApiKey, contentPrefix);
 	console.log('Done.');
 }
