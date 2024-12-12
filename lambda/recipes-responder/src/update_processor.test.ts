@@ -17,6 +17,9 @@ import {
 import { handleContentUpdate } from './update_processor';
 import Mock = jest.Mock;
 
+const staticBucketName = 'static-bucket';
+const fastlyApiKey = 'fastly-api-key';
+
 jest.mock('@recipes-api/lib/recipes-data', () => ({
 	calculateChecksum: jest.fn(),
 	extractAllRecipesFromArticle: jest.fn(),
@@ -98,7 +101,7 @@ describe('update_processor.handleContentUpdate', () => {
 				sponsorshipCount: 0,
 			});
 
-		await handleContentUpdate(fakeContent);
+		await handleContentUpdate(fakeContent, staticBucketName, fastlyApiKey);
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(extractAllRecipesFromArticle.mock.calls.length).toEqual(1);
@@ -241,7 +244,11 @@ describe('update_processor.handleContentUpdate', () => {
 				sponsorshipCount: 0,
 			});
 
-		await handleContentUpdate({ ...fakeContent, type: ContentType.GALLERY });
+		await handleContentUpdate(
+			{ ...fakeContent, type: ContentType.GALLERY },
+			staticBucketName,
+			fastlyApiKey,
+		);
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(extractAllRecipesFromArticle.mock.calls.length).toEqual(0);
@@ -275,7 +282,7 @@ describe('update_processor.handleContentUpdate', () => {
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		recipesToTakeDown.mockReturnValue(refsToRemove);
 
-		await handleContentUpdate(fakeContent);
+		await handleContentUpdate(fakeContent, staticBucketName, fastlyApiKey);
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(extractAllRecipesFromArticle.mock.calls.length).toEqual(1);
@@ -354,7 +361,7 @@ describe('update_processor.handleContentUpdate', () => {
 				sponsorshipCount: 0,
 			});
 
-		await handleContentUpdate(fakeContent);
+		await handleContentUpdate(fakeContent, staticBucketName, fastlyApiKey);
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(extractAllRecipesFromArticle.mock.calls.length).toEqual(1);

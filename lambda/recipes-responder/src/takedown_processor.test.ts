@@ -17,6 +17,9 @@ jest.mock('../../../lib/recipes-data/src/lib/eventbus', () => ({
 	announce_new_recipe: jest.fn(),
 }));
 
+const staticBucketName = 'static-bucket-name';
+const fastlyApiKey = 'fastly-api-key';
+
 describe('takedown_processor.handleTakedown', () => {
 	beforeEach(() => {
 		jest.resetAllMocks();
@@ -33,7 +36,7 @@ describe('takedown_processor.handleTakedown', () => {
 			dateTime: new Int64(Date.now()),
 		};
 
-		const count = await handleTakedown(testEvt);
+		const count = await handleTakedown(testEvt, staticBucketName, fastlyApiKey);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeAllRecipesForArticle.mock.calls.length).toEqual(1);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
@@ -53,7 +56,7 @@ describe('takedown_processor.handleTakedown', () => {
 			dateTime: new Int64(Date.now()),
 		};
 
-		const count = await handleTakedown(testEvt);
+		const count = await handleTakedown(testEvt, staticBucketName, fastlyApiKey);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeAllRecipesForArticle.mock.calls.length).toEqual(0);
 		// @ts-ignore -- Typescript doesn't know that this is a mock

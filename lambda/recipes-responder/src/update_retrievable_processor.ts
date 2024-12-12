@@ -42,6 +42,8 @@ export async function retrieveContent(capiUrl: string): Promise<PollingResult> {
 
 export async function handleContentUpdateRetrievable(
 	retrievable: RetrievableContent,
+	staticBucketName: string,
+	fastlyApiKey: string,
 ): Promise<number> {
 	if (retrievable.contentType != ContentType.ARTICLE) return 0; //no point processing live-blogs etc.
 
@@ -66,7 +68,11 @@ export async function handleContentUpdateRetrievable(
 					`INFO Retrievable update was superceded - we expected to see ${retrievable.internalRevision} but got ${capiResponse.content.fields.internalRevision}`,
 				);
 			} else if (capiResponse.content) {
-				return handleContentUpdate(capiResponse.content);
+				return handleContentUpdate(
+					capiResponse.content,
+					staticBucketName,
+					fastlyApiKey,
+				);
 			} else {
 				console.error(
 					"Content existed but was empty, this shouldn't happen :(",

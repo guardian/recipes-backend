@@ -8,7 +8,6 @@ import { handler } from './main';
 mockClient(S3Client);
 
 jest.mock('./config', () => ({
-	Bucket: 'TestBucket',
 	Today: new Date(2024, 1, 3, 11, 26, 19),
 }));
 
@@ -26,6 +25,14 @@ jest.mock('./curation', () => {
 
 jest.mock('@recipes-api/lib/recipes-data', () => ({
 	sendFastlyPurgeRequestWithRetries: jest.fn(),
+}));
+
+const staticBucketName = 'static-bucket';
+
+jest.mock('lib/recipes-data/src/lib/config', () => ({
+	getContentPrefix: () => 'cdn.content',
+	getFastlyApiKey: () => 'fastly-api-key',
+	getStaticBucketName: () => staticBucketName,
 }));
 
 describe('main.handler', () => {
@@ -99,7 +106,7 @@ describe('main.handler', () => {
 						s3SchemaVersion: '1.0',
 						configurationId: 'testConfigRule',
 						bucket: {
-							name: 'TestBucket',
+							name: staticBucketName,
 							ownerIdentity: {
 								principalId: 'EXAMPLE',
 							},
@@ -155,7 +162,7 @@ describe('main.handler', () => {
 						s3SchemaVersion: '1.0',
 						configurationId: 'testConfigRule',
 						bucket: {
-							name: 'TestBucket',
+							name: staticBucketName,
 							ownerIdentity: {
 								principalId: 'EXAMPLE',
 							},
@@ -204,7 +211,7 @@ describe('main.handler', () => {
 						s3SchemaVersion: '1.0',
 						configurationId: 'testConfigRule',
 						bucket: {
-							name: 'TestBucket',
+							name: staticBucketName,
 							ownerIdentity: {
 								principalId: 'EXAMPLE',
 							},

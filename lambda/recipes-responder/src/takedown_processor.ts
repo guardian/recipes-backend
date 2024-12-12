@@ -3,12 +3,20 @@ import type { Event } from '@guardian/content-api-models/crier/event/v1/event';
 import { ItemType } from '@guardian/content-api-models/crier/event/v1/itemType';
 import { removeAllRecipesForArticle } from '@recipes-api/lib/recipes-data';
 
-export async function handleTakedown(evt: Event): Promise<number> {
+export async function handleTakedown(
+	evt: Event,
+	staticBucketName: string,
+	fastlyApiKey: string,
+): Promise<number> {
 	console.log('takedown payload: ', JSON.stringify(evt));
 
 	if (evt.itemType == ItemType.CONTENT) {
 		//there's no payload in the takedown message!
-		return removeAllRecipesForArticle(evt.payloadId); //evt.payloadId is the canonical article ref that was taken down
+		return removeAllRecipesForArticle(
+			evt.payloadId,
+			staticBucketName,
+			fastlyApiKey,
+		); //evt.payloadId is the canonical article ref that was taken down
 	} else {
 		return 0;
 	}

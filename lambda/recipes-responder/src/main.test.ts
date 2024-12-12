@@ -35,7 +35,11 @@ jest.mock('./update_retrievable_processor', () => ({
 	handleContentUpdateRetrievable: jest.fn(),
 }));
 
-jest.mock('@recipes-api/lib/recipes-data', () => ({}));
+jest.mock('lib/recipes-data/src/lib/config', () => ({
+	getContentPrefix: () => 'cdn.content',
+	getFastlyApiKey: () => 'fastly-api-key',
+	getStaticBucketName: () => 'static-bucket',
+}));
 
 jest.mock('@recipes-api/cwmetrics', () => ({
 	registerMetric: jest.fn(),

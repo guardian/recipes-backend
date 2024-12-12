@@ -10,11 +10,13 @@ import { handler } from './main';
 
 jest.mock('@recipes-api/lib/recipes-data', () => ({
 	deployCurationData: jest.fn(),
+	getStaticBucketName: () => 'static-bucket-name',
+	getFastlyApiKey: () => 'fastly-api-key',
 }));
 
 jest.mock('./config', () => ({
-	faciaPublicationStatusTopicArn: 'config-param',
-	faciaPublicationStatusRoleArn: 'config-param',
+	getFaciaPublicationStatusTopicArn: () => 'config-param',
+	getFaciaPublicationStatusRoleArn: () => 'config-param',
 }));
 
 jest.mock('./facia-notifications', () => ({
