@@ -126,9 +126,6 @@ export async function removeRecipeContent({
 	const realAttempt = attempt ?? 1;
 
 	const Key = `content/${recipeSHA}`;
-	console.debug(
-		`DEBUG: removeRecipeContent path is s3://${staticBucketName}/${Key}`,
-	);
 
 	const req = new DeleteObjectCommand({
 		Bucket: staticBucketName,
