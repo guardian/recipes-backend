@@ -171,7 +171,9 @@ describe('update_processor.handleContentUpdate', () => {
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipeVersion.mock.calls.length).toEqual(2);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(removeRecipeVersion.mock.calls[0][0].canonicalArticleId).toEqual('path/to/content');
+		expect(removeRecipeVersion.mock.calls[0][0].canonicalArticleId).toEqual(
+			'path/to/content',
+		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipeVersion.mock.calls[0][0].recipe).toEqual({
 			checksum: 'xxxyyyzzz',
@@ -180,7 +182,9 @@ describe('update_processor.handleContentUpdate', () => {
 			sponsorshipCount: 0,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(removeRecipeVersion.mock.calls[1][0].canonicalArticleId).toEqual('path/to/content');
+		expect(removeRecipeVersion.mock.calls[1][0].canonicalArticleId).toEqual(
+			'path/to/content',
+		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipeVersion.mock.calls[1][0].recipe).toEqual({
 			checksum: 'zzzyyyqqq',

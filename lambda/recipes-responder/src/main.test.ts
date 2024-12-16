@@ -161,10 +161,12 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		expect(handleContentUpdateRetrievable.mock.calls.length).toEqual(1);
 		//@ts-ignore
-		expect(handleContentUpdateRetrievable.mock.calls[0][0].retrievable).toEqual({
-			id: 'test',
-			capiUrl: '/path/to/test',
-		});
+		expect(handleContentUpdateRetrievable.mock.calls[0][0].retrievable).toEqual(
+			{
+				id: 'test',
+				capiUrl: '/path/to/test',
+			},
+		);
 		//@ts-ignore
 		expect(handleDeletedContent.mock.calls.length).toEqual(0);
 	});
