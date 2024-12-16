@@ -1,18 +1,14 @@
-export function createGetMandatoryParameter<AliasType extends string>(
-	name: string,
-): () => AliasType {
-	return () => {
+export function createGetMandatoryParameter(name: string): () => string {
+	return (): string => {
 		if (process.env[name]) {
-			return process.env[name] as AliasType;
-		} else {
-			if (process.env['CI']) {
-				return 'test' as AliasType;
-			} else {
-				throw new Error(
-					`You need to define the environment variable ${name} in the lambda config`,
-				);
-			}
+			return process.env[name] as string;
 		}
+		if (process.env['CI']) {
+			return 'test';
+		}
+		throw new Error(
+			`You need to define the environment variable ${name} in the lambda config`,
+		);
 	};
 }
 
