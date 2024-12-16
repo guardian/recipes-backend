@@ -1,5 +1,6 @@
 import * as process from 'process';
 import {
+	getContentPrefix,
 	getFastlyApiKey,
 	getStaticBucketName,
 	removeAllRecipesForArticle,
@@ -19,9 +20,15 @@ async function main() {
 	const articleId = process.env['ARTICLE_ID'] as string; //checkArgs ensures that this is valid
 	const staticBucketName = getStaticBucketName();
 	const fastlyApiKey = getFastlyApiKey();
+	const contentPrefix = getContentPrefix();
 
 	console.log('Attempting takedown on ', articleId);
-	await removeAllRecipesForArticle(articleId, staticBucketName, fastlyApiKey);
+	await removeAllRecipesForArticle({
+		canonicalArticleId: articleId,
+		staticBucketName,
+		fastlyApiKey,
+		contentPrefix,
+	});
 }
 
 main()

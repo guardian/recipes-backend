@@ -44,19 +44,19 @@ export const handler: Handler = async () => {
 	}
 
 	console.log('Done.');
-	await writeIndexData(
-		indexDataForUnSponsoredRecipes,
-		INDEX_JSON,
+	await writeIndexData({
+		indexData: indexDataForUnSponsoredRecipes,
+		Key: INDEX_JSON,
 		staticBucketName,
 		contentPrefix,
 		fastlyApiKey,
-	);
-	await writeIndexData(
-		indexDataForAllRecipes,
-		V2_INDEX_JSON,
+	});
+	await writeIndexData({
+		indexData: indexDataForAllRecipes,
+		Key: V2_INDEX_JSON,
 		staticBucketName,
 		contentPrefix,
 		fastlyApiKey,
-	);
+	});
 	console.log('All completed.');
 };

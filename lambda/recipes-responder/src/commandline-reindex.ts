@@ -68,6 +68,7 @@ async function reindex(
 	queryUri: string,
 	staticBucketName: string,
 	fastlyApiKey: string,
+	contentPrefix: string,
 ): Promise<void> {
 	const pollingResult = await retrieveContent(queryUri);
 	switch (pollingResult.action) {
@@ -80,11 +81,12 @@ async function reindex(
 				}`,
 			);
 			if (pollingResult.content) {
-				await handleContentUpdate(
-					pollingResult.content,
+				await handleContentUpdate({
+					content: pollingResult.content,
 					staticBucketName,
 					fastlyApiKey,
-				);
+					contentPrefix,
+				});
 			} else {
 				throw new Error(
 					'Got a positive result but no content?? This must be a bug :(',
@@ -210,7 +212,12 @@ async function main() {
 				console.log(`Article ${i} / ${total}...\n`);
 				const queryUri = await getQueryUri(articleId, undefined, undefined);
 				try {
-					await reindex(queryUri, staticBucketName, fastlyApiKey);
+					await reindex(
+						queryUri,
+						staticBucketName,
+						fastlyApiKey,
+						contentPrefix,
+					);
 				} catch (e) {
 					console.error(
 						`Error reindexing ${queryUri}: ${(e as Error).toString()}`,
@@ -226,7 +233,7 @@ async function main() {
 		if (test) {
 			console.log('Not performing any operations as --test was specified');
 		} else {
-			await reindex(queryUri, staticBucketName, fastlyApiKey);
+			await reindex(queryUri, staticBucketName, fastlyApiKey, contentPrefix);
 		}
 	}
 
@@ -234,25 +241,25 @@ async function main() {
 	console.log('Rebuilding index...');
 	const indexData = await retrieveIndexData();
 	console.log('(including all recipes...)');
-	await writeIndexData(
+	await writeIndexData({
 		indexData,
-		V2_INDEX_JSON,
+		Key: V2_INDEX_JSON,
 		staticBucketName,
 		contentPrefix,
 		fastlyApiKey,
-	);
+	});
 	console.log('(excluding sponsored recipes...)');
 	const indexWithoutSponsored: RecipeIndex = {
 		...indexData,
 		recipes: indexData.recipes.filter((r) => r.sponsorshipCount === 0),
 	};
-	await writeIndexData(
-		indexWithoutSponsored,
-		INDEX_JSON,
+	await writeIndexData({
+		indexData: indexWithoutSponsored,
+		Key: INDEX_JSON,
 		staticBucketName,
 		contentPrefix,
 		fastlyApiKey,
-	);
+	});
 	console.log('Finished rebuilding index');
 
 	if (failedArticleIds.length > 0) {

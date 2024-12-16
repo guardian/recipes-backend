@@ -35,12 +35,17 @@ function removeLeadingAndTrailingSlash(from: string): string {
  * @param apiKey Fastly API key to authenticate the request.  The function will throw if this is undefined or empty.
  * @param purgeType Whether to execute a soft or hard purge (default soft). See the docs on PurgeType for more information.
  */
-export async function sendFastlyPurgeRequest(
-	contentPath: string,
-	apiKey: string,
-	contentPrefix: string,
-	purgeType?: PurgeType,
-) {
+export async function sendFastlyPurgeRequest({
+	contentPath,
+	apiKey,
+	contentPrefix,
+	purgeType,
+}: {
+	contentPath: string;
+	apiKey: string;
+	contentPrefix: string;
+	purgeType?: PurgeType;
+}) {
 	if (!apiKey || apiKey == '') {
 		throw new Error('Cannot purge because Fastly API key is not set');
 	}
@@ -98,20 +103,26 @@ export async function sendFastlyPurgeRequest(
  * @param purgeType Whether to execute a soft or hard purge (default soft). See the docs on PurgeType for more information.
  * @param retryCount don't specify this, it's used internally.
  */
-export async function sendFastlyPurgeRequestWithRetries(
-	contentPath: string,
-	apiKey: string,
-	contentPrefix: string,
-	purgeType?: PurgeType,
-	retryCount?: number,
-): Promise<void> {
+export async function sendFastlyPurgeRequestWithRetries({
+	contentPath,
+	apiKey,
+	contentPrefix,
+	purgeType,
+	retryCount,
+}: {
+	contentPath: string;
+	apiKey: string;
+	contentPrefix: string;
+	purgeType?: PurgeType;
+	retryCount?: number;
+}): Promise<void> {
 	try {
-		return sendFastlyPurgeRequest(
+		return sendFastlyPurgeRequest({
 			contentPath,
 			apiKey,
 			contentPrefix,
 			purgeType,
-		);
+		});
 	} catch (err) {
 		if (err instanceof FastlyError) {
 			const nextRetry = retryCount ? retryCount + 1 : 1;
@@ -123,13 +134,13 @@ export async function sendFastlyPurgeRequestWithRetries(
 				throw err; //we give up! it ain't gonna work.
 			}
 			await awaitableDelay();
-			return sendFastlyPurgeRequestWithRetries(
+			return sendFastlyPurgeRequestWithRetries({
 				contentPath,
 				apiKey,
 				contentPrefix,
 				purgeType,
-				nextRetry,
-			);
+				retryCount: nextRetry,
+			});
 		} else {
 			throw err;
 		}

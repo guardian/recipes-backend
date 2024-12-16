@@ -179,9 +179,9 @@ export async function activateCuration(
 	console.log(
 		`Done, new Etag is ${response.CopyObjectResult?.ETag ?? '(unknown)'}`,
 	);
-	await sendFastlyPurgeRequestWithRetries(
-		targetPath,
-		fastlyApiKey,
+	await sendFastlyPurgeRequestWithRetries({
+		contentPath: targetPath,
+		apiKey: fastlyApiKey,
 		contentPrefix,
-	);
+	});
 }

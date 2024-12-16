@@ -10,23 +10,35 @@ export async function deployCurationData(
 	region: string,
 	variant: string,
 	maybeDate: Date | null,
-	Bucket: string,
-	fastlyApiKey: string,
+	{
+		staticBucketName,
+		fastlyApiKey,
+		contentPrefix,
+	}: {
+		staticBucketName: string;
+		fastlyApiKey: string;
+		contentPrefix: string;
+	},
 ): Promise<void> {
 	const Key = maybeDate
 		? `${region}/${variant}/${format(maybeDate, 'yyyy-MM-dd')}/curation.json`
 		: `${region}/${variant}/curation.json`;
 
 	const req = new PutObjectCommand({
-		Bucket,
+		Bucket: staticBucketName,
 		Key,
 		Body: content,
 		ContentType: 'application/json',
 		CacheControl: 'max-age=120; stale-while-revalidate=10; stale-if-error=300',
 	});
 
-	console.log(`Uploading new curation data to ${Bucket}/${Key}`);
+	console.log(`Uploading new curation data to ${staticBucketName}/${Key}`);
 	await s3client.send(req);
 	console.log('Done. Flushing CDN cache...');
-	await sendFastlyPurgeRequestWithRetries(Key, fastlyApiKey, 'hard');
+	await sendFastlyPurgeRequestWithRetries({
+		contentPath: Key,
+		apiKey: fastlyApiKey,
+		contentPrefix,
+		purgeType: 'hard',
+	});
 }

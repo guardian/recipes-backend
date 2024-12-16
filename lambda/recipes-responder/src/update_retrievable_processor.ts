@@ -41,11 +41,17 @@ export async function retrieveContent(capiUrl: string): Promise<PollingResult> {
 	return callCAPI(`${capiUrl}?${params}`);
 }
 
-export async function handleContentUpdateRetrievable(
-	retrievable: RetrievableContent,
-	staticBucketName: string,
-	fastlyApiKey: string,
-): Promise<number> {
+export async function handleContentUpdateRetrievable({
+	retrievable,
+	staticBucketName,
+	fastlyApiKey,
+	contentPrefix,
+}: {
+	retrievable: RetrievableContent;
+	staticBucketName: string;
+	fastlyApiKey: string;
+	contentPrefix: string;
+}): Promise<number> {
 	if (retrievable.contentType != ContentType.ARTICLE) return 0; //no point processing live-blogs etc.
 
 	// TO FIX UPSTREAM – Crier returns a path that does not include channelled content, giving a 404
@@ -69,11 +75,12 @@ export async function handleContentUpdateRetrievable(
 					`INFO Retrievable update was superceded - we expected to see ${retrievable.internalRevision} but got ${capiResponse.content.fields.internalRevision}`,
 				);
 			} else if (capiResponse.content) {
-				return handleContentUpdate(
-					capiResponse.content,
+				return handleContentUpdate({
+					content: capiResponse.content,
 					staticBucketName,
 					fastlyApiKey,
-				);
+					contentPrefix,
+				});
 			} else {
 				console.error(
 					"Content existed but was empty, this shouldn't happen :(",

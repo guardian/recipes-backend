@@ -14,6 +14,7 @@ import { awaitableDelay } from './utils';
 const s3Mock = mockClient(S3Client);
 const staticBucketName = 'contentbucket';
 const fastlyApiKey = 'fastly-api-key';
+const contentPrefix = 'cdn.content.location';
 
 jest.mock('./config', () => ({
 	MaximumRetries: 5,
@@ -36,8 +37,8 @@ describe('s3.publishRecipeContent', () => {
 	it('should upload the given content to S3 with correct headers', async () => {
 		s3Mock.on(PutObjectCommand).resolves({});
 
-		await publishRecipeContent(
-			{
+		await publishRecipeContent({
+			recipe: {
 				recipeUID: 'some-uid-here',
 				jsonBlob: 'this-is-json',
 				checksum: 'xxxyyyzzz',
@@ -45,7 +46,8 @@ describe('s3.publishRecipeContent', () => {
 			},
 			staticBucketName,
 			fastlyApiKey,
-		);
+			contentPrefix,
+		});
 
 		expect(s3Mock.calls().length).toEqual(1);
 		const uploadArgs = s3Mock.call(0).firstArg as PutObjectCommand;
@@ -55,14 +57,14 @@ describe('s3.publishRecipeContent', () => {
 		expect(s3Mock.commandCalls(DeleteObjectCommand).length).toEqual(0);
 		//@ts-ignore -- Typescript doesn't know that this is a mock
 		expect(sendFastlyPurgeRequestWithRetries.mock.calls.length).toEqual(1);
-		//@ts-ignore -- Typescript doesn't know that this is a mock
-		expect(sendFastlyPurgeRequestWithRetries.mock.calls[0][0]).toEqual(
-			'content/xxxyyyzzz',
-		);
-		//@ts-ignore -- Typescript doesn't know that this is a mock
-		expect(sendFastlyPurgeRequestWithRetries.mock.calls[0][1]).toEqual(
-			fastlyApiKey,
-		);
+		expect(
+			//@ts-ignore -- Typescript doesn't know that this is a mock
+			sendFastlyPurgeRequestWithRetries.mock.calls[0][0].contentPath,
+		).toEqual('content/xxxyyyzzz');
+		expect(
+			//@ts-ignore -- Typescript doesn't know that this is a mock
+			sendFastlyPurgeRequestWithRetries.mock.calls[0][0].apiKey,
+		).toEqual(fastlyApiKey);
 	});
 
 	it('should retry any S3ServiceException up to MaximumRetries then throw the error', async () => {
@@ -79,8 +81,8 @@ describe('s3.publishRecipeContent', () => {
 		awaitableDelay.mockReturnValue(Promise.resolve());
 
 		await expect(
-			publishRecipeContent(
-				{
+			publishRecipeContent({
+				recipe: {
 					recipeUID: 'some-uid-here',
 					jsonBlob: 'this-is-json',
 					checksum: 'xxxyyyzzz',
@@ -88,7 +90,8 @@ describe('s3.publishRecipeContent', () => {
 				},
 				staticBucketName,
 				fastlyApiKey,
-			),
+				contentPrefix,
+			}),
 		).rejects.toThrow(Error('Could not write to S3, see logs for details.'));
 
 		expect(s3Mock.calls().length).toEqual(MaximumRetries);
@@ -106,8 +109,8 @@ describe('s3.publishRecipeContent', () => {
 		awaitableDelay.mockReturnValue(Promise.resolve());
 
 		await expect(
-			publishRecipeContent(
-				{
+			publishRecipeContent({
+				recipe: {
 					recipeUID: 'some-uid-here',
 					jsonBlob: 'this-is-json',
 					checksum: 'xxxyyyzzz',
@@ -115,7 +118,8 @@ describe('s3.publishRecipeContent', () => {
 				},
 				staticBucketName,
 				fastlyApiKey,
-			),
+				contentPrefix,
+			}),
 		).rejects.toThrow(Error);
 
 		expect(s3Mock.calls().length).toEqual(1);
@@ -134,7 +138,12 @@ describe('s3.removeRecipeContent', () => {
 	it('should delete the given content from S3 and purge the CDN cache', async () => {
 		s3Mock.on(DeleteObjectCommand).resolves({});
 
-		await removeRecipeContent('xxxyyyzzz', staticBucketName, fastlyApiKey);
+		await removeRecipeContent({
+			recipeSHA: 'xxxyyyzzz',
+			staticBucketName,
+			fastlyApiKey,
+			contentPrefix,
+		});
 
 		expect(s3Mock.commandCalls(DeleteObjectCommand).length).toEqual(1);
 		const deleteArgs = s3Mock.call(0).firstArg as DeleteObjectCommand;
@@ -144,16 +153,18 @@ describe('s3.removeRecipeContent', () => {
 
 		//@ts-ignore -- Typescript doesn't know that this is a mock
 		expect(sendFastlyPurgeRequestWithRetries.mock.calls.length).toEqual(1);
-		//@ts-ignore -- Typescript doesn't know that this is a mock
-		expect(sendFastlyPurgeRequestWithRetries.mock.calls[0][0]).toEqual(
-			'content/xxxyyyzzz',
-		);
-		//@ts-ignore -- Typescript doesn't know that this is a mock
-		expect(sendFastlyPurgeRequestWithRetries.mock.calls[0][1]).toEqual(
-			fastlyApiKey,
-		);
-		//@ts-ignore -- Typescript doesn't know that this is a mock
-		expect(sendFastlyPurgeRequestWithRetries.mock.calls[0][2]).toEqual('hard');
+		expect(
+			//@ts-ignore -- Typescript doesn't know that this is a mock
+			sendFastlyPurgeRequestWithRetries.mock.calls[0][0].contentPath,
+		).toEqual('content/xxxyyyzzz');
+		expect(
+			//@ts-ignore -- Typescript doesn't know that this is a mock
+			sendFastlyPurgeRequestWithRetries.mock.calls[0][0].apiKey,
+		).toEqual(fastlyApiKey);
+		expect(
+			//@ts-ignore -- Typescript doesn't know that this is a mock
+			sendFastlyPurgeRequestWithRetries.mock.calls[0][0].purgeType,
+		).toEqual('hard');
 	});
 
 	it('should retry a general S3ServiceException up to MaximumRetries then throw the error', async () => {
@@ -171,7 +182,12 @@ describe('s3.removeRecipeContent', () => {
 		awaitableDelay.mockReturnValue(Promise.resolve());
 
 		await expect(
-			removeRecipeContent('xxxyyyzzz', staticBucketName, fastlyApiKey),
+			removeRecipeContent({
+				recipeSHA: 'xxxyyyzzz',
+				staticBucketName,
+				fastlyApiKey,
+				contentPrefix,
+			}),
 		).rejects.toThrow(Error('Could not delete from S3, see logs for details.'));
 
 		expect(s3Mock.commandCalls(PutObjectCommand).length).toEqual(0);
@@ -193,7 +209,12 @@ describe('s3.removeRecipeContent', () => {
 		// @ts-ignore -- typescript doesn't know that this is a mock
 		awaitableDelay.mockReturnValue(Promise.resolve());
 
-		await removeRecipeContent('xxxyyyzzz', staticBucketName, fastlyApiKey);
+		await removeRecipeContent({
+			recipeSHA: 'xxxyyyzzz',
+			staticBucketName,
+			fastlyApiKey,
+			contentPrefix,
+		});
 
 		expect(s3Mock.commandCalls(PutObjectCommand).length).toEqual(0);
 		expect(s3Mock.commandCalls(DeleteObjectCommand).length).toEqual(1);
@@ -208,7 +229,12 @@ describe('s3.removeRecipeContent', () => {
 		awaitableDelay.mockReturnValue(Promise.resolve());
 
 		await expect(
-			removeRecipeContent('xxxyyyzzz', staticBucketName, fastlyApiKey),
+			removeRecipeContent({
+				recipeSHA: 'xxxyyyzzz',
+				staticBucketName,
+				fastlyApiKey,
+				contentPrefix,
+			}),
 		).rejects.toThrow(Error('this is a test'));
 
 		expect(s3Mock.commandCalls(PutObjectCommand).length).toEqual(0);

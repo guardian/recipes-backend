@@ -88,11 +88,11 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
-		await processRecord(testReq);
+		await processRecord({ eventDetail: testReq });
 		//@ts-ignore
 		expect(handleTakedown.mock.calls.length).toEqual(1);
 		//@ts-ignore
-		expect(handleTakedown.mock.calls[0][0]).toEqual(testEvent);
+		expect(handleTakedown.mock.calls[0][0].event).toEqual(testEvent);
 		//@ts-ignore
 		expect(handleContentUpdate.mock.calls.length).toEqual(0);
 		//@ts-ignore
@@ -119,13 +119,13 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
-		await processRecord(testReq);
+		await processRecord({ eventDetail: testReq });
 		//@ts-ignore
 		expect(handleTakedown.mock.calls.length).toEqual(0);
 		//@ts-ignore
 		expect(handleContentUpdate.mock.calls.length).toEqual(1);
 		//@ts-ignore
-		expect(handleContentUpdate.mock.calls[0][0]).toEqual(testContent);
+		expect(handleContentUpdate.mock.calls[0][0].content).toEqual(testContent);
 		//@ts-ignore
 		expect(handleContentUpdateRetrievable.mock.calls.length).toEqual(0);
 		//@ts-ignore
@@ -153,7 +153,7 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
-		await processRecord(testReq);
+		await processRecord({ eventDetail: testReq });
 		//@ts-ignore
 		expect(handleTakedown.mock.calls.length).toEqual(0);
 		//@ts-ignore
@@ -161,7 +161,7 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		expect(handleContentUpdateRetrievable.mock.calls.length).toEqual(1);
 		//@ts-ignore
-		expect(handleContentUpdateRetrievable.mock.calls[0][0]).toEqual({
+		expect(handleContentUpdateRetrievable.mock.calls[0][0].retrievable).toEqual({
 			id: 'test',
 			capiUrl: '/path/to/test',
 		});
@@ -198,7 +198,7 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
-		await processRecord(testReq);
+		await processRecord({ eventDetail: testReq });
 		//@ts-ignore
 		expect(handleTakedown.mock.calls.length).toEqual(0);
 		//@ts-ignore
@@ -240,11 +240,11 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
-		await processRecord(testReq);
+		await processRecord({ eventDetail: testReq });
 		//@ts-ignore
 		expect(handleTakedown.mock.calls.length).toEqual(1);
 		//@ts-ignore
-		expect(handleTakedown.mock.calls[0][0]).toEqual(testEvent);
+		expect(handleTakedown.mock.calls[0][0].event).toEqual(testEvent);
 		//@ts-ignore
 		expect(handleContentUpdate.mock.calls.length).toEqual(0);
 		//@ts-ignore
@@ -271,7 +271,7 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
-		const result = await processRecord(testReq);
+		const result = await processRecord({ eventDetail: testReq });
 		expect(result).toEqual(0);
 		//@ts-ignore
 		expect(handleTakedown.mock.calls.length).toEqual(0);

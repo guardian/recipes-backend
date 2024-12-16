@@ -4,6 +4,7 @@ import type { SafeParseReturnType } from 'zod';
 import * as facia from '@recipes-api/lib/facia';
 import {
 	deployCurationData,
+	getContentPrefix,
 	getFastlyApiKey,
 	getStaticBucketName,
 } from '@recipes-api/lib/recipes-data';
@@ -34,8 +35,11 @@ function parseFeastCuration(
 
 async function deployCuration(
 	curation: facia.FeastCuration,
-	staticBucketName: string,
-	fastlyApiKey: string,
+	{
+		staticBucketName,
+		fastlyApiKey,
+		contentPrefix,
+	}: { staticBucketName: string; fastlyApiKey: string; contentPrefix: string },
 ) {
 	const issueDate = new Date(curation.issueDate);
 	const region = curation.path ?? curation.edition;
@@ -47,20 +51,18 @@ async function deployCuration(
 			)}`,
 		);
 		const serializedFront = JSON.stringify(curation.fronts[frontName]);
-		await deployCurationData(
-			serializedFront,
-			region,
-			frontName,
-			issueDate,
+		await deployCurationData(serializedFront, region, frontName, issueDate, {
 			staticBucketName,
 			fastlyApiKey,
-		);
+			contentPrefix,
+		});
 	}
 }
 
 export const handler: SQSHandler = async (event) => {
 	const staticBucketName = getStaticBucketName();
 	const fastlyApiKey = getFastlyApiKey();
+	const contentPrefix = getContentPrefix();
 	const faciaPublicationStatusTopicArn = getFaciaPublicationStatusTopicArn();
 	const faciaPublicationStatusRoleArn = getFaciaPublicationStatusRoleArn();
 
@@ -108,7 +110,11 @@ export const handler: SQSHandler = async (event) => {
 		}
 
 		try {
-			await deployCuration(maybeFronts.data, staticBucketName, fastlyApiKey);
+			await deployCuration(maybeFronts.data, {
+				staticBucketName,
+				fastlyApiKey,
+				contentPrefix,
+			});
 
 			return notifyFaciaTool(
 				{

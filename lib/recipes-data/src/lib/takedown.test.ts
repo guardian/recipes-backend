@@ -42,6 +42,7 @@ jest.mock('./telemetry', () => ({
 
 const fastlyApiKey = 'fastly-api-key';
 const staticBucketName = 'static-bucket';
+const contentPrefix = 'content-prefix';
 
 describe('takedown', () => {
 	beforeEach(() => {
@@ -53,9 +54,9 @@ describe('takedown', () => {
 	});
 
 	it('removeRecipePermanently should delete the given recipe from the index and from the content bucket', async () => {
-		await removeRecipePermanently(
-			'path/to/some/article',
-			{
+		await removeRecipePermanently({
+			canonicalArticleId: 'path/to/some/article',
+			recipe: {
 				recipeUID: 'some-uid',
 				checksum: 'xxxyyyzzz',
 				capiArticleId: 'path/to/some/article',
@@ -63,7 +64,8 @@ describe('takedown', () => {
 			},
 			staticBucketName,
 			fastlyApiKey,
-		);
+			contentPrefix,
+		});
 
 		//@ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipe.mock.calls.length).toEqual(1);
@@ -81,7 +83,7 @@ describe('takedown', () => {
 		//@ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipe.mock.calls[0][1]).toEqual('some-uid');
 		//@ts-ignore -- Typescript doesn't know that this is a mock
-		expect(removeRecipeContent.mock.calls[0][0]).toEqual('xxxyyyzzz');
+		expect(removeRecipeContent.mock.calls[0][0].recipeSHA).toEqual('xxxyyyzzz');
 
 		expect((sendTelemetryEvent as jest.Mock).mock.calls.length).toEqual(1);
 		expect((sendTelemetryEvent as jest.Mock).mock.calls[0][0]).toEqual(
@@ -93,9 +95,9 @@ describe('takedown', () => {
 	});
 
 	it('removeRecipeVersion should delete the given recipe from the content bucket but not the index', async () => {
-		await removeRecipeVersion(
-			'path/to/some/article',
-			{
+		await removeRecipeVersion({
+			canonicalArticleId: 'path/to/some/article',
+			recipe: {
 				recipeUID: 'some-uid',
 				checksum: 'xxxyyyzzz',
 				capiArticleId: 'path/to/some/article',
@@ -103,7 +105,8 @@ describe('takedown', () => {
 			},
 			staticBucketName,
 			fastlyApiKey,
-		);
+			contentPrefix,
+		});
 
 		//@ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipe.mock.calls.length).toEqual(1);
@@ -118,7 +121,7 @@ describe('takedown', () => {
 		expect(removeRecipeContent.mock.calls.length).toEqual(1);
 
 		//@ts-ignore -- Typescript doesn't know that this is a mock
-		expect(removeRecipeContent.mock.calls[0][0]).toEqual('xxxyyyzzz');
+		expect(removeRecipeContent.mock.calls[0][0].recipeSHA).toEqual('xxxyyyzzz');
 
 		expect((sendTelemetryEvent as jest.Mock).mock.calls.length).toEqual(0); //this is not a take-down
 	});
@@ -150,11 +153,12 @@ describe('takedown', () => {
 			Promise.resolve(knownArticles),
 		);
 
-		await removeAllRecipesForArticle(
-			'path/to/some/article',
+		await removeAllRecipesForArticle({
+			canonicalArticleId: 'path/to/some/article',
 			staticBucketName,
 			fastlyApiKey,
-		);
+			contentPrefix,
+		});
 
 		//@ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeAllRecipeIndexEntriesForArticle.mock.calls.length).toEqual(1);
@@ -166,24 +170,33 @@ describe('takedown', () => {
 		expect(removeRecipeContent.mock.calls.length).toEqual(3);
 		//@ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipeContent.mock.calls[0]).toEqual([
-			'abcd',
-			'static-bucket',
-			'fastly-api-key',
-			'hard',
+			{
+				recipeSHA: 'abcd',
+				staticBucketName: 'static-bucket',
+				fastlyApiKey: 'fastly-api-key',
+				purgeType: 'hard',
+				contentPrefix: 'content-prefix',
+			},
 		]);
 		//@ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipeContent.mock.calls[1]).toEqual([
-			'efg',
-			'static-bucket',
-			'fastly-api-key',
-			'hard',
+			{
+				recipeSHA: 'efg',
+				staticBucketName: 'static-bucket',
+				fastlyApiKey: 'fastly-api-key',
+				purgeType: 'hard',
+				contentPrefix: 'content-prefix',
+			},
 		]);
 		//@ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipeContent.mock.calls[2]).toEqual([
-			'hij',
-			'static-bucket',
-			'fastly-api-key',
-			'hard',
+			{
+				recipeSHA: 'hij',
+				staticBucketName: 'static-bucket',
+				fastlyApiKey: 'fastly-api-key',
+				purgeType: 'hard',
+				contentPrefix: 'content-prefix',
+			},
 		]);
 
 		expect((sendTelemetryEvent as jest.Mock).mock.calls.length).toEqual(3);
