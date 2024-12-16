@@ -31,9 +31,11 @@ function removeLeadingAndTrailingSlash(from: string): string {
  *
  * Note, the CONTENT_URL_BASE parameter must be configured (either in environment variables or via a mock when testing).
  * The function will throw if it is not defined.
- * @param contentPath URL to purge. This is relative to the configured CONTENT_URL_BASE
- * @param apiKey Fastly API key to authenticate the request.  The function will throw if this is undefined or empty.
- * @param purgeType Whether to execute a soft or hard purge (default soft). See the docs on PurgeType for more information.
+ * @param options
+ * @param options.contentPath URL to purge. This is relative to the configured CONTENT_URL_BASE
+ * @param options.apiKey Fastly API key to authenticate the request.  The function will throw if this is undefined or empty.
+ * @param options.contentPrefix CDN hostname
+ * @param options.purgeType Whether to execute a soft or hard purge (default soft). See the docs on PurgeType for more information.
  */
 export async function sendFastlyPurgeRequest({
 	contentPath,
@@ -98,10 +100,11 @@ export async function sendFastlyPurgeRequest({
 /**
  * calls `sendFastlyPurgeRequest` with the given parameters.  If Fastly returns an error, this will delay by the
  * number of seconds given in RETRY_DELAY and then retry, up to a maximum of MAX_RETRIES attempts.
- * @param contentPath URL to purge. This is relative to the configured CONTENT_URL_BASE
- * @param apiKey Fastly API key to authenticate the request.  The function will throw if this is undefined or empty.
- * @param purgeType Whether to execute a soft or hard purge (default soft). See the docs on PurgeType for more information.
- * @param retryCount don't specify this, it's used internally.
+ * @param options
+ * @param options.contentPath URL to purge. This is relative to the configured CONTENT_URL_BASE
+ * @param options.apiKey Fastly API key to authenticate the request.  The function will throw if this is undefined or empty.
+ * @param options.purgeType Whether to execute a soft or hard purge (default soft). See the docs on PurgeType for more information.
+ * @param options.retryCount don't specify this, it's used internally.
  */
 export async function sendFastlyPurgeRequestWithRetries({
 	contentPath,
