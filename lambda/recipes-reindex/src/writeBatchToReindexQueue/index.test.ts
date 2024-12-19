@@ -1,7 +1,7 @@
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import type { Callback, Context } from 'aws-lambda';
 import { mockClient } from 'aws-sdk-client-mock';
-import * as indexJSON from './fixtures/index.json';
+import indexJSON from './fixtures/index.json';
 import { writeBatchToReindexQueueHandler } from './index';
 
 const RecipeIndexSnapshotBucket = 'example-reindex-bucket';
@@ -37,7 +37,7 @@ describe('writeBatchToReindexQueue', () => {
 		);
 
 		expect(output?.nextIndex).toBe(10);
-		expect(output?.lastIndex).toBe(indexJSON.recipes.length - 1);
+		expect(output?.lastIndex).toBe(indexJSON.length - 1);
 	});
 
 	it('should move the index one beyond the last recipe on completion', async () => {
@@ -52,7 +52,7 @@ describe('writeBatchToReindexQueue', () => {
 			mockCallback,
 		);
 
-		expect(output?.nextIndex).toBe(indexJSON.recipes.length);
-		expect(output?.lastIndex).toBe(indexJSON.recipes.length - 1);
+		expect(output?.nextIndex).toBe(indexJSON.length);
+		expect(output?.lastIndex).toBe(indexJSON.length - 1);
 	});
 });
