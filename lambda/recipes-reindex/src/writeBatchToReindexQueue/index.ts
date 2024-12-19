@@ -59,7 +59,10 @@ export const writeBatchToReindexQueueHandler: Handler<
 		recipeIndexSnapshot.length,
 	);
 
-	const articleIdsToReindex = recipeIndexSnapshot.slice(nextIndex, nextIndex);
+	const articleIdsToReindex = recipeIndexSnapshot.slice(
+		currentIndex,
+		nextIndex,
+	);
 
 	const dryRunMsg = '[DRY RUN]: ';
 	const writeMsg = `${
