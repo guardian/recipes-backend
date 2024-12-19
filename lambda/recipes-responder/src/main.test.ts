@@ -16,7 +16,7 @@ import type { CrierEventDetail } from '@recipes-api/lib/recipes-data';
 import { handler, processRecord } from './main';
 import { handleDeletedContent, handleTakedown } from './takedown_processor';
 import { handleContentUpdate } from './update_processor';
-import { handleContentUpdateRetrievable } from './update_retrievable_processor';
+import { handleContentUpdateByCapiUrl } from './update_retrievable_processor';
 
 jest.mock('@recipes-api/lib/capi', () => ({
 	deserializeEvent: jest.fn(),
@@ -32,7 +32,7 @@ jest.mock('./update_processor', () => ({
 }));
 
 jest.mock('./update_retrievable_processor', () => ({
-	handleContentUpdateRetrievable: jest.fn(),
+	handleContentUpdateByCapiUrl: jest.fn(),
 }));
 
 jest.mock('lib/recipes-data/src/lib/config', () => ({
@@ -97,7 +97,7 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		expect(handleContentUpdate.mock.calls.length).toEqual(0);
 		//@ts-ignore
-		expect(handleContentUpdateRetrievable.mock.calls.length).toEqual(0);
+		expect(handleContentUpdateByCapiUrl.mock.calls.length).toEqual(0);
 		//@ts-ignore
 		expect(handleDeletedContent.mock.calls.length).toEqual(0);
 	});
@@ -128,7 +128,7 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		expect(handleContentUpdate.mock.calls[0][0].content).toEqual(testContent);
 		//@ts-ignore
-		expect(handleContentUpdateRetrievable.mock.calls.length).toEqual(0);
+		expect(handleContentUpdateByCapiUrl.mock.calls.length).toEqual(0);
 		//@ts-ignore
 		expect(handleDeletedContent.mock.calls.length).toEqual(0);
 	});
@@ -160,9 +160,9 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		expect(handleContentUpdate.mock.calls.length).toEqual(0);
 		//@ts-ignore
-		expect(handleContentUpdateRetrievable.mock.calls.length).toEqual(1);
+		expect(handleContentUpdateByCapiUrl.mock.calls.length).toEqual(1);
 		//@ts-ignore
-		expect(handleContentUpdateRetrievable.mock.calls[0][0].capiUrl).toEqual(
+		expect(handleContentUpdateByCapiUrl.mock.calls[0][0].capiUrl).toEqual(
 			'/path/to/test',
 		);
 		//@ts-ignore
@@ -204,7 +204,7 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		expect(handleContentUpdate.mock.calls.length).toEqual(0);
 		//@ts-ignore
-		expect(handleContentUpdateRetrievable.mock.calls.length).toEqual(0);
+		expect(handleContentUpdateByCapiUrl.mock.calls.length).toEqual(0);
 		//@ts-ignore
 		expect(handleDeletedContent.mock.calls.length).toEqual(1);
 		//@ts-ignore
@@ -248,7 +248,7 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		expect(handleContentUpdate.mock.calls.length).toEqual(0);
 		//@ts-ignore
-		expect(handleContentUpdateRetrievable.mock.calls.length).toEqual(0);
+		expect(handleContentUpdateByCapiUrl.mock.calls.length).toEqual(0);
 		//@ts-ignore
 		expect(handleDeletedContent.mock.calls.length).toEqual(0);
 	});
@@ -278,7 +278,7 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		expect(handleContentUpdate.mock.calls.length).toEqual(0);
 		//@ts-ignore
-		expect(handleContentUpdateRetrievable.mock.calls.length).toEqual(0);
+		expect(handleContentUpdateByCapiUrl.mock.calls.length).toEqual(0);
 		//@ts-ignore
 		expect(handleDeletedContent.mock.calls.length).toEqual(0);
 	});

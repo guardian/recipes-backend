@@ -234,9 +234,6 @@ export class RecipesBackend extends GuStack {
 			description: `Connect recipe responder ${this.stage} to recipes-reindex`,
 			eventPattern: {
 				source: ['recipes-reindex'],
-				detail: {
-					channels: ['articles'],
-				},
 			},
 			targets: [
 				new aws_events_targets.LambdaFunction(updaterLambda, {

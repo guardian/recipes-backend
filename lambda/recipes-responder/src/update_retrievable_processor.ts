@@ -40,7 +40,7 @@ export async function retrieveContent(capiUrl: string): Promise<PollingResult> {
 	return callCAPI(`${capiUrl}?${params}`);
 }
 
-export async function handleContentUpdateRetrievable({
+export async function handleContentUpdateByCapiUrl({
 	contentType,
 	capiUrl,
 	internalRevision,

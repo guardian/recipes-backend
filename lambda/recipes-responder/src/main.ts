@@ -23,7 +23,7 @@ import {
 } from 'lib/recipes-data/src/lib/config';
 import { handleDeletedContent, handleTakedown } from './takedown_processor';
 import { handleContentUpdate } from './update_processor';
-import { handleContentUpdateRetrievable } from './update_retrievable_processor';
+import { handleContentUpdateByCapiUrl as handleContentUpdateByCapiUrl } from './update_retrievable_processor';
 
 const filterProductionMonitoring: boolean = process.env[
 	'FILTER_PRODUCTION_MONITORING'
@@ -97,7 +97,7 @@ export async function processRecord({
 							contentType,
 							internalRevision,
 						} = evt.payload.retrievableContent;
-						return handleContentUpdateRetrievable({
+						return handleContentUpdateByCapiUrl({
 							capiUrl,
 							contentType,
 							internalRevision,
@@ -148,7 +148,7 @@ export const handler: Handler<
 				});
 			}
 			case 'recipes-reindex': {
-				return await handleContentUpdateRetrievable({
+				return await handleContentUpdateByCapiUrl({
 					capiUrl: event.detail.articleId,
 					contentType: ContentType.ARTICLE,
 					staticBucketName,
