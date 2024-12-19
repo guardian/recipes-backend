@@ -77,6 +77,8 @@ export class RecipesReindex extends Construct {
 				environment: {
 					CONTENT_URL_BASE: contentUrlBase,
 					RECIPE_INDEX_SNAPSHOT_BUCKET: snapshotBucket.bucketName,
+					INDEX_TABLE: dataStore.table.tableName,
+					LAST_UPDATED_INDEX: dataStore.lastUpdatedIndexName,
 				},
 				architecture: Architecture.ARM_64,
 				timeout: Duration.seconds(30),
