@@ -2413,6 +2413,10 @@ def sort_filter_rules(json_obj):
           "Variables": {
             "APP": "recipes-reindex-snapshot-recipe-index",
             "CONTENT_URL_BASE": "recipes.guardianapis.com",
+            "INDEX_TABLE": {
+              "Ref": "storeRecipeTableC3AD84B7",
+            },
+            "LAST_UPDATED_INDEX": "idxArticleLastUpdated",
             "RECIPE_INDEX_SNAPSHOT_BUCKET": {
               "Ref": "RecipeReindexreindexSnapshotBucketB9E1DA96",
             },
