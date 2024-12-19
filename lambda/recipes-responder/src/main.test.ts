@@ -12,7 +12,7 @@ import type {
 import formatISO from 'date-fns/formatISO';
 import { registerMetric } from '@recipes-api/cwmetrics';
 import { deserializeEvent } from '@recipes-api/lib/capi';
-import type { CrierEvent } from '@recipes-api/lib/recipes-data';
+import type { CrierEventDetail } from '@recipes-api/lib/recipes-data';
 import { handler, processRecord } from './main';
 import { handleDeletedContent, handleTakedown } from './takedown_processor';
 import { handleContentUpdate } from './update_processor';
@@ -162,11 +162,8 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		expect(handleContentUpdateRetrievable.mock.calls.length).toEqual(1);
 		//@ts-ignore
-		expect(handleContentUpdateRetrievable.mock.calls[0][0].retrievable).toEqual(
-			{
-				id: 'test',
-				capiUrl: '/path/to/test',
-			},
+		expect(handleContentUpdateRetrievable.mock.calls[0][0].capiUrl).toEqual(
+			'/path/to/test',
 		);
 		//@ts-ignore
 		expect(handleDeletedContent.mock.calls.length).toEqual(0);
@@ -289,13 +286,13 @@ describe('main.processRecord', () => {
 
 describe('main.handler', () => {
 	it('should call registerMetric', async () => {
-		const testReq: CrierEvent = {
+		const testReq: CrierEventDetail = {
 			'capi-models': '25.0.0',
 			channels: ['open', 'feast', 'editions', 'newsletters'],
 			event: 'GFR1ay1uZXdzL2FydGljbGUvMjAyNC9qdWwv… (73324 chars)',
 		};
 
-		const eventMock: EventBridgeEvent<string, CrierEvent> = {
+		const eventMock: EventBridgeEvent<'content-update', CrierEventDetail> = {
 			account: '234786246782',
 			detail: testReq,
 			'detail-type': 'content-update',

@@ -53,7 +53,7 @@ describe('handleContentUpdateRetrievable', () => {
 		handleContentUpdate.mockReturnValue(Promise.resolve(3));
 
 		const recordCount = await handleContentUpdateRetrievable({
-			retrievable: fakeUpdate,
+			...fakeUpdate,
 			staticBucketName,
 			fastlyApiKey,
 			contentPrefix,
@@ -83,7 +83,7 @@ describe('handleContentUpdateRetrievable', () => {
 		);
 
 		const recordCount = await handleContentUpdateRetrievable({
-			retrievable: {
+			...{
 				...fakeUpdate,
 				contentType: ContentType.GALLERY,
 			},
@@ -107,7 +107,7 @@ describe('handleContentUpdateRetrievable', () => {
 
 		await expect(
 			handleContentUpdateRetrievable({
-				retrievable: fakeUpdate,
+				...fakeUpdate,
 				staticBucketName,
 				fastlyApiKey,
 				contentPrefix,
@@ -132,7 +132,7 @@ describe('handleContentUpdateRetrievable', () => {
 		);
 
 		const recordCount = await handleContentUpdateRetrievable({
-			retrievable: fakeUpdate,
+			...fakeUpdate,
 			staticBucketName,
 			fastlyApiKey,
 			contentPrefix,

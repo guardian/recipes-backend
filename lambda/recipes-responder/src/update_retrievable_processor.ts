@@ -1,5 +1,4 @@
 /* eslint @typescript-eslint/naming-convention: "off"  -- PollingAction uses a more CAPI-like convention*/
-import type { RetrievableContent } from '@guardian/content-api-models/crier/event/v1/retrievableContent';
 import { ContentType } from '@guardian/content-api-models/v1/contentType';
 import type { PollingResult } from '@recipes-api/lib/capi';
 import { callCAPI } from '@recipes-api/lib/capi';
@@ -42,26 +41,30 @@ export async function retrieveContent(capiUrl: string): Promise<PollingResult> {
 }
 
 export async function handleContentUpdateRetrievable({
-	retrievable,
+	contentType,
+	capiUrl,
+	internalRevision,
 	staticBucketName,
 	fastlyApiKey,
 	contentPrefix,
 	outgoingEventBus,
 }: {
-	retrievable: RetrievableContent;
+	contentType?: ContentType;
+	capiUrl: string;
+	internalRevision?: number;
 	staticBucketName: string;
 	fastlyApiKey: string;
 	contentPrefix: string;
 	outgoingEventBus: string;
 }): Promise<number> {
-	if (retrievable.contentType != ContentType.ARTICLE) return 0; //no point processing live-blogs etc.
+	if (contentType != ContentType.ARTICLE) return 0; //no point processing live-blogs etc.
 
 	// TO FIX UPSTREAM – Crier returns a path that does not include channelled content, giving a 404
 	// if the content is not on open. We modify the path manually here to fix. Crier should return a path
 	// that is scoped to the appropriate channel if the content is not on open.
-	const capiUrl = new URL(retrievable.capiUrl);
+	const normalisedCapiUrl = new URL(capiUrl);
 	const capiResponse = await retrieveContent(
-		`${capiUrl.protocol}//${capiUrl.hostname}/channel/feast/item${capiUrl.pathname}`,
+		`${normalisedCapiUrl.protocol}//${normalisedCapiUrl.hostname}/channel/feast/item${normalisedCapiUrl.pathname}`,
 	);
 
 	switch (capiResponse.action) {
@@ -69,12 +72,11 @@ export async function handleContentUpdateRetrievable({
 			//Great, we have it - but should check if this has now been superceded
 			if (
 				capiResponse.content?.fields?.internalRevision &&
-				retrievable.internalRevision &&
-				capiResponse.content.fields.internalRevision >
-					retrievable.internalRevision
+				internalRevision &&
+				capiResponse.content.fields.internalRevision > internalRevision
 			) {
 				console.log(
-					`INFO Retrievable update was superceded - we expected to see ${retrievable.internalRevision} but got ${capiResponse.content.fields.internalRevision}`,
+					`INFO Retrievable update was superceded - we expected to see ${internalRevision} but got ${capiResponse.content.fields.internalRevision}`,
 				);
 			} else if (capiResponse.content) {
 				return handleContentUpdate({
