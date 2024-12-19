@@ -50,4 +50,5 @@ export const ImageDpr = process.env['IMAGE_DPR']
 	: 1;
 
 //Used by eventbus
-export const OutgoingEventBus = process.env['OUTGOING_EVENT_BUS'];
+export const getOutgoingEventBus =
+	createGetMandatoryParameter('OUTGOING_EVENT_BUS');

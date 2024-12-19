@@ -1,6 +1,7 @@
 import { EventType } from '@guardian/content-api-models/crier/event/v1/eventType';
 import { ItemType } from '@guardian/content-api-models/crier/event/v1/itemType';
-import type { EventBridgeHandler } from 'aws-lambda';
+import { ContentType } from '@guardian/content-api-models/v1/contentType';
+import type { Handler } from 'aws-lambda';
 import { registerMetric } from '@recipes-api/cwmetrics';
 import { deserializeEvent } from '@recipes-api/lib/capi';
 import {
@@ -9,15 +10,20 @@ import {
 	V2_INDEX_JSON,
 	writeIndexData,
 } from '@recipes-api/lib/recipes-data';
+import type {
+	CrierEventBridgeEvent,
+	CrierEventDetail,
+	ReindexEventBridgeEvent,
+} from '@recipes-api/lib/recipes-data';
 import {
 	getContentPrefix,
 	getFastlyApiKey,
+	getOutgoingEventBus,
 	getStaticBucketName,
 } from 'lib/recipes-data/src/lib/config';
-import type { CrierEvent } from './eventbridge_models';
 import { handleDeletedContent, handleTakedown } from './takedown_processor';
 import { handleContentUpdate } from './update_processor';
-import { handleContentUpdateRetrievable } from './update_retrievable_processor';
+import { handleContentUpdateByCapiUrl as handleContentUpdateByCapiUrl } from './update_retrievable_processor';
 
 const filterProductionMonitoring: boolean = process.env[
 	'FILTER_PRODUCTION_MONITORING'
@@ -30,11 +36,13 @@ export async function processRecord({
 	staticBucketName,
 	fastlyApiKey,
 	contentPrefix,
+	outgoingEventBus,
 }: {
-	eventDetail: CrierEvent;
+	eventDetail: CrierEventDetail;
 	staticBucketName: string;
 	fastlyApiKey: string;
 	contentPrefix: string;
+	outgoingEventBus: string;
 }): Promise<number> {
 	if (eventDetail.channels && !eventDetail.channels.includes('feast')) {
 		console.error(
@@ -65,29 +73,43 @@ export async function processRecord({
 					staticBucketName,
 					fastlyApiKey,
 					contentPrefix,
+					outgoingEventBus,
 				});
 			case EventType.UPDATE:
 			case EventType.RETRIEVABLEUPDATE:
 				switch (evt.payload?.kind) {
-					case undefined:
+					case undefined: {
 						console.log('DEBUG Event had no payload');
 						break;
-					case 'content':
+					}
+					case 'content': {
 						return handleContentUpdate({
 							content: evt.payload.content,
 							staticBucketName,
 							fastlyApiKey,
 							contentPrefix,
+							outgoingEventBus,
 						});
-					case 'retrievableContent':
-						return handleContentUpdateRetrievable({
-							retrievable: evt.payload.retrievableContent,
+					}
+					case 'retrievableContent': {
+						const {
+							capiUrl: capiUrl,
+							contentType,
+							internalRevision,
+						} = evt.payload.retrievableContent;
+						return handleContentUpdateByCapiUrl({
+							capiUrl,
+							contentType,
+							internalRevision,
 							staticBucketName,
 							fastlyApiKey,
 							contentPrefix,
+							outgoingEventBus,
 						});
-					case 'deletedContent':
+					}
+					case 'deletedContent': {
 						return handleDeletedContent(evt.payload.deletedContent);
+					}
 					default:
 						break;
 				}
@@ -104,19 +126,39 @@ export async function processRecord({
 	}
 }
 
-export const handler: EventBridgeHandler<string, CrierEvent, void> = async (
-	event,
-) => {
+export const handler: Handler<
+	CrierEventBridgeEvent | ReindexEventBridgeEvent,
+	void
+> = async (event) => {
 	const contentPrefix = getContentPrefix();
 	const staticBucketName = getStaticBucketName();
 	const fastlyApiKey = getFastlyApiKey();
+	const outgoingEventBus = getOutgoingEventBus();
 
-	const updatesTotal = await processRecord({
-		eventDetail: event.detail,
-		staticBucketName,
-		fastlyApiKey,
-		contentPrefix,
-	});
+	const updatesTotal = await (async () => {
+		switch (event['detail-type']) {
+			case 'content-update':
+			case 'content-delete': {
+				return await processRecord({
+					eventDetail: event.detail,
+					staticBucketName,
+					fastlyApiKey,
+					contentPrefix,
+					outgoingEventBus,
+				});
+			}
+			case 'recipes-reindex': {
+				return await handleContentUpdateByCapiUrl({
+					capiUrl: event.detail.articleId,
+					contentType: ContentType.ARTICLE,
+					staticBucketName,
+					fastlyApiKey,
+					contentPrefix,
+					outgoingEventBus,
+				});
+			}
+		}
+	})();
 
 	if (updatesTotal > 0) {
 		console.log(

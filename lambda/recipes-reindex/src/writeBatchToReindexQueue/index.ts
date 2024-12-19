@@ -1,5 +1,9 @@
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import type { Handler } from 'aws-lambda';
+import {
+	getOutgoingEventBus,
+	putReindexIds,
+} from '@recipes-api/lib/recipes-data';
 import { getRecipeIndexSnapshotBucket, getReindexBatchSize } from '../config';
 import type {
 	RecipeArticlesSnapshot,
@@ -15,6 +19,7 @@ export const writeBatchToReindexQueueHandler: Handler<
 > = async (state) => {
 	const reindexSnapshotBucket = getRecipeIndexSnapshotBucket();
 	const reindexBatchSize = getReindexBatchSize();
+	const outgoingEventBus = getOutgoingEventBus();
 
 	const {
 		executionId,
@@ -73,7 +78,9 @@ export const writeBatchToReindexQueueHandler: Handler<
 
 	console.log(`${dryRun ? dryRunMsg : ''} about to write ${writeMsg}`);
 
-	await writeRecipeIdsToReindexQueue(articleIdsToReindex);
+	if (!dryRun) {
+		await putReindexIds(articleIdsToReindex, outgoingEventBus);
+	}
 
 	console.log(`${dryRun ? dryRunMsg : ''} completed writing ${writeMsg}`);
 
@@ -82,8 +89,4 @@ export const writeBatchToReindexQueueHandler: Handler<
 		nextIndex: nextIndex,
 		lastIndex: recipeIndexSnapshot.length - 1,
 	};
-};
-
-const writeRecipeIdsToReindexQueue = async (ids: string[]) => {
-	return Promise.resolve(ids);
 };

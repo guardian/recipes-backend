@@ -229,6 +229,21 @@ export class RecipesBackend extends GuStack {
 			],
 		});
 
+		new Rule(this, 'ReindexConnection', {
+			eventBus,
+			description: `Connect recipe responder ${this.stage} to recipes-reindex`,
+			eventPattern: {
+				source: ['recipes-reindex'],
+			},
+			targets: [
+				new aws_events_targets.LambdaFunction(updaterLambda, {
+					deadLetterQueue: responderDLQ,
+					maxEventAge: Duration.minutes(30),
+					retryAttempts: 5,
+				}),
+			],
+		});
+
 		new FaciaConnection(this, 'RecipesFacia', {
 			fastlyKeyParam,
 			serving,
@@ -253,6 +268,7 @@ export class RecipesBackend extends GuStack {
 			contentUrlBase,
 			reindexBatchSize: reindexBatchSizeParam.valueAsNumber,
 			reindexWaitTime: reindexWaitTimeParam.valueAsNumber,
+			eventBus,
 		});
 
 		const durationAlarm = new Alarm(this, 'DurationRuntimeAlarm', {
