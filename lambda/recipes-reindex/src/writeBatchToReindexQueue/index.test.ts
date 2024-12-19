@@ -1,7 +1,7 @@
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import type { Callback, Context } from 'aws-lambda';
 import { mockClient } from 'aws-sdk-client-mock';
-import * as indexJSON from './fixtures/index.json';
+import indexJSON from './fixtures/index.json';
 import { writeBatchToReindexQueueHandler } from './index';
 
 const RecipeIndexSnapshotBucket = 'example-reindex-bucket';
