@@ -78,7 +78,9 @@ export const writeBatchToReindexQueueHandler: Handler<
 
 	console.log(`${dryRun ? dryRunMsg : ''} about to write ${writeMsg}`);
 
-	await putReindexIds(articleIdsToReindex, outgoingEventBus);
+	if (!dryRun) {
+		await putReindexIds(articleIdsToReindex, outgoingEventBus);
+	}
 
 	console.log(`${dryRun ? dryRunMsg : ''} completed writing ${writeMsg}`);
 
