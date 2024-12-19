@@ -37,6 +37,7 @@ const fakeContent: Content = {
 const staticBucketName = 'static-bucket';
 const fastlyApiKey = 'fastly-api-key';
 const contentPrefix = 'cdn.content.location';
+const outgoingEventBus = 'outgoing-event-bus';
 
 describe('handleContentUpdateRetrievable', () => {
 	beforeEach(() => {
@@ -56,6 +57,7 @@ describe('handleContentUpdateRetrievable', () => {
 			staticBucketName,
 			fastlyApiKey,
 			contentPrefix,
+			outgoingEventBus,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(callCAPI.mock.calls.length).toEqual(1);
@@ -88,6 +90,7 @@ describe('handleContentUpdateRetrievable', () => {
 			staticBucketName,
 			fastlyApiKey,
 			contentPrefix,
+			outgoingEventBus,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(callCAPI.mock.calls.length).toEqual(0);
@@ -108,6 +111,7 @@ describe('handleContentUpdateRetrievable', () => {
 				staticBucketName,
 				fastlyApiKey,
 				contentPrefix,
+				outgoingEventBus,
 			}),
 		).rejects.toEqual(
 			new Error(
@@ -132,6 +136,7 @@ describe('handleContentUpdateRetrievable', () => {
 			staticBucketName,
 			fastlyApiKey,
 			contentPrefix,
+			outgoingEventBus,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(callCAPI.mock.calls.length).toEqual(1);

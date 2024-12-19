@@ -4,7 +4,6 @@ import {
 	PutEventsCommand,
 } from '@aws-sdk/client-eventbridge';
 import { registerMetric } from '@recipes-api/cwmetrics';
-import { OutgoingEventBus } from './config';
 import type { RecipeIndexEntry, RecipeReference } from './models';
 
 const ebClient = new EventBridgeClient({ region: process.env['AWS_REGION'] });
@@ -12,13 +11,8 @@ const ebClient = new EventBridgeClient({ region: process.env['AWS_REGION'] });
 export async function announceNewRecipe(
 	updated: RecipeReference[],
 	removedList: RecipeIndexEntry[],
+	OutgoingEventBus: string,
 ) {
-	if (!OutgoingEventBus || OutgoingEventBus == '') {
-		throw new Error(
-			'Could not announce to EventBridge - please set OUTGOING_EVENT_BUS to an event bus name in the config',
-		);
-	}
-
 	const updates = updated.map((recep) => ({
 		Time: new Date(), //Timestamp
 		Source: 'recipe-responder', //Identity of sender

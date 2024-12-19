@@ -39,6 +39,7 @@ jest.mock('lib/recipes-data/src/lib/config', () => ({
 	getContentPrefix: () => 'cdn.content',
 	getFastlyApiKey: () => 'fastly-api-key',
 	getStaticBucketName: () => 'static-bucket',
+	getOutgoingEventBus: () => 'outgoing-event-bus',
 }));
 
 jest.mock('@recipes-api/cwmetrics', () => ({

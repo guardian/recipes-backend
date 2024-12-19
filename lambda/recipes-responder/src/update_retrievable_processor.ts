@@ -46,11 +46,13 @@ export async function handleContentUpdateRetrievable({
 	staticBucketName,
 	fastlyApiKey,
 	contentPrefix,
+	outgoingEventBus,
 }: {
 	retrievable: RetrievableContent;
 	staticBucketName: string;
 	fastlyApiKey: string;
 	contentPrefix: string;
+	outgoingEventBus: string;
 }): Promise<number> {
 	if (retrievable.contentType != ContentType.ARTICLE) return 0; //no point processing live-blogs etc.
 
@@ -80,6 +82,7 @@ export async function handleContentUpdateRetrievable({
 					staticBucketName,
 					fastlyApiKey,
 					contentPrefix,
+					outgoingEventBus,
 				});
 			} else {
 				console.error(

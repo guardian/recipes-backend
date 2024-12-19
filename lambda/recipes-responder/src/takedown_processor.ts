@@ -1,18 +1,23 @@
 import type { DeletedContent } from '@guardian/content-api-models/crier/event/v1/deletedContent';
 import type { Event } from '@guardian/content-api-models/crier/event/v1/event';
 import { ItemType } from '@guardian/content-api-models/crier/event/v1/itemType';
-import { removeAllRecipesForArticle } from '@recipes-api/lib/recipes-data';
+import {
+	getOutgoingEventBus,
+	removeAllRecipesForArticle,
+} from '@recipes-api/lib/recipes-data';
 
 export async function handleTakedown({
 	event,
 	staticBucketName,
 	fastlyApiKey,
 	contentPrefix,
+	outgoingEventBus,
 }: {
 	event: Event;
 	staticBucketName: string;
 	fastlyApiKey: string;
 	contentPrefix: string;
+	outgoingEventBus: string;
 }): Promise<number> {
 	console.log('takedown payload: ', JSON.stringify(event));
 
@@ -23,6 +28,7 @@ export async function handleTakedown({
 			staticBucketName,
 			fastlyApiKey,
 			contentPrefix,
+			outgoingEventBus,
 		}); //event.payloadId is the canonical article ref that was taken down
 	} else {
 		return 0;

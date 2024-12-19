@@ -12,6 +12,7 @@ import {
 import {
 	getContentPrefix,
 	getFastlyApiKey,
+	getOutgoingEventBus,
 	getStaticBucketName,
 } from 'lib/recipes-data/src/lib/config';
 import type { CrierEvent } from '../../../lib/recipes-data/src/lib/eventbridge-models';
@@ -30,11 +31,13 @@ export async function processRecord({
 	staticBucketName,
 	fastlyApiKey,
 	contentPrefix,
+	outgoingEventBus,
 }: {
 	eventDetail: CrierEvent;
 	staticBucketName: string;
 	fastlyApiKey: string;
 	contentPrefix: string;
+	outgoingEventBus: string;
 }): Promise<number> {
 	if (eventDetail.channels && !eventDetail.channels.includes('feast')) {
 		console.error(
@@ -65,6 +68,7 @@ export async function processRecord({
 					staticBucketName,
 					fastlyApiKey,
 					contentPrefix,
+					outgoingEventBus,
 				});
 			case EventType.UPDATE:
 			case EventType.RETRIEVABLEUPDATE:
@@ -78,6 +82,7 @@ export async function processRecord({
 							staticBucketName,
 							fastlyApiKey,
 							contentPrefix,
+							outgoingEventBus,
 						});
 					case 'retrievableContent':
 						return handleContentUpdateRetrievable({
@@ -85,6 +90,7 @@ export async function processRecord({
 							staticBucketName,
 							fastlyApiKey,
 							contentPrefix,
+							outgoingEventBus,
 						});
 					case 'deletedContent':
 						return handleDeletedContent(evt.payload.deletedContent);
@@ -110,12 +116,14 @@ export const handler: EventBridgeHandler<string, CrierEvent, void> = async (
 	const contentPrefix = getContentPrefix();
 	const staticBucketName = getStaticBucketName();
 	const fastlyApiKey = getFastlyApiKey();
+	const outgoingEventBus = getOutgoingEventBus();
 
 	const updatesTotal = await processRecord({
 		eventDetail: event.detail,
 		staticBucketName,
 		fastlyApiKey,
 		contentPrefix,
+		outgoingEventBus,
 	});
 
 	if (updatesTotal > 0) {
