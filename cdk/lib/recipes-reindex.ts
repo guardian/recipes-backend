@@ -76,11 +76,6 @@ export class RecipesReindex extends Construct {
 							dataStore.table.tableArn + '/index/*',
 						],
 					}),
-					new PolicyStatement({
-						effect: Effect.ALLOW,
-						actions: ['events:PutEvents'],
-						resources: [eventBus.eventBusArn],
-					}),
 				],
 				environment: {
 					CONTENT_URL_BASE: contentUrlBase,
@@ -110,10 +105,21 @@ export class RecipesReindex extends Construct {
 						actions: ['s3:GetObject'],
 						resources: [snapshotBucket.bucketArn + '/*'],
 					}),
+					new PolicyStatement({
+						effect: Effect.ALLOW,
+						actions: ['events:PutEvents'],
+						resources: [eventBus.eventBusArn],
+					}),
+					new PolicyStatement({
+						effect: Effect.ALLOW,
+						resources: ['*'],
+						actions: ['cloudwatch:PutMetricData'],
+					}),
 				],
 				environment: {
 					RECIPE_INDEX_SNAPSHOT_BUCKET: snapshotBucket.bucketName,
 					REINDEX_BATCH_SIZE: reindexBatchSize.toString(),
+					OUTGOING_EVENT_BUS: eventBus.eventBusName,
 				},
 				architecture: Architecture.ARM_64,
 				timeout: Duration.seconds(30),

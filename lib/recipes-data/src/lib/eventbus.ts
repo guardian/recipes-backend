@@ -9,6 +9,7 @@ import {
 } from '@aws-sdk/client-eventbridge';
 import { registerMetric } from '@recipes-api/cwmetrics';
 import type { RecipeIndexEntry, RecipeReference } from './models';
+import { ReindexEventDetail } from './eventbridge-models';
 
 const ebClient = new EventBridgeClient({ region: process.env['AWS_REGION'] });
 
@@ -62,7 +63,7 @@ export async function putReindexIds(
 		Source: 'recipes-reindex',
 		Resources: [],
 		DetailType: 'article-reindex-request',
-		Detail: JSON.stringify(articleId),
+		Detail: JSON.stringify({ articleId } as ReindexEventDetail),
 		EventBusName: outgoingEventBus,
 	}));
 
