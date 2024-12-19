@@ -1,6 +1,7 @@
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
 import { Duration, RemovalPolicy } from 'aws-cdk-lib';
+import type { IEventBus } from 'aws-cdk-lib/aws-events';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
@@ -25,6 +26,7 @@ type RecipesReindexProps = {
 	contentUrlBase: string;
 	reindexBatchSize: number;
 	reindexWaitTime: number;
+	eventBus: IEventBus;
 };
 
 export class RecipesReindex extends Construct {
@@ -36,6 +38,7 @@ export class RecipesReindex extends Construct {
 			contentUrlBase,
 			reindexBatchSize,
 			reindexWaitTime,
+			eventBus,
 		}: RecipesReindexProps,
 	) {
 		super(scope, id);
@@ -72,6 +75,11 @@ export class RecipesReindex extends Construct {
 							dataStore.table.tableArn,
 							dataStore.table.tableArn + '/index/*',
 						],
+					}),
+					new PolicyStatement({
+						effect: Effect.ALLOW,
+						actions: ['events:PutEvents'],
+						resources: [eventBus.eventBusArn],
 					}),
 				],
 				environment: {
