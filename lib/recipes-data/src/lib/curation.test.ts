@@ -8,11 +8,12 @@ import MockedFn = jest.MockedFn;
 const s3Mock = mockClient(S3Client);
 
 jest.mock('./config', () => ({
-	ContentUrlBase: 'not-used',
-	StaticBucketName: 'static-content-bucket',
-	FastlyApiKey: 'blahblahblah',
 	AwsRegion: 'eu-west-1',
 }));
+
+const staticBucketName = 'static-bucket';
+const fastlyApiKey = 'fastly-api-key';
+const contentPrefix = 'cdn.content.location';
 
 jest.mock('./fastly', () => ({
 	sendFastlyPurgeRequestWithRetries: jest.fn(),
@@ -30,6 +31,7 @@ describe('importNewData', () => {
 			'some-region',
 			'some-variant',
 			null,
+			{ staticBucketName, fastlyApiKey, contentPrefix },
 		);
 
 		expect(s3Mock.calls().length).toEqual(1);
@@ -38,22 +40,26 @@ describe('importNewData', () => {
 		expect(uploadArgs.input.Key).toEqual(
 			`some-region/some-variant/curation.json`,
 		);
-		expect(uploadArgs.input.Bucket).toEqual('static-content-bucket');
+		expect(uploadArgs.input.Bucket).toEqual(staticBucketName);
 
 		const fastlyPurgeMock = sendFastlyPurgeRequestWithRetries as MockedFn<
 			typeof sendFastlyPurgeRequestWithRetries
 		>;
-		expect(fastlyPurgeMock.mock.calls[0][0]).toEqual(
+		expect(fastlyPurgeMock.mock.calls[0][0].contentPath).toEqual(
 			`some-region/some-variant/curation.json`,
 		);
-		expect(fastlyPurgeMock.mock.calls[0][1]).toEqual('blahblahblah');
-		expect(fastlyPurgeMock.mock.calls[0][2]).toEqual('hard');
+		expect(fastlyPurgeMock.mock.calls[0][0].apiKey).toEqual(fastlyApiKey);
+		expect(fastlyPurgeMock.mock.calls[0][0].purgeType).toEqual('hard');
 	});
 
 	it('should respect the date parameter if given', async () => {
 		const d = new Date(2021, 5, 5); //Note - actually 5th Jun - due to Date() constructor weirdness
 
-		await deployCurationData('test-content', 'some-region', 'some-variant', d);
+		await deployCurationData('test-content', 'some-region', 'some-variant', d, {
+			staticBucketName,
+			fastlyApiKey,
+			contentPrefix,
+		});
 
 		expect(s3Mock.calls().length).toEqual(1);
 		const uploadArgs = s3Mock.call(0).firstArg as PutObjectCommand;
@@ -61,15 +67,15 @@ describe('importNewData', () => {
 		expect(uploadArgs.input.Key).toEqual(
 			`some-region/some-variant/2021-06-05/curation.json`,
 		);
-		expect(uploadArgs.input.Bucket).toEqual('static-content-bucket');
+		expect(uploadArgs.input.Bucket).toEqual(staticBucketName);
 
 		const fastlyPurgeMock = sendFastlyPurgeRequestWithRetries as MockedFn<
 			typeof sendFastlyPurgeRequestWithRetries
 		>;
-		expect(fastlyPurgeMock.mock.calls[0][0]).toEqual(
+		expect(fastlyPurgeMock.mock.calls[0][0].contentPath).toEqual(
 			`some-region/some-variant/2021-06-05/curation.json`,
 		);
-		expect(fastlyPurgeMock.mock.calls[0][1]).toEqual('blahblahblah');
-		expect(fastlyPurgeMock.mock.calls[0][2]).toEqual('hard');
+		expect(fastlyPurgeMock.mock.calls[0][0].apiKey).toEqual(fastlyApiKey);
+		expect(fastlyPurgeMock.mock.calls[0][0].purgeType).toEqual('hard');
 	});
 });

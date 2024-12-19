@@ -1,5 +1,10 @@
 import * as process from 'process';
-import { removeAllRecipesForArticle } from '@recipes-api/lib/recipes-data';
+import {
+	getContentPrefix,
+	getFastlyApiKey,
+	getStaticBucketName,
+	removeAllRecipesForArticle,
+} from '@recipes-api/lib/recipes-data';
 
 function checkArgs(args: string[]) {
 	args.forEach((arg) => {
@@ -11,11 +16,19 @@ function checkArgs(args: string[]) {
 }
 
 async function main() {
-	checkArgs(['ARTICLE_ID', 'INDEX_TABLE', 'STATIC_BUCKET', 'CONTENT_URL_BASE']);
+	checkArgs(['ARTICLE_ID', 'INDEX_TABLE']);
 	const articleId = process.env['ARTICLE_ID'] as string; //checkArgs ensures that this is valid
+	const staticBucketName = getStaticBucketName();
+	const fastlyApiKey = getFastlyApiKey();
+	const contentPrefix = getContentPrefix();
 
 	console.log('Attempting takedown on ', articleId);
-	await removeAllRecipesForArticle(articleId);
+	await removeAllRecipesForArticle({
+		canonicalArticleId: articleId,
+		staticBucketName,
+		fastlyApiKey,
+		contentPrefix,
+	});
 }
 
 main()

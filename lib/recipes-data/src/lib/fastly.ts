@@ -1,6 +1,6 @@
 //This file is based on https://github.com/guardian/fastly-cache-purger/blob/5b718fd827acf2eabb94884d9df59645999fc2f5/src/main/scala/com/gu/fastly/Lambda.scala#L162
 //with reference to https://developer.fastly.com/reference/api/purging/ and https://docs.fastly.com/en/guides/authenticating-api-purge-requests
-import { ContentPrefix, DebugLogsEnabled, MaximumRetries } from './config';
+import { DebugLogsEnabled, MaximumRetries } from './config';
 import { awaitableDelay } from './utils';
 
 /** From the fastly docs at https://docs.fastly.com/en/fundamentals/what-is-purging:
@@ -31,25 +31,30 @@ function removeLeadingAndTrailingSlash(from: string): string {
  *
  * Note, the CONTENT_URL_BASE parameter must be configured (either in environment variables or via a mock when testing).
  * The function will throw if it is not defined.
- * @param contentPath URL to purge. This is relative to the configured CONTENT_URL_BASE
- * @param apiKey Fastly API key to authenticate the request.  The function will throw if this is undefined or empty.
- * @param purgeType Whether to execute a soft or hard purge (default soft). See the docs on PurgeType for more information.
+ * @param options
+ * @param options.contentPath URL to purge. This is relative to the configured CONTENT_URL_BASE
+ * @param options.apiKey Fastly API key to authenticate the request.  The function will throw if this is undefined or empty.
+ * @param options.contentPrefix CDN hostname
+ * @param options.purgeType Whether to execute a soft or hard purge (default soft). See the docs on PurgeType for more information.
  */
-export async function sendFastlyPurgeRequest(
-	contentPath: string,
-	apiKey: string,
-	purgeType?: PurgeType,
-) {
-	if (!ContentPrefix) {
-		throw new Error('Cannot purge because CONTENT_URL_BASE is not set');
-	}
+export async function sendFastlyPurgeRequest({
+	contentPath,
+	apiKey,
+	contentPrefix,
+	purgeType,
+}: {
+	contentPath: string;
+	apiKey: string;
+	contentPrefix: string;
+	purgeType?: PurgeType;
+}) {
 	if (!apiKey || apiKey == '') {
 		throw new Error('Cannot purge because Fastly API key is not set');
 	}
 
 	const urlToPurge = [
 		'https://api.fastly.com/purge',
-		removeLeadingAndTrailingSlash(ContentPrefix),
+		removeLeadingAndTrailingSlash(contentPrefix),
 		removeLeadingAndTrailingSlash(contentPath),
 	].join('/');
 
@@ -95,19 +100,32 @@ export async function sendFastlyPurgeRequest(
 /**
  * calls `sendFastlyPurgeRequest` with the given parameters.  If Fastly returns an error, this will delay by the
  * number of seconds given in RETRY_DELAY and then retry, up to a maximum of MAX_RETRIES attempts.
- * @param contentPath URL to purge. This is relative to the configured CONTENT_URL_BASE
- * @param apiKey Fastly API key to authenticate the request.  The function will throw if this is undefined or empty.
- * @param purgeType Whether to execute a soft or hard purge (default soft). See the docs on PurgeType for more information.
- * @param retryCount don't specify this, it's used internally.
+ * @param options
+ * @param options.contentPath URL to purge. This is relative to the configured CONTENT_URL_BASE
+ * @param options.apiKey Fastly API key to authenticate the request.  The function will throw if this is undefined or empty.
+ * @param options.purgeType Whether to execute a soft or hard purge (default soft). See the docs on PurgeType for more information.
+ * @param options.retryCount don't specify this, it's used internally.
  */
-export async function sendFastlyPurgeRequestWithRetries(
-	contentPath: string,
-	apiKey: string,
-	purgeType?: PurgeType,
-	retryCount?: number,
-): Promise<void> {
+export async function sendFastlyPurgeRequestWithRetries({
+	contentPath,
+	apiKey,
+	contentPrefix,
+	purgeType,
+	retryCount,
+}: {
+	contentPath: string;
+	apiKey: string;
+	contentPrefix: string;
+	purgeType?: PurgeType;
+	retryCount?: number;
+}): Promise<void> {
 	try {
-		return sendFastlyPurgeRequest(contentPath, apiKey, purgeType);
+		return sendFastlyPurgeRequest({
+			contentPath,
+			apiKey,
+			contentPrefix,
+			purgeType,
+		});
 	} catch (err) {
 		if (err instanceof FastlyError) {
 			const nextRetry = retryCount ? retryCount + 1 : 1;
@@ -119,12 +137,13 @@ export async function sendFastlyPurgeRequestWithRetries(
 				throw err; //we give up! it ain't gonna work.
 			}
 			await awaitableDelay();
-			return sendFastlyPurgeRequestWithRetries(
+			return sendFastlyPurgeRequestWithRetries({
 				contentPath,
 				apiKey,
+				contentPrefix,
 				purgeType,
-				nextRetry,
-			);
+				retryCount: nextRetry,
+			});
 		} else {
 			throw err;
 		}

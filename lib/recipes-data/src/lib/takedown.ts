@@ -15,17 +15,26 @@ enum TakedownMode {
 
 /**
  * Internal function that does the business of taking a recipe down
- * @param client DynamoDB client object
  * @param canonicalArticleId article to which the recipe belongs
  * @param recipe index entry identifying the recipe
  * @param mode Takedown mode. If `TakedownMode.AllVersions`, then any occurence of the content's uid is removed.
  * If `TakedownMode.SpecificVersion`, then the recipe is only removed if its checksum matches the one given in `recipe`
  */
-async function takeRecipeDown(
-	canonicalArticleId: string,
-	recipe: RecipeIndexEntry,
-	mode: TakedownMode,
-): Promise<void> {
+async function takeRecipeDown({
+	canonicalArticleId,
+	recipe,
+	mode,
+	staticBucketName,
+	fastlyApiKey,
+	contentPrefix,
+}: {
+	canonicalArticleId: string;
+	recipe: RecipeIndexEntry;
+	mode: TakedownMode;
+	staticBucketName: string;
+	fastlyApiKey: string;
+	contentPrefix: string;
+}): Promise<void> {
 	console.log(
 		`takeRecipeDown: removing recipe ${recipe.recipeUID} for ${canonicalArticleId} from the index`,
 	);
@@ -38,7 +47,12 @@ async function takeRecipeDown(
 	console.log(
 		`takeRecipeDown: removing content version ${recipe.checksum} for ${recipe.recipeUID} on ${canonicalArticleId} from the store`,
 	);
-	await removeRecipeContent(recipe.checksum);
+	await removeRecipeContent({
+		recipeSHA: recipe.checksum,
+		staticBucketName: staticBucketName,
+		fastlyApiKey: fastlyApiKey,
+		contentPrefix,
+	});
 	console.log(
 		`takeRecipeDown: complete for ${recipe.checksum} for ${recipe.recipeUID} on ${canonicalArticleId}`,
 	);
@@ -51,11 +65,27 @@ async function takeRecipeDown(
  * @param canonicalArticleId
  * @param recipe
  */
-export async function removeRecipePermanently(
-	canonicalArticleId: string,
-	recipe: RecipeIndexEntry,
-) {
-	await takeRecipeDown(canonicalArticleId, recipe, TakedownMode.AllVersions);
+export async function removeRecipePermanently({
+	canonicalArticleId,
+	recipe,
+	staticBucketName,
+	fastlyApiKey,
+	contentPrefix,
+}: {
+	canonicalArticleId: string;
+	recipe: RecipeIndexEntry;
+	staticBucketName: string;
+	fastlyApiKey: string;
+	contentPrefix: string;
+}) {
+	await takeRecipeDown({
+		canonicalArticleId,
+		recipe,
+		mode: TakedownMode.AllVersions,
+		staticBucketName,
+		fastlyApiKey,
+		contentPrefix,
+	});
 
 	try {
 		await sendTelemetryEvent('TakenDown', recipe.recipeUID, '');
@@ -74,27 +104,55 @@ export async function removeRecipePermanently(
  * @param canonicalArticleId
  * @param recipe
  */
-export async function removeRecipeVersion(
-	canonicalArticleId: string,
-	recipe: RecipeIndexEntry,
-) {
-	return takeRecipeDown(
+export async function removeRecipeVersion({
+	canonicalArticleId,
+	recipe,
+	staticBucketName,
+	fastlyApiKey,
+	contentPrefix,
+}: {
+	canonicalArticleId: string;
+	recipe: RecipeIndexEntry;
+	staticBucketName: string;
+	fastlyApiKey: string;
+	contentPrefix: string;
+}) {
+	return takeRecipeDown({
 		canonicalArticleId,
 		recipe,
-		TakedownMode.SpecificVersion,
-	);
+		mode: TakedownMode.SpecificVersion,
+		staticBucketName,
+		fastlyApiKey,
+		contentPrefix,
+	});
 }
 
-export async function removeAllRecipesForArticle(
-	canonicalArticleId: string,
-): Promise<number> {
+export async function removeAllRecipesForArticle({
+	canonicalArticleId,
+	staticBucketName,
+	fastlyApiKey,
+	contentPrefix,
+}: {
+	canonicalArticleId: string;
+	staticBucketName: string;
+	fastlyApiKey: string;
+	contentPrefix: string;
+}): Promise<number> {
 	const removedEntries =
 		await removeAllRecipeIndexEntriesForArticle(canonicalArticleId);
 	console.log(
 		`Taken down article ${canonicalArticleId} had ${removedEntries.length} recipes in it which will also be removed`,
 	);
 	await Promise.all(
-		removedEntries.map((recep) => removeRecipeContent(recep.checksum, 'hard')),
+		removedEntries.map((recep) =>
+			removeRecipeContent({
+				recipeSHA: recep.checksum,
+				staticBucketName: staticBucketName,
+				fastlyApiKey,
+				contentPrefix,
+				purgeType: 'hard',
+			}),
+		),
 	);
 
 	try {

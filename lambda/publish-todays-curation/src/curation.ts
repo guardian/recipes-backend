@@ -6,7 +6,6 @@ import {
 } from '@aws-sdk/client-s3';
 import { format, formatISO } from 'date-fns';
 import { sendFastlyPurgeRequestWithRetries } from '@recipes-api/lib/recipes-data';
-import { Bucket, FastlyApiKey } from './config';
 
 const s3Client = new S3Client({ region: process.env['AWS_REGION'] });
 
@@ -27,10 +26,16 @@ const DateFormat = 'yyyy-MM-dd';
 export async function validateAllCuration(
 	date: Date,
 	throwOnAbsent: boolean,
+	staticBucketName: string,
 ): Promise<CurationPath[]> {
 	const promises = KnownEditions.flatMap((region) =>
 		KnownFronts.map(async (variant) => {
-			const maybeInfo = await validateCurationData(region, variant, date);
+			const maybeInfo = await validateCurationData(
+				region,
+				variant,
+				date,
+				staticBucketName,
+			);
 			if (!maybeInfo) {
 				console.warn(
 					`No curation was present for region ${region} variant ${variant} on date ${format(
@@ -118,10 +123,11 @@ export async function validateCurationData(
 	region: string,
 	variant: string,
 	date: Date,
+	staticBucketName: string,
 ): Promise<CurationPath | null> {
 	console.debug(`Checking path `, generatePath(region, variant, date));
 	const req = new HeadObjectCommand({
-		Bucket,
+		Bucket: staticBucketName,
 		Key: generatePath(region, variant, date),
 	});
 
@@ -152,15 +158,20 @@ export async function validateCurationData(
 	}
 }
 
-export async function activateCuration(info: CurationPath): Promise<void> {
+export async function activateCuration(
+	info: CurationPath,
+	contentPrefix: string,
+	staticBucketName: string,
+	fastlyApiKey: string,
+): Promise<void> {
 	const targetPath = generateActivePath(info.edition, info.front);
 	console.log(
 		`Deploying config ${generatePathFromCuration(info)} to ${targetPath}`,
 	);
 
 	const req = new CopyObjectCommand({
-		Bucket,
-		CopySource: (Bucket ?? '') + '/' + generatePathFromCuration(info),
+		Bucket: staticBucketName,
+		CopySource: staticBucketName + '/' + generatePathFromCuration(info),
 		Key: targetPath,
 	});
 
@@ -168,5 +179,9 @@ export async function activateCuration(info: CurationPath): Promise<void> {
 	console.log(
 		`Done, new Etag is ${response.CopyObjectResult?.ETag ?? '(unknown)'}`,
 	);
-	await sendFastlyPurgeRequestWithRetries(targetPath, FastlyApiKey as string);
+	await sendFastlyPurgeRequestWithRetries({
+		contentPath: targetPath,
+		apiKey: fastlyApiKey,
+		contentPrefix,
+	});
 }

@@ -1,8 +1,6 @@
 import { FastlyError, sendFastlyPurgeRequest } from './fastly';
 
-jest.mock('./config', () => ({
-	ContentPrefix: 'cdn.content.location',
-}));
+const contentPrefix = 'cdn.content.location';
 
 describe('sendFastlyPurgeRequest', () => {
 	beforeEach(() => {
@@ -18,7 +16,11 @@ describe('sendFastlyPurgeRequest', () => {
 				status: 200,
 			} as Response),
 		);
-		await sendFastlyPurgeRequest('/path/to/content', 'fake-key');
+		await sendFastlyPurgeRequest({
+			contentPath: '/path/to/content',
+			apiKey: 'fake-key',
+			contentPrefix,
+		});
 
 		//@ts-ignore
 		expect(fetch.mock.calls.length).toEqual(1);
@@ -46,7 +48,12 @@ describe('sendFastlyPurgeRequest', () => {
 				status: 200,
 			}),
 		);
-		await sendFastlyPurgeRequest('/path/to/content', 'fake-key', 'hard');
+		await sendFastlyPurgeRequest({
+			contentPath: '/path/to/content',
+			apiKey: 'fake-key',
+			contentPrefix,
+			purgeType: 'hard',
+		});
 
 		//@ts-ignore
 		expect(fetch.mock.calls.length).toEqual(1);
@@ -75,7 +82,11 @@ describe('sendFastlyPurgeRequest', () => {
 		);
 
 		await expect(
-			sendFastlyPurgeRequest('/path/to/content', 'fake-key'),
+			sendFastlyPurgeRequest({
+				contentPath: '/path/to/content',
+				apiKey: 'fake-key',
+				contentPrefix,
+			}),
 		).rejects.toEqual(new FastlyError('Fastly returned 502'));
 
 		//@ts-ignore

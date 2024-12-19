@@ -7,18 +7,9 @@ import { writeBatchToReindexQueueHandler } from './index';
 const RecipeIndexSnapshotBucket = 'example-reindex-bucket';
 const ReindexBatchSize = 10;
 
-jest.mock('./config', () => ({
-	getConfig: () => ({
-		RecipeIndexSnapshotBucket,
-		ReindexBatchSize,
-	}),
-}));
-
-jest.mock('../sharedConfig', () => ({
-	getConfig: () => ({
-		RecipeIndexSnapshotBucket,
-		ReindexBatchSize: 10,
-	}),
+jest.mock('../config', () => ({
+	getRecipeIndexSnapshotBucket: () => RecipeIndexSnapshotBucket,
+	getReindexBatchSize: () => ReindexBatchSize,
 }));
 
 const s3Mock = mockClient(S3Client);

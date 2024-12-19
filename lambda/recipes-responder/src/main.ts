@@ -9,6 +9,11 @@ import {
 	V2_INDEX_JSON,
 	writeIndexData,
 } from '@recipes-api/lib/recipes-data';
+import {
+	getContentPrefix,
+	getFastlyApiKey,
+	getStaticBucketName,
+} from 'lib/recipes-data/src/lib/config';
 import type { CrierEvent } from './eventbridge_models';
 import { handleDeletedContent, handleTakedown } from './takedown_processor';
 import { handleContentUpdate } from './update_processor';
@@ -20,16 +25,26 @@ const filterProductionMonitoring: boolean = process.env[
 	? process.env['FILTER_PRODUCTION_MONITORING'].toLowerCase() == 'yes'
 	: false;
 
-export async function processRecord(r: CrierEvent): Promise<number> {
-	if (r.channels && !r.channels.includes('feast')) {
+export async function processRecord({
+	eventDetail,
+	staticBucketName,
+	fastlyApiKey,
+	contentPrefix,
+}: {
+	eventDetail: CrierEvent;
+	staticBucketName: string;
+	fastlyApiKey: string;
+	contentPrefix: string;
+}): Promise<number> {
+	if (eventDetail.channels && !eventDetail.channels.includes('feast')) {
 		console.error(
-			`Received a CrierEvent for channels ${r.channels.join()}, which did not include Feast! This is a configuration bug :(`,
+			`Received a CrierEvent for channels ${eventDetail.channels.join()}, which did not include Feast! This is a configuration bug :(`,
 		);
 		return 0;
 	}
 
 	try {
-		const evt = deserializeEvent(r.event);
+		const evt = deserializeEvent(eventDetail.event);
 
 		//we're only interested in content updates
 		if (evt.itemType != ItemType.CONTENT) return 0;
@@ -45,7 +60,12 @@ export async function processRecord(r: CrierEvent): Promise<number> {
 				) {
 					return 0;
 				}
-				return handleTakedown(evt);
+				return handleTakedown({
+					event: evt,
+					staticBucketName,
+					fastlyApiKey,
+					contentPrefix,
+				});
 			case EventType.UPDATE:
 			case EventType.RETRIEVABLEUPDATE:
 				switch (evt.payload?.kind) {
@@ -53,11 +73,19 @@ export async function processRecord(r: CrierEvent): Promise<number> {
 						console.log('DEBUG Event had no payload');
 						break;
 					case 'content':
-						return handleContentUpdate(evt.payload.content);
+						return handleContentUpdate({
+							content: evt.payload.content,
+							staticBucketName,
+							fastlyApiKey,
+							contentPrefix,
+						});
 					case 'retrievableContent':
-						return handleContentUpdateRetrievable(
-							evt.payload.retrievableContent,
-						);
+						return handleContentUpdateRetrievable({
+							retrievable: evt.payload.retrievableContent,
+							staticBucketName,
+							fastlyApiKey,
+							contentPrefix,
+						});
 					case 'deletedContent':
 						return handleDeletedContent(evt.payload.deletedContent);
 					default:
@@ -79,7 +107,16 @@ export async function processRecord(r: CrierEvent): Promise<number> {
 export const handler: EventBridgeHandler<string, CrierEvent, void> = async (
 	event,
 ) => {
-	const updatesTotal = await processRecord(event.detail);
+	const contentPrefix = getContentPrefix();
+	const staticBucketName = getStaticBucketName();
+	const fastlyApiKey = getFastlyApiKey();
+
+	const updatesTotal = await processRecord({
+		eventDetail: event.detail,
+		staticBucketName,
+		fastlyApiKey,
+		contentPrefix,
+	});
 
 	if (updatesTotal > 0) {
 		console.log(
@@ -94,8 +131,20 @@ export const handler: EventBridgeHandler<string, CrierEvent, void> = async (
 			),
 		};
 
-		await writeIndexData(indexDataForUnSponsoredRecipes, INDEX_JSON);
-		await writeIndexData(indexDataForAllRecipes, V2_INDEX_JSON);
+		await writeIndexData({
+			indexData: indexDataForUnSponsoredRecipes,
+			Key: INDEX_JSON,
+			contentPrefix,
+			staticBucketName,
+			fastlyApiKey,
+		});
+		await writeIndexData({
+			indexData: indexDataForAllRecipes,
+			Key: V2_INDEX_JSON,
+			staticBucketName,
+			contentPrefix,
+			fastlyApiKey,
+		});
 		console.log('Finished rebuilding index');
 	} else {
 		console.log('No updates to recipes, so not touching index');

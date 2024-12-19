@@ -8,7 +8,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { mockClient } from 'aws-sdk-client-mock';
 import { sendFastlyPurgeRequestWithRetries } from '@recipes-api/lib/recipes-data';
-import { Bucket, Today } from './config';
+import { Today } from './config';
 import {
 	activateCuration,
 	checkCurationPath,
@@ -26,8 +26,11 @@ jest.mock('@recipes-api/lib/recipes-data', () => ({
 	sendFastlyPurgeRequestWithRetries: jest.fn(),
 }));
 
+const contentPrefix = 'cdn.content.location';
+const staticBucketName = 'static-bucket';
+const fastlyApiKey = 'fastly-api-key';
+
 jest.mock('./config', () => ({
-	Bucket: 'TestBucket',
 	Today: new Date(2024, 1, 3, 8, 9, 10),
 }));
 
@@ -117,11 +120,12 @@ describe('curation.validateCurationData', () => {
 			'some-region',
 			'some-variant',
 			new Date(2024, 2, 3),
+			staticBucketName,
 		);
 		expect(s3Mock.commandCalls(HeadObjectCommand).length).toEqual(1);
 		const c = s3Mock.commandCalls(HeadObjectCommand)[0];
 		const arg = c.firstArg as HeadObjectCommand;
-		expect(arg.input.Bucket).toEqual('TestBucket');
+		expect(arg.input.Bucket).toEqual(staticBucketName);
 		expect(arg.input.Key).toEqual(
 			'some-region/some-variant/2024-03-03/curation.json',
 		);
@@ -142,13 +146,14 @@ describe('curation.validateCurationData', () => {
 			'some-region',
 			'some-variant',
 			new Date(2024, 2, 3),
+			staticBucketName,
 		);
 		expect(response).toBeNull();
 
 		expect(s3Mock.commandCalls(HeadObjectCommand).length).toEqual(1);
 		const c = s3Mock.commandCalls(HeadObjectCommand)[0];
 		const arg = c.firstArg as HeadObjectCommand;
-		expect(arg.input.Bucket).toEqual('TestBucket');
+		expect(arg.input.Bucket).toEqual(staticBucketName);
 		expect(arg.input.Key).toEqual(
 			'some-region/some-variant/2024-03-03/curation.json',
 		);
@@ -165,7 +170,12 @@ describe('curation.validateCurationData', () => {
 		);
 
 		await expect(
-			validateCurationData('some-region', 'some-variant', new Date(2024, 2, 3)),
+			validateCurationData(
+				'some-region',
+				'some-variant',
+				new Date(2024, 2, 3),
+				staticBucketName,
+			),
 		).rejects.toBeInstanceOf(S3ServiceException);
 	});
 });
@@ -184,13 +194,13 @@ describe('curation.validateAllCuration', () => {
 			.resolvesOnce({})
 			.rejects(new NotFound({ $metadata: {}, message: '' }));
 
-		const result = await validateAllCuration(Today, false);
+		const result = await validateAllCuration(Today, false, staticBucketName);
 
 		expect(s3Mock.commandCalls(HeadObjectCommand).length).toEqual(4);
 		for (let i = 0; i < 4; i++) {
 			const req = s3Mock.commandCalls(HeadObjectCommand)[i].firstArg
 				.input as HeadObjectCommandInput;
-			expect(req.Bucket).toEqual(Bucket);
+			expect(req.Bucket).toEqual(staticBucketName);
 			switch (i) {
 				case 0:
 					expect(req.Key).toEqual(
@@ -242,21 +252,26 @@ describe('curation.activateCuration', () => {
 		s3Mock
 			.on(CopyObjectCommand)
 			.resolves({ CopyObjectResult: { ETag: 'some-etag' } });
-		await activateCuration({
-			edition: 'some-region',
-			front: 'some-variant',
-			year: 2023,
-			month: 8,
-			day: 9,
-		});
+		await activateCuration(
+			{
+				edition: 'some-region',
+				front: 'some-variant',
+				year: 2023,
+				month: 8,
+				day: 9,
+			},
+			contentPrefix,
+			staticBucketName,
+			fastlyApiKey,
+		);
 
 		expect(s3Mock.commandCalls(CopyObjectCommand).length).toEqual(1);
 		const input = (
 			s3Mock.commandCalls(CopyObjectCommand)[0].firstArg as CopyObjectCommand
 		).input;
-		expect(input.Bucket).toEqual('TestBucket');
+		expect(input.Bucket).toEqual(staticBucketName);
 		expect(input.CopySource).toEqual(
-			'TestBucket/some-region/some-variant/2023-08-09/curation.json',
+			`${staticBucketName}/some-region/some-variant/2023-08-09/curation.json`,
 		);
 		expect(input.Key).toEqual('some-region/some-variant/curation.json');
 

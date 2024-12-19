@@ -17,6 +17,10 @@ import {
 import { handleContentUpdate } from './update_processor';
 import Mock = jest.Mock;
 
+const staticBucketName = 'static-bucket';
+const fastlyApiKey = 'fastly-api-key';
+const contentPrefix = 'cdn.content.location';
+
 jest.mock('@recipes-api/lib/recipes-data', () => ({
 	calculateChecksum: jest.fn(),
 	extractAllRecipesFromArticle: jest.fn(),
@@ -98,7 +102,12 @@ describe('update_processor.handleContentUpdate', () => {
 				sponsorshipCount: 0,
 			});
 
-		await handleContentUpdate(fakeContent);
+		await handleContentUpdate({
+			content: fakeContent,
+			staticBucketName,
+			fastlyApiKey,
+			contentPrefix,
+		});
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(extractAllRecipesFromArticle.mock.calls.length).toEqual(1);
@@ -138,21 +147,21 @@ describe('update_processor.handleContentUpdate', () => {
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(publishRecipeContent.mock.calls.length).toEqual(3);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(publishRecipeContent.mock.calls[0][0]).toEqual({
+		expect(publishRecipeContent.mock.calls[0][0].recipe).toEqual({
 			recipeUID: 'uid-recep-1',
 			checksum: 'abcd1',
 			jsonBlob: '',
 			sponsorshipCount: 0,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(publishRecipeContent.mock.calls[1][0]).toEqual({
+		expect(publishRecipeContent.mock.calls[1][0].recipe).toEqual({
 			recipeUID: 'uid-recep-2',
 			checksum: 'efgh',
 			jsonBlob: '',
 			sponsorshipCount: 0,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(publishRecipeContent.mock.calls[2][0]).toEqual({
+		expect(publishRecipeContent.mock.calls[2][0].recipe).toEqual({
 			recipeUID: 'uid-recep-3',
 			checksum: 'xyzp',
 			jsonBlob: '',
@@ -162,18 +171,22 @@ describe('update_processor.handleContentUpdate', () => {
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipeVersion.mock.calls.length).toEqual(2);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(removeRecipeVersion.mock.calls[0][0]).toEqual('path/to/content');
+		expect(removeRecipeVersion.mock.calls[0][0].canonicalArticleId).toEqual(
+			'path/to/content',
+		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(removeRecipeVersion.mock.calls[0][1]).toEqual({
+		expect(removeRecipeVersion.mock.calls[0][0].recipe).toEqual({
 			checksum: 'xxxyyyzzz',
 			recipeUID: 'uid-recep-2',
 			capiArticleId: 'path/to/article',
 			sponsorshipCount: 0,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(removeRecipeVersion.mock.calls[1][0]).toEqual('path/to/content');
+		expect(removeRecipeVersion.mock.calls[1][0].canonicalArticleId).toEqual(
+			'path/to/content',
+		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(removeRecipeVersion.mock.calls[1][1]).toEqual({
+		expect(removeRecipeVersion.mock.calls[1][0].recipe).toEqual({
 			checksum: 'zzzyyyqqq',
 			recipeUID: 'uid-recep-4',
 			capiArticleId: 'path/to/article',
@@ -241,7 +254,12 @@ describe('update_processor.handleContentUpdate', () => {
 				sponsorshipCount: 0,
 			});
 
-		await handleContentUpdate({ ...fakeContent, type: ContentType.GALLERY });
+		await handleContentUpdate({
+			content: { ...fakeContent, type: ContentType.GALLERY },
+			staticBucketName,
+			fastlyApiKey,
+			contentPrefix,
+		});
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(extractAllRecipesFromArticle.mock.calls.length).toEqual(0);
@@ -275,7 +293,12 @@ describe('update_processor.handleContentUpdate', () => {
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		recipesToTakeDown.mockReturnValue(refsToRemove);
 
-		await handleContentUpdate(fakeContent);
+		await handleContentUpdate({
+			content: fakeContent,
+			staticBucketName,
+			fastlyApiKey,
+			contentPrefix,
+		});
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(extractAllRecipesFromArticle.mock.calls.length).toEqual(1);
@@ -354,7 +377,12 @@ describe('update_processor.handleContentUpdate', () => {
 				sponsorshipCount: 0,
 			});
 
-		await handleContentUpdate(fakeContent);
+		await handleContentUpdate({
+			content: fakeContent,
+			staticBucketName,
+			fastlyApiKey,
+			contentPrefix,
+		});
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(extractAllRecipesFromArticle.mock.calls.length).toEqual(1);
@@ -394,21 +422,21 @@ describe('update_processor.handleContentUpdate', () => {
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(publishRecipeContent.mock.calls.length).toEqual(3);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(publishRecipeContent.mock.calls[0][0]).toEqual({
+		expect(publishRecipeContent.mock.calls[0][0].recipe).toEqual({
 			recipeUID: 'uid-recep-1',
 			checksum: 'abcd1',
 			jsonBlob: '',
 			sponsorshipCount: 0,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(publishRecipeContent.mock.calls[1][0]).toEqual({
+		expect(publishRecipeContent.mock.calls[1][0].recipe).toEqual({
 			recipeUID: 'uid-recep-2',
 			checksum: 'efgh',
 			jsonBlob: '',
 			sponsorshipCount: 0,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(publishRecipeContent.mock.calls[2][0]).toEqual({
+		expect(publishRecipeContent.mock.calls[2][0].recipe).toEqual({
 			recipeUID: 'uid-recep-3',
 			checksum: 'xyzp',
 			jsonBlob: '',
@@ -418,18 +446,22 @@ describe('update_processor.handleContentUpdate', () => {
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipeVersion.mock.calls.length).toEqual(2);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(removeRecipeVersion.mock.calls[0][0]).toEqual('path/to/content');
+		expect(removeRecipeVersion.mock.calls[0][0].canonicalArticleId).toEqual(
+			'path/to/content',
+		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(removeRecipeVersion.mock.calls[0][1]).toEqual({
+		expect(removeRecipeVersion.mock.calls[0][0].recipe).toEqual({
 			checksum: 'xxxyyyzzz',
 			recipeUID: 'uid-recep-2',
 			capiArticleId: 'path/to/article',
 			sponsorshipCount: 0,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(removeRecipeVersion.mock.calls[1][0]).toEqual('path/to/content');
+		expect(removeRecipeVersion.mock.calls[1][0].canonicalArticleId).toEqual(
+			'path/to/content',
+		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(removeRecipeVersion.mock.calls[1][1]).toEqual({
+		expect(removeRecipeVersion.mock.calls[1][0].recipe).toEqual({
 			checksum: 'zzzyyyqqq',
 			recipeUID: 'uid-recep-4',
 			capiArticleId: 'path/to/article',

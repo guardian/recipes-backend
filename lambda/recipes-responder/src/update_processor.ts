@@ -14,28 +14,44 @@ import {
 
 /**
  * Pushes new content into the service
- * @param canonicalArticleId
- * @param recep
  */
-async function publishRecipe(
-	canonicalArticleId: string,
-	recep: RecipeReference,
-): Promise<void> {
+async function publishRecipe({
+	canonicalArticleId,
+	recipe,
+	staticBucketName,
+	fastlyApiKey,
+	contentPrefix,
+}: {
+	canonicalArticleId: string;
+	recipe: RecipeReference;
+	staticBucketName: string;
+	fastlyApiKey: string;
+	contentPrefix: string;
+}): Promise<void> {
 	try {
-		await sendTelemetryEvent('PublishedData', recep.recipeUID, recep.jsonBlob);
+		await sendTelemetryEvent(
+			'PublishedData',
+			recipe.recipeUID,
+			recipe.jsonBlob,
+		);
 	} catch (err) {
 		console.error(`[${canonicalArticleId}] - unable to send telemetry: `, err);
 	}
 	console.log(
-		`INFO [${canonicalArticleId}] - pushing ${recep.recipeUID} @ ${recep.checksum} to S3...`,
+		`INFO [${canonicalArticleId}] - pushing ${recipe.recipeUID} @ ${recipe.checksum} to S3...`,
 	);
-	await publishRecipeContent(recep);
+	await publishRecipeContent({
+		recipe,
+		staticBucketName: staticBucketName,
+		fastlyApiKey,
+		contentPrefix,
+	});
 	console.log(`INFO [${canonicalArticleId}] - updating index table...`);
 	await insertNewRecipe(canonicalArticleId, {
-		recipeUID: recep.recipeUID,
-		checksum: recep.checksum,
+		recipeUID: recipe.recipeUID,
+		checksum: recipe.checksum,
 		capiArticleId: canonicalArticleId,
-		sponsorshipCount: recep.sponsorshipCount,
+		sponsorshipCount: recipe.sponsorshipCount,
 	});
 }
 
@@ -45,7 +61,17 @@ async function publishRecipe(
  * @returns a number, representing the number of recipes that were added plus the number that were deleted (i.e., an
  * update counts as 1 add and 1 delete)
  */
-export async function handleContentUpdate(content: Content): Promise<number> {
+export async function handleContentUpdate({
+	content,
+	staticBucketName,
+	fastlyApiKey,
+	contentPrefix,
+}: {
+	content: Content;
+	staticBucketName: string;
+	fastlyApiKey: string;
+	contentPrefix: string;
+}): Promise<number> {
 	try {
 		if (content.type != ContentType.ARTICLE) return 0; //no point processing live-blogs etc.
 
@@ -62,7 +88,15 @@ export async function handleContentUpdate(content: Content): Promise<number> {
 		);
 		if (allRecipes.length == 0 && entriesToRemove.length == 0) return 0; //no point hanging around and noising up the logs
 		await Promise.all(
-			entriesToRemove.map((recep) => removeRecipeVersion(content.id, recep)),
+			entriesToRemove.map((recep) =>
+				removeRecipeVersion({
+					canonicalArticleId: content.id,
+					recipe: recep,
+					staticBucketName,
+					fastlyApiKey,
+					contentPrefix,
+				}),
+			),
 		);
 		console.log(
 			`INFO [${content.id}] - ${entriesToRemove.length} removed/superceded recipes have been removed from the store`,
@@ -72,7 +106,15 @@ export async function handleContentUpdate(content: Content): Promise<number> {
 			`INFO [${content.id}] - publishing ${allRecipes.length} new/updated recipes to the service`,
 		);
 		await Promise.all(
-			allRecipes.map((recep) => publishRecipe(content.id, recep)),
+			allRecipes.map((recipe) =>
+				publishRecipe({
+					canonicalArticleId: content.id,
+					recipe,
+					staticBucketName,
+					fastlyApiKey,
+					contentPrefix,
+				}),
+			),
 		);
 
 		console.log(

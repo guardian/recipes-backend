@@ -7,8 +7,6 @@ import {
 	extractCropDataFromGuimUrl,
 } from './utils';
 
-jest.mock('./config', () => ({}));
-
 describe('calculateChecksum', () => {
 	it('should checksum the content into base64', () => {
 		const input: RecipeReferenceWithoutChecksum = {
