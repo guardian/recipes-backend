@@ -18,8 +18,10 @@ import {
 } from 'aws-cdk-lib/aws-stepfunctions';
 import { LambdaInvoke } from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import { Construct } from 'constructs';
+import type { DataStore } from './datastore';
 
 type RecipesReindexProps = {
+	dataStore: DataStore;
 	contentUrlBase: string;
 	reindexBatchSize: number;
 	reindexWaitTime: number;
@@ -29,7 +31,12 @@ export class RecipesReindex extends Construct {
 	constructor(
 		scope: GuStack,
 		id: string,
-		{ contentUrlBase, reindexBatchSize, reindexWaitTime }: RecipesReindexProps,
+		{
+			dataStore,
+			contentUrlBase,
+			reindexBatchSize,
+			reindexWaitTime,
+		}: RecipesReindexProps,
 	) {
 		super(scope, id);
 
@@ -57,6 +64,14 @@ export class RecipesReindex extends Construct {
 						effect: Effect.ALLOW,
 						actions: ['s3:PutObject'],
 						resources: [snapshotBucket.bucketArn + '/*'],
+					}),
+					new PolicyStatement({
+						effect: Effect.ALLOW,
+						actions: ['dynamodb:Scan', 'dynamodb:Query'],
+						resources: [
+							dataStore.table.tableArn,
+							dataStore.table.tableArn + '/index/*',
+						],
 					}),
 				],
 				environment: {
