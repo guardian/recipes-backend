@@ -3,3 +3,7 @@ export interface CrierEvent {
 	channels?: string[];
 	event: string; //Base64-encoded Thrift event
 }
+
+export interface ReindexEvent {
+	articleIds: string[];
+}

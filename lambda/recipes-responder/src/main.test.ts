@@ -12,7 +12,7 @@ import type {
 import formatISO from 'date-fns/formatISO';
 import { registerMetric } from '@recipes-api/cwmetrics';
 import { deserializeEvent } from '@recipes-api/lib/capi';
-import type { CrierEvent } from './eventbridge_models';
+import type { CrierEvent } from '../../../lib/recipes-data/src/lib/eventbridge-models';
 import { handler, processRecord } from './main';
 import { handleDeletedContent, handleTakedown } from './takedown_processor';
 import { handleContentUpdate } from './update_processor';

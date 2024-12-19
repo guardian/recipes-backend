@@ -14,7 +14,7 @@ import {
 	getFastlyApiKey,
 	getStaticBucketName,
 } from 'lib/recipes-data/src/lib/config';
-import type { CrierEvent } from './eventbridge_models';
+import type { CrierEvent } from '../../../lib/recipes-data/src/lib/eventbridge-models';
 import { handleDeletedContent, handleTakedown } from './takedown_processor';
 import { handleContentUpdate } from './update_processor';
 import { handleContentUpdateRetrievable } from './update_retrievable_processor';
