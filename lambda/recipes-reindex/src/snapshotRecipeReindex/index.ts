@@ -1,8 +1,8 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import type { Handler } from 'aws-lambda';
+import { retrieveIndexData } from '@recipes-api/lib/recipes-data';
 import { getContentUrlBase } from 'lib/recipes-data/src/lib/config';
 import { INDEX_JSON } from 'lib/recipes-data/src/lib/constants';
-import type { RecipeIndex } from 'lib/recipes-data/src/lib/models';
 import { getRecipeIndexSnapshotBucket } from '../config';
 import { recipeIndexSnapshotKey } from '../constants';
 import type {
@@ -22,18 +22,18 @@ export const snapshotRecipeIndexHandler: Handler<
 
 	const recipeIndexUrl = `https://${contentUrlBase}/${INDEX_JSON}`;
 	console.log(`Fetching recipe index from ${recipeIndexUrl}`);
-	const recipeIndexSnapshotResponse = await fetch(recipeIndexUrl);
 
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- absent Zod types for the index, casting is necessary
-	const recipeIndexSnapshotJson: RecipeIndex =
-		await recipeIndexSnapshotResponse.json();
+	const recipeIndexSnapshotJson = await retrieveIndexData();
+	const recipeArticles = Array.from(
+		new Set(recipeIndexSnapshotJson.recipes.map((_) => _.capiArticleId)),
+	);
 
 	const Key = `${executionId}/${recipeIndexSnapshotKey}`;
 
 	const req = new PutObjectCommand({
 		Bucket: reindexSnapshotBucket,
 		Key,
-		Body: JSON.stringify(recipeIndexSnapshotJson),
+		Body: JSON.stringify(recipeArticles),
 		ContentType: 'application/json',
 	});
 
