@@ -1,8 +1,8 @@
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import type { Handler } from 'aws-lambda';
-import type { RecipeIndex } from 'lib/recipes-data/src/lib/models';
 import { getRecipeIndexSnapshotBucket, getReindexBatchSize } from '../config';
 import type {
+	RecipeArticlesSnapshot,
 	WriteBatchToReindexQueueInput,
 	WriteBatchToReindexQueueOutput,
 } from '../types';
@@ -32,14 +32,14 @@ export const writeBatchToReindexQueueHandler: Handler<
 	const pathToRecipeIndex = `${reindexSnapshotBucket}/${indexObjectKey}`;
 
 	console.log(
-		`Reading recipe index for execution with ID ${executionId} from S3 at path ${pathToRecipeIndex}`,
+		`Reading articles to reindex for execution with ID ${executionId} from S3 at path ${pathToRecipeIndex}`,
 	);
 
 	const response = await s3Client.send(req);
 
 	if (!response.Body) {
 		throw new Error(
-			`Read recipe index at ${pathToRecipeIndex}, but the response body was empty`,
+			`Read articles to reindex at ${pathToRecipeIndex}, but the response body was empty`,
 		);
 	}
 
@@ -48,38 +48,36 @@ export const writeBatchToReindexQueueHandler: Handler<
 
 	const recipeIndexSnapshot = JSON.parse(
 		recipeIndexSnapshotJson,
-	) as RecipeIndex;
+	) as RecipeArticlesSnapshot;
 
 	console.log(
-		`Received recipe index for execution with ID ${executionId} from S3 at path ${pathToRecipeIndex}, containing ${recipeIndexSnapshot.recipes.length} recipes.`,
+		`Received articles to reindex for execution with ID ${executionId} from S3 at path ${pathToRecipeIndex}, containing ${recipeIndexSnapshot.length} articles to reindex`,
 	);
 
 	const nextIndex = Math.min(
 		currentIndex + reindexBatchSize,
-		recipeIndexSnapshot.recipes.length,
+		recipeIndexSnapshot.length,
 	);
 
-	const recipeIdsToReindex = recipeIndexSnapshot.recipes
-		.slice(nextIndex, nextIndex)
-		.map(({ recipeUID }) => recipeUID);
+	const articleIdsToReindex = recipeIndexSnapshot.slice(nextIndex, nextIndex);
 
 	const dryRunMsg = '[DRY RUN]: ';
 	const writeMsg = `${
-		recipeIdsToReindex.length
-	} recipe ids to the reindex queue, from index ${nextIndex} to index ${
+		articleIdsToReindex.length
+	} article ids to the reindex queue, from index ${nextIndex} to index ${
 		nextIndex - 1
 	} (batch size ${reindexBatchSize})`;
 
 	console.log(`${dryRun ? dryRunMsg : ''} about to write ${writeMsg}`);
 
-	await writeRecipeIdsToReindexQueue(recipeIdsToReindex);
+	await writeRecipeIdsToReindexQueue(articleIdsToReindex);
 
 	console.log(`${dryRun ? dryRunMsg : ''} completed writing ${writeMsg}`);
 
 	return {
 		...state,
 		nextIndex: nextIndex,
-		lastIndex: recipeIndexSnapshot.recipes.length - 1,
+		lastIndex: recipeIndexSnapshot.length - 1,
 	};
 };
 
