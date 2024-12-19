@@ -1,4 +1,8 @@
 import * as process from 'process';
+import type {
+	PutEventsCommandOutput,
+	PutEventsRequestEntry,
+} from '@aws-sdk/client-eventbridge';
 import {
 	EventBridgeClient,
 	PutEventsCommand,
@@ -46,12 +50,44 @@ export async function announceNewRecipe(
 		EventBusName: OutgoingEventBus,
 	}));
 
+	return putEntriesToBus(updates.concat(removals));
+}
+
+export async function putReindexIds(
+	articleIds: string[],
+	outgoingEventBus: string,
+) {
+	const entries = articleIds.map((articleId) => ({
+		Time: new Date(),
+		Source: 'recipes-reindex',
+		Resources: [],
+		DetailType: 'article-reindex-request',
+		Detail: JSON.stringify(articleId),
+		EventBusName: outgoingEventBus,
+	}));
+
+	return putEntriesToBus(entries);
+}
+
+/**
+ * @returns The number of entries successfully put to the bus, if any.
+ */
+const putEntriesToBus = async (Entries: PutEventsRequestEntry[]) => {
 	const req = new PutEventsCommand({
-		Entries: updates.concat(removals),
+		Entries,
 	});
 
 	const response = await ebClient.send(req);
 
+	await logFailedResponses(response);
+
+	return response.Entries?.length ?? 0;
+};
+
+/**
+ * Log failed responses in metrics as a side-effect.
+ */
+const logFailedResponses = async (response: PutEventsCommandOutput) => {
 	if (response.FailedEntryCount && response.FailedEntryCount > 0) {
 		const failedEntries = response.Entries
 			? response.Entries.filter((_) => !_.EventId)
@@ -78,6 +114,5 @@ export async function announceNewRecipe(
 		} catch (e) {
 			console.error(`Unable to register FailedAnnouncements metric: `, e);
 		}
-		return response.Entries ? response.Entries.length : 0;
 	}
-}
+};

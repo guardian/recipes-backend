@@ -5,11 +5,17 @@ import indexJSON from './fixtures/index.json';
 import { writeBatchToReindexQueueHandler } from './index';
 
 const RecipeIndexSnapshotBucket = 'example-reindex-bucket';
+const OutgoingEventBus = 'outgoing-event-bus';
 const ReindexBatchSize = 10;
 
 jest.mock('../config', () => ({
 	getRecipeIndexSnapshotBucket: () => RecipeIndexSnapshotBucket,
 	getReindexBatchSize: () => ReindexBatchSize,
+}));
+
+jest.mock('@recipes-api/lib/recipes-data', () => ({
+	getOutgoingEventBus: () => OutgoingEventBus,
+	putReindexIds: jest.fn(),
 }));
 
 const s3Mock = mockClient(S3Client);

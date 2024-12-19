@@ -9,13 +9,13 @@ import {
 	V2_INDEX_JSON,
 	writeIndexData,
 } from '@recipes-api/lib/recipes-data';
+import type { CrierEvent } from '@recipes-api/lib/recipes-data';
 import {
 	getContentPrefix,
 	getFastlyApiKey,
 	getOutgoingEventBus,
 	getStaticBucketName,
 } from 'lib/recipes-data/src/lib/config';
-import type { CrierEvent } from '../../../lib/recipes-data/src/lib/eventbridge-models';
 import { handleDeletedContent, handleTakedown } from './takedown_processor';
 import { handleContentUpdate } from './update_processor';
 import { handleContentUpdateRetrievable } from './update_retrievable_processor';
