@@ -7,10 +7,12 @@ import { writeBatchToReindexQueueHandler } from './index';
 const RecipeIndexSnapshotBucket = 'example-reindex-bucket';
 const OutgoingEventBus = 'outgoing-event-bus';
 const ReindexBatchSize = 10;
+const ReindexChunkSize = 10;
 
 jest.mock('../config', () => ({
 	getRecipeIndexSnapshotBucket: () => RecipeIndexSnapshotBucket,
 	getReindexBatchSize: () => ReindexBatchSize,
+	getReindexChunkSize: () => ReindexChunkSize,
 }));
 
 jest.mock('@recipes-api/lib/recipes-data', () => ({

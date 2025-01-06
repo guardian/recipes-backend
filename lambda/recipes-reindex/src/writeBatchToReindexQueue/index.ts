@@ -4,7 +4,11 @@ import {
 	getOutgoingEventBus,
 	putReindexIds,
 } from '@recipes-api/lib/recipes-data';
-import { getRecipeIndexSnapshotBucket, getReindexBatchSize } from '../config';
+import {
+	getRecipeIndexSnapshotBucket,
+	getReindexBatchSize,
+	getReindexChunkSize,
+} from '../config';
 import type {
 	RecipeArticlesSnapshot,
 	WriteBatchToReindexQueueInput,

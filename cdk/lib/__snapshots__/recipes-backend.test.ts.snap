@@ -2422,11 +2422,6 @@ def sort_filter_rules(json_obj):
         "Description": "Connect recipe responder TEST to recipes-reindex",
         "EventBusName": "crier-eventbus-content-api-crier-v2-TEST",
         "EventPattern": {
-          "detail": {
-            "channels": [
-              "articles",
-            ],
-          },
           "source": [
             "recipes-reindex",
           ],
@@ -2652,30 +2647,6 @@ def sort_filter_rules(json_obj):
               ],
             },
             {
-              "Action": "events:PutEvents",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":events:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":event-bus/crier-eventbus-content-api-crier-v2-TEST",
-                  ],
-                ],
-              },
-            },
-            {
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
@@ -2790,6 +2761,7 @@ def sort_filter_rules(json_obj):
         "Environment": {
           "Variables": {
             "APP": "recipes-reindex-write-batch-to-index-queue",
+            "OUTGOING_EVENT_BUS": "crier-eventbus-content-api-crier-v2-TEST",
             "RECIPE_INDEX_SNAPSHOT_BUCKET": {
               "Ref": "RecipeReindexreindexSnapshotBucketB9E1DA96",
             },
@@ -2913,6 +2885,35 @@ def sort_filter_rules(json_obj):
                   ],
                 ],
               },
+            },
+            {
+              "Action": "events:PutEvents",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":events:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":event-bus/crier-eventbus-content-api-crier-v2-TEST",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "cloudwatch:PutMetricData",
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": [
