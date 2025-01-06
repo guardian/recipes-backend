@@ -12,7 +12,7 @@ export type CrierEventBridgeEvent = EventBridgeEvent<
 >;
 
 export interface ReindexEventDetail {
-	articleId: string;
+	articleIds: string[];
 }
 
 export type ReindexEventBridgeEvent = EventBridgeEvent<

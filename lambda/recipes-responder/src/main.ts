@@ -148,14 +148,18 @@ export const handler: Handler<
 				});
 			}
 			case 'recipes-reindex': {
-				return await handleContentUpdateByCapiUrl({
-					capiUrl: event.detail.articleId,
-					contentType: ContentType.ARTICLE,
-					staticBucketName,
-					fastlyApiKey,
-					contentPrefix,
-					outgoingEventBus,
-				});
+				let totalCount = 0;
+				for (const articleId of event.detail.articleIds) {
+					totalCount += await handleContentUpdateByCapiUrl({
+						capiUrl: articleId,
+						contentType: ContentType.ARTICLE,
+						staticBucketName,
+						fastlyApiKey,
+						contentPrefix,
+						outgoingEventBus,
+					});
+				}
+				return totalCount;
 			}
 		}
 	})();

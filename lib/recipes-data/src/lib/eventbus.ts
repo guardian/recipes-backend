@@ -7,9 +7,10 @@ import {
 	EventBridgeClient,
 	PutEventsCommand,
 } from '@aws-sdk/client-eventbridge';
+import chunk from 'lodash.chunk';
 import { registerMetric } from '@recipes-api/cwmetrics';
+import type { ReindexEventDetail } from './eventbridge-models';
 import type { RecipeIndexEntry, RecipeReference } from './models';
-import { ReindexEventDetail } from './eventbridge-models';
 
 const ebClient = new EventBridgeClient({ region: process.env['AWS_REGION'] });
 
@@ -58,12 +59,12 @@ export async function putReindexIds(
 	articleIds: string[],
 	outgoingEventBus: string,
 ) {
-	const entries = articleIds.map((articleId) => ({
+	const entries = chunk(articleIds, 100).map((articleIds) => ({
 		Time: new Date(),
 		Source: 'recipes-reindex',
 		Resources: [],
 		DetailType: 'article-reindex-request',
-		Detail: JSON.stringify({ articleId } as ReindexEventDetail),
+		Detail: JSON.stringify({ articleIds } as ReindexEventDetail),
 		EventBusName: outgoingEventBus,
 	}));
 
