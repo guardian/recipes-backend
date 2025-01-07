@@ -40,6 +40,7 @@ jest.mock('lib/recipes-data/src/lib/config', () => ({
 	getFastlyApiKey: () => 'fastly-api-key',
 	getStaticBucketName: () => 'static-bucket',
 	getOutgoingEventBus: () => 'outgoing-event-bus',
+	getCapiBaseUrl: () => 'https://content.guardianapis.com',
 }));
 
 jest.mock('@recipes-api/cwmetrics', () => ({

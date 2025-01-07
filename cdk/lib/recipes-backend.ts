@@ -166,6 +166,10 @@ export class RecipesBackend extends GuStack {
 				TELEMETRY_XAR: telemetryXAR.valueAsString,
 				TELEMETRY_TOPIC: telemetryTopic.valueAsString,
 				OUTGOING_EVENT_BUS: eventBus.eventBusName,
+				CAPI_BASE_URL:
+					this.stage === 'PROD'
+						? 'https://content.guardianapis.com'
+						: 'https://content.code.dev-guardianapis.com',
 			},
 			initialPolicy: [
 				new PolicyStatement({

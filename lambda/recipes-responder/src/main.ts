@@ -19,6 +19,7 @@ import type {
 	ReindexEventBridgeEvent,
 } from '@recipes-api/lib/recipes-data';
 import {
+	getCapiBaseUrl,
 	getContentPrefix,
 	getFastlyApiKey,
 	getOutgoingEventBus,
@@ -137,6 +138,7 @@ export const handler: Handler<
 	const staticBucketName = getStaticBucketName();
 	const fastlyApiKey = getFastlyApiKey();
 	const outgoingEventBus = getOutgoingEventBus();
+	const capiBaseUrl = getCapiBaseUrl();
 
 	const updatesTotal = await (async () => {
 		switch (event['detail-type']) {
@@ -152,14 +154,10 @@ export const handler: Handler<
 			}
 			case ReindexEventDetail: {
 				let totalCount = 0;
-				console.log(
-					`Received ${
-						event.detail.articleIds.length
-					} articles to reindex: ${event.detail.articleIds.join('')}`,
-				);
+
 				for (const articleId of event.detail.articleIds) {
 					totalCount += await handleContentUpdateByCapiUrl({
-						capiUrl: articleId,
+						capiUrl: `${capiBaseUrl}/${articleId}`,
 						contentType: ContentType.ARTICLE,
 						staticBucketName,
 						fastlyApiKey,

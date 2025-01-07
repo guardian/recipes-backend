@@ -3584,6 +3584,7 @@ def sort_filter_rules(json_obj):
         "Environment": {
           "Variables": {
             "APP": "recipes-responder",
+            "CAPI_BASE_URL": "https://content.code.dev-guardianapis.com",
             "CAPI_KEY": {
               "Ref": "capiKey",
             },
