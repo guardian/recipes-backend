@@ -167,6 +167,8 @@ export const handler: Handler<
 						outgoingEventBus,
 					});
 				}
+
+				console.log(`Reindexed ${event.detail.articleIds.length} articles`);
 				return totalCount;
 			}
 			default: {
