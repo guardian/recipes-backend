@@ -4,11 +4,7 @@ import {
 	getOutgoingEventBus,
 	putReindexIds,
 } from '@recipes-api/lib/recipes-data';
-import {
-	getRecipeIndexSnapshotBucket,
-	getReindexBatchSize,
-	getReindexChunkSize,
-} from '../config';
+import { getRecipeIndexSnapshotBucket, getReindexBatchSize } from '../config';
 import type {
 	RecipeArticlesSnapshot,
 	WriteBatchToReindexQueueInput,
@@ -26,9 +22,7 @@ export const writeBatchToReindexQueueHandler: Handler<
 	const outgoingEventBus = getOutgoingEventBus();
 
 	const {
-		executionId,
-		nextIndex: currentIndex,
-		indexObjectKey,
+		input: { executionId, nextIndex: currentIndex, indexObjectKey },
 		dryRun: _dryRun,
 	} = state;
 	const dryRun = _dryRun ?? true;
@@ -89,7 +83,8 @@ export const writeBatchToReindexQueueHandler: Handler<
 	console.log(`${dryRun ? dryRunMsg : ''} completed writing ${writeMsg}`);
 
 	return {
-		...state,
+		executionId,
+		indexObjectKey,
 		nextIndex: nextIndex,
 		lastIndex: recipeIndexSnapshot.length - 1,
 	};

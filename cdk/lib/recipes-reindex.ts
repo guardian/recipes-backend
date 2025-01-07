@@ -127,6 +127,16 @@ export class RecipesReindex extends Construct {
 			},
 		);
 
+		// Necessary to reference `dryRun` later in the step fn.
+		const storeDryRun = new CustomState(scope, 'storeDryRun', {
+			stateJson: {
+				Type: 'Pass',
+				Assign: {
+					'dryRun.$': '$.dryRun',
+				},
+			},
+		});
+
 		const checkForOtherRunningReindexesTask = new CustomState(
 			scope,
 			'checkForOtherRunningTasks',
@@ -160,6 +170,10 @@ export class RecipesReindex extends Construct {
 			{
 				lambdaFunction: writeBatchToReindexQueue,
 				inputPath: '$.Payload',
+				payload: TaskInput.fromObject({
+					'input.$': '$',
+					'dryRun.$': '$dryRun',
+				}),
 			},
 		);
 
@@ -195,8 +209,9 @@ export class RecipesReindex extends Construct {
 			);
 
 		// Define the state machine
-		const definition =
-			checkForOtherRunningReindexesTask.next(isOnlyRunningReindex);
+		const definition = storeDryRun
+			.next(checkForOtherRunningReindexesTask)
+			.next(isOnlyRunningReindex);
 
 		// We define the name manually so we can construct the ARN manually and limit the scope
 		// of the ListExecutions permission to the state machine itself - using `stateMachineArn`

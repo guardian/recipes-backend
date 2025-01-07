@@ -9,6 +9,3 @@ export const getRecipeIndexSnapshotBucket = createGetMandatoryParameter(
 
 export const getReindexBatchSize =
 	createGetMandatoryNumberParameter('REINDEX_BATCH_SIZE');
-
-export const getReindexChunkSize =
-	createGetMandatoryNumberParameter('REINDEX_CHUNK_SIZE');

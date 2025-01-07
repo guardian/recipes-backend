@@ -149,6 +149,11 @@ export const handler: Handler<
 			}
 			case 'recipes-reindex': {
 				let totalCount = 0;
+				console.log(
+					`Received ${
+						event.detail.articleIds.length
+					} articles to reindex: ${event.detail.articleIds.join('')}`,
+				);
 				for (const articleId of event.detail.articleIds) {
 					totalCount += await handleContentUpdateByCapiUrl({
 						capiUrl: articleId,

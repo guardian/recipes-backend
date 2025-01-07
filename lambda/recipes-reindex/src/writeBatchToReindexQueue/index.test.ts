@@ -35,9 +35,11 @@ describe('writeBatchToReindexQueue', () => {
 	it('should move the current index on by the batch size', async () => {
 		const output = await writeBatchToReindexQueueHandler(
 			{
-				nextIndex: 0,
-				indexObjectKey: 'path/to/key',
-				executionId: 'example-execution-id',
+				input: {
+					nextIndex: 0,
+					indexObjectKey: 'path/to/key',
+					executionId: 'example-execution-id',
+				},
 				dryRun: true,
 			},
 			mockContext,
@@ -51,9 +53,11 @@ describe('writeBatchToReindexQueue', () => {
 	it('should move the index one beyond the last recipe on completion', async () => {
 		const output = await writeBatchToReindexQueueHandler(
 			{
-				nextIndex: 170,
-				indexObjectKey: 'path/to/key',
-				executionId: 'example-execution-id',
+				input: {
+					nextIndex: 170,
+					indexObjectKey: 'path/to/key',
+					executionId: 'example-execution-id',
+				},
 				dryRun: true,
 			},
 			mockContext,
