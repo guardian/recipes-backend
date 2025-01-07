@@ -5,7 +5,10 @@ import type { Handler } from 'aws-lambda';
 import { registerMetric } from '@recipes-api/cwmetrics';
 import { deserializeEvent } from '@recipes-api/lib/capi';
 import {
+	ContentDeleteEventDetail,
+	ContentUpdateEventDetail,
 	INDEX_JSON,
+	ReindexEventDetail,
 	retrieveIndexData,
 	V2_INDEX_JSON,
 	writeIndexData,
@@ -137,8 +140,8 @@ export const handler: Handler<
 
 	const updatesTotal = await (async () => {
 		switch (event['detail-type']) {
-			case 'content-update':
-			case 'content-delete': {
+			case ContentUpdateEventDetail:
+			case ContentDeleteEventDetail: {
 				return await processRecord({
 					eventDetail: event.detail,
 					staticBucketName,
@@ -147,7 +150,7 @@ export const handler: Handler<
 					outgoingEventBus,
 				});
 			}
-			case 'recipes-reindex': {
+			case ReindexEventDetail: {
 				let totalCount = 0;
 				console.log(
 					`Received ${
@@ -165,6 +168,10 @@ export const handler: Handler<
 					});
 				}
 				return totalCount;
+			}
+			default: {
+				console.error(`Unknown event payload: ${JSON.stringify(event)}`);
+				return 0;
 			}
 		}
 	})();

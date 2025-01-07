@@ -6,8 +6,11 @@ export interface CrierEventDetail {
 	event: string; //Base64-encoded Thrift event
 }
 
+export const ContentUpdateEventDetail = 'content-update';
+export const ContentDeleteEventDetail = 'content-delete';
+
 export type CrierEventBridgeEvent = EventBridgeEvent<
-	'content-update' | 'content-delete',
+	typeof ContentUpdateEventDetail | typeof ContentDeleteEventDetail,
 	CrierEventDetail
 >;
 
@@ -15,7 +18,9 @@ export interface ReindexEventDetail {
 	articleIds: string[];
 }
 
+export const ReindexEventDetail = 'reindex-request';
+
 export type ReindexEventBridgeEvent = EventBridgeEvent<
-	'recipes-reindex',
+	typeof ReindexEventDetail,
 	ReindexEventDetail
 >;
