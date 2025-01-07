@@ -155,6 +155,12 @@ export const handler: Handler<
 			case ReindexEventDetail: {
 				let totalCount = 0;
 
+				console.log(
+					`Received ${
+						event.detail.articleIds.length
+					} articles to reindex: \n${event.detail.articleIds.join(', \n')}`,
+				);
+
 				for (const articleId of event.detail.articleIds) {
 					totalCount += await handleContentUpdateByCapiUrl({
 						capiUrl: `${capiBaseUrl}/${articleId}`,
