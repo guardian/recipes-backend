@@ -163,6 +163,7 @@ export type RecipeImage = {
 	displayCredit?: boolean;
 	width?: number;
 	height?: number;
+	isReindexed?: boolean
 };
 
 export type {

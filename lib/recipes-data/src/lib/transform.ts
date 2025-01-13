@@ -64,6 +64,7 @@ export const replaceFastlyUrl = ({
 
 	return {
 		...image,
+		isReindexed: true,
 		url: getFastlyUrl({
 			imageId: mediaId,
 			cropId,
