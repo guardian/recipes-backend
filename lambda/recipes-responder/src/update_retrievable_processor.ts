@@ -76,7 +76,7 @@ export async function handleContentUpdateByCapiUrl({
 				capiResponse.content.fields.internalRevision > internalRevision
 			) {
 				console.log(
-					`INFO Retrievable update was superceded - we expected to see ${internalRevision} but got ${capiResponse.content.fields.internalRevision}`,
+					`INFO Retrievable update for ${capiUrl} was superceded - we expected to see ${internalRevision} but got ${capiResponse.content.fields.internalRevision}`,
 				);
 			} else if (capiResponse.content) {
 				return handleContentUpdate({
@@ -88,7 +88,7 @@ export async function handleContentUpdateByCapiUrl({
 				});
 			} else {
 				console.error(
-					"Content existed but was empty, this shouldn't happen :(",
+					`Content for ${capiUrl} existed but was empty, this shouldn't happen :(`,
 				);
 			}
 			return 0;
@@ -96,7 +96,7 @@ export async function handleContentUpdateByCapiUrl({
 		case PollingAction.CONTENT_MISSING:
 			//FIXME: should we invoke article-deletion here just in case?
 			console.log(
-				`INFO Content has gone for this update, assuming that this article was taken down in the meantime.`,
+				`INFO Content for ${capiUrl} has gone for this update, assuming that this article was taken down in the meantime.`,
 			);
 			return 0;
 		default:

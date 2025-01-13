@@ -96,11 +96,8 @@ export async function processRecord({
 						});
 					}
 					case 'retrievableContent': {
-						const {
-							capiUrl: capiUrl,
-							contentType,
-							internalRevision,
-						} = evt.payload.retrievableContent;
+						const { capiUrl, contentType, internalRevision } =
+							evt.payload.retrievableContent;
 						return handleContentUpdateByCapiUrl({
 							capiUrl,
 							contentType,
