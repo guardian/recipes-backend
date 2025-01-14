@@ -2413,6 +2413,10 @@ def sort_filter_rules(json_obj):
           "Variables": {
             "APP": "recipes-reindex-snapshot-recipe-index",
             "CONTENT_URL_BASE": "recipes.guardianapis.com",
+            "INDEX_TABLE": {
+              "Ref": "storeRecipeTableC3AD84B7",
+            },
+            "LAST_UPDATED_INDEX": "idxArticleLastUpdated",
             "RECIPE_INDEX_SNAPSHOT_BUCKET": {
               "Ref": "RecipeReindexreindexSnapshotBucketB9E1DA96",
             },
@@ -2533,6 +2537,35 @@ def sort_filter_rules(json_obj):
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "dynamodb:Scan",
+                "dynamodb:Query",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "storeRecipeTableC3AD84B7",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "storeRecipeTableC3AD84B7",
+                          "Arn",
+                        ],
+                      },
+                      "/index/*",
+                    ],
+                  ],
+                },
+              ],
             },
             {
               "Action": [

@@ -249,6 +249,7 @@ export class RecipesBackend extends GuStack {
 		});
 
 		new RecipesReindex(this, 'RecipeReindex', {
+			dataStore: store,
 			contentUrlBase,
 			reindexBatchSize: reindexBatchSizeParam.valueAsNumber,
 			reindexWaitTime: reindexWaitTimeParam.valueAsNumber,

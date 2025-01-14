@@ -16,3 +16,5 @@ export type WriteBatchToReindexQueueInput = SnapshotRecipeIndexOutput;
 export type WriteBatchToReindexQueueOutput = SnapshotRecipeIndexOutput & {
 	lastIndex: number;
 };
+
+export type RecipeArticlesSnapshot = string[];
