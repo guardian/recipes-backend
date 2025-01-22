@@ -127,6 +127,45 @@ export async function processRecord({
 	}
 }
 
+const processReindexEvent = async ({
+	eventDetail,
+	capiBaseUrl,
+	staticBucketName,
+	fastlyApiKey,
+	contentPrefix,
+	outgoingEventBus,
+}: {
+	eventDetail: ReindexEventDetail;
+	capiBaseUrl: string;
+	staticBucketName: string;
+	fastlyApiKey: string;
+	contentPrefix: string;
+	outgoingEventBus: string;
+}) => {
+	let totalCount = 0;
+
+	console.log(
+		`Received ${
+			eventDetail.articleIds.length
+		} articles to reindex: \n${eventDetail.articleIds.join(', \n')}`,
+	);
+
+	for (const articleId of eventDetail.articleIds) {
+		totalCount += await handleContentUpdateByCapiUrl({
+			capiUrl: `${capiBaseUrl}/${articleId}`,
+			contentType: ContentType.ARTICLE,
+			staticBucketName,
+			fastlyApiKey,
+			contentPrefix,
+			outgoingEventBus,
+		});
+	}
+
+	console.log(`Reindexed ${eventDetail.articleIds.length} articles`);
+
+	return totalCount;
+};
+
 export const handler: Handler<
 	CrierEventBridgeEvent | ReindexEventBridgeEvent,
 	void
@@ -150,27 +189,14 @@ export const handler: Handler<
 				});
 			}
 			case ReindexEventDetail: {
-				let totalCount = 0;
-
-				console.log(
-					`Received ${
-						event.detail.articleIds.length
-					} articles to reindex: \n${event.detail.articleIds.join(', \n')}`,
-				);
-
-				for (const articleId of event.detail.articleIds) {
-					totalCount += await handleContentUpdateByCapiUrl({
-						capiUrl: `${capiBaseUrl}/${articleId}`,
-						contentType: ContentType.ARTICLE,
-						staticBucketName,
-						fastlyApiKey,
-						contentPrefix,
-						outgoingEventBus,
-					});
-				}
-
-				console.log(`Reindexed ${event.detail.articleIds.length} articles`);
-				return totalCount;
+				return await processReindexEvent({
+					eventDetail: event.detail,
+					capiBaseUrl,
+					staticBucketName,
+					fastlyApiKey,
+					contentPrefix,
+					outgoingEventBus,
+				});
 			}
 			default: {
 				console.error(`Unknown event payload: ${JSON.stringify(event)}`);
