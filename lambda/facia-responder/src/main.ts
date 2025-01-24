@@ -13,6 +13,7 @@ import {
 	getFaciaPublicationStatusTopicArn,
 } from './config';
 import { notifyFaciaTool } from './facia-notifications';
+import { generateTargetedRegionFronts } from './targeted-regions';
 import { generatePublicationMessage, getErrorMessage } from './util';
 
 function getMessageBodyAsObject(from: SQSRecord): unknown {
@@ -109,39 +110,45 @@ export const handler: SQSHandler = async (event) => {
 			);
 		}
 
-		try {
-			await deployCuration(maybeFronts.data, {
-				staticBucketName,
-				fastlyApiKey,
-				contentPrefix,
-			});
+		for (const regionalisedFronts of generateTargetedRegionFronts(
+			maybeFronts.data,
+		)) {
+			try {
+				await deployCuration(regionalisedFronts, {
+					staticBucketName,
+					fastlyApiKey,
+					contentPrefix,
+				});
 
-			return notifyFaciaTool(
-				{
-					edition,
-					issueDate,
-					version,
-					status: 'Published',
-					message: generatePublicationMessage(issueDate),
-					timestamp: Date.now(),
-				},
-				faciaPublicationStatusTopicArn,
-				faciaPublicationStatusRoleArn,
-			);
-		} catch (e) {
-			console.error(e);
-			return notifyFaciaTool(
-				{
-					edition,
-					issueDate,
-					version,
-					status: 'Failed',
-					message: `Failed to publish this issue. Error: ${getErrorMessage(e)}`,
-					timestamp: Date.now(),
-				},
-				faciaPublicationStatusTopicArn,
-				faciaPublicationStatusRoleArn,
-			);
+				await notifyFaciaTool(
+					{
+						edition,
+						issueDate,
+						version,
+						status: 'Published',
+						message: generatePublicationMessage(issueDate),
+						timestamp: Date.now(),
+					},
+					faciaPublicationStatusTopicArn,
+					faciaPublicationStatusRoleArn,
+				);
+			} catch (e) {
+				console.error(e);
+				await notifyFaciaTool(
+					{
+						edition,
+						issueDate,
+						version,
+						status: 'Failed',
+						message: `Failed to publish this issue. Error: ${getErrorMessage(
+							e,
+						)}`,
+						timestamp: Date.now(),
+					},
+					faciaPublicationStatusTopicArn,
+					faciaPublicationStatusRoleArn,
+				);
+			}
 		}
 	}
 };
