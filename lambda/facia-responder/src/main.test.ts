@@ -47,7 +47,7 @@ describe('main', () => {
 		// @ts-ignore
 		await handler(rec, null, null);
 
-		expect(importCurationDataMock.mock.calls.length).toEqual(2);
+		expect(importCurationDataMock.mock.calls.length).toEqual(4);
 		expect(importCurationDataMock.mock.calls[0][0]).toEqual(
 			JSON.stringify(validMessageContent.fronts['all-recipes']),
 		);
@@ -67,6 +67,24 @@ describe('main', () => {
 		);
 		expect(importCurationDataMock.mock.calls[1][2]).toEqual('meat-free');
 		expect(importCurationDataMock.mock.calls[1][3]).toEqual(
+			new Date(2024, 0, 2),
+		);
+
+		expect(importCurationDataMock.mock.calls[2][0]).toEqual(
+			JSON.stringify(validMessageContent.fronts['all-recipes']),
+		);
+		expect(importCurationDataMock.mock.calls[2][1]).toEqual('us');
+		expect(importCurationDataMock.mock.calls[2][2]).toEqual('all-recipes');
+		expect(importCurationDataMock.mock.calls[2][3]).toEqual(
+			new Date(2024, 0, 2),
+		);
+
+		expect(importCurationDataMock.mock.calls[3][0]).toEqual(
+			JSON.stringify(validMessageContent.fronts['meat-free']),
+		);
+		expect(importCurationDataMock.mock.calls[3][1]).toEqual('us');
+		expect(importCurationDataMock.mock.calls[3][2]).toEqual('meat-free');
+		expect(importCurationDataMock.mock.calls[3][3]).toEqual(
 			new Date(2024, 0, 2),
 		);
 

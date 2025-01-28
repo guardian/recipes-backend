@@ -8,15 +8,13 @@ import type * as facia from '@recipes-api/lib/facia';
 export function generateTargetedRegionFronts(
 	src: facia.FeastCuration,
 ): facia.FeastCuration[] {
-	const region = src.path ?? src.edition;
-
-	if (region === 'northern') {
+	if (src.path === 'northern' || src.edition === 'feast-northern-hemisphere') {
 		//regionalise the northern front
 		//TODO: bring through the fields to filter. For now, just duplicate
 		const usOnly = {
 			...src,
 			path: 'us',
-			edition: 'us',
+			edition: 'feast-us-only',
 		};
 		return [src, usOnly];
 	} else {
