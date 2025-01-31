@@ -57,6 +57,8 @@ export const FeastAppContainer = z.object({
 	title: z.string(),
 	body: z.string().optional(),
 	items: z.array(z.union([SubCollection, Chef, Recipe])),
+	targetedRegions: z.array(z.string()).optional(),
+	excludedRegions: z.array(z.string()).optional(),
 });
 
 export type FeastAppContainer = z.infer<typeof FeastAppContainer>;

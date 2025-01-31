@@ -17,7 +17,7 @@ export interface CurationPath {
 	day: number;
 }
 
-const KnownEditions = ['northern', 'southern'];
+const KnownEditions = ['northern', 'southern', 'us'];
 
 const KnownFronts = ['meat-free', 'all-recipes'];
 

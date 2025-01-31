@@ -5,6 +5,8 @@ import {
 	messageWithMissingFrontsTitle,
 	validMessage,
 	validMessageContent,
+	validMessageContentWithUsOnly,
+	validMessageUsOnly,
 } from './fixtures/sns';
 import { handler } from './main';
 
@@ -47,7 +49,7 @@ describe('main', () => {
 		// @ts-ignore
 		await handler(rec, null, null);
 
-		expect(importCurationDataMock.mock.calls.length).toEqual(2);
+		expect(importCurationDataMock.mock.calls.length).toEqual(4);
 		expect(importCurationDataMock.mock.calls[0][0]).toEqual(
 			JSON.stringify(validMessageContent.fronts['all-recipes']),
 		);
@@ -67,6 +69,102 @@ describe('main', () => {
 		);
 		expect(importCurationDataMock.mock.calls[1][2]).toEqual('meat-free');
 		expect(importCurationDataMock.mock.calls[1][3]).toEqual(
+			new Date(2024, 0, 2),
+		);
+
+		expect(importCurationDataMock.mock.calls[2][0]).toEqual(
+			JSON.stringify(validMessageContent.fronts['all-recipes']),
+		);
+		expect(importCurationDataMock.mock.calls[2][1]).toEqual('us');
+		expect(importCurationDataMock.mock.calls[2][2]).toEqual('all-recipes');
+		expect(importCurationDataMock.mock.calls[2][3]).toEqual(
+			new Date(2024, 0, 2),
+		);
+
+		expect(importCurationDataMock.mock.calls[3][0]).toEqual(
+			JSON.stringify(validMessageContent.fronts['meat-free']),
+		);
+		expect(importCurationDataMock.mock.calls[3][1]).toEqual('us');
+		expect(importCurationDataMock.mock.calls[3][2]).toEqual('meat-free');
+		expect(importCurationDataMock.mock.calls[3][3]).toEqual(
+			new Date(2024, 0, 2),
+		);
+
+		const notifyFaciaToolMock = notifyFaciaTool as jest.Mock;
+		expect(notifyFaciaToolMock.mock.calls[0][0]).toMatchObject({
+			edition: 'feast-northern-hemisphere',
+			issueDate: '2024-01-02',
+			message:
+				'This issue has been published but its date is in the past so it can only be seen in the Fronts Preview tool',
+			status: 'Published',
+			version: 'v1',
+		});
+	});
+
+	it('should separate US only and rest-of-world fronts', async () => {
+		console.log(JSON.stringify(validMessageContentWithUsOnly));
+
+		const rec = {
+			Records: [
+				{
+					eventSource: 'sqs',
+					awsRegion: 'xx-north-n',
+					messageId: 'BDB66A64-F095-4F4D-9B6A-135173E262A5',
+					body: JSON.stringify(validMessageUsOnly),
+				},
+			],
+		};
+
+		// @ts-ignore
+		await handler(rec, null, null);
+
+		expect(importCurationDataMock.mock.calls.length).toEqual(4);
+		expect(importCurationDataMock.mock.calls[0][0]).toEqual(
+			//these are the non-US fronts in the fixture data
+			JSON.stringify([
+				validMessageContentWithUsOnly.fronts['all-recipes'][0],
+				validMessageContentWithUsOnly.fronts['all-recipes'][2],
+			]),
+		);
+		expect(importCurationDataMock.mock.calls[0][1]).toEqual(
+			validMessageContentWithUsOnly.edition,
+		);
+		expect(importCurationDataMock.mock.calls[0][2]).toEqual('all-recipes');
+		expect(importCurationDataMock.mock.calls[0][3]).toEqual(
+			new Date(2024, 0, 2),
+		);
+
+		expect(importCurationDataMock.mock.calls[1][0]).toEqual(
+			JSON.stringify(validMessageContentWithUsOnly.fronts['meat-free']),
+		);
+		expect(importCurationDataMock.mock.calls[1][1]).toEqual(
+			validMessageContentWithUsOnly.edition,
+		);
+		expect(importCurationDataMock.mock.calls[1][2]).toEqual('meat-free');
+		expect(importCurationDataMock.mock.calls[1][3]).toEqual(
+			new Date(2024, 0, 2),
+		);
+
+		expect(importCurationDataMock.mock.calls[2][0]).toEqual(
+			JSON.stringify([
+				//this one has no explicit include or exclude so should go to both
+				validMessageContentWithUsOnly.fronts['all-recipes'][0],
+				//the only one marked as US only
+				validMessageContentWithUsOnly.fronts['all-recipes'][1],
+			]),
+		);
+		expect(importCurationDataMock.mock.calls[2][1]).toEqual('us');
+		expect(importCurationDataMock.mock.calls[2][2]).toEqual('all-recipes');
+		expect(importCurationDataMock.mock.calls[2][3]).toEqual(
+			new Date(2024, 0, 2),
+		);
+
+		expect(importCurationDataMock.mock.calls[3][0]).toEqual(
+			JSON.stringify(validMessageContentWithUsOnly.fronts['meat-free']),
+		);
+		expect(importCurationDataMock.mock.calls[3][1]).toEqual('us');
+		expect(importCurationDataMock.mock.calls[3][2]).toEqual('meat-free');
+		expect(importCurationDataMock.mock.calls[3][3]).toEqual(
 			new Date(2024, 0, 2),
 		);
 

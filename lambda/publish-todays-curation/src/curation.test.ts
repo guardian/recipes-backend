@@ -196,8 +196,8 @@ describe('curation.validateAllCuration', () => {
 
 		const result = await validateAllCuration(Today, false, staticBucketName);
 
-		expect(s3Mock.commandCalls(HeadObjectCommand).length).toEqual(4);
-		for (let i = 0; i < 4; i++) {
+		expect(s3Mock.commandCalls(HeadObjectCommand).length).toEqual(6);
+		for (let i = 0; i < 6; i++) {
 			const req = s3Mock.commandCalls(HeadObjectCommand)[i].firstArg
 				.input as HeadObjectCommandInput;
 			expect(req.Bucket).toEqual(staticBucketName);
@@ -221,6 +221,12 @@ describe('curation.validateAllCuration', () => {
 					expect(req.Key).toEqual(
 						'southern/all-recipes/2024-02-03/curation.json',
 					);
+					break;
+				case 4:
+					expect(req.Key).toEqual('us/meat-free/2024-02-03/curation.json');
+					break;
+				case 5:
+					expect(req.Key).toEqual('us/all-recipes/2024-02-03/curation.json');
 					break;
 			}
 		}
