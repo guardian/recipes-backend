@@ -83,15 +83,11 @@ export class RecipesBackend extends GuStack {
 			default: `/${this.stage}/${this.stack}/${app}/fastly-key`,
 		});
 
-		const telemetryXAR = new GuParameter(this, 'TelemetryCrossAcctRole', {
-			fromSSM: true,
-			default: `/${this.stage}/${this.stack}/${app}/telemetryXAR`,
-			description: 'Cross-account role to allow data submissions',
-		});
 		const telemetryTopic = new GuParameter(this, 'TelemetryTopic', {
 			fromSSM: true,
-			default: `/${this.stage}/${this.stack}/${app}/telemetryTopic`,
-			description: 'ARN of the SNS topic to use for data submissions',
+			default: `/${this.stage}/feast/recipe-structuriser/telemetryTopic`,
+			description:
+				'ARN of the SNS topic to use for data submissions (shared with structuriser)',
 		});
 
 		const eventBusParam = new GuParameter(this, 'EventBus', {
@@ -168,7 +164,6 @@ export class RecipesBackend extends GuStack {
 				DEBUG_LOGS: 'true',
 				FASTLY_API_KEY: fastlyKeyParam.valueAsString,
 				STATIC_BUCKET: serving.staticBucket.bucketName,
-				TELEMETRY_XAR: telemetryXAR.valueAsString,
 				TELEMETRY_TOPIC: telemetryTopic.valueAsString,
 				OUTGOING_EVENT_BUS: eventBus.eventBusName,
 				CAPI_BASE_URL:
@@ -197,11 +192,6 @@ export class RecipesBackend extends GuStack {
 					effect: Effect.ALLOW,
 					resources: ['*'],
 					actions: ['cloudwatch:PutMetricData'],
-				}),
-				new PolicyStatement({
-					effect: Effect.ALLOW,
-					actions: ['sts:AssumeRole'],
-					resources: [telemetryXAR.valueAsString],
 				}),
 				new PolicyStatement({
 					effect: Effect.ALLOW,

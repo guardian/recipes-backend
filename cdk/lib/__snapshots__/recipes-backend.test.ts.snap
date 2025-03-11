@@ -12,7 +12,6 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "GuParameter",
       "GuParameter",
       "GuParameter",
-      "GuParameter",
       "GuLambdaFunction",
       "GuApiLambda",
       "GuLambdaFunction",
@@ -59,14 +58,9 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "Default": "/TEST/feast/feast-shared-infra/crier-event-bus",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "TelemetryCrossAcctRole": {
-      "Default": "/TEST/feast/recipes-responder/telemetryXAR",
-      "Description": "Cross-account role to allow data submissions",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
     "TelemetryTopic": {
-      "Default": "/TEST/feast/recipes-responder/telemetryTopic",
-      "Description": "ARN of the SNS topic to use for data submissions",
+      "Default": "/TEST/feast/recipe-structuriser/telemetryTopic",
+      "Description": "ARN of the SNS topic to use for data submissions (shared with structuriser)",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "capiKey": {
@@ -2984,9 +2978,6 @@ def sort_filter_rules(json_obj):
             "TELEMETRY_TOPIC": {
               "Ref": "TelemetryTopic",
             },
-            "TELEMETRY_XAR": {
-              "Ref": "TelemetryCrossAcctRole",
-            },
           },
         },
         "FunctionName": "recipe-responder-feast-TEST",
@@ -3142,13 +3133,6 @@ def sort_filter_rules(json_obj):
               "Action": "cloudwatch:PutMetricData",
               "Effect": "Allow",
               "Resource": "*",
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "TelemetryCrossAcctRole",
-              },
             },
             {
               "Action": "events:PutEvents",
