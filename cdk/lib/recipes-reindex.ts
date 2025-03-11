@@ -47,7 +47,6 @@ export class RecipesReindex extends Construct {
 		const lambdaFileName = `${appBase}.zip`;
 
 		const snapshotBucket = new Bucket(this, 'reindexSnapshotBucket', {
-			bucketName: `recipes-backend-reindex-snapshots-${scope.stage.toLowerCase()}`,
 			enforceSSL: true,
 			removalPolicy: RemovalPolicy.DESTROY,
 		});

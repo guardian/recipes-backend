@@ -1641,7 +1641,6 @@ def sort_filter_rules(json_obj):
     "RecipeReindexreindexSnapshotBucketB9E1DA96": {
       "DeletionPolicy": "Delete",
       "Properties": {
-        "BucketName": "recipes-backend-reindex-snapshots-test",
         "Tags": [
           {
             "Key": "gu:cdk:version",
