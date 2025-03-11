@@ -3,9 +3,11 @@ import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
 import {
 	AccountPrincipal,
 	Effect,
+	ManagedPolicy,
 	PolicyDocument,
 	PolicyStatement,
 	Role,
+	ServicePrincipal,
 } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { IBucket } from 'aws-cdk-lib/aws-s3';
@@ -22,6 +24,29 @@ export class DynamicFronts extends Construct {
 
 		const base_path = 'dynamic-fronts-data';
 
+		const lambdaRole = new Role(this, 'FetcherRole', {
+			//The role name needs to be short for cross-cloud federation or you
+			//get an incomprehensible error!
+			roleName: `dynamic-fronts-fetcher-${scope.stage}`,
+			assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
+			managedPolicies: [
+				ManagedPolicy.fromAwsManagedPolicyName(
+					'service-role/AWSLambdaBasicExecutionRole',
+				),
+			],
+			inlinePolicies: {
+				S3Put: new PolicyDocument({
+					statements: [
+						new PolicyStatement({
+							effect: Effect.ALLOW,
+							actions: ['s3:PutObject', 's3:GetObject'],
+							resources: [`${props.destBucket.bucketArn}/${base_path}`],
+						}),
+					],
+				}),
+			},
+		});
+
 		const fetcher = new GuLambdaFunction(scope, 'DynamicFrontsFetcher', {
 			fileName: 'dynamic-fronts-fetcher.zip',
 			handler: 'main.handler',
@@ -32,13 +57,7 @@ export class DynamicFronts extends Construct {
 				DEST_BUCKET: props.destBucket.bucketName,
 				BASE_PATH: base_path,
 			},
-			initialPolicy: [
-				new PolicyStatement({
-					effect: Effect.ALLOW,
-					actions: ['s3:PutObject', 's3:GetObject'],
-					resources: [`${props.destBucket.bucketArn}/${base_path}`],
-				}),
-			],
+			role: lambdaRole,
 		});
 
 		const dataTechAcctParam = new GuParameter(scope, 'DynamicFrontsSrcAcct', {
