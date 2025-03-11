@@ -36,7 +36,7 @@ jobs:
 
       - uses: guardian/actions-riff-raff@v4
         with:
-          projectName: Content Platforms::recipes-backend
+          projectName: Feast::recipes-backend
           configPath: 'cdk/cdk.out/riff-raff.yaml'
           roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}

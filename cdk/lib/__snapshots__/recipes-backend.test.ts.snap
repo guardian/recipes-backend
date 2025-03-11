@@ -60,17 +60,17 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "TelemetryCrossAcctRole": {
-      "Default": "/TEST/content-api/recipes-responder/telemetryXAR",
+      "Default": "/TEST/feast/recipes-responder/telemetryXAR",
       "Description": "Cross-account role to allow data submissions",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "TelemetryTopic": {
-      "Default": "/TEST/content-api/recipes-responder/telemetryTopic",
+      "Default": "/TEST/feast/recipes-responder/telemetryTopic",
       "Description": "ARN of the SNS topic to use for data submissions",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "capiKey": {
-      "Default": "/TEST/content-api/recipes-responder/capi-key",
+      "Default": "/TEST/feast/recipes-responder/capi-key",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "externalsnonurgentalarmarnParameter3CDDBCA7": {
@@ -82,22 +82,22 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "faciaPublishStatusSNSTopicParam": {
-      "Default": "/TEST/content-api/recipes-responder/facia-status-sns-topic-arn",
+      "Default": "/TEST/feast/recipes-responder/facia-status-sns-topic-arn",
       "Description": "The ARN of the facia-tool SNS topic that receives publication status messages",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "faciaPublishStatusSNSTopicRoleParam": {
-      "Default": "/TEST/content-api/recipes-responder/facia-status-sns-topic-role-arn",
+      "Default": "/TEST/feast/recipes-responder/facia-status-sns-topic-role-arn",
       "Description": "The ARN of role that permits us to write to faciaPublishStatusSNSTopic",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "faciaSNSTopicParam": {
-      "Default": "/TEST/content-api/recipes-responder/facia-sns-topic-arn",
+      "Default": "/TEST/feast/recipes-responder/facia-sns-topic-arn",
       "Description": "The ARN of the facia-tool SNS topic that emits curation notifications",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "fastlyKey": {
-      "Default": "/TEST/content-api/recipes-responder/fastly-key",
+      "Default": "/TEST/feast/recipes-responder/fastly-key",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "reindexBatchSizeParam": {
@@ -250,7 +250,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -300,7 +300,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -425,7 +425,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -451,7 +451,7 @@ def sort_filter_rules(json_obj):
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "content-api/TEST/recipes-backend-rest-endpoints/rest-endpoints.zip",
+          "S3Key": "feast/TEST/recipes-backend-rest-endpoints/rest-endpoints.zip",
         },
         "Description": "REST API endpoints for the recipe backend",
         "Environment": {
@@ -464,7 +464,7 @@ def sort_filter_rules(json_obj):
             "INDEX_TABLE": {
               "Ref": "storeRecipeTableC3AD84B7",
             },
-            "STACK": "content-api",
+            "STACK": "feast",
             "STAGE": "TEST",
             "STATIC_BUCKET": {
               "Ref": "staticstaticServing53194089",
@@ -499,7 +499,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -553,7 +553,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -628,7 +628,7 @@ def sort_filter_rules(json_obj):
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/content-api/TEST/recipes-backend-rest-endpoints/rest-endpoints.zip",
+                      "/feast/TEST/recipes-backend-rest-endpoints/rest-endpoints.zip",
                     ],
                   ],
                 },
@@ -649,7 +649,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-backend-rest-endpoints",
+                    ":parameter/TEST/feast/recipes-backend-rest-endpoints",
                   ],
                 ],
               },
@@ -672,7 +672,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-backend-rest-endpoints/*",
+                    ":parameter/TEST/feast/recipes-backend-rest-endpoints/*",
                   ],
                 ],
               },
@@ -697,7 +697,7 @@ def sort_filter_rules(json_obj):
             "REGIONAL",
           ],
         },
-        "Name": "content-api-TEST-recipes-backend-TEST",
+        "Name": "feast-TEST-recipes-backend-TEST",
         "Tags": [
           {
             "Key": "App",
@@ -713,7 +713,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -905,7 +905,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -916,7 +916,7 @@ def sort_filter_rules(json_obj):
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "LambdarecipesbackendTESTDeploymentE6FBC51Cfc12f3dde865798df25646d21b1ca842": {
+    "LambdarecipesbackendTESTDeploymentE6FBC51C5cf02c749861af6c214cd168cbb1a315": {
       "DependsOn": [
         "LambdarecipesbackendTESTproxyANYB2172EAF",
         "LambdarecipesbackendTESTproxyE7B5C009",
@@ -936,7 +936,7 @@ def sort_filter_rules(json_obj):
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "LambdarecipesbackendTESTDeploymentE6FBC51Cfc12f3dde865798df25646d21b1ca842",
+          "Ref": "LambdarecipesbackendTESTDeploymentE6FBC51C5cf02c749861af6c214cd168cbb1a315",
         },
         "RestApiId": {
           "Ref": "LambdarecipesbackendTEST4B1DC1BE",
@@ -957,7 +957,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -996,7 +996,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -1154,7 +1154,7 @@ def sort_filter_rules(json_obj):
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "content-api/TEST/recipes-publish-todays-curation/publish-todays-curation.zip",
+          "S3Key": "feast/TEST/recipes-publish-todays-curation/publish-todays-curation.zip",
         },
         "Environment": {
           "Variables": {
@@ -1163,7 +1163,7 @@ def sort_filter_rules(json_obj):
             "FASTLY_API_KEY": {
               "Ref": "fastlyKey",
             },
-            "STACK": "content-api",
+            "STACK": "feast",
             "STAGE": "TEST",
             "STATIC_BUCKET": {
               "Ref": "staticstaticServing53194089",
@@ -1198,7 +1198,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -1290,7 +1290,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -1388,7 +1388,7 @@ def sort_filter_rules(json_obj):
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/content-api/TEST/recipes-publish-todays-curation/publish-todays-curation.zip",
+                      "/feast/TEST/recipes-publish-todays-curation/publish-todays-curation.zip",
                     ],
                   ],
                 },
@@ -1409,7 +1409,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-publish-todays-curation",
+                    ":parameter/TEST/feast/recipes-publish-todays-curation",
                   ],
                 ],
               },
@@ -1432,7 +1432,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-publish-todays-curation/*",
+                    ":parameter/TEST/feast/recipes-publish-todays-curation/*",
                   ],
                 ],
               },
@@ -1508,7 +1508,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -1544,7 +1544,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -1653,7 +1653,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -1726,7 +1726,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -1823,7 +1823,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -1932,7 +1932,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -1956,7 +1956,7 @@ def sort_filter_rules(json_obj):
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "content-api/TEST/recipes-facia-responder/facia-responder.zip",
+          "S3Key": "feast/TEST/recipes-facia-responder/facia-responder.zip",
         },
         "Environment": {
           "Variables": {
@@ -1971,7 +1971,7 @@ def sort_filter_rules(json_obj):
             "FASTLY_API_KEY": {
               "Ref": "fastlyKey",
             },
-            "STACK": "content-api",
+            "STACK": "feast",
             "STAGE": "TEST",
             "STATIC_BUCKET": {
               "Ref": "staticstaticServing53194089",
@@ -2006,7 +2006,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -2134,7 +2134,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -2189,7 +2189,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -2316,7 +2316,7 @@ def sort_filter_rules(json_obj):
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/content-api/TEST/recipes-facia-responder/facia-responder.zip",
+                      "/feast/TEST/recipes-facia-responder/facia-responder.zip",
                     ],
                   ],
                 },
@@ -2337,7 +2337,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-facia-responder",
+                    ":parameter/TEST/feast/recipes-facia-responder",
                   ],
                 ],
               },
@@ -2360,7 +2360,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-facia-responder/*",
+                    ":parameter/TEST/feast/recipes-facia-responder/*",
                   ],
                 ],
               },
@@ -2407,7 +2407,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -2485,7 +2485,7 @@ def sort_filter_rules(json_obj):
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "content-api/TEST/recipes-reindex-snapshot-recipe-index/recipes-reindex.zip",
+          "S3Key": "feast/TEST/recipes-reindex-snapshot-recipe-index/recipes-reindex.zip",
         },
         "Description": "Store a snapshot of the current recipe index in S3",
         "Environment": {
@@ -2499,7 +2499,7 @@ def sort_filter_rules(json_obj):
             "RECIPE_INDEX_SNAPSHOT_BUCKET": {
               "Ref": "RecipeReindexreindexSnapshotBucketB9E1DA96",
             },
-            "STACK": "content-api",
+            "STACK": "feast",
             "STAGE": "TEST",
           },
         },
@@ -2531,7 +2531,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -2585,7 +2585,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -2681,7 +2681,7 @@ def sort_filter_rules(json_obj):
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/content-api/TEST/recipes-reindex-snapshot-recipe-index/recipes-reindex.zip",
+                      "/feast/TEST/recipes-reindex-snapshot-recipe-index/recipes-reindex.zip",
                     ],
                   ],
                 },
@@ -2702,7 +2702,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-reindex-snapshot-recipe-index",
+                    ":parameter/TEST/feast/recipes-reindex-snapshot-recipe-index",
                   ],
                 ],
               },
@@ -2725,7 +2725,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-reindex-snapshot-recipe-index/*",
+                    ":parameter/TEST/feast/recipes-reindex-snapshot-recipe-index/*",
                   ],
                 ],
               },
@@ -2755,7 +2755,7 @@ def sort_filter_rules(json_obj):
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "content-api/TEST/recipes-reindex-write-batch-to-index-queue/recipes-reindex.zip",
+          "S3Key": "feast/TEST/recipes-reindex-write-batch-to-index-queue/recipes-reindex.zip",
         },
         "Description": "Write a batch of recipe ids to the reindex queue",
         "Environment": {
@@ -2768,7 +2768,7 @@ def sort_filter_rules(json_obj):
             "REINDEX_BATCH_SIZE": {
               "Ref": "reindexBatchSizeParam",
             },
-            "STACK": "content-api",
+            "STACK": "feast",
             "STAGE": "TEST",
           },
         },
@@ -2800,7 +2800,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -2854,7 +2854,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -2950,7 +2950,7 @@ def sort_filter_rules(json_obj):
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/content-api/TEST/recipes-reindex-write-batch-to-index-queue/recipes-reindex.zip",
+                      "/feast/TEST/recipes-reindex-write-batch-to-index-queue/recipes-reindex.zip",
                     ],
                   ],
                 },
@@ -2971,7 +2971,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-reindex-write-batch-to-index-queue",
+                    ":parameter/TEST/feast/recipes-reindex-write-batch-to-index-queue",
                   ],
                 ],
               },
@@ -2994,7 +2994,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-reindex-write-batch-to-index-queue/*",
+                    ":parameter/TEST/feast/recipes-reindex-write-batch-to-index-queue/*",
                   ],
                 ],
               },
@@ -3024,7 +3024,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -3084,7 +3084,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -3288,7 +3288,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -3312,7 +3312,7 @@ def sort_filter_rules(json_obj):
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "content-api/TEST/recipes-backend-testindex/test-indexbuild-lambda.zip",
+          "S3Key": "feast/TEST/recipes-backend-testindex/test-indexbuild-lambda.zip",
         },
         "Environment": {
           "Variables": {
@@ -3321,7 +3321,7 @@ def sort_filter_rules(json_obj):
               "Ref": "storeRecipeTableC3AD84B7",
             },
             "LAST_UPDATED_INDEX": "idxArticleLastUpdated",
-            "STACK": "content-api",
+            "STACK": "feast",
             "STAGE": "TEST",
             "STATIC_BUCKET": {
               "Ref": "staticstaticServing53194089",
@@ -3355,7 +3355,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -3409,7 +3409,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -3508,7 +3508,7 @@ def sort_filter_rules(json_obj):
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/content-api/TEST/recipes-backend-testindex/test-indexbuild-lambda.zip",
+                      "/feast/TEST/recipes-backend-testindex/test-indexbuild-lambda.zip",
                     ],
                   ],
                 },
@@ -3529,7 +3529,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-backend-testindex",
+                    ":parameter/TEST/feast/recipes-backend-testindex",
                   ],
                 ],
               },
@@ -3552,7 +3552,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-backend-testindex/*",
+                    ":parameter/TEST/feast/recipes-backend-testindex/*",
                   ],
                 ],
               },
@@ -3579,7 +3579,7 @@ def sort_filter_rules(json_obj):
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "content-api/TEST/recipes-responder/recipes-responder.zip",
+          "S3Key": "feast/TEST/recipes-responder/recipes-responder.zip",
         },
         "Environment": {
           "Variables": {
@@ -3598,7 +3598,7 @@ def sort_filter_rules(json_obj):
             },
             "LAST_UPDATED_INDEX": "idxArticleLastUpdated",
             "OUTGOING_EVENT_BUS": "crier-eventbus-content-api-crier-v2-TEST",
-            "STACK": "content-api",
+            "STACK": "feast",
             "STAGE": "TEST",
             "STATIC_BUCKET": {
               "Ref": "staticstaticServing53194089",
@@ -3611,7 +3611,7 @@ def sort_filter_rules(json_obj):
             },
           },
         },
-        "FunctionName": "recipe-responder-content-api-TEST",
+        "FunctionName": "recipe-responder-feast-TEST",
         "Handler": "main.handler",
         "LoggingConfig": {
           "LogFormat": "JSON",
@@ -3639,7 +3639,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -3693,7 +3693,7 @@ def sort_filter_rules(json_obj):
           },
           {
             "Key": "Stack",
-            "Value": "content-api",
+            "Value": "feast",
           },
           {
             "Key": "Stage",
@@ -3831,7 +3831,7 @@ def sort_filter_rules(json_obj):
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/content-api/TEST/recipes-responder/recipes-responder.zip",
+                      "/feast/TEST/recipes-responder/recipes-responder.zip",
                     ],
                   ],
                 },
@@ -3852,7 +3852,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-responder",
+                    ":parameter/TEST/feast/recipes-responder",
                   ],
                 ],
               },
@@ -3875,7 +3875,7 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/content-api/recipes-responder/*",
+                    ":parameter/TEST/feast/recipes-responder/*",
                   ],
                 ],
               },
