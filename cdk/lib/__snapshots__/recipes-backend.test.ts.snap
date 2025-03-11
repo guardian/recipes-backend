@@ -1638,7 +1638,7 @@ def sort_filter_rules(json_obj):
       },
       "Type": "AWS::IAM::Policy",
     },
-    "RecipeReindexreindexSnapshotBucketB9E1DA96": {
+    "RecipeReindexSnapshotBucketB8F31A43": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "Tags": [
@@ -1663,10 +1663,10 @@ def sort_filter_rules(json_obj):
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Delete",
     },
-    "RecipeReindexreindexSnapshotBucketPolicyD598A49A": {
+    "RecipeReindexSnapshotBucketPolicy0CFDFEEE": {
       "Properties": {
         "Bucket": {
-          "Ref": "RecipeReindexreindexSnapshotBucketB9E1DA96",
+          "Ref": "RecipeReindexSnapshotBucketB8F31A43",
         },
         "PolicyDocument": {
           "Statement": [
@@ -1684,7 +1684,7 @@ def sort_filter_rules(json_obj):
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "RecipeReindexreindexSnapshotBucketB9E1DA96",
+                    "RecipeReindexSnapshotBucketB8F31A43",
                     "Arn",
                   ],
                 },
@@ -1694,7 +1694,7 @@ def sort_filter_rules(json_obj):
                     [
                       {
                         "Fn::GetAtt": [
-                          "RecipeReindexreindexSnapshotBucketB9E1DA96",
+                          "RecipeReindexSnapshotBucketB8F31A43",
                           "Arn",
                         ],
                       },
@@ -2496,7 +2496,7 @@ def sort_filter_rules(json_obj):
             },
             "LAST_UPDATED_INDEX": "idxArticleLastUpdated",
             "RECIPE_INDEX_SNAPSHOT_BUCKET": {
-              "Ref": "RecipeReindexreindexSnapshotBucketB9E1DA96",
+              "Ref": "RecipeReindexSnapshotBucketB8F31A43",
             },
             "STACK": "feast",
             "STAGE": "TEST",
@@ -2607,7 +2607,7 @@ def sort_filter_rules(json_obj):
                   [
                     {
                       "Fn::GetAtt": [
-                        "RecipeReindexreindexSnapshotBucketB9E1DA96",
+                        "RecipeReindexSnapshotBucketB8F31A43",
                         "Arn",
                       ],
                     },
@@ -2762,7 +2762,7 @@ def sort_filter_rules(json_obj):
             "APP": "recipes-reindex-write-batch-to-index-queue",
             "OUTGOING_EVENT_BUS": "crier-eventbus-content-api-crier-v2-TEST",
             "RECIPE_INDEX_SNAPSHOT_BUCKET": {
-              "Ref": "RecipeReindexreindexSnapshotBucketB9E1DA96",
+              "Ref": "RecipeReindexSnapshotBucketB8F31A43",
             },
             "REINDEX_BATCH_SIZE": {
               "Ref": "reindexBatchSizeParam",
@@ -2876,7 +2876,7 @@ def sort_filter_rules(json_obj):
                   [
                     {
                       "Fn::GetAtt": [
-                        "RecipeReindexreindexSnapshotBucketB9E1DA96",
+                        "RecipeReindexSnapshotBucketB8F31A43",
                         "Arn",
                       ],
                     },

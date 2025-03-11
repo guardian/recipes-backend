@@ -46,7 +46,7 @@ export class RecipesReindex extends Construct {
 		const appBase = 'recipes-reindex';
 		const lambdaFileName = `${appBase}.zip`;
 
-		const snapshotBucket = new Bucket(this, 'reindexSnapshotBucket', {
+		const snapshotBucket = new Bucket(this, 'SnapshotBucket', {
 			enforceSSL: true,
 			removalPolicy: RemovalPolicy.DESTROY,
 		});
