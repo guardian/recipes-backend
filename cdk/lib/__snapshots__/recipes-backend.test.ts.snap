@@ -3072,7 +3072,7 @@ def sort_filter_rules(json_obj):
     "staticstaticServing53194089": {
       "DeletionPolicy": "Delete",
       "Properties": {
-        "BucketName": "recipes-backend-static-test",
+        "BucketName": "feast-recipes-static-test",
         "Tags": [
           {
             "Key": "gu:cdk:version",

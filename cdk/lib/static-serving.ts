@@ -13,7 +13,7 @@ export class StaticServing extends Construct {
 		const maybePreview = scope.stack.endsWith('-preview') ? '-preview' : '';
 
 		this.staticBucket = new Bucket(this, 'staticServing', {
-			bucketName: `recipes-backend${maybePreview}-static-${scope.stage.toLowerCase()}`,
+			bucketName: `feast-recipes${maybePreview}-static-${scope.stage.toLowerCase()}`,
 			enforceSSL: true,
 			removalPolicy: RemovalPolicy.DESTROY,
 		});
