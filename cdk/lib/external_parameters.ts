@@ -21,13 +21,13 @@ export class ExternalParameters extends Construct {
 		this.urgentAlarmTopicArn = aws_ssm.StringParameter.fromStringParameterName(
 			this,
 			'urgent-alarm-arn',
-			'/account/content-api-common/alarms/urgent-alarm-topic',
+			'/account/services/alarms/urgent-alarm-topic',
 		);
 		this.nonUrgentAlarmTopicArn =
 			aws_ssm.StringParameter.fromStringParameterName(
 				this,
 				'non-urgent-alarm-arn',
-				'/account/content-api-common/alarms/non-urgent-alarm-topic',
+				'/account/services/alarms/non-urgent-alarm-topic',
 			);
 	}
 }

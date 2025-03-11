@@ -74,11 +74,11 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "externalsnonurgentalarmarnParameter3CDDBCA7": {
-      "Default": "/account/content-api-common/alarms/non-urgent-alarm-topic",
+      "Default": "/account/services/alarms/non-urgent-alarm-topic",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "externalsurgentalarmarnParameterCE71CB92": {
-      "Default": "/account/content-api-common/alarms/urgent-alarm-topic",
+      "Default": "/account/services/alarms/urgent-alarm-topic",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "faciaPublishStatusSNSTopicParam": {
