@@ -12,6 +12,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "GuParameter",
       "GuParameter",
       "GuParameter",
+      "GuParameter",
       "GuLambdaFunction",
       "GuApiLambda",
       "GuLambdaFunction",
@@ -52,6 +53,10 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "EventBus": {
+      "Default": "/TEST/feast/feast-shared-infra/crier-event-bus",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "TelemetryCrossAcctRole": {
@@ -333,7 +338,9 @@ def sort_filter_rules(json_obj):
     "CrierConnectionE7D24320": {
       "Properties": {
         "Description": "Connect recipe responder TEST to Crier",
-        "EventBusName": "crier-eventbus-content-api-crier-v2-TEST",
+        "EventBusName": {
+          "Ref": "EventBus",
+        },
         "EventPattern": {
           "detail": {
             "channels": [
@@ -1782,7 +1789,9 @@ def sort_filter_rules(json_obj):
     "ReindexConnection1CF3117C": {
       "Properties": {
         "Description": "Connect recipe responder TEST to recipes-reindex",
-        "EventBusName": "crier-eventbus-content-api-crier-v2-TEST",
+        "EventBusName": {
+          "Ref": "EventBus",
+        },
         "EventPattern": {
           "source": [
             "recipes-reindex",
@@ -2123,7 +2132,9 @@ def sort_filter_rules(json_obj):
         "Environment": {
           "Variables": {
             "APP": "recipes-reindex-write-batch-to-index-queue",
-            "OUTGOING_EVENT_BUS": "crier-eventbus-content-api-crier-v2-TEST",
+            "OUTGOING_EVENT_BUS": {
+              "Ref": "EventBus",
+            },
             "RECIPE_INDEX_SNAPSHOT_BUCKET": {
               "Ref": "RecipeReindexSnapshotBucketB8F31A43",
             },
@@ -2267,7 +2278,10 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":event-bus/crier-eventbus-content-api-crier-v2-TEST",
+                    ":event-bus/",
+                    {
+                      "Ref": "EventBus",
+                    },
                   ],
                 ],
               },
@@ -2959,7 +2973,9 @@ def sort_filter_rules(json_obj):
               "Ref": "storeRecipeTableC3AD84B7",
             },
             "LAST_UPDATED_INDEX": "idxArticleLastUpdated",
-            "OUTGOING_EVENT_BUS": "crier-eventbus-content-api-crier-v2-TEST",
+            "OUTGOING_EVENT_BUS": {
+              "Ref": "EventBus",
+            },
             "STACK": "feast",
             "STAGE": "TEST",
             "STATIC_BUCKET": {
@@ -3153,7 +3169,10 @@ def sort_filter_rules(json_obj):
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":event-bus/crier-eventbus-content-api-crier-v2-TEST",
+                    ":event-bus/",
+                    {
+                      "Ref": "EventBus",
+                    },
                   ],
                 ],
               },

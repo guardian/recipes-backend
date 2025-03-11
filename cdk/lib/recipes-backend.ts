@@ -94,6 +94,11 @@ export class RecipesBackend extends GuStack {
 			description: 'ARN of the SNS topic to use for data submissions',
 		});
 
+		const eventBusParam = new GuParameter(this, 'EventBus', {
+			fromSSM: true,
+			default: `/${this.stage}/feast/feast-shared-infra/crier-event-bus`,
+		});
+
 		// const faciaSNSTopicARNParam = new GuParameter(this, 'faciaSNSTopicParam', {
 		// 	default: `/${this.stage}/${this.stack}/${app}/facia-sns-topic-arn`,
 		// 	fromSSM: true,
@@ -150,7 +155,7 @@ export class RecipesBackend extends GuStack {
 		const eventBus = EventBus.fromEventBusName(
 			this,
 			'CrierEventBus',
-			`crier-eventbus-content-api-crier-v2-${this.stage}`,
+			eventBusParam.valueAsString,
 		);
 
 		const updaterLambda = new GuLambdaFunction(this, 'updaterLambda', {
