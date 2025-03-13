@@ -47,14 +47,14 @@ export const handler = async (eventRaw: unknown) => {
 	console.log(`Incoming data: ${JSON.stringify(incomingData)}`);
 };
 
-//temporary debugging for local run
-retrieveContent('some-bucket-name', 'some-file-path')
-	.then(() => console.info('done'))
-	.catch((err) => {
-		if (err instanceof Error) {
-			console.error(`Unable to run: ${err.message}`);
-			console.error(err.stack);
-		} else {
-			console.error(err);
-		}
-	});
+// //temporary debugging for local run
+// retrieveContent('some-bucket-name', 'some-file-path')
+// 	.then(() => console.info('done'))
+// 	.catch((err) => {
+// 		if (err instanceof Error) {
+// 			console.error(`Unable to run: ${err.message}`);
+// 			console.error(err.stack);
+// 		} else {
+// 			console.error(err);
+// 		}
+// 	});
