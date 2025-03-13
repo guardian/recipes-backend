@@ -42,9 +42,11 @@ async function retrieveContent(
 }
 
 export const handler = async (eventRaw: unknown) => {
-	const event = InvokeEvent.parse(eventRaw); //Let It Crash (TM)
-	const incomingData = await retrieveContent(event.gcpBucket, event.filePath);
-	console.log(`Incoming data: ${JSON.stringify(incomingData)}`);
+	console.log(`Incoming data: ${JSON.stringify(eventRaw)}`);
+	return new Promise<void>((resolve) => setTimeout(resolve, 1000));
+	// const event = InvokeEvent.parse(eventRaw); //Let It Crash (TM)
+	// const incomingData = await retrieveContent(event.gcpBucket, event.filePath);
+	// console.log(`Incoming data: ${JSON.stringify(incomingData)}`);
 };
 
 // //temporary debugging for local run
