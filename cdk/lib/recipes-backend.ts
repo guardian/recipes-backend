@@ -17,7 +17,7 @@ import { LambdaDestination } from 'aws-cdk-lib/aws-s3-notifications';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { DataStore } from './datastore';
 import { ExternalParameters } from './external_parameters';
-//import { FaciaConnection } from './facia-connection';
+import { FaciaConnection } from './facia-connection';
 import { RecipesReindex } from './recipes-reindex';
 import { RestEndpoints } from './rest-endpoints';
 import { StaticServing } from './static-serving';
@@ -64,15 +64,6 @@ export class RecipesBackend extends GuStack {
 			externalParameters.nonUrgentAlarmTopicArn.stringValue,
 		);
 
-		//This is a nicer way to pick up the stream name - but CDK won't compile
-		//when using the name token for the kinesis stream name below.
-
-		// const crierStreamParam = new GuParameter(this, "crierStream", {
-		//   default: `/${this.stage}/${this.stack}/crier/index-stream`,
-		//   fromSSM: true,
-		//   description: "SSM path to the name of the Crier stream we are attaching to"
-		// });
-
 		const capiKeyParam = new GuParameter(this, 'capiKey', {
 			fromSSM: true,
 			default: `/${this.stage}/${this.stack}/${app}/capi-key`,
@@ -95,36 +86,36 @@ export class RecipesBackend extends GuStack {
 			default: `/${this.stage}/feast/feast-shared-infra/crier-event-bus`,
 		});
 
-		// const faciaSNSTopicARNParam = new GuParameter(this, 'faciaSNSTopicParam', {
-		// 	default: `/${this.stage}/${this.stack}/${app}/facia-sns-topic-arn`,
-		// 	fromSSM: true,
-		// 	description:
-		// 		'The ARN of the facia-tool SNS topic that emits curation notifications',
-		// });
-		//
-		// const faciaPublishStatusSNSTopicParam = new GuParameter(
-		// 	this,
-		// 	'faciaPublishStatusSNSTopicParam',
-		// 	{
-		// 		default: `/${this.stage}/${this.stack}/${app}/facia-status-sns-topic-arn`,
-		// 		fromSSM: true,
-		// 		type: 'String',
-		// 		description:
-		// 			'The ARN of the facia-tool SNS topic that receives publication status messages',
-		// 	},
-		// );
-		//
-		// const faciaPublishStatusSNSRoleARNParam = new GuParameter(
-		// 	this,
-		// 	'faciaPublishStatusSNSTopicRoleParam',
-		// 	{
-		// 		default: `/${this.stage}/${this.stack}/${app}/facia-status-sns-topic-role-arn`,
-		// 		fromSSM: true,
-		// 		type: 'String',
-		// 		description:
-		// 			'The ARN of role that permits us to write to faciaPublishStatusSNSTopic',
-		// 	},
-		// );
+		const faciaSNSTopicARNParam = new GuParameter(this, 'faciaSNSTopicParam', {
+			default: `/${this.stage}/${this.stack}/${app}/facia-sns-topic-arn`,
+			fromSSM: true,
+			description:
+				'The ARN of the facia-tool SNS topic that emits curation notifications',
+		});
+
+		const faciaPublishStatusSNSTopicParam = new GuParameter(
+			this,
+			'faciaPublishStatusSNSTopicParam',
+			{
+				default: `/${this.stage}/${this.stack}/${app}/facia-status-sns-topic-arn`,
+				fromSSM: true,
+				type: 'String',
+				description:
+					'The ARN of the facia-tool SNS topic that receives publication status messages',
+			},
+		);
+
+		const faciaPublishStatusSNSRoleARNParam = new GuParameter(
+			this,
+			'faciaPublishStatusSNSTopicRoleParam',
+			{
+				default: `/${this.stage}/${this.stack}/${app}/facia-status-sns-topic-role-arn`,
+				fromSSM: true,
+				type: 'String',
+				description:
+					'The ARN of role that permits us to write to faciaPublishStatusSNSTopic',
+			},
+		);
 
 		const reindexBatchSizeParam = new GuParameter(
 			this,
@@ -243,17 +234,17 @@ export class RecipesBackend extends GuStack {
 			],
 		});
 
-		// new FaciaConnection(this, 'RecipesFacia', {
-		// 	fastlyKeyParam,
-		// 	serving,
-		// 	externalParameters,
-		// 	faciaPublishSNSTopicARN: faciaSNSTopicARNParam.valueAsString,
-		// 	faciaPublishStatusSNSTopicARN:
-		// 		faciaPublishStatusSNSTopicParam.valueAsString,
-		// 	faciaPublishStatusSNSRoleARN:
-		// 		faciaPublishStatusSNSRoleARNParam.valueAsString,
-		// 	contentUrlBase,
-		// });
+		new FaciaConnection(this, 'RecipesFacia', {
+			fastlyKeyParam,
+			serving,
+			externalParameters,
+			faciaPublishSNSTopicARN: faciaSNSTopicARNParam.valueAsString,
+			faciaPublishStatusSNSTopicARN:
+				faciaPublishStatusSNSTopicParam.valueAsString,
+			faciaPublishStatusSNSRoleARN:
+				faciaPublishStatusSNSRoleARNParam.valueAsString,
+			contentUrlBase,
+		});
 
 		new RestEndpoints(this, 'RestEndpoints', {
 			servingBucket: serving.staticBucket,
