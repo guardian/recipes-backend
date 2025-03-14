@@ -25,8 +25,11 @@ export class StaticServing extends Construct {
 		cdnReadUser.addToPolicy(
 			new PolicyStatement({
 				effect: Effect.ALLOW,
-				actions: ['s3:GetObject'],
-				resources: [this.staticBucket.bucketArn + '/*'],
+				actions: ['s3:ListBucket', 's3:GetObject'],
+				resources: [
+					this.staticBucket.bucketArn,
+					this.staticBucket.bucketArn + '/*',
+				],
 			}),
 		);
 	}

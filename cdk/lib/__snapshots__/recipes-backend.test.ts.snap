@@ -3047,22 +3047,33 @@ def sort_filter_rules(json_obj):
         "PolicyDocument": {
           "Statement": [
             {
-              "Action": "s3:GetObject",
+              "Action": [
+                "s3:ListBucket",
+                "s3:GetObject",
+              ],
               "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    {
-                      "Fn::GetAtt": [
-                        "staticstaticServing53194089",
-                        "Arn",
-                      ],
-                    },
-                    "/*",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "staticstaticServing53194089",
+                    "Arn",
                   ],
-                ],
-              },
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "staticstaticServing53194089",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
             },
           ],
           "Version": "2012-10-17",
