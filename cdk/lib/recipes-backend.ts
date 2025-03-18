@@ -64,15 +64,6 @@ export class RecipesBackend extends GuStack {
 			externalParameters.nonUrgentAlarmTopicArn.stringValue,
 		);
 
-		//This is a nicer way to pick up the stream name - but CDK won't compile
-		//when using the name token for the kinesis stream name below.
-
-		// const crierStreamParam = new GuParameter(this, "crierStream", {
-		//   default: `/${this.stage}/${this.stack}/crier/index-stream`,
-		//   fromSSM: true,
-		//   description: "SSM path to the name of the Crier stream we are attaching to"
-		// });
-
 		const capiKeyParam = new GuParameter(this, 'capiKey', {
 			fromSSM: true,
 			default: `/${this.stage}/${this.stack}/${app}/capi-key`,
@@ -83,15 +74,16 @@ export class RecipesBackend extends GuStack {
 			default: `/${this.stage}/${this.stack}/${app}/fastly-key`,
 		});
 
-		const telemetryXAR = new GuParameter(this, 'TelemetryCrossAcctRole', {
-			fromSSM: true,
-			default: `/${this.stage}/${this.stack}/${app}/telemetryXAR`,
-			description: 'Cross-account role to allow data submissions',
-		});
 		const telemetryTopic = new GuParameter(this, 'TelemetryTopic', {
 			fromSSM: true,
-			default: `/${this.stage}/${this.stack}/${app}/telemetryTopic`,
-			description: 'ARN of the SNS topic to use for data submissions',
+			default: `/${this.stage}/feast/recipe-structuriser/telemetryTopic`,
+			description:
+				'ARN of the SNS topic to use for data submissions (shared with structuriser)',
+		});
+
+		const eventBusParam = new GuParameter(this, 'EventBus', {
+			fromSSM: true,
+			default: `/${this.stage}/feast/feast-shared-infra/crier-event-bus`,
 		});
 
 		const faciaSNSTopicARNParam = new GuParameter(this, 'faciaSNSTopicParam', {
@@ -150,7 +142,7 @@ export class RecipesBackend extends GuStack {
 		const eventBus = EventBus.fromEventBusName(
 			this,
 			'CrierEventBus',
-			`crier-eventbus-content-api-crier-v2-${this.stage}`,
+			eventBusParam.valueAsString,
 		);
 
 		const updaterLambda = new GuLambdaFunction(this, 'updaterLambda', {
@@ -163,7 +155,6 @@ export class RecipesBackend extends GuStack {
 				DEBUG_LOGS: 'true',
 				FASTLY_API_KEY: fastlyKeyParam.valueAsString,
 				STATIC_BUCKET: serving.staticBucket.bucketName,
-				TELEMETRY_XAR: telemetryXAR.valueAsString,
 				TELEMETRY_TOPIC: telemetryTopic.valueAsString,
 				OUTGOING_EVENT_BUS: eventBus.eventBusName,
 				CAPI_BASE_URL:
@@ -192,11 +183,6 @@ export class RecipesBackend extends GuStack {
 					effect: Effect.ALLOW,
 					resources: ['*'],
 					actions: ['cloudwatch:PutMetricData'],
-				}),
-				new PolicyStatement({
-					effect: Effect.ALLOW,
-					actions: ['sts:AssumeRole'],
-					resources: [telemetryXAR.valueAsString],
 				}),
 				new PolicyStatement({
 					effect: Effect.ALLOW,

@@ -13,7 +13,7 @@ export class StaticServing extends Construct {
 		const maybePreview = scope.stack.endsWith('-preview') ? '-preview' : '';
 
 		this.staticBucket = new Bucket(this, 'staticServing', {
-			bucketName: `recipes-backend${maybePreview}-static-${scope.stage.toLowerCase()}`,
+			bucketName: `feast-recipes${maybePreview}-static-${scope.stage.toLowerCase()}`,
 			enforceSSL: true,
 			removalPolicy: RemovalPolicy.DESTROY,
 		});
@@ -25,8 +25,11 @@ export class StaticServing extends Construct {
 		cdnReadUser.addToPolicy(
 			new PolicyStatement({
 				effect: Effect.ALLOW,
-				actions: ['s3:GetObject'],
-				resources: [this.staticBucket.bucketArn + '/*'],
+				actions: ['s3:ListBucket', 's3:GetObject'],
+				resources: [
+					this.staticBucket.bucketArn,
+					this.staticBucket.bucketArn + '/*',
+				],
 			}),
 		);
 	}

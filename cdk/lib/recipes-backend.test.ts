@@ -6,7 +6,7 @@ describe('The RecipesBackend stack', () => {
 	it('matches the snapshot', () => {
 		const app = new App();
 		const stack = new RecipesBackend(app, 'RecipesBackend', {
-			stack: 'content-api',
+			stack: 'feast',
 			stage: 'TEST',
 		});
 		const template = Template.fromStack(stack);
