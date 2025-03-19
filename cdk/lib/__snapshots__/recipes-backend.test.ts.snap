@@ -3810,6 +3810,13 @@ def sort_filter_rules(json_obj):
               },
             },
             {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "TelemetryTopic",
+              },
+            },
+            {
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",

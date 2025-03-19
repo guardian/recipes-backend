@@ -189,6 +189,11 @@ export class RecipesBackend extends GuStack {
 					actions: ['events:PutEvents'],
 					resources: [eventBus.eventBusArn],
 				}),
+				new PolicyStatement({
+					effect: Effect.ALLOW,
+					actions: ['sns:Publish'],
+					resources: [telemetryTopic.valueAsString],
+				}),
 			],
 			runtime: Runtime.NODEJS_20_X,
 			app,
