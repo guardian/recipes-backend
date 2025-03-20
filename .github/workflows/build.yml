@@ -58,3 +58,5 @@ jobs:
               - dist/lambda/recipes-reindex.zip
             recipes-reindex-write-batch-to-index-queue:
               - dist/lambda/recipes-reindex.zip
+            dynamic-fronts-fetcher:
+              - dist/lambda/dynamic-fronts-fetcher.zip
