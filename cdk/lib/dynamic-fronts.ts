@@ -73,7 +73,7 @@ export class DynamicFronts extends Construct {
 						new PolicyStatement({
 							effect: Effect.ALLOW,
 							resources: [fetcher.functionArn],
-							actions: ['lambda:Invoke'],
+							actions: ['lambda:InvokeFunction'],
 						}),
 					],
 				}),
