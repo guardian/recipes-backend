@@ -730,7 +730,7 @@ def sort_filter_rules(json_obj):
             "PolicyDocument": {
               "Statement": [
                 {
-                  "Action": "lambda:Invoke",
+                  "Action": "lambda:InvokeFunction",
                   "Effect": "Allow",
                   "Resource": {
                     "Fn::GetAtt": [
@@ -3623,6 +3623,10 @@ def sort_filter_rules(json_obj):
         },
         "TableName": "recipes-backend-indexstore-TEST",
         "Tags": [
+          {
+            "Key": "devx-backups-enabled",
+            "Value": "true",
+          },
           {
             "Key": "gu:cdk:version",
             "Value": "TEST",

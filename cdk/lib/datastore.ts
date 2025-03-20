@@ -1,4 +1,5 @@
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
+import { Tags } from 'aws-cdk-lib';
 import {
 	AttributeType,
 	BillingMode,
@@ -33,6 +34,8 @@ export class DataStore extends Construct {
 			pointInTimeRecovery: true,
 			encryption: TableEncryption.AWS_MANAGED,
 		});
+
+		Tags.of(table).add('devx-backups-enabled', 'true');
 
 		this.lastUpdatedIndexName = 'idxArticleLastUpdated';
 
