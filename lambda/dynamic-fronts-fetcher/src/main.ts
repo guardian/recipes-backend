@@ -1,6 +1,14 @@
+import * as process from 'node:process';
 import { Storage } from '@google-cloud/storage';
+import { loadConfig } from './config';
 import { consumeReadable } from './consume-readable';
+import { getStorageClient } from './gcloud';
 import { IncomingDataRow, InvokeEvent } from './models';
+import { breakDownUrl, findMatchingFiles } from './url-handling';
+
+function asyncDelay(timeout: number): Promise<void> {
+	return new Promise<void>((resolve) => setTimeout(resolve, timeout));
+}
 
 async function retrieveContent(
 	gcpBucket: string,
@@ -41,10 +49,32 @@ async function retrieveContent(
 		.filter((obj) => !!obj) as IncomingDataRow[];
 }
 
+let storage: Storage | null = null;
+loadConfig()
+	.then((config) => {
+		storage = getStorageClient(config);
+	})
+	.catch((err) => {
+		console.error(`Unable to load config: `, err);
+		process.exit(1);
+	});
+
+//const storage = new Storage(); //FIXME: load in credentials properly
+
 export const handler = async (eventRaw: unknown) => {
 	console.log(`Incoming data: ${JSON.stringify(eventRaw)}`);
-	return new Promise<void>((resolve) => setTimeout(resolve, 1000));
-	// const event = InvokeEvent.parse(eventRaw); //Let It Crash (TM)
+
+	//delay until we have cached the credentials. The lambda timeout will prevent us looping forever.
+	while (!storage) {
+		console.log(`Credentials have not yet been loaded, waiting...`);
+		await asyncDelay(100);
+	}
+
+	const event = InvokeEvent.parse(eventRaw); //Let It Crash (TM)
+	const pathToScan = breakDownUrl(event.gcs_blob);
+	const files = await findMatchingFiles(storage, pathToScan);
+	console.log(`Got ${files.length} files`);
+
 	// const incomingData = await retrieveContent(event.gcpBucket, event.filePath);
 	// console.log(`Incoming data: ${JSON.stringify(incomingData)}`);
 };
