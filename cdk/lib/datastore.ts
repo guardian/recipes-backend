@@ -7,6 +7,7 @@ import {
 	Table,
 	TableEncryption,
 } from 'aws-cdk-lib/aws-dynamodb';
+import { Tags } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 
 export class DataStore extends Construct {
@@ -33,6 +34,8 @@ export class DataStore extends Construct {
 			pointInTimeRecovery: true,
 			encryption: TableEncryption.AWS_MANAGED,
 		});
+
+		Tags.of(table).add('devx-backup-enabled', 'true');
 
 		this.lastUpdatedIndexName = 'idxArticleLastUpdated';
 
