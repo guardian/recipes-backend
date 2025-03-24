@@ -52,7 +52,7 @@ export class DynamicFronts extends Construct {
 			handler: 'main.handler',
 			runtime: Runtime.NODEJS_20_X,
 			app: 'dynamic-fronts-fetcher',
-			memorySize: 128,
+			memorySize: 256,
 			environment: {
 				DEST_BUCKET: props.destBucket.bucketName,
 				BASE_PATH: base_path,
