@@ -3297,6 +3297,10 @@ def sort_filter_rules(json_obj):
         "TableName": "recipes-backend-indexstore-TEST",
         "Tags": [
           {
+            "Key": "devx-backup-enabled",
+            "Value": "true",
+          },
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
