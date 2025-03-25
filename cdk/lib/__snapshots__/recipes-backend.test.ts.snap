@@ -477,6 +477,7 @@ def sort_filter_rules(json_obj):
             "STAGE": "TEST",
           },
         },
+        "FunctionName": "dynamic-fetcher-TEST",
         "Handler": "main.handler",
         "LoggingConfig": {
           "LogFormat": "JSON",

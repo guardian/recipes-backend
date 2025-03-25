@@ -50,6 +50,7 @@ export class DynamicFronts extends Construct {
 		const fetcher = new GuLambdaFunction(scope, 'DynamicFrontsFetcher', {
 			fileName: 'dynamic-fronts-fetcher.zip',
 			handler: 'main.handler',
+			functionName: `dynamic-fetcher-${scope.stage}`,
 			runtime: Runtime.NODEJS_20_X,
 			app: 'dynamic-fronts-fetcher',
 			memorySize: 256,
