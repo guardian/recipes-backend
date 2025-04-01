@@ -87,7 +87,7 @@
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
     "aws-cdk": "2.166.0",
-    "aws-cdk-lib": "2.166.0",
+    "aws-cdk-lib": "2.186.0",
     "aws-sdk-client-mock": "^3.0.0",
     "constructs": "10.4.2",
     "esbuild": "^0.19.2",
