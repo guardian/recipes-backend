@@ -1,7 +1,10 @@
 import { z } from 'zod';
 
-//TBD
-export const IncomingDataRow = z.object({});
+export const IncomingDataRow = z.object({
+	recipe_id: z.string().regex(/^\w+$/),
+	uniques: z.number(),
+});
+
 export type IncomingDataRow = z.infer<typeof IncomingDataRow>;
 
 //TBD, need to get the right format for these

@@ -29,6 +29,8 @@ export async function findMatchingFiles(
 	return files;
 }
 
+const IsEmpty = /^\s*$/;
+
 export async function retrieveContent(file: File): Promise<IncomingDataRow[]> {
 	const content = await consumeReadable(file.createReadStream());
 	console.log(`debug: ${file.name} contents:`);
@@ -40,6 +42,7 @@ export async function retrieveContent(file: File): Promise<IncomingDataRow[]> {
 	return objects
 		.map((str, ctr) => {
 			try {
+				if (IsEmpty.test(str)) return undefined;
 				return JSON.parse(str) as unknown;
 			} catch (err) {
 				console.warn(
