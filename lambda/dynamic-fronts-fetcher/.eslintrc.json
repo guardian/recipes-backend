@@ -1,0 +1,51 @@
+{
+  "extends": ["../../.eslintrc.json", "plugin:prettier/recommended"],
+  "ignorePatterns": ["!**/*", "jest.config.ts"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "prettier/prettier": "error"
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+        "prettier/prettier": "error"
+      },
+      "parserOptions": {
+        "project": ["lambda/dynamic-fronts-fetcher/tsconfig.app.json"]
+      }
+    },
+    {
+      "files": ["*.test.ts", "*.test.tsx"],
+      "parserOptions": {
+        "project": ["lambda/dynamic-fronts-fetcher/tsconfig.spec.json"]
+      },
+      "rules": {
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/prefer-ts-expect-error": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "prettier/prettier": "error"
+      }
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "rules": {
+        "prettier/prettier": "error"
+      }
+    }
+  ],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": [
+          "lambda/dynamic-fronts-fetcher/tsconfig.app.json",
+          "lambda/dynamic-fronts-fetcher/tsconfig.spec.json"
+        ]
+      }
+    }
+  }
+}
