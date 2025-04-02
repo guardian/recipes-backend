@@ -23,8 +23,6 @@ loadConfig()
 		process.exit(1);
 	});
 
-//const storage = new Storage(); //FIXME: load in credentials properly
-
 export const handler = async (eventRaw: unknown) => {
 	console.log(`Incoming data: ${JSON.stringify(eventRaw)}`);
 
@@ -41,23 +39,8 @@ export const handler = async (eventRaw: unknown) => {
 
 	for (const f of files) {
 		const rows = await retrieveContent(f);
-		console.log(`${f.name} gave us ${rows.length} rows:`);
-		for (const r of rows) {
-			console.log(`  ${JSON.stringify(r)}`);
-		}
+		console.log(
+			`${f.name} gave us ${rows.length} rows: ${JSON.stringify(rows)}`,
+		);
 	}
-	// const incomingData = await retrieveContent(event.gcpBucket, event.filePath);
-	// console.log(`Incoming data: ${JSON.stringify(incomingData)}`);
 };
-
-// //temporary debugging for local run
-// retrieveContent('some-bucket-name', 'some-file-path')
-// 	.then(() => console.info('done'))
-// 	.catch((err) => {
-// 		if (err instanceof Error) {
-// 			console.error(`Unable to run: ${err.message}`);
-// 			console.error(err.stack);
-// 		} else {
-// 			console.error(err);
-// 		}
-// 	});
