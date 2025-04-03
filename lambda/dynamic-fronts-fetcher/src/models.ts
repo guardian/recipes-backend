@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const IncomingDataRow = z.object({
-	recipe_id: z.string().regex(/^\w+$/),
+	recipe_id: z.string().regex(/^([A-Fa-f0-9]+)|(gu-recipe-[A-Fa-f0-9-]+)$/),
 	uniques: z.string().regex(/^\d+$/), //annoyingly BQ gives us this as a string :shrug:
 });
 
