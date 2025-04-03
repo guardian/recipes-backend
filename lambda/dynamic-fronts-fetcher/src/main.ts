@@ -42,15 +42,9 @@ export const handler = async (eventRaw: unknown) => {
 		const pathToScan = breakDownUrl(event.gcs_blob);
 		const files = await findMatchingFiles(storage, pathToScan);
 		console.log(`Got ${files.length} files`);
-		const allRows: IncomingDataRow[] = [];
 
-		for (const f of files) {
-			const rows = await retrieveContent(f);
-			console.log(
-				`${f.name} gave us ${rows.length} rows: ${JSON.stringify(rows)}`,
-			);
-			allRows.push(...rows);
-		}
+		const results = await Promise.all(files.map(retrieveContent));
+		const allRows = results.flat();
 
 		const container = convertBQReport(event.country_key, allRows);
 		await writeDynamicData(
