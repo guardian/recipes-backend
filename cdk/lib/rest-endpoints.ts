@@ -51,6 +51,11 @@ export class RestEndpoints extends Construct {
 						`${dataStore.table.tableArn}/index/*`,
 					],
 				}),
+				new PolicyStatement({
+					effect: Effect.ALLOW,
+					actions: ['s3:GetObject'],
+					resources: [`${servingBucket.bucketArn}/*`],
+				}),
 			],
 		});
 
