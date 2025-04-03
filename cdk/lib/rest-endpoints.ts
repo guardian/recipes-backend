@@ -1,7 +1,7 @@
 import { GuApiLambda } from '@guardian/cdk';
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { Duration } from 'aws-cdk-lib';
-import { ApiKeySourceType, EndpointType } from 'aws-cdk-lib/aws-apigateway';
+import { EndpointType } from 'aws-cdk-lib/aws-apigateway';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { IBucket } from 'aws-cdk-lib/aws-s3';
@@ -24,11 +24,7 @@ export class RestEndpoints extends Construct {
 		const apiConstruct = new GuApiLambda(scope, 'Lambda', {
 			api: {
 				id: `recipes-backend-${scope.stage}`,
-				apiKeySourceType: ApiKeySourceType.HEADER,
 				endpointTypes: [EndpointType.REGIONAL],
-				defaultMethodOptions: {
-					apiKeyRequired: true,
-				},
 			},
 			app: 'recipes-backend-rest-endpoints',
 			architecture: Architecture.ARM_64,
