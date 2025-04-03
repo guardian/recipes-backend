@@ -1,6 +1,19 @@
+import { getName as getCountryName } from 'i18n-iso-countries';
 import { v4 as uuid } from 'uuid';
 import type { FeastAppContainer } from '@recipes-api/lib/facia';
 import type { IncomingDataRow } from './models';
+
+function printableCountryName(isoCode: string): string {
+	const countryName = getCountryName(isoCode, 'en');
+	if (!!countryName && countryName.startsWith('United')) {
+		return 'in the ' + countryName;
+	} else if (countryName) {
+		return 'in ' + countryName;
+	} else {
+		console.warn(`Could not translate country code ${isoCode}`);
+		return 'near you';
+	}
+}
 
 /**
  * takes a set of rows from Bigquery and converts them into a Feast container
@@ -26,7 +39,7 @@ export function convertBQReport(
 	return {
 		id,
 		targetedRegions: [territory],
-		title: `What's hot in ${territory}`, //FIXME: translate territory code
+		title: `What's hot ${printableCountryName(territory)}`, //FIXME: translate territory code
 		items,
 	};
 }
