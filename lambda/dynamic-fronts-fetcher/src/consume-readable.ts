@@ -8,7 +8,7 @@ import type { Readable } from 'stream';
  */
 export async function consumeReadable(readable: Readable): Promise<Buffer> {
 	return new Promise<Buffer>((resolve, reject) => {
-		let mainBuffer: Buffer = new Buffer(0);
+		let mainBuffer: Buffer = Buffer.alloc(0);
 
 		readable.on('readable', () => {
 			let chunk: Buffer | null;
