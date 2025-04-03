@@ -470,7 +470,7 @@ def sort_filter_rules(json_obj):
           "Variables": {
             "APP": "dynamic-fronts-fetcher",
             "BASE_PATH": "dynamic-fronts-data",
-            "DEST_BUCKET": {
+            "BUCKET_NAME": {
               "Ref": "staticstaticServing53194089",
             },
             "STACK": "feast",

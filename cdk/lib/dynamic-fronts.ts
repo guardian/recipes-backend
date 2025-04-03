@@ -55,7 +55,7 @@ export class DynamicFronts extends Construct {
 			app: 'dynamic-fronts-fetcher',
 			memorySize: 256,
 			environment: {
-				DEST_BUCKET: props.destBucket.bucketName,
+				BUCKET_NAME: props.destBucket.bucketName,
 				BASE_PATH: base_path,
 			},
 			role: lambdaRole,
