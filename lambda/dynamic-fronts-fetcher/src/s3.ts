@@ -15,7 +15,7 @@ export async function writeDynamicData(
 ) {
 	const Body = JSON.stringify(content);
 
-	const dateStr = format(date, 'dd-MM-yyyy');
+	const dateStr = format(date, 'yyyy-MM-dd');
 	const Key = `dynamic/curation/${dateStr}/${territory}.json`;
 
 	return s3Client.send(
