@@ -923,6 +923,24 @@ def sort_filter_rules(json_obj):
               ],
             },
             {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "staticstaticServing53194089",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
