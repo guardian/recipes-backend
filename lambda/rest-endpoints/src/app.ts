@@ -5,6 +5,7 @@ import express, { Router } from 'express';
 import type { Request } from 'express';
 import { recipeByUID } from '@recipes-api/lib/recipes-data';
 import { generateHybridFront } from './curation';
+import { countryCodeFromCDN } from './geo_cdn';
 import { recursivelyGetIdList } from './helpers';
 
 export const app = express();
@@ -107,7 +108,8 @@ router.get('/api/content/by-uid', (req, resp) => {
 });
 
 router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
-	const territoryParam = req.query['ter'] as string | undefined;
+	const territoryParam =
+		(req.query['ter'] as string | undefined) ?? countryCodeFromCDN(req);
 	// const curationCacheControl =
 	// 	'max-age=7200, stale-while-revalidate=300, stale-if-error=14400';
 	const curationCacheControl = 'no-store'; //while debugging!
