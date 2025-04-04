@@ -119,9 +119,8 @@ export async function retrieveLocalisationInsert(
 export async function findRecentLocalisation(
 	territory: string,
 	cutoffInDays: number,
+	startDate: Date,
 ) {
-	const startDate = new Date();
-
 	for (let i = 0; i < cutoffInDays; i++) {
 		const testDate = subDays(startDate, i);
 
@@ -141,6 +140,7 @@ export async function generateHybridFront(
 	variant: string,
 	territory: string | undefined,
 	localisationInsertionPoint: number,
+	overrideDate?: Date,
 ): Promise<FeastAppContainer[]> {
 	const curatedFront = await retrieveTodaysCuration(region, variant);
 	if (variant == 'meat-free') {
@@ -152,7 +152,11 @@ export async function generateHybridFront(
 		//no territory given so we can't localise
 		return curatedFront;
 	}
-	const maybeLocalisation = await findRecentLocalisation(territory, 5);
+	const maybeLocalisation = await findRecentLocalisation(
+		territory,
+		5,
+		overrideDate ?? new Date(),
+	);
 	if (maybeLocalisation) {
 		if (curatedFront.length > localisationInsertionPoint) {
 			curatedFront.push(maybeLocalisation);
