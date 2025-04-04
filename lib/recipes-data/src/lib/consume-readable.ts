@@ -12,10 +12,8 @@ export async function consumeReadable(readable: Readable): Promise<Buffer> {
 
 		readable.on('readable', () => {
 			let chunk: Buffer | null;
-			console.log('Stream is readable (new data received in buffer)');
 			// Use a loop to make sure we read all currently available data
 			while (null !== (chunk = readable.read() as Buffer | null)) {
-				console.log(`Read ${chunk.length} bytes of data...`);
 				mainBuffer = Buffer.concat([mainBuffer, chunk]);
 			}
 		});
