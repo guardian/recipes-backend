@@ -7,10 +7,14 @@ import {
 import type { NodeJsRuntimeStreamingBlobTypes } from '@smithy/types/dist-types/streaming-payload/streaming-blob-common-types';
 import { format as formatDate, subDays } from 'date-fns';
 import { FeastAppContainer } from '@recipes-api/lib/facia';
-import { consumeReadable } from '@recipes-api/lib/recipes-data';
+import {
+	AwsRegion,
+	consumeReadable,
+	getStaticBucketName,
+} from '@recipes-api/lib/recipes-data';
 
 const s3Client = new S3Client({
-	region: process.env['AWS_REGION'] ?? 'eu-west-1',
+	region: AwsRegion ?? 'eu-west-1',
 });
 
 async function rawCurationDataForToday(
@@ -20,7 +24,7 @@ async function rawCurationDataForToday(
 	try {
 		return await s3Client.send(
 			new GetObjectCommand({
-				Bucket: process.env['STATIC_BUCKET'],
+				Bucket: getStaticBucketName(),
 				Key: `${region}/${variant}/curation.json`,
 			}),
 		);
@@ -31,7 +35,7 @@ async function rawCurationDataForToday(
 
 				return await s3Client.send(
 					new GetObjectCommand({
-						Bucket: process.env['STATIC_BUCKET'],
+						Bucket: getStaticBucketName(),
 						Key: `${region}/${variant}/${today}/curation.json`,
 					}),
 				);
@@ -91,7 +95,7 @@ export async function retrieveLocalisationInsert(
 	try {
 		const s3response = await s3Client.send(
 			new GetObjectCommand({
-				Bucket: process.env['STATIC_BUCKET'],
+				Bucket: getStaticBucketName(),
 				Key: `dynamic/curation/${today}/${territory.toUpperCase()}.json`,
 			}),
 		);

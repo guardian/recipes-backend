@@ -7,6 +7,11 @@ import { generateHybridFront } from './curation';
 
 const s3Mock = mockClient(S3Client);
 
+jest.mock('@recipes-api/lib/recipes-data', () => ({
+	...jest.requireActual('@recipes-api/lib/recipes-data'),
+	getStaticBucketName: () => 'test',
+}));
+
 describe('generateHybridFront', () => {
 	beforeEach(() => {
 		s3Mock.reset();
@@ -38,7 +43,7 @@ describe('generateHybridFront', () => {
 
 		s3Mock
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `northern/all-recipes/curation.json`,
 			})
 			.resolves({
@@ -48,7 +53,7 @@ describe('generateHybridFront', () => {
 
 		s3Mock
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `dynamic/curation/2025-01-02/FR.json`,
 			})
 			.resolves({
@@ -85,7 +90,7 @@ describe('generateHybridFront', () => {
 
 		s3Mock
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `northern/all-recipes/curation.json`,
 			})
 			.resolves({
@@ -95,7 +100,7 @@ describe('generateHybridFront', () => {
 
 		s3Mock
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `dynamic/curation/2025-01-02/FR.json`,
 			})
 			.resolves({
@@ -132,7 +137,7 @@ describe('generateHybridFront', () => {
 
 		s3Mock
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `northern/meat-free/curation.json`,
 			})
 			.resolves({
@@ -142,7 +147,7 @@ describe('generateHybridFront', () => {
 
 		s3Mock
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `dynamic/curation/2025-01-02/FR.json`,
 			})
 			.resolves({
@@ -175,7 +180,7 @@ describe('generateHybridFront', () => {
 
 		s3Mock
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `northern/meat-free/curation.json`,
 			})
 			.resolves({
@@ -185,7 +190,7 @@ describe('generateHybridFront', () => {
 
 		s3Mock
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `dynamic/curation/2025-01-02/FR.json`,
 			})
 			.rejects(
@@ -221,7 +226,7 @@ describe('generateHybridFront', () => {
 
 		s3Mock
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `northern/meat-free/curation.json`,
 			})
 			.resolves({
@@ -231,7 +236,7 @@ describe('generateHybridFront', () => {
 
 		s3Mock
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `dynamic/curation/2025-01-02/FR.json`,
 			})
 			.rejects(new Error('my hovercraft is full of eels'));
@@ -264,7 +269,7 @@ describe('generateHybridFront', () => {
 
 		s3Mock
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `northern/all-recipes/curation.json`,
 			})
 			.resolves({
@@ -274,7 +279,7 @@ describe('generateHybridFront', () => {
 
 		s3Mock
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `dynamic/curation/2025-01-10/FR.json`,
 			})
 			.rejects(
@@ -285,7 +290,7 @@ describe('generateHybridFront', () => {
 				}),
 			)
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `dynamic/curation/2025-01-05/FR.json`,
 			})
 			.rejects(
@@ -296,7 +301,7 @@ describe('generateHybridFront', () => {
 				}),
 			)
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `dynamic/curation/2025-01-04/FR.json`,
 			})
 			.rejects(
@@ -307,7 +312,7 @@ describe('generateHybridFront', () => {
 				}),
 			)
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `dynamic/curation/2025-01-03/FR.json`,
 			})
 			.rejects(
@@ -318,7 +323,7 @@ describe('generateHybridFront', () => {
 				}),
 			)
 			.onAnyCommand({
-				Bucket: undefined,
+				Bucket: 'test',
 				Key: `dynamic/curation/2025-01-02/FR.json`,
 			})
 			.resolves({
