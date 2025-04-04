@@ -158,7 +158,7 @@ export async function generateHybridFront(
 		overrideDate ?? new Date(),
 	);
 	if (maybeLocalisation) {
-		if (curatedFront.length > localisationInsertionPoint) {
+		if (curatedFront.length < localisationInsertionPoint) {
 			curatedFront.push(maybeLocalisation);
 			return curatedFront;
 		} else {
