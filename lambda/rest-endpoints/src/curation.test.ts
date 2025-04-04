@@ -7,6 +7,7 @@ import { generateHybridFront } from './curation';
 
 const s3Mock = mockClient(S3Client);
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return -- this is a mock, it's ok
 jest.mock('@recipes-api/lib/recipes-data', () => ({
 	...jest.requireActual('@recipes-api/lib/recipes-data'),
 	getStaticBucketName: () => 'test',
