@@ -106,7 +106,8 @@ export async function retrieveLocalisationInsert(
 		return FeastAppContainer.parse(rawJson);
 	} catch (err) {
 		if (err instanceof S3ServiceException) {
-			if (err.name == 'NotFound') {
+			//S3 often hides 'NotFound' behind 'AccessDenied' exceptions, so we treat them the same
+			if (err.name == 'NotFound' || err.name == 'AccessDenied') {
 				console.info(
 					`No localisation found for ${territory} on ${date.toISOString()}`,
 				);
