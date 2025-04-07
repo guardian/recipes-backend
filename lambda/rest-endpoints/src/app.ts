@@ -4,6 +4,8 @@ import { renderFile as ejs } from 'ejs';
 import express, { Router } from 'express';
 import type { Request } from 'express';
 import { recipeByUID } from '@recipes-api/lib/recipes-data';
+import { generateHybridFront } from './curation';
+import { countryCodeFromCDN } from './geo_cdn';
 import { recursivelyGetIdList } from './helpers';
 
 export const app = express();
@@ -101,6 +103,34 @@ router.get('/api/content/by-uid', (req, resp) => {
 			resp.status(500).json({
 				status: 'internal_error',
 				detail: `An error occurred at ${timestamp}. See the server logs for details.`,
+			});
+		});
+});
+
+router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
+	const territoryParam =
+		(req.query['ter'] as string | undefined) ?? countryCodeFromCDN(req);
+	const curationCacheControl =
+		'max-age=7200, stale-while-revalidate=300, stale-if-error=14400';
+	//const curationCacheControl = 'no-store'; //while debugging!
+
+	generateHybridFront(req.params.region, req.params.variant, territoryParam, 2)
+		.then((front) => {
+			resp
+				.status(200)
+				.setHeader('Cache-Control', curationCacheControl)
+				.json(front);
+		})
+		.catch((err) => {
+			console.error(
+				`Unable to generate hybrid from for ${req.params.region} / ${
+					req.params.variant
+				} in ${territoryParam ?? '(undefined)'}: `,
+				err,
+			);
+			resp.status(500).json({
+				status: 'internal_error',
+				detail: `An error occurred at ${new Date().toISOString()}. See the server logs for details.`,
 			});
 		});
 });

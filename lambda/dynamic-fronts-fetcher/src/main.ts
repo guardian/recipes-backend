@@ -2,7 +2,10 @@ import * as process from 'node:process';
 import type { Storage } from '@google-cloud/storage';
 import { loadConfig } from './config';
 import { getStorageClient } from './gcloud';
+import type { IncomingDataRow } from './models';
 import { InvokeEvent } from './models';
+import { writeDynamicData } from './s3';
+import { convertBQReport } from './transform';
 import {
 	breakDownUrl,
 	findMatchingFiles,
@@ -23,6 +26,8 @@ loadConfig()
 		process.exit(1);
 	});
 
+const outputBucketName = process.env['BUCKET_NAME'] ?? 'set-bucketname-env-var';
+
 export const handler = async (eventRaw: unknown) => {
 	console.log(`Incoming data: ${JSON.stringify(eventRaw)}`);
 
@@ -33,14 +38,28 @@ export const handler = async (eventRaw: unknown) => {
 	}
 
 	const event = InvokeEvent.parse(eventRaw); //Let It Crash (TM)
-	const pathToScan = breakDownUrl(event.gcs_blob);
-	const files = await findMatchingFiles(storage, pathToScan);
-	console.log(`Got ${files.length} files`);
+	if (!!event.country_key && !!event.gcs_blob) {
+		const pathToScan = breakDownUrl(event.gcs_blob);
+		const files = await findMatchingFiles(storage, pathToScan);
+		console.log(`Got ${files.length} files`);
 
-	for (const f of files) {
-		const rows = await retrieveContent(f);
-		console.log(
-			`${f.name} gave us ${rows.length} rows: ${JSON.stringify(rows)}`,
+		const results = await Promise.all(files.map(retrieveContent));
+		const allRows = results.flat();
+
+		const container = convertBQReport(event.country_key, allRows);
+		await writeDynamicData(
+			outputBucketName,
+			new Date(),
+			event.country_key,
+			container,
 		);
+		console.log(`Completed`);
+	} else {
+		console.error(
+			`Invalid invoke data, missing either country key or GCS path. Got ${JSON.stringify(
+				event,
+			)}.`,
+		);
+		throw new Error('Invalid invoke data');
 	}
 };

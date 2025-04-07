@@ -22,7 +22,7 @@ export class DynamicFronts extends Construct {
 	constructor(scope: GuStack, name: string, props: DynamicFrontsProps) {
 		super(scope, name);
 
-		const base_path = 'dynamic-fronts-data';
+		const base_path = 'dynamic/curation';
 
 		const lambdaRole = new Role(this, 'FetcherRole', {
 			//The role name needs to be short for cross-cloud federation or you
@@ -40,7 +40,7 @@ export class DynamicFronts extends Construct {
 						new PolicyStatement({
 							effect: Effect.ALLOW,
 							actions: ['s3:PutObject', 's3:GetObject'],
-							resources: [`${props.destBucket.bucketArn}/${base_path}`],
+							resources: [`${props.destBucket.bucketArn}/${base_path}/*`],
 						}),
 					],
 				}),
@@ -55,7 +55,7 @@ export class DynamicFronts extends Construct {
 			app: 'dynamic-fronts-fetcher',
 			memorySize: 256,
 			environment: {
-				DEST_BUCKET: props.destBucket.bucketName,
+				BUCKET_NAME: props.destBucket.bucketName,
 				BASE_PATH: base_path,
 			},
 			role: lambdaRole,

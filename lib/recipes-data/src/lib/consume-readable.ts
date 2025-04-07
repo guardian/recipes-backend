@@ -8,14 +8,12 @@ import type { Readable } from 'stream';
  */
 export async function consumeReadable(readable: Readable): Promise<Buffer> {
 	return new Promise<Buffer>((resolve, reject) => {
-		let mainBuffer: Buffer = new Buffer(0);
+		let mainBuffer: Buffer = Buffer.alloc(0);
 
 		readable.on('readable', () => {
 			let chunk: Buffer | null;
-			console.log('Stream is readable (new data received in buffer)');
 			// Use a loop to make sure we read all currently available data
 			while (null !== (chunk = readable.read() as Buffer | null)) {
-				console.log(`Read ${chunk.length} bytes of data...`);
 				mainBuffer = Buffer.concat([mainBuffer, chunk]);
 			}
 		});

@@ -469,8 +469,8 @@ def sort_filter_rules(json_obj):
         "Environment": {
           "Variables": {
             "APP": "dynamic-fronts-fetcher",
-            "BASE_PATH": "dynamic-fronts-data",
-            "DEST_BUCKET": {
+            "BASE_PATH": "dynamic/curation",
+            "BUCKET_NAME": {
               "Ref": "staticstaticServing53194089",
             },
             "STACK": "feast",
@@ -564,7 +564,7 @@ def sort_filter_rules(json_obj):
                             "Arn",
                           ],
                         },
-                        "/dynamic-fronts-data",
+                        "/dynamic/curation/*",
                       ],
                     ],
                   },
@@ -923,6 +923,24 @@ def sort_filter_rules(json_obj):
               ],
             },
             {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "staticstaticServing53194089",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
@@ -1020,7 +1038,6 @@ def sort_filter_rules(json_obj):
     },
     "LambdarecipesbackendTEST4B1DC1BE": {
       "Properties": {
-        "ApiKeySourceType": "HEADER",
         "EndpointConfiguration": {
           "Types": [
             "REGIONAL",
@@ -1054,7 +1071,6 @@ def sort_filter_rules(json_obj):
     },
     "LambdarecipesbackendTESTANY6672F729": {
       "Properties": {
-        "ApiKeyRequired": true,
         "AuthorizationType": "NONE",
         "HttpMethod": "ANY",
         "Integration": {
@@ -1245,7 +1261,7 @@ def sort_filter_rules(json_obj):
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "LambdarecipesbackendTESTDeploymentE6FBC51C5cf02c749861af6c214cd168cbb1a315": {
+    "LambdarecipesbackendTESTDeploymentE6FBC51C911fdca484973e916ba458ced070b790": {
       "DependsOn": [
         "LambdarecipesbackendTESTproxyANYB2172EAF",
         "LambdarecipesbackendTESTproxyE7B5C009",
@@ -1265,7 +1281,7 @@ def sort_filter_rules(json_obj):
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "LambdarecipesbackendTESTDeploymentE6FBC51C5cf02c749861af6c214cd168cbb1a315",
+          "Ref": "LambdarecipesbackendTESTDeploymentE6FBC51C911fdca484973e916ba458ced070b790",
         },
         "RestApiId": {
           "Ref": "LambdarecipesbackendTEST4B1DC1BE",
@@ -1416,7 +1432,6 @@ def sort_filter_rules(json_obj):
     },
     "LambdarecipesbackendTESTproxyANYB2172EAF": {
       "Properties": {
-        "ApiKeyRequired": true,
         "AuthorizationType": "NONE",
         "HttpMethod": "ANY",
         "Integration": {
