@@ -16,6 +16,7 @@ import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { LambdaDestination } from 'aws-cdk-lib/aws-s3-notifications';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { DataStore } from './datastore';
+import { DynamicFronts } from './dynamic-fronts';
 import { ExternalParameters } from './external_parameters';
 import { FaciaConnection } from './facia-connection';
 import { RecipesReindex } from './recipes-reindex';
@@ -333,5 +334,9 @@ export class RecipesBackend extends GuStack {
 			new LambdaDestination(publishTodaysCurationLambda),
 			{ suffix: 'curation.json' },
 		);
+
+		new DynamicFronts(this, 'DynamicFronts', {
+			destBucket: serving.staticBucket,
+		});
 	}
 }
