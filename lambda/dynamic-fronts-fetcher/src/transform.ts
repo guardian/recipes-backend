@@ -39,7 +39,7 @@ export function convertBQReport(
 	return {
 		id,
 		targetedRegions: [territory],
-		title: `What's hot ${printableCountryName(territory)}`, //FIXME: translate territory code
+		title: `What's hot ${printableCountryName(territory)}`,
 		items,
 	};
 }
