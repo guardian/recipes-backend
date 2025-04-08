@@ -9,6 +9,7 @@ export * from './lib/constants';
 export * from './lib/eventbus';
 export * from './lib/eventbridge-models';
 export * from './lib/config';
+export * from './lib/parameters';
 
 export { sendFastlyPurgeRequestWithRetries } from './lib/fastly';
 export {
