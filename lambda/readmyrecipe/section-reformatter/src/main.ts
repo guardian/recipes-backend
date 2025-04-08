@@ -16,7 +16,6 @@ interface IncomingMessageTypeRemoved {
 }
 
 interface OutgoingMessage {
-	blob: string;
 	newDescription: string;
 	newInstructions: string[];
 }
@@ -43,7 +42,6 @@ export const handler: EventBridgeHandler<
 			parsedRecipe.instructions.map((i) => i.description),
 		);
 		return {
-			blob: updateMsg.blob,
 			newDescription,
 			newInstructions,
 		};

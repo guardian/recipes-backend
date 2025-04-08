@@ -16,9 +16,13 @@ const genericSystemPrompt = `You are a scriptwriter for a voice assistent.  Your
 			and rewrite it to be optimised for being spoken aloud.
 
 			The text will be fragments of recipes so you should ensure that the outgoing is concise and contains all of the points
-			of the incoming text.  Please expand abbreviations to how they would be said, i.e. \`e.g.\` should be read as \`for example\`;
+			of the incoming text.  Correct any grammatical errors so they they can be read aloud smoothly by an actor.
+			Each step should flow nicely from the end of the previous reply.
+
+			Please expand abbreviations to how they would be said, i.e. \`e.g.\` should be read as \`for example\`;
 			\`180°C\` should be read as \`one hundred and eighty degrees celsius\`; \`250°F\` should be read as \`two hundred and
-			fifty degrees Farenheit.
+			fifty degrees Farenheit.  Alternatives should be stipulated as such, for example \`Preheat to 180°C (160°C fan)\` should
+			be read as \`Preheat to one hundred and eighty degrees celsius, or one hundred and sixty if you have a fan oven\`
 
 			Finally the text will be parsed by an automated system so please return it surrounded by the fence \`\`\`.
       `;
@@ -29,7 +33,8 @@ const genericSystemPrompt = `You are a scriptwriter for a voice assistent.  Your
  * @param modelReply
  */
 function extractUsefulText(modelReply: string): string {
-	return modelReply;
+	const splitout = modelReply.split('```');
+	return splitout[0] ? splitout[0].trim() : '';
 }
 
 export async function paraphraseDescription(desc: string): Promise<string> {
@@ -57,7 +62,7 @@ export async function paraphraseDescription(desc: string): Promise<string> {
 			role: 'assistant',
 			content: [
 				{
-					text: '```\n',
+					text: '```',
 				},
 			],
 		},
@@ -67,7 +72,7 @@ export async function paraphraseDescription(desc: string): Promise<string> {
 		system,
 		modelId,
 		messages,
-		inferenceConfig: { temperature: 0.0 },
+		inferenceConfig: { temperature: 0.1 },
 	});
 
 	return sendAndProcessReply(cmd);
@@ -119,7 +124,7 @@ async function paraphraseNextRecipeStep(
 			role: 'assistant',
 			content: [
 				{
-					text: '```\n',
+					text: '```',
 				},
 			],
 		},
