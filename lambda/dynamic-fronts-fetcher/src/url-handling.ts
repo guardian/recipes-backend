@@ -1,5 +1,5 @@
 import type { File, Storage } from '@google-cloud/storage';
-import { consumeReadable } from './consume-readable';
+import { consumeReadable } from '@recipes-api/lib/recipes-data';
 import { IncomingDataRow } from './models';
 
 export function breakDownUrl(from: string): {
