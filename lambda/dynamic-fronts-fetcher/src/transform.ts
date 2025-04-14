@@ -5,7 +5,12 @@ import type { IncomingDataRow } from './models';
 
 function printableCountryName(isoCode: string): string {
 	const countryName = getCountryName(isoCode, 'en');
-	if (!!countryName && countryName.startsWith('United')) {
+	if (
+		!!countryName &&
+		(countryName.startsWith('United') ||
+			countryName.startsWith('Seychelles') ||
+			countryName.endsWith('Islands'))
+	) {
 		return 'in the ' + countryName;
 	} else if (countryName) {
 		return 'in ' + countryName;
