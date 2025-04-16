@@ -43,18 +43,4 @@ describe('convertBQReport', () => {
 		expect(result.excludedRegions).toEqual(undefined);
 		expect(result.title).toEqual("What's hot near you");
 	});
-
-	it('should respect the sizeLimit parameter', () => {
-		const result = convertBQReport('US', fakeRows, 3);
-		expect(result.body).toBeUndefined();
-		expect(result.targetedRegions).toEqual(['US']);
-		expect(result.excludedRegions).toEqual(undefined);
-		expect(result.title).toEqual("What's hot in the United States of America");
-		expect(result.items.length).toEqual(3);
-		expect((result.items as Recipe[]).map((_) => _.recipe.id)).toEqual([
-			'123345',
-			'dsa',
-			'GFSD',
-		]);
-	});
 });

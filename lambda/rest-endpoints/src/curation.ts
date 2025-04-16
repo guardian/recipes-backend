@@ -131,6 +131,7 @@ export async function findRecentLocalisation(
 	cutoffInDays: number,
 	startDate: Date,
 	curatedRecipes?: Set<string>,
+	cutoff?: number,
 ) {
 	for (let i = 0; i < cutoffInDays; i++) {
 		const testDate = subDays(startDate, i);
@@ -154,10 +155,20 @@ export async function findRecentLocalisation(
 							!row.hasOwnProperty('recipe'),
 					),
 				};
-				return deduplicatedLocalisation;
+				return !!cutoff && deduplicatedLocalisation.items.length > cutoff
+					? {
+							...deduplicatedLocalisation,
+							items: deduplicatedLocalisation.items.slice(0, cutoff),
+					  }
+					: deduplicatedLocalisation;
 			} else {
 				//we have not been asked to de-duplicate
-				return maybeLocalisation;
+				return !!cutoff && maybeLocalisation.items.length > cutoff
+					? {
+							...maybeLocalisation,
+							items: maybeLocalisation.items.slice(0, cutoff),
+					  }
+					: maybeLocalisation;
 			}
 		}
 	}
@@ -204,6 +215,7 @@ export async function generateHybridFront(
 		5,
 		overrideDate ?? new Date(),
 		curatedRecipesSet,
+		10,
 	);
 	if (maybeLocalisation) {
 		if (curatedFront.length < localisationInsertionPoint) {
