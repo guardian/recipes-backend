@@ -29,15 +29,12 @@ function printableCountryName(isoCode: string): string {
 export function convertBQReport(
 	territory: string,
 	incoming: IncomingDataRow[],
-	sizeLimit = 10,
 ): FeastAppContainer {
-	let items = incoming.map((r) => ({
+	const items = incoming.map((r) => ({
 		recipe: {
 			id: r.recipe_id,
 		},
 	}));
-
-	if (items.length > sizeLimit) items = items.slice(0, sizeLimit);
 
 	const id = uuid();
 

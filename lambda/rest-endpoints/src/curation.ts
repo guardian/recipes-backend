@@ -6,6 +6,11 @@ import {
 } from '@aws-sdk/client-s3';
 import type { NodeJsRuntimeStreamingBlobTypes } from '@smithy/types/dist-types/streaming-payload/streaming-blob-common-types';
 import { format as formatDate, subDays } from 'date-fns';
+import type {
+	ContainerItem,
+	Recipe,
+	SubCollection,
+} from '@recipes-api/lib/facia';
 import { FeastAppContainer } from '@recipes-api/lib/facia';
 import {
 	AwsRegion,
@@ -125,6 +130,8 @@ export async function findRecentLocalisation(
 	territory: string,
 	cutoffInDays: number,
 	startDate: Date,
+	curatedRecipes?: Set<string>,
+	cutoff?: number,
 ) {
 	for (let i = 0; i < cutoffInDays; i++) {
 		const testDate = subDays(startDate, i);
@@ -134,10 +141,52 @@ export async function findRecentLocalisation(
 			testDate,
 		);
 		if (maybeLocalisation) {
-			return maybeLocalisation;
+			//if we have been given a set of curated recipes, ensure that they are not in the returned data
+			if (curatedRecipes) {
+				const deduplicatedLocalisation: FeastAppContainer = {
+					...maybeLocalisation,
+					//filter out anything that is a recipe specifier and also exists in curatedRecipes
+					items: maybeLocalisation.items.filter(
+						(row) =>
+							// eslint-disable-next-line no-prototype-builtins -- how else to do this?
+							(row.hasOwnProperty('recipe') &&
+								!curatedRecipes.has((row as Recipe).recipe.id)) ||
+							// eslint-disable-next-line no-prototype-builtins -- how else to do this?
+							!row.hasOwnProperty('recipe'),
+					),
+				};
+				return !!cutoff && deduplicatedLocalisation.items.length > cutoff
+					? {
+							...deduplicatedLocalisation,
+							items: deduplicatedLocalisation.items.slice(0, cutoff),
+					  }
+					: deduplicatedLocalisation;
+			} else {
+				//we have not been asked to de-duplicate
+				return !!cutoff && maybeLocalisation.items.length > cutoff
+					? {
+							...maybeLocalisation,
+							items: maybeLocalisation.items.slice(0, cutoff),
+					  }
+					: maybeLocalisation;
+			}
 		}
 	}
 	return undefined;
+}
+
+function recipeFromContainer(item: ContainerItem): string[] {
+	// eslint-disable-next-line no-prototype-builtins -- how else to do this?
+	if (item.hasOwnProperty('recipe')) {
+		const recipeItem = item as Recipe;
+		return [recipeItem.recipe.id];
+		// eslint-disable-next-line no-prototype-builtins -- how else to do this?
+	} else if (item.hasOwnProperty('collection')) {
+		const collectionItem = item as SubCollection;
+		return collectionItem.collection.recipes;
+	} else {
+		return [];
+	}
 }
 
 export async function generateHybridFront(
@@ -153,6 +202,10 @@ export async function generateHybridFront(
 		return curatedFront;
 	}
 
+	const curatedRecipesSet = new Set(
+		curatedFront.flatMap((c) => c.items).flatMap(recipeFromContainer),
+	);
+
 	if (!territory) {
 		//no territory given so we can't localise
 		return curatedFront;
@@ -161,6 +214,8 @@ export async function generateHybridFront(
 		territory,
 		5,
 		overrideDate ?? new Date(),
+		curatedRecipesSet,
+		10,
 	);
 	if (maybeLocalisation) {
 		if (curatedFront.length < localisationInsertionPoint) {
