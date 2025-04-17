@@ -165,6 +165,20 @@ export type RecipeImage = {
 	height?: number;
 };
 
+export type PrintableRecipe = {
+	feastTitle: string;
+	feastLogo: string;
+	title: string;
+	contributors: string[];
+	timings: string;
+	serves: string;
+	description: string;
+	instructions: string[];
+	ingredients: string[];
+	footerTop: string;
+	footerBottom: string;
+};
+
 export type {
 	RecipeDatabaseKey,
 	RecipeDatabaseEntry,
