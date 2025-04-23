@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title><%= title %></title>
+    <style>
+      body {
+        font-family: Georgia, serif;
+        font-size: 16px;
+        line-height: 1.6;
+        margin: 40px;
+        color: #222;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .app-title {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .logo {
+        height: 40px;
+      }
+
+      .spacer {
+        margin: 2em 0;
+      }
+
+      .recipe-title {
+        font-size: 22px;
+        font-weight: bold;
+      }
+
+      .author {
+        font-size: 16px;
+        font-style: italic;
+      }
+
+      .labels {
+        margin: 1em 0;
+      }
+
+      .label {
+        display: inline-block;
+        padding: 0.25em 0.6em;
+        border-radius: 20px;
+        font-size: 0.8em;
+        text-transform: capitalize;
+        color: white;
+        font-weight: 500;
+        margin-right: 6px;
+      }
+
+      .vegetarian {
+        background-color: #228B22;
+      }
+
+      .GlutenFree {
+        background-color: #FFA500;
+        color: #3c2c00;
+      }
+
+      .dairy-free {
+        background-color: #FFA500;
+        color: #3c2c00;
+      }
+
+      .default {
+        background-color: #999;
+      }
+
+      .timing, .serves {
+        margin-bottom: 1em;
+      }
+
+      .timing p,
+      .serves p {
+        margin: 0.25em 0;
+      }
+
+      .section {
+        margin-top: 3em;
+      }
+
+      .section-title {
+        font-weight: bold;
+        font-size: 1.1em;
+        border-bottom: 2px solid #ccc;
+        margin-bottom: 1em;
+      }
+
+      .ingredient-group {
+        margin-bottom: 1em;
+      }
+
+      ul.instructions {
+        list-style: disc inside;
+        padding-left: 0;
+      }
+
+      .footer {
+        margin-top: 4em;
+        font-size: 14px;
+        color: #555;
+        text-align: center;
+        border-top: 1px solid #ccc;
+        padding-top: 1em;
+      }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="app-title">Feast</div>
+    <img src="guardianLogo.png" class="logo" alt="Company Logo"/>
+</div>
+
+<div class="spacer"></div>
+
+<div class="recipe-title"><%= title %></div>
+<% if (contributors) { %>
+    <div class="author">By <%= contributors %></div>
+<% } %>
+
+<div class="spacer"></div>
+
+<% if (suitableForDietIds && suitableForDietIds.length) { %>
+    <div class="labels">
+        <% for (const label of suitableForDietIds) {
+            const className = label.replace(/\s/g, '').replace(/[^a-zA-Z]/g, '');
+        %>
+        <span class="label <%= className || 'default' %>"><%= label %></span>
+        <% } %>
+    </div>
+<% } %>
+
+<div class="timing">
+    <% if (timings && timings.length) {
+        const icons = {
+            'prep-time': '⏱',
+            'cook-time': '🔥',
+            'marinate-time': '🧂'
+        };
+    %>
+    <% for (const time of timings) { %>
+        <p><strong><%= icons[time.qualifier] || '⏱' %> <%= time.text.split(' ')[0] %>
+                :</strong> <%= time.text.split(' ').slice(1).join(' ') %></p>
+    <% } %>
+    <% } %>
+</div>
+
+<% if (serves && serves.length) { %>
+    <div class="serves">
+        <p><strong>¶
+                Serves:</strong> <%= serves[0].amount.min === serves[0].amount.max ? serves[0].amount.min : `${serves[0].amount.min}-${serves[0].amount.max}` %> <%= serves[0].unit %>
+        </p>
+    </div>
+<% } %>
+
+<div class="spacer"></div>
+
+<% if (description) { %>
+    <div class="section">
+        <div class="section-title">Description</div>
+        <p><%= description %></p>
+    </div>
+<% } %>
+
+<% if (ingredients && ingredients.length) { %>
+    <div class="section">
+        <div class="section-title">Ingredients</div>
+        <% for (const group of ingredients) { %>
+            <div class="ingredient-group">
+                <ul>
+                    <% for (const ing of group.ingredientsList) { %>
+                        <li>
+                            <%= ing.amount.min %>
+                            <%= ing.unit || '' %>
+                            <%= ing.name %>
+                            <%= ing.suffix || '' %>
+                            <% if (ing.optional) { %>(optional)
+                            <% } %>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+        <% } %>
+    </div>
+<% } %>
+
+<% if (instructions && instructions.length) { %>
+    <div class="section">
+        <div class="section-title">Method</div>
+        <ul class="instructions">
+            <% for (const step of instructions) { %>
+                <li><%= step.description %></li>
+            <% } %>
+        </ul>
+    </div>
+<% } %>
+
+</body>
+</html>

@@ -1,14 +1,43 @@
-import express from 'express';
+import path from 'path';
+import fs from 'fs';
+import ejs from 'ejs';
+// @ts-ignore
+//import data from '../src/data/sampleRecipe.json';
 
-const host = process.env.HOST ?? 'localhost';
-const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+//load recipe JSON
+const recipeDataPath = path.join(
+  process.cwd(),
+  'apps',
+  '/printable-recipe-generator',
+  'src',
+  'data',
+  'sampleRecipe.json'
+);
+const recipe = JSON.parse(fs.readFileSync(recipeDataPath, 'utf-8'));
 
-const app = express();
+//load template
+const templatePath = path.join(
+  process.cwd(),
+  'apps',
+  '/printable-recipe-generator',
+  'templates',
+  'recipe.ejs'
+);
+const template = fs.readFileSync(templatePath, 'utf-8');
 
-app.get('/', (req, res) => {
-	res.send({ message: 'Hello API' });
-});
+//Render html
+let renderHtml = '';
+try {
+  renderHtml = ejs.render(template, recipe);
+} catch (error) {
+  console.error('Failed to render template: ', (error as Error).message);
+  //console.error('Recipe data was: ', JSON.stringify(recipe, null, 2));
+  process.exit(1);
+}
 
-app.listen(port, host, () => {
-	console.log(`[ ready ] http://${host}:${port}`);
-});
+//Output
+const outputPath = path.join(__dirname, 'output', 'recipe.html');
+fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+fs.writeFileSync(outputPath, renderHtml);
+
+console.log(`Rendered HTML saved to ${outputPath}`);
