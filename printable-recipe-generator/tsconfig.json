@@ -1,0 +1,13 @@
+{
+	"extends": "./tsconfig.base.json",
+	"compileOnSave": false,
+	"files": [],
+	"references": [
+		{
+			"path": "./apps/printable-recipe-generator-e2e"
+		},
+		{
+			"path": "./apps/printable-recipe-generator"
+		}
+	]
+}
