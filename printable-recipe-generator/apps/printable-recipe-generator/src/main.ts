@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import ejs from 'ejs';
 import express from 'express';
+import { rateLimit } from 'express-rate-limit';
 
 // @ts-ignore
 //import data from '../src/data/sampleRecipe.json';
@@ -50,6 +51,13 @@ const app = express();
 
 app.set('view engine', 'ejs');
 //app.use(express.static('public'));
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // max 100 requests per windowMs
+});
+
+app.use(limiter);
 
 app.get('/', (req, res) => {
   renderJsonToHtml();
