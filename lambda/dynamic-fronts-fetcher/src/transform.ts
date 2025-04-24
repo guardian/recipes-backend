@@ -41,7 +41,7 @@ export function convertBQReport(
 	return {
 		id,
 		targetedRegions: [territory],
-		title: `What's hot ${printableCountryName(territory)}`,
+		title: `Most popular ${printableCountryName(territory)}`,
 		items,
 	};
 }
