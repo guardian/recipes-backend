@@ -19,7 +19,7 @@ describe('convertBQReport', () => {
 		expect(result.body).toBeUndefined();
 		expect(result.targetedRegions).toEqual(['GB']);
 		expect(result.excludedRegions).toEqual(undefined);
-		expect(result.title).toEqual("What's hot in the United Kingdom");
+		expect(result.title).toEqual('Most popular in the United Kingdom');
 		expect((result.items as Recipe[]).map((_) => _.recipe.id)).toEqual(
 			fakeRows.map((_) => _.recipe_id),
 		);
@@ -30,7 +30,7 @@ describe('convertBQReport', () => {
 		expect(result.body).toBeUndefined();
 		expect(result.targetedRegions).toEqual(['FR']);
 		expect(result.excludedRegions).toEqual(undefined);
-		expect(result.title).toEqual("What's hot in France");
+		expect(result.title).toEqual('Most popular in France');
 		expect((result.items as Recipe[]).map((_) => _.recipe.id)).toEqual(
 			fakeRows.map((_) => _.recipe_id),
 		);
@@ -41,6 +41,6 @@ describe('convertBQReport', () => {
 		expect(result.body).toBeUndefined();
 		expect(result.targetedRegions).toEqual(['AXF']);
 		expect(result.excludedRegions).toEqual(undefined);
-		expect(result.title).toEqual("What's hot near you");
+		expect(result.title).toEqual('Most popular near you');
 	});
 });

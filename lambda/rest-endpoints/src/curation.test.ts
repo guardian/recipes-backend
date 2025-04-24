@@ -225,14 +225,18 @@ describe('generateHybridFront', () => {
 			2,
 			new Date(2025, 0, 2),
 		);
-		console.log(JSON.stringify(result));
 
 		expect(result[0].title).toEqual('container 1');
 		expect(result[1].title).toEqual('container 2');
 		expect(result[2].title).toEqual('inserted container');
-		expect(result[2].items.length).toEqual(
-			mockInsertCurationData.items.length - 1,
-		);
+		expect(result[2].items).toEqual([
+			//i.e., it should not contain the duplicated `recipe-1b`
+			{ recipe: { id: 'recipe-5' } },
+			{ recipe: { id: 'recipe-6' } },
+			{ recipe: { id: 'recipe-7' } },
+			{ recipe: { id: 'recipe-8' } },
+			{ recipe: { id: 'recipe-9' } },
+		]);
 		expect(result[3].title).toEqual('container 3');
 		expect(result[4].title).toEqual('container 4');
 	});
