@@ -4,21 +4,20 @@
 # Tip: Modify "docker-build" options in project.json to change docker build args.
 #
 # Run the container with `docker run -p 3000:3000 -t printable-recipe-generator`.
-FROM docker.io/node:lts-alpine
-
-ENV HOST=0.0.0.0
-ENV PORT=3000
+FROM docker.io/node:22-slim
 
 WORKDIR /app
 
-RUN addgroup --system printable-recipe-generator && \
-          adduser --system -G printable-recipe-generator printable-recipe-generator
+#RUN addgroup --system printable-recipe-generator && \
+#          adduser --system -G printable-recipe-generator printable-recipe-generator
 
-COPY apps/printable-recipe-generator/dist printable-recipe-generator/
-RUN chown -R printable-recipe-generator:printable-recipe-generator .
+COPY package.json printable-recipe-generator/
+RUN npm --prefix printable-recipe-generator --omit=dev -f install
+COPY dist printable-recipe-generator/
+#RUN chown -R printable-recipe-generator:printable-recipe-generator .
 
 # You can remove this install step if you build with `--bundle` option.
 # The bundled output will include external dependencies.
-RUN npm --prefix printable-recipe-generator --omit=dev -f install
 
-CMD [ "node", "printable-recipe-generator" ]
+
+CMD [ "node", "printable-recipe-generator/main.js" ]
