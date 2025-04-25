@@ -1,0 +1,77 @@
+{
+	"name": "printable-recipe-generator",
+	"$schema": "../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "printable-recipe-generator/src",
+	"projectType": "application",
+	"targets": {
+		"build": {
+			"executor": "@nx/esbuild:esbuild",
+			"outputs": ["{options.outputPath}"],
+			"defaultConfiguration": "production",
+			"options": {
+				"platform": "node",
+				"outputPath": "dist/printable-recipe-generator",
+				"format": ["cjs"],
+				"bundle": true,
+				"main": "printable-recipe-generator/src/main.ts",
+				"tsConfig": "printable-recipe-generator/tsconfig.app.json",
+				"assets": ["printable-recipe-generator/src/assets/**/*"],
+				"generatePackageJson": true,
+				"esbuildOptions": {
+					"sourcemap": true,
+					"outExtension": {
+						".js": ".js"
+					}
+				}
+			},
+			"configurations": {
+				"development": {},
+				"production": {
+					"esbuildOptions": {
+						"sourcemap": false,
+						"outExtension": {
+							".js": ".js"
+						}
+					}
+				}
+			}
+		},
+		"serve": {
+			"executor": "@nx/js:node",
+			"defaultConfiguration": "development",
+			"options": {
+				"buildTarget": "printable-recipe-generator:build"
+			},
+			"configurations": {
+				"development": {
+					"buildTarget": "printable-recipe-generator:build:development"
+				},
+				"production": {
+					"buildTarget": "printable-recipe-generator:build:production"
+				}
+			}
+		},
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["printable-recipe-generator/**/*.ts"]
+			}
+		},
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "printable-recipe-generator/jest.config.ts",
+				"passWithNoTests": true
+			},
+			"configurations": {
+				"ci": {
+					"ci": true,
+					"codeCoverage": true
+				}
+			}
+		}
+	},
+	"tags": []
+}
