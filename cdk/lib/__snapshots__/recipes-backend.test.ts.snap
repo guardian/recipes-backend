@@ -22,8 +22,13 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "GuLambdaFunction",
       "GuLambdaFunction",
       "GuScheduledLambda",
-      "GuScheduledLambda",
       "GuLambdaFunction",
+      "GuParameter",
+      "GuParameter",
+      "GuParameter",
+      "GuParameter",
+      "GuParameter",
+      "GuParameter",
       "GuParameter",
     ],
     "gu:cdk:version": "TEST",
@@ -66,6 +71,10 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     },
   },
   "Parameters": {
+    "ClusterArn": {
+      "Default": "Add the SSM path as the default value e.g. /$stage/$stack/$app/$param",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
@@ -79,10 +88,30 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "Default": "/TEST/feast/feast-shared-infra/crier-event-bus",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "RepoName": {
+      "Default": "/TEST/feast/recipes-backend/ecr-repo-printables",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
     "TelemetryTopic": {
       "Default": "/TEST/feast/recipe-structuriser/telemetryTopic",
       "Description": "ARN of the SNS topic to use for data submissions (shared with structuriser)",
       "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "VpcAZParam": {
+      "Default": "/account/vpc/primary/availability-zones",
+      "Type": "AWS::SSM::Parameter::Value<List<String>>",
+    },
+    "VpcIdParam": {
+      "Default": "/account/vpc/primary/id",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "VpcPrivateParam": {
+      "Default": "/account/vpc/primary/subnets/private",
+      "Type": "AWS::SSM::Parameter::Value<List<String>>",
+    },
+    "VpcPublicParam": {
+      "Default": "/account/vpc/primary/subnets/public",
+      "Type": "AWS::SSM::Parameter::Value<List<String>>",
     },
     "capiKey": {
       "Default": "/TEST/feast/recipes-responder/capi-key",
@@ -1486,117 +1515,7 @@ def sort_filter_rules(json_obj):
       },
       "Type": "AWS::ApiGateway::Resource",
     },
-    "PublishContributors7FDDEA0E": {
-      "DependsOn": [
-        "PublishContributorsServiceRoleDefaultPolicyEEA7218F",
-        "PublishContributorsServiceRole5EFC8614",
-      ],
-      "Properties": {
-        "Architectures": [
-          "arm64",
-        ],
-        "Code": {
-          "S3Bucket": {
-            "Ref": "DistributionBucketName",
-          },
-          "S3Key": "feast/TEST/recipes-publish-contributor-information/profile-cache-rebuild.zip",
-        },
-        "Environment": {
-          "Variables": {
-            "APP": "recipes-publish-contributor-information",
-            "CAPI_BASE_URL": "content.guardianapis.com",
-            "CAPI_KEY": {
-              "Ref": "capiKey",
-            },
-            "CONTENT_URL_BASE": "recipes.guardianapis.com",
-            "FASTLY_API_KEY": {
-              "Ref": "fastlyKey",
-            },
-            "STACK": "feast",
-            "STAGE": "TEST",
-            "STATIC_BUCKET": {
-              "Ref": "staticstaticServing53194089",
-            },
-          },
-        },
-        "FunctionName": "PublishRecipeContributors-TEST",
-        "Handler": "main.handler",
-        "LoggingConfig": {
-          "LogFormat": "JSON",
-        },
-        "MemorySize": 256,
-        "Role": {
-          "Fn::GetAtt": [
-            "PublishContributorsServiceRole5EFC8614",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs20.x",
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "recipes-publish-contributor-information",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/recipes-backend",
-          },
-          {
-            "Key": "Stack",
-            "Value": "feast",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-        "Timeout": 30,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "PublishContributorsPublishContributorscron16089AD5627": {
-      "Properties": {
-        "Description": "Update cache of contributor information for Feast at 16 minutes past every hour",
-        "ScheduleExpression": "cron(16 * * * ? *)",
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Fn::GetAtt": [
-                "PublishContributors7FDDEA0E",
-                "Arn",
-              ],
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
-    "PublishContributorsPublishContributorscron160AllowEventRuleRecipesBackendPublishContributorsE21492564767307C": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "PublishContributors7FDDEA0E",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "PublishContributorsPublishContributorscron16089AD5627",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "PublishContributorsServiceRole5EFC8614": {
+    "PrintableRecipesIAMRole8B7C763A": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1604,31 +1523,14 @@ def sort_filter_rules(json_obj):
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": {
-                "Service": "lambda.amazonaws.com",
+                "Service": "ecs.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
+        "RoleName": "printable-recipe-generator-TEST",
         "Tags": [
-          {
-            "Key": "App",
-            "Value": "recipes-publish-contributor-information",
-          },
           {
             "Key": "gu:cdk:version",
             "Value": "TEST",
@@ -1649,43 +1551,62 @@ def sort_filter_rules(json_obj):
       },
       "Type": "AWS::IAM::Role",
     },
-    "PublishContributorsServiceRoleDefaultPolicyEEA7218F": {
+    "PrintableRecipesIAMRoleDefaultPolicyEA27E680": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
             {
-              "Action": "*",
-              "Effect": "Deny",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    {
-                      "Fn::GetAtt": [
-                        "staticstaticServing53194089",
-                        "Arn",
+              "Action": "ecs:RunTask",
+              "Condition": {
+                "ArnEquals": {
+                  "ecs:cluster": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition",
+                        },
+                        ":ecs:",
+                        {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":cluster/",
+                        {
+                          "Ref": "ClusterArn",
+                        },
                       ],
-                    },
-                    "/content/*",
-                  ],
-                ],
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PrintableRecipesPrintableRecipeGenTD7D170872",
               },
             },
             {
-              "Action": [
-                "s3:PutObject",
-                "s3:GetObject",
-              ],
+              "Action": "ecs:TagResource",
               "Effect": "Allow",
               "Resource": {
                 "Fn::Join": [
                   "",
                   [
+                    "arn:",
                     {
-                      "Fn::GetAtt": [
-                        "staticstaticServing53194089",
-                        "Arn",
-                      ],
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "ClusterArn",
                     },
                     "/*",
                   ],
@@ -1693,100 +1614,417 @@ def sort_filter_rules(json_obj):
               },
             },
             {
-              "Action": [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::",
-                      {
-                        "Ref": "DistributionBucketName",
-                      },
-                    ],
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::",
-                      {
-                        "Ref": "DistributionBucketName",
-                      },
-                      "/feast/TEST/recipes-publish-contributor-information/profile-cache-rebuild.zip",
-                    ],
-                  ],
-                },
-              ],
-            },
-            {
-              "Action": "ssm:GetParametersByPath",
+              "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/TEST/feast/recipes-publish-contributor-information",
-                  ],
+                "Fn::GetAtt": [
+                  "PrintableRecipesPrintableRecipeGenTDExecutionRoleD7C4D437",
+                  "Arn",
                 ],
               },
             },
             {
-              "Action": [
-                "ssm:GetParameters",
-                "ssm:GetParameter",
-              ],
+              "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/TEST/feast/recipes-publish-contributor-information/*",
-                  ],
+                "Fn::GetAtt": [
+                  "PrintableRecipesPrintableRecipeGenTDTaskRoleA90C8F20",
+                  "Arn",
                 ],
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "PublishContributorsServiceRoleDefaultPolicyEEA7218F",
+        "PolicyName": "PrintableRecipesIAMRoleDefaultPolicyEA27E680",
         "Roles": [
           {
-            "Ref": "PublishContributorsServiceRole5EFC8614",
+            "Ref": "PrintableRecipesIAMRole8B7C763A",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "PrintableRecipesPrintableRecipeGenTD7D170872": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::AccountId",
+                  },
+                  ".dkr.ecr.",
+                  {
+                    "Ref": "AWS::Region",
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/",
+                  {
+                    "Ref": "RepoName",
+                  },
+                  ":618",
+                ],
+              ],
+            },
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "PrintableRecipesPrintableRecipeGenTDmainLogGroupF0790787",
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region",
+                },
+                "awslogs-stream-prefix": "printable-recipe-generator-",
+              },
+            },
+            "Memory": 2048,
+            "MountPoints": [
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
+            "Name": "main",
+            "ReadonlyRootFilesystem": true,
+            "WorkingDirectory": "/tmp",
+          },
+        ],
+        "Cpu": "1024",
+        "EphemeralStorage": {
+          "SizeInGiB": 20,
+        },
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "PrintableRecipesPrintableRecipeGenTDExecutionRoleD7C4D437",
+            "Arn",
+          ],
+        },
+        "Family": "RecipesBackendPrintableRecipesPrintableRecipeGenTDDB494472",
+        "Memory": "2048",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "EC2",
+          "FARGATE",
+        ],
+        "RuntimePlatform": {
+          "CpuArchitecture": "X86_64",
+          "OperatingSystemFamily": "LINUX",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "feast",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "PrintableRecipesPrintableRecipeGenTDTaskRoleA90C8F20",
+            "Arn",
+          ],
+        },
+        "Volumes": [
+          {
+            "Name": "tmp-volume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "PrintableRecipesPrintableRecipeGenTDExecutionRoleD7C4D437": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "feast",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "PrintableRecipesPrintableRecipeGenTDExecutionRoleDefaultPolicyD5897DEA": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecr:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":repository/",
+                    {
+                      "Ref": "RepoName",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "PrintableRecipesPrintableRecipeGenTDmainLogGroupF0790787",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "PrintableRecipesPrintableRecipeGenTDExecutionRoleDefaultPolicyD5897DEA",
+        "Roles": [
+          {
+            "Ref": "PrintableRecipesPrintableRecipeGenTDExecutionRoleD7C4D437",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "PrintableRecipesPrintableRecipeGenTDSecurityGroup2E72B084": {
+      "Properties": {
+        "GroupDescription": "RecipesBackend/PrintableRecipes/PrintableRecipeGenTD/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "feast",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcIdParam",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "PrintableRecipesPrintableRecipeGenTDTaskRoleA90C8F20": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "feast",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "PrintableRecipesPrintableRecipeGenTDmainLogGroupF0790787": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "feast",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "PrintableRecipesPublicationConnectCE29A280": {
+      "Properties": {
+        "EventBusName": {
+          "Ref": "EventBus",
+        },
+        "EventPattern": {
+          "detail-type": [
+            "recipe-update",
+          ],
+          "source": [
+            "recipe-responder",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition",
+                  },
+                  ":ecs:",
+                  {
+                    "Ref": "AWS::Region",
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId",
+                  },
+                  ":cluster/",
+                  {
+                    "Ref": "ClusterArn",
+                  },
+                ],
+              ],
+            },
+            "EcsParameters": {
+              "LaunchType": "FARGATE",
+              "NetworkConfiguration": {
+                "AwsVpcConfiguration": {
+                  "AssignPublicIp": "DISABLED",
+                  "SecurityGroups": [
+                    {
+                      "Fn::GetAtt": [
+                        "PrintableRecipesPrintableRecipeGenTDSecurityGroup2E72B084",
+                        "GroupId",
+                      ],
+                    },
+                  ],
+                  "Subnets": {
+                    "Ref": "VpcPrivateParam",
+                  },
+                },
+              },
+              "TaskCount": 1,
+              "TaskDefinitionArn": {
+                "Ref": "PrintableRecipesPrintableRecipeGenTD7D170872",
+              },
+            },
+            "Id": "Target0",
+            "InputTransformer": {
+              "InputPathsMap": {
+                "detail-blob": "$.detail.blob",
+                "detail-uid": "$.detail.uid",
+              },
+              "InputTemplate": "{"containerOverrides":[{"name":"main","environment":[{"name":"RECIPE_ID","value":<detail-uid>},{"name":"CONTENT","value":<detail-blob>}]}]}",
+            },
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "PrintableRecipesIAMRole8B7C763A",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
     },
     "PublishTodaysCuration6EFD9033": {
       "DependsOn": [

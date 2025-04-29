@@ -19,6 +19,7 @@ import { DataStore } from './datastore';
 import { DynamicFronts } from './dynamic-fronts';
 import { ExternalParameters } from './external_parameters';
 import { FaciaConnection } from './facia-connection';
+import { PrintableRecipeGenerator } from './printable-recipe-generator';
 import { RecipesReindex } from './recipes-reindex';
 import { RestEndpoints } from './rest-endpoints';
 import { StaticServing } from './static-serving';
@@ -383,5 +384,7 @@ export class RecipesBackend extends GuStack {
 		new DynamicFronts(this, 'DynamicFronts', {
 			destBucket: serving.staticBucket,
 		});
+
+		new PrintableRecipeGenerator(this, 'PrintableRecipes', { eventBus });
 	}
 }
