@@ -1,11 +1,14 @@
 import fs from 'fs';
 import * as process from 'node:process';
 import path from 'path';
-import ejs from 'ejs';
+import type { Data } from 'ejs';
+import { render as renderTemplate } from 'ejs';
 
 function renderJsonToHtml(recipeDataPath: string) {
 	//load recipe JSON
-	const recipe = JSON.parse(fs.readFileSync(recipeDataPath, 'utf-8'));
+	const recipe = JSON.parse(
+		fs.readFileSync(recipeDataPath, 'utf-8'),
+	) as unknown;
 
 	//load template
 	const templatePath = path.join(__dirname, 'src', 'assets', 'recipe.ejs');
@@ -14,7 +17,7 @@ function renderJsonToHtml(recipeDataPath: string) {
 	//Render html
 	let renderHtml = '';
 	try {
-		renderHtml = ejs.render(template, recipe);
+		renderHtml = renderTemplate(template, recipe as Data);
 	} catch (error) {
 		console.error('Failed to render template: ', (error as Error).message);
 		//console.error('Recipe data was: ', JSON.stringify(recipe, null, 2));
