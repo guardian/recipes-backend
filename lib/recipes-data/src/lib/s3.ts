@@ -173,7 +173,10 @@ export async function removeRecipeContent({
 	}
 }
 
-async function getExistingEtag(Key: string): Promise<string | undefined> {
+async function getExistingEtag(
+	Key: string,
+	Bucket: string,
+): Promise<string | undefined> {
 	const check = new HeadObjectCommand({
 		Bucket,
 		Key,
@@ -229,16 +232,28 @@ export async function writeIndexData({
 	console.log('Done.');
 }
 
-export async function writeChefData(chefData: ChefInfoFile, Key: string) {
+export async function writeChefData({
+	chefData,
+	Key,
+	BucketName,
+	FastlyApiKey,
+	contentPrefix,
+}: {
+	chefData: ChefInfoFile;
+	Key: string;
+	BucketName: string;
+	FastlyApiKey: string;
+	contentPrefix: string;
+}) {
 	console.log('Marshalling data...');
 	const formattedData = JSON.stringify(chefData);
 
-	const prevEtag = await getExistingEtag(Key);
+	const prevEtag = await getExistingEtag(Key, BucketName);
 	console.log(`Old etag is ${prevEtag ?? '(undefined)'}`);
 
-	console.log(`Done. Writing to s3://${Bucket}/${Key}...`);
+	console.log(`Done. Writing to s3://${BucketName}/${Key}...`);
 	const req = new PutObjectCommand({
-		Bucket,
+		Bucket: BucketName,
 		Key,
 		Body: formattedData,
 		ContentType: 'application/json',
@@ -247,10 +262,14 @@ export async function writeChefData(chefData: ChefInfoFile, Key: string) {
 
 	await s3Client.send(req);
 	console.log('Done. Purging CDN...');
-	const newEtag = await getExistingEtag(Key);
+	const newEtag = await getExistingEtag(Key, BucketName);
 	console.log(`New etag is ${newEtag ?? '(undefined)'}`);
 	if (!!prevEtag && newEtag != prevEtag) {
-		await sendFastlyPurgeRequest(Key, FastlyApiKey ?? '');
+		await sendFastlyPurgeRequest({
+			contentPath: Key,
+			apiKey: FastlyApiKey,
+			contentPrefix,
+		});
 		console.log('Done.');
 	} else {
 		console.log('No change detected to contributor data, not flushing cache');

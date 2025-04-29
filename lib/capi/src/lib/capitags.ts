@@ -1,8 +1,4 @@
 import type { Tag } from '@guardian/content-api-models/v1/tag';
-import {
-	TagsResponse,
-	TagsResponseSerde,
-} from '@guardian/content-api-models/v1/tagsResponse';
 import { deserialzeTagsResponse } from './deserialize';
 
 export const URL_MAX = 2048;

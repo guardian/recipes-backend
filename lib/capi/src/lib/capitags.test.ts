@@ -15,7 +15,7 @@ describe('buildUriList', () => {
 			[],
 		);
 		expect(result).toEqual([
-			'https://content.guardianapis.com/tags?ids=profile%2Fperson-one%2Cprofile%2Fpersontwo%2Cprofile%2Fpersonthree-and-a-half&api-key=some-key',
+			'https://content.guardianapis.com/tags?ids=profile%2Fperson-one%2Cprofile%2Fpersontwo%2Cprofile%2Fpersonthree-and-a-half&api-key=some-key&page-size=50',
 		]);
 	});
 
