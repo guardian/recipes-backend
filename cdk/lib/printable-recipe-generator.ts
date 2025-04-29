@@ -58,6 +58,7 @@ export class PrintableRecipeGenerator extends Construct {
 
 		const clusterArnParam = new GuParameter(scope, 'ClusterArn', {
 			fromSSM: true,
+			default: '/account/services/ecs-cluster',
 		});
 
 		const repoNameParam = new GuParameter(scope, 'RepoName', {
