@@ -83,7 +83,7 @@ export class PrintableRecipeGenerator extends Construct {
 		});
 
 		const taskDefinition = new TaskDefinition(this, 'PrintableRecipeGenTD', {
-			compatibility: Compatibility.EC2_AND_FARGATE,
+			compatibility: Compatibility.FARGATE,
 			cpu: '1024', //1 vcpu
 			ephemeralStorageGiB: 20, //minimum 20Gb ephemeral storage
 			memoryMiB: '2048', //2 Gb RAM, minimum value for 1vcpu

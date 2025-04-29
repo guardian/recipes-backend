@@ -1712,7 +1712,6 @@ def sort_filter_rules(json_obj):
         "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
-          "EC2",
           "FARGATE",
         ],
         "RuntimePlatform": {
