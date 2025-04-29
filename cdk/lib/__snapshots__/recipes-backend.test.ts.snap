@@ -2011,9 +2011,10 @@ def sort_filter_rules(json_obj):
             "InputTransformer": {
               "InputPathsMap": {
                 "detail-blob": "$.detail.blob",
+                "detail-checksum": "$.detail.checksum",
                 "detail-uid": "$.detail.uid",
               },
-              "InputTemplate": "{"containerOverrides":[{"name":"main","environment":[{"name":"RECIPE_ID","value":<detail-uid>},{"name":"CONTENT","value":<detail-blob>}]}]}",
+              "InputTemplate": "{"containerOverrides":[{"name":"main","environment":[{"name":"RECIPE_UID","value":<detail-uid>},{"name":"RECIPE_CSID","value":<detail-checksum>},{"name":"CONTENT","value":<detail-blob>}]}]}",
             },
             "RoleArn": {
               "Fn::GetAtt": [

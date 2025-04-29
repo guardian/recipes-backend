@@ -127,8 +127,12 @@ export class PrintableRecipeGenerator extends Construct {
 					containerName: 'main',
 					environment: [
 						{
-							name: 'RECIPE_ID',
+							name: 'RECIPE_UID',
 							value: EventField.fromPath('$.detail.uid'),
+						},
+						{
+							name: 'RECIPE_CSID',
+							value: EventField.fromPath('$.detail.checksum'),
 						},
 						{
 							name: 'CONTENT',
