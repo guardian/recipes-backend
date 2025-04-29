@@ -85,7 +85,7 @@ export class PrintableRecipeGenerator extends Construct {
 		const taskDefinition = new TaskDefinition(this, 'PrintableRecipeGenTD', {
 			compatibility: Compatibility.FARGATE,
 			cpu: '1024', //1 vcpu
-			ephemeralStorageGiB: 20, //minimum 20Gb ephemeral storage
+			ephemeralStorageGiB: 25, //minimum 21Gb ephemeral storage
 			memoryMiB: '2048', //2 Gb RAM, minimum value for 1vcpu
 			runtimePlatform: {
 				cpuArchitecture: CpuArchitecture.X86_64, //Chrome headless does not appear to have an ARM64 package at present :-/

@@ -1700,7 +1700,7 @@ def sort_filter_rules(json_obj):
         ],
         "Cpu": "1024",
         "EphemeralStorage": {
-          "SizeInGiB": 20,
+          "SizeInGiB": 25,
         },
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
