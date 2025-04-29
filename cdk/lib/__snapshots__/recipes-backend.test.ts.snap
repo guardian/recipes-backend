@@ -72,7 +72,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
   },
   "Parameters": {
     "ClusterArn": {
-      "Default": "/account/services/ecs-cluster",
+      "Default": "/account/services/ecs-cluster-name",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "DistributionBucketName": {
