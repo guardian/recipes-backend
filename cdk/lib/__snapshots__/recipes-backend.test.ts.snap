@@ -1688,7 +1688,7 @@ def sort_filter_rules(json_obj):
                   {
                     "Ref": "RepoName",
                   },
-                  ":618",
+                  ":latest",
                 ],
               ],
             },
