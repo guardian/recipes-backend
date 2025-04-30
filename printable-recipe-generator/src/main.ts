@@ -25,7 +25,8 @@ function renderJsonToHtml(recipeDataPath: string) {
 	}
 
 	//Output
-	const outputPath = path.join(__dirname, 'output', 'recipe.html');
+	const outputPath =
+		process.argv[3] ?? path.join(__dirname, 'output', 'recipe.html');
 	fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 	fs.writeFileSync(outputPath, renderHtml);
 
