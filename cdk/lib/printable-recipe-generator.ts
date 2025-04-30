@@ -118,7 +118,7 @@ export class PrintableRecipeGenerator extends Construct {
 			repoNameParam.valueAsString,
 		);
 
-		const imageTag = '618'; //FIXME - hardcoded!
+		const imageTag = process.env['IMAGE_TAG'] ?? 'latest';
 
 		const container = taskDefinition.addContainer('main', {
 			image: ContainerImage.fromEcrRepository(ecrRepo, imageTag),
