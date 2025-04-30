@@ -15,7 +15,13 @@ import {
 import type { IEventBus } from 'aws-cdk-lib/aws-events';
 import { EventField, Rule } from 'aws-cdk-lib/aws-events';
 import { EcsTask } from 'aws-cdk-lib/aws-events-targets';
-import { Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import {
+	Effect,
+	PolicyDocument,
+	PolicyStatement,
+	Role,
+	ServicePrincipal,
+} from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 
 interface TestConstructProps {
@@ -75,11 +81,23 @@ export class PrintableRecipeGenerator extends Construct {
 			roleName: `printable-recipe-generator-${scope.stage}`,
 			assumedBy:
 				ServicePrincipal.fromStaticServicePrincipleName('ecs.amazonaws.com'), //CHECK
-			// inlinePolicies: {
-			// 	s3write: new PolicyDocument({
-			// 		statements: [],
-			// 	}),
-			// },
+			inlinePolicies: {
+				s3write: new PolicyDocument({
+					statements: [
+						new PolicyStatement({
+							effect: Effect.ALLOW,
+							actions: [
+								's3:GetObject',
+								's3:ListBucket',
+								's3:PutObject',
+							] /*Check for listBucket?*/,
+							resources: [
+								`arn:aws:s3:::feast-recipes-static-${scope.stage.toLowerCase()}/content/`,
+							],
+						}),
+					],
+				}),
+			},
 		});
 
 		const taskDefinition = new TaskDefinition(this, 'PrintableRecipeGenTD', {
