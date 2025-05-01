@@ -93,7 +93,7 @@ export class PrintableRecipeGenerator extends Construct {
 								's3:PutObject',
 							] /*Check for listBucket?*/,
 							resources: [
-								`arn:aws:s3:::feast-recipes-static-${scope.stage.toLowerCase()}/content/`,
+								`arn:aws:s3:::feast-recipes-static-${scope.stage.toLowerCase()}/content/*`,
 							],
 						}),
 					],
