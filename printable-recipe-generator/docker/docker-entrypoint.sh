@@ -7,13 +7,6 @@ echo "RECIPE UUID is $RECIPE_UID"
 echo "CHECKSUM ID is $RECIPE_CSID"
 echo "CONTENT is $CONTENT"
 
-id
-ls -lhd /tmp
-ls -lh /tmp
-mount
-ulimit -a
-
-ls -alh /home/pdfrender
 
 #Put json content into file
 echo "Write content into a file.."
@@ -30,7 +23,7 @@ echo "Recipe html is rendered at $RECIPE_HTML_OUTPUT"
 #Convert htmlfile to PDF file
 echo "Take html and convert it to PDF using headless chrome"
 RECIPE_PDF_OUTPUT='./recipe.pdf'
-google-chrome-stable --headless --disable-gpu --no-sandbox --disable-plugins --enable-logging --v=1 --print-to-pdf="$RECIPE_PDF_OUTPUT" "$RECIPE_HTML_OUTPUT"
+google-chrome-stable --headless --disable-gpu --no-sandbox --no-pdf-header-footer --print-to-pdf="$RECIPE_PDF_OUTPUT" "$RECIPE_HTML_OUTPUT"
 echo "Recipe PDF is generated at $RECIPE_PDF_OUTPUT"
 
 #Copy PDF file to S3
