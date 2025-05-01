@@ -78,7 +78,7 @@ export class PrintableRecipeGenerator extends Construct {
 		});
 
 		const role = new Role(this, 'IAMRole', {
-			roleName: `printable-recipe-generator-${scope.stage}`,
+			// roleName: `printable-recipe-generator-${scope.stage}`,
 			assumedBy: ServicePrincipal.fromStaticServicePrincipleName(
 				'events.amazonaws.com ',
 			),

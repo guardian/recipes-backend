@@ -1548,7 +1548,6 @@ def sort_filter_rules(json_obj):
             "PolicyName": "s3write",
           },
         ],
-        "RoleName": "printable-recipe-generator-TEST",
         "Tags": [
           {
             "Key": "gu:cdk:version",
