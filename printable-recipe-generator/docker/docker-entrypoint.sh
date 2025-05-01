@@ -7,6 +7,11 @@ echo "RECIPE UUID is $RECIPE_UID"
 echo "CHECKSUM ID is $RECIPE_CSID"
 echo "CONTENT is $CONTENT"
 
+id
+ls -lhd /tmp
+ls -lh /tmp
+mount
+
 #Put json content into file
 echo "Write content into a file.."
 RECIPE_CONTENT_PATH="/tmp/recipe.json"
