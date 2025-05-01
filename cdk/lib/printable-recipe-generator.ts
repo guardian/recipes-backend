@@ -110,7 +110,7 @@ export class PrintableRecipeGenerator extends Construct {
 				cpuArchitecture: CpuArchitecture.X86_64, //Chrome headless does not appear to have an ARM64 package at present :-/
 				operatingSystemFamily: OperatingSystemFamily.LINUX,
 			},
-			volumes: [{ name: 'tmp-volume' }],
+			volumes: [{ name: 'tmp-volume' }, { name: 'home-volume' }],
 			taskRole: role,
 		});
 
@@ -134,6 +134,12 @@ export class PrintableRecipeGenerator extends Construct {
 
 		container.addMountPoints({
 			sourceVolume: 'tmp-volume',
+			containerPath: '/tmp',
+			readOnly: false,
+		});
+
+		container.addMountPoints({
+			sourceVolume: 'home-volume',
 			containerPath: '/home/pdfrender',
 			readOnly: false,
 		});

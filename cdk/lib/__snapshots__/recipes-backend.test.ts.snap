@@ -1613,9 +1613,14 @@ def sort_filter_rules(json_obj):
             "Memory": 2048,
             "MountPoints": [
               {
-                "ContainerPath": "/home/pdfrender",
+                "ContainerPath": "/tmp",
                 "ReadOnly": false,
                 "SourceVolume": "tmp-volume",
+              },
+              {
+                "ContainerPath": "/home/pdfrender",
+                "ReadOnly": false,
+                "SourceVolume": "home-volume",
               },
             ],
             "Name": "main",
@@ -1670,6 +1675,9 @@ def sort_filter_rules(json_obj):
         "Volumes": [
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "home-volume",
           },
         ],
       },
