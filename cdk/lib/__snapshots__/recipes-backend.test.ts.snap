@@ -1727,7 +1727,7 @@ def sort_filter_rules(json_obj):
           ],
         },
         "Family": "RecipesBackendPrintableRecipesPrintableRecipeGenTDDB494472",
-        "Memory": "2048",
+        "Memory": "8192",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",

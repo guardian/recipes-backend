@@ -2,7 +2,7 @@ FROM --platform=linux/amd64 node:22-slim
 
 RUN adduser pdfrender
 RUN mkdir -p /tmp && chmod 777 /tmp
-RUN ln -s /tmp /home/pdfrender/.local
+RUN ln -s /tmp /home/pdfrender/.local && ln -s /tmp /home/pdfrender/.config
 VOLUME /tmp
 RUN apt-get update && apt-get -y install wget gnupg awscli
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -

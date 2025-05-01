@@ -13,6 +13,8 @@ ls -lh /tmp
 mount
 ulimit -a
 
+ls -alh /home/pdfrender
+
 #Put json content into file
 echo "Write content into a file.."
 RECIPE_CONTENT_PATH="/tmp/recipe.json"

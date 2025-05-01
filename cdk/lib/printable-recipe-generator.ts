@@ -105,7 +105,7 @@ export class PrintableRecipeGenerator extends Construct {
 			compatibility: Compatibility.FARGATE,
 			cpu: '1024', //1 vcpu
 			ephemeralStorageGiB: 25, //minimum 21Gb ephemeral storage
-			memoryMiB: '2048', //2 Gb RAM, minimum value for 1vcpu
+			memoryMiB: '8192', //8 Gb RAM, max value for 1vcpu
 			runtimePlatform: {
 				cpuArchitecture: CpuArchitecture.X86_64, //Chrome headless does not appear to have an ARM64 package at present :-/
 				operatingSystemFamily: OperatingSystemFamily.LINUX,
