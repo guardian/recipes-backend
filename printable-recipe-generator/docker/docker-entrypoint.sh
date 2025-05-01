@@ -28,7 +28,7 @@ echo "Recipe html is rendered at $RECIPE_HTML_OUTPUT"
 #Convert htmlfile to PDF file
 echo "Take html and convert it to PDF using headless chrome"
 RECIPE_PDF_OUTPUT='/tmp/recipe.pdf'
-google-chrome-stable --headless --disable-gpu --no-sandbox --disable-plugins, --enable-logging and --v=1 --print-to-pdf="$RECIPE_PDF_OUTPUT" "$RECIPE_HTML_OUTPUT"
+google-chrome-stable --headless --disable-gpu --no-sandbox --disable-plugins --enable-logging --v=1 --print-to-pdf="$RECIPE_PDF_OUTPUT" "$RECIPE_HTML_OUTPUT"
 echo "Recipe PDF is generated at $RECIPE_PDF_OUTPUT"
 
 #Copy PDF file to S3
