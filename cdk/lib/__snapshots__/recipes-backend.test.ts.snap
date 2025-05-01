@@ -2031,7 +2031,7 @@ def sort_filter_rules(json_obj):
                 "detail-checksum": "$.detail.checksum",
                 "detail-uid": "$.detail.uid",
               },
-              "InputTemplate": "{"containerOverrides":[{"name":"main","environment":[{"name":"RECIPE_UID","value":<detail-uid>},{"name":"RECIPE_CSID","value":<detail-checksum>},{"name":"CONTENT","value":<detail-blob>}]}]}",
+              "InputTemplate": "{"containerOverrides":[{"name":"main","environment":[{"name":"RECIPE_UID","value":<detail-uid>},{"name":"RECIPE_CSID","value":<detail-checksum>},{"name":"CONTENT","value":<detail-blob>},{"name":"BUCKET","value":"feast-recipes-static-test"}]}]}",
             },
             "RoleArn": {
               "Fn::GetAtt": [
