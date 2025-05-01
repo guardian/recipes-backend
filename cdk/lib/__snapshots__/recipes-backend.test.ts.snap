@@ -1540,7 +1540,7 @@ def sort_filter_rules(json_obj):
                     "s3:PutObject",
                   ],
                   "Effect": "Allow",
-                  "Resource": "arn:aws:s3:::feast-recipes-static-test/content/",
+                  "Resource": "arn:aws:s3:::feast-recipes-static-test/content/*",
                 },
               ],
               "Version": "2012-10-17",
