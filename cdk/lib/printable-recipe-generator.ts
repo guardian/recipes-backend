@@ -78,9 +78,9 @@ export class PrintableRecipeGenerator extends Construct {
 		});
 
 		const role = new Role(this, 'IAMRole', {
-			// roleName: `printable-recipe-generator-${scope.stage}`,
+			roleName: `printable-recipe-generator-${scope.stage}`,
 			assumedBy: ServicePrincipal.fromStaticServicePrincipleName(
-				'events.amazonaws.com',
+				'ecs-tasks.amazonaws.com',
 			),
 			inlinePolicies: {
 				s3write: new PolicyDocument({
@@ -111,6 +111,7 @@ export class PrintableRecipeGenerator extends Construct {
 				operatingSystemFamily: OperatingSystemFamily.LINUX,
 			},
 			volumes: [{ name: 'tmp-volume' }],
+			taskRole: role,
 		});
 
 		const ecrRepo = Repository.fromRepositoryName(
@@ -128,19 +129,18 @@ export class PrintableRecipeGenerator extends Construct {
 			logging: LogDriver.awsLogs({
 				streamPrefix: 'printable-recipe-generator-',
 			}),
-			workingDirectory: '/tmp',
+			workingDirectory: '/home/pdfrender',
 		});
 
 		container.addMountPoints({
 			sourceVolume: 'tmp-volume',
-			containerPath: '/tmp',
+			containerPath: '/home/pdfrender',
 			readOnly: false,
 		});
 
 		const ruleTarget = new EcsTask({
 			taskDefinition,
 			cluster,
-			role,
 			launchType: LaunchType.FARGATE,
 			containerOverrides: [
 				{

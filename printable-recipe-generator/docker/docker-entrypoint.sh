@@ -17,19 +17,19 @@ ls -alh /home/pdfrender
 
 #Put json content into file
 echo "Write content into a file.."
-RECIPE_CONTENT_PATH="/tmp/recipe.json"
+RECIPE_CONTENT_PATH="./recipe.json"
 echo "$CONTENT" > "$RECIPE_CONTENT_PATH"
 echo "Recipe json is saved in the path $RECIPE_CONTENT_PATH"
 
 #Run the renderer on that file
 echo "Render the json to html.."
-RECIPE_HTML_OUTPUT="/tmp/recipe.html"
+RECIPE_HTML_OUTPUT="./recipe.html"
 node /printable-recipe-generator/main.js "$RECIPE_CONTENT_PATH" "$RECIPE_HTML_OUTPUT"
 echo "Recipe html is rendered at $RECIPE_HTML_OUTPUT"
 
 #Convert htmlfile to PDF file
 echo "Take html and convert it to PDF using headless chrome"
-RECIPE_PDF_OUTPUT='/tmp/recipe.pdf'
+RECIPE_PDF_OUTPUT='./recipe.pdf'
 google-chrome-stable --headless --disable-gpu --no-sandbox --disable-plugins --enable-logging --v=1 --print-to-pdf="$RECIPE_PDF_OUTPUT" "$RECIPE_HTML_OUTPUT"
 echo "Recipe PDF is generated at $RECIPE_PDF_OUTPUT"
 
