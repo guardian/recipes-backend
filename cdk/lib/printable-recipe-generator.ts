@@ -80,7 +80,7 @@ export class PrintableRecipeGenerator extends Construct {
 		const role = new Role(this, 'IAMRole', {
 			// roleName: `printable-recipe-generator-${scope.stage}`,
 			assumedBy: ServicePrincipal.fromStaticServicePrincipleName(
-				'events.amazonaws.com ',
+				'events.amazonaws.com',
 			),
 			inlinePolicies: {
 				s3write: new PolicyDocument({
