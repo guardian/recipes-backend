@@ -79,7 +79,8 @@ jobs:
           STATIC_BUCKET: test
           CONTENT_URL_BASE: test
       - run: npm run build
-
+        env:
+          IMAGE_TAG: ${{ github.run_number }}
       - uses: guardian/actions-riff-raff@v4
         with:
           projectName: Feast::recipes-backend
