@@ -29,6 +29,6 @@ echo "Recipe PDF is generated at $RECIPE_PDF_OUTPUT"
 #Copy PDF file to S3
 echo "Copy recipe.pdf file to S3 now"
 RECIPE_PDF_S3_OUTPUT="s3://${BUCKET}/content/${RECIPE_CSID}.pdf"
-aws s3 cp "$RECIPE_PDF_OUTPUT" "$RECIPE_PDF_S3_OUTPUT"
+aws s3 cp "$RECIPE_PDF_OUTPUT" "$RECIPE_PDF_S3_OUTPUT" --cache-control "max-age=7200, stale-while-revalidate=300, stale-if-error=14400"
 echo "Recipe PDF is uploaded to S3 bucket at $RECIPE_PDF_S3_OUTPUT"
 
