@@ -170,7 +170,7 @@ export class PrintableRecipeGenerator extends Construct {
 		});
 
 		new Rule(this, 'PublicationConnect', {
-			enabled: true,
+			enabled: scope.stage !== 'PROD', //only enabled in the CODE environment until design work fully implemented, but available for testing in PROD
 			eventBus,
 			targets: [ruleTarget],
 			eventPattern: {
