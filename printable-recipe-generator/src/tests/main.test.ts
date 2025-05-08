@@ -5,7 +5,7 @@ import recipe from '../data/sampleRecipe.json';
 
 //load SVGs
 const svgPath = (fileName: string) =>
-	path.join('./printable-recipe-generator', 'src', 'assets', 'svgs', fileName);
+	path.join(__dirname, '../assets/svgs', fileName);
 
 const svgs = {
 	FeastLogo: fs.readFileSync(svgPath('FeastLogo.svg'), 'utf-8'),
