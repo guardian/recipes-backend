@@ -121,8 +121,8 @@
 <body>
 
 <div class="header">
-    <div class="app-title">Feast</div>
-    <img src="guardianLogo.png" class="logo" alt="Company Logo"/>
+    <img src="./svgs/FeastLogo.svg" class="app-title" alt="The App logo"/>
+    <img src="./svgs/TheGuardianLogo.svg" class="logo" alt="The Guardian logo"/>
 </div>
 
 <div class="recipe-title"><%= title %></div>
@@ -134,6 +134,19 @@
     <div class="labels">
         <% for (const label of suitableForDietIds) { %>
             <span class="label label-<%= label.replace(/\s/g, '') %>"><%= label %></span>
+        <% } %>
+    </div>
+<% } %>
+
+<% if (labels && labels.length) { %>
+    <div class="labels">
+        <% for (const label of labels) {
+            const labelKey = label.toLowerCase().replace(/\s+/g, '-');
+        %>
+        <span class="label label-<%= labelKey %>">
+        <%- include(`./svgs/${labelKey}.svg`) %>
+            <%= label %>
+      </span>
         <% } %>
     </div>
 <% } %>
@@ -203,6 +216,30 @@
         </ul>
     </div>
 </div>
+
+<% if (bookCredit) { %>
+<footer class="recipe-footer">
+    <div class="footer-line">
+    <span class="footer-icon">
+      <%- include('./svgs/feast-book-outlined.svg') %>
+    </span>
+        <span class="footer-text">
+        <% bookCredit %>>
+    </span>
+    </div>
+    <div class="footer-line">
+    <span class="footer-icon">
+      <%- include('./svgs/camera.svg') %>
+    </span>
+        <% if (featuredImage) { %>
+        <span class="footer-text">
+        <% featuredImage.source %>>
+    </span>
+        <% } %>
+    </div>
+</footer>
+<% } %>
+
 
 </body>
 </html>
