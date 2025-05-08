@@ -12,10 +12,10 @@ function renderJsonToHtml(recipeDataPath: string) {
 	const svgs = {
 		FeastLogo: fs.readFileSync(svgPath('FeastLogo.svg'), 'utf-8'),
 		TheGuardianLogo: fs.readFileSync(svgPath('TheGuardianLogo.svg'), 'utf-8'),
-		'dairy-free': fs.readFileSync(svgPath('dairy-free.svg'), 'utf-8'),
-		'gluten-free': fs.readFileSync(svgPath('gluten-free.svg'), 'utf-8'),
-		vegan: fs.readFileSync(svgPath('vegan.svg'), 'utf-8'),
-		vegetarian: fs.readFileSync(svgPath('vegetarian.svg'), 'utf-8'),
+		'dairy-free': fs.readFileSync(svgPath('Dairy-free.svg'), 'utf-8'),
+		'gluten-free': fs.readFileSync(svgPath('Gluten-free.svg'), 'utf-8'),
+		vegan: fs.readFileSync(svgPath('Vegan.svg'), 'utf-8'),
+		vegetarian: fs.readFileSync(svgPath('Vegetarian.svg'), 'utf-8'),
 		camera: fs.readFileSync(svgPath('camera.svg'), 'utf-8'),
 		'feast-book-outlined': fs.readFileSync(
 			svgPath('feast-book-outlined.svg'),
