@@ -1,0 +1,315 @@
+{
+  "bookCredit": "",
+  "canonicalArticle": "food/article/2020/sep/19/tahini-peas-zaatar-mixed-vegetable-fritters-harissa-corn-stuffed-red-peppers-yotam-ottolenghi-recipes-for-frozen-vegetables",
+  "celebrationIds": [],
+  "composerId": "5f58a6268f08c38f728cf296",
+  "contributors": [
+    "profile/yotamottolenghi"
+  ],
+  "cuisineIds": [],
+  "description": "These are inspired by Moroccan maakouda, a fried potato street food snack. It’s usually stuffed into a sandwich with lots of harissa, although you can also serve it with yoghurt, to make it more kid-friendly. Serve warm or at room temperature: they won’t be as crisp once they’ve sat around for a bit, but they’ll still taste great",
+  "featuredImage": {
+    "url": "https://i.guim.co.uk/img/media/652ac636ff7f245f37d135ccc68ead315e2a289b/0_854_3731_3731/master/3731.jpg?width=1600&dpr=1&s=none",
+    "mediaId": "652ac636ff7f245f37d135ccc68ead315e2a289b",
+    "cropId": "0_854_3731_3731",
+    "source": "The Guardian. Food styling: Emily Kydd. Prop styling: Jennifer Kay. Food assistant: Katy Gilhooly",
+    "photographer": "false",
+    "imageType": "Photograph",
+    "caption": "Yotam Ottolenghi’s mixed vegetable and potato fritters with harissa.",
+    "templateUrl": "https://i.guim.co.uk/img/media/652ac636ff7f245f37d135ccc68ead315e2a289b/0_854_3731_3731/master/3731.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none"
+  },
+  "id": "838ccd441ce422c71a6169453180cea9aa0b6e97",
+  "ingredients": [
+    {
+      "ingredientsList": [
+        {
+          "amount": {
+            "min": 2,
+            "max": 2
+          },
+          "name": "baking potatoes,",
+          "optional": false,
+          "suffix": "peeled and cut into 3cm chunks (500g net weight)"
+        },
+        {
+          "amount": {
+            "min": null,
+            "max": null
+          },
+          "name": "Salt and black pepper",
+          "optional": false
+        },
+        {
+          "amount": {
+            "min": 250,
+            "max": 250
+          },
+          "name": "frozen mixed vegetables,",
+          "optional": false,
+          "suffix": "steamed according to packet directions",
+          "unit": "g"
+        },
+        {
+          "amount": {
+            "min": 1,
+            "max": 1
+          },
+          "name": "garlic,",
+          "optional": false,
+          "suffix": "roughly chopped",
+          "unit": "clove"
+        },
+        {
+          "amount": {
+            "min": 10,
+            "max": 10
+          },
+          "name": "flat-leaf parsley,",
+          "optional": false,
+          "prefix": "(2-3 tbsp )",
+          "suffix": "roughly chopped",
+          "unit": "tbsp"
+        },
+        {
+          "amount": {
+            "min": 2,
+            "max": 2
+          },
+          "name": "cumin seeds,",
+          "optional": false,
+          "suffix": "toasted and roughly crushed in a mortar",
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "min": 1,
+            "max": 1
+          },
+          "name": "egg",
+          "optional": false
+        },
+        {
+          "amount": {
+            "min": 2,
+            "max": 2
+          },
+          "name": "lemon zest",
+          "optional": false,
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "min": 30,
+            "max": 30
+          },
+          "name": "plain flour,",
+          "optional": false,
+          "suffix": "for coating",
+          "unit": "g"
+        },
+        {
+          "amount": {
+            "min": 700,
+            "max": 700
+          },
+          "name": "sunflower oil,",
+          "optional": false,
+          "suffix": "for deep frying",
+          "unit": "ml"
+        }
+      ],
+      "recipeSection": ""
+    },
+    {
+      "ingredientsList": [
+        {
+          "amount": {
+            "min": 1.5,
+            "max": 1.5
+          },
+          "name": "rose harissa",
+          "optional": false,
+          "unit": "tbsp"
+        },
+        {
+          "amount": {
+            "min": 2,
+            "max": 2
+          },
+          "name": "lemon juice",
+          "optional": false,
+          "unit": "tbsp"
+        },
+        {
+          "amount": {
+            "min": 1,
+            "max": 1
+          },
+          "name": "runny honey",
+          "optional": false,
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "min": 2,
+            "max": 2
+          },
+          "name": "garlic cloves",
+          "optional": false,
+          "suffix": "peeled and crushed"
+        },
+        {
+          "amount": {
+            "min": 2,
+            "max": 2
+          },
+          "name": "olive oil",
+          "optional": false,
+          "unit": "tbsp"
+        }
+      ],
+      "recipeSection": "For the harissa dip"
+    },
+    {
+      "ingredientsList": [
+        {
+          "amount": {
+            "min": 85,
+            "max": 85
+          },
+          "name": "plain flour",
+          "optional": false,
+          "unit": "g"
+        },
+        {
+          "amount": {
+            "min": 40,
+            "max": 40
+          },
+          "name": "corn flour",
+          "optional": false,
+          "unit": "g"
+        },
+        {
+          "amount": {
+            "min": 1.25,
+            "max": 1.25
+          },
+          "name": "instant dried yeast,",
+          "optional": false,
+          "suffix": "or 12g fresh yeast, roughly crumbled",
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "min": 0.66,
+            "max": 0.66
+          },
+          "name": "baking powder",
+          "optional": false,
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "min": 0.66,
+            "max": 0.66
+          },
+          "name": "ground turmeric",
+          "optional": false,
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "min": 135,
+            "max": 135
+          },
+          "name": "lukewarm water",
+          "optional": false,
+          "unit": "ml"
+        }
+      ],
+      "recipeSection": "For the batter"
+    }
+  ],
+  "instructions": [
+    {
+      "description": "Put the potatoes and two teaspoons of salt in a medium saucepan for which you have a lid, add enough water to cover by about 3cm, then bring to a boil on a medium-high heat. Lower the heat to medium, cover and leave to cook for eight minutes, or until the potatoes are easily pierced with a knife. Drain well, then, once they’re cool enough to handle, use a potato ricer to rice the potatoes into a large bowl (if you don’t have a ricer, use a masher).",
+      "images": []
+    },
+    {
+      "description": "While the potatoes are cooking, put the mixed vegetables, garlic and parsley in a food processor and pulse a few times, until finely chopped but not pureed. Add this to the mashed potato bowl, then mix in the cumin, egg, lemon zest, a teaspoon of salt and a good grind of pepper and refrigerate for 30 minutes, so the mix firms up slightly.",
+      "images": []
+    },
+    {
+      "description": "Whisk all the dip ingredients and a pinch of salt in a small bowl.",
+      "images": []
+    },
+    {
+      "description": "Make the batter by whisking all the ingredients in a medium bowl, then leave to bubble up for about 20 minutes.",
+      "images": []
+    },
+    {
+      "description": "Meanwhile, put the 30g flour in a shallow bowl. Use your hands to make roughly 5cm-diameter, 40-45g patties out of the potato mixture – you should end up with about 16 patties, and don’t worry if they’re not perfect. Dip each patty into the flour to coat, shaking off the excess, and put on an oven tray.",
+      "images": []
+    },
+    {
+      "description": "Heat the sunflower oil in a medium-sized high-sided saute pan over a medium-high heat. Once the oil is hot, and working one patty at a time, dip a patty into the batter to coat, then drop into the hot oil (don’t worry if there are scraggly bits of batter – this just adds to the look). Fry the patties in three batches, for about six or seven minutes each, until deeply golden. Use a slotted spoon to transfer to a tray lined with kitchen paper and repeat with the remaining patties and batter.",
+      "images": []
+    },
+    {
+      "description": "Transfer the fritters to a large plate and serve hot with the harissa dip in a bowl alongside.",
+      "images": []
+    }
+  ],
+  "isAppReady": false,
+  "mealTypeIds": [
+    "lunch"
+  ],
+  "serves": [
+    {
+      "amount": {
+        "min": 16,
+        "max": 16
+      },
+      "unit": "fritters"
+    }
+  ],
+  "suitableForDietIds": [
+    "vegetarian",
+    "dairy-free"
+  ],
+  "techniquesUsedIds": [],
+  "timings": [
+    {
+      "durationInMins": {
+        "min": 25,
+        "max": 25
+      },
+      "qualifier": "prep-time",
+      "text": "Prep 25 min"
+    },
+    {
+      "durationInMins": {
+        "min": 80,
+        "max": 80
+      },
+      "qualifier": "cook-time",
+      "text": "Cook 1 hr 20 min"
+    }
+  ],
+  "title": "Mixed vegetable and potato fritters with harissa",
+  "utensilsAndApplianceIds": [],
+  "byline": [],
+  "previewImage": {
+    "url": "https://i.guim.co.uk/img/media/652ac636ff7f245f37d135ccc68ead315e2a289b/0_854_3731_3731/master/3731.jpg?width=1600&dpr=1&s=none",
+    "mediaId": "652ac636ff7f245f37d135ccc68ead315e2a289b",
+    "cropId": "0_854_3731_3731",
+    "source": "The Guardian. Food styling: Emily Kydd. Prop styling: Jennifer Kay. Food assistant: Katy Gilhooly",
+    "photographer": "false",
+    "imageType": "Photograph",
+    "caption": "Yotam Ottolenghi’s mixed vegetable and potato fritters with harissa.",
+    "templateUrl": "https://i.guim.co.uk/img/media/652ac636ff7f245f37d135ccc68ead315e2a289b/0_854_3731_3731/master/3731.jpg?width=#{width}&quality=#{quality}&dpr=1&s=none"
+  },
+  "lastModifiedDate": "2024-07-25T09:43:35.000Z",
+  "publishedDate": "2024-07-25T09:05:26.000Z"
+}
