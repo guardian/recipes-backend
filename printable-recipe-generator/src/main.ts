@@ -23,6 +23,24 @@ function renderJsonToHtml(recipeDataPath: string) {
 		),
 	};
 
+	//load fonts
+	const fontPath = (fileName: string) =>
+		path.join(__dirname, 'src', 'assets', 'fonts', fileName);
+	const fontsBase64 = {
+		RegularEgyptianFont: fs
+			.readFileSync(fontPath('GuardianTextEgyptian-Regular.ttf'))
+			.toString('base64'),
+		RegularSansFont: fs
+			.readFileSync(fontPath('GuardianTextSans-Regular.ttf'))
+			.toString('base64'),
+		HeadlineSemiBoldFont: fs
+			.readFileSync(fontPath('GHGuardianHeadline-Semibold.otf'))
+			.toString('base64'),
+		SansBoldFont: fs
+			.readFileSync(fontPath('GuardianTextSans-Bold.ttf'))
+			.toString('base64'),
+	};
+
 	//load recipe JSON
 	const recipe = JSON.parse(
 		fs.readFileSync(recipeDataPath, 'utf-8'),
@@ -35,7 +53,11 @@ function renderJsonToHtml(recipeDataPath: string) {
 	//Render html
 	let renderHtml = '';
 	try {
-		renderHtml = renderTemplate(template, { recipe, svgs } as Data);
+		renderHtml = renderTemplate(template, {
+			recipe,
+			svgs,
+			fontsBase64,
+		} as Data);
 	} catch (error) {
 		console.error('Failed to render template: ', (error as Error).message);
 		//console.error('Recipe data was: ', JSON.stringify(recipe, null, 2));
