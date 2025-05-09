@@ -2,10 +2,27 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title><%= title %></title>
+    <title><%= recipe.title %></title>
     <style>
+      @font-face {
+        font-family: 'GuardianRegularEgyptianFont';
+        src: url("data:fonts/ttf;base64,<%= fontsBase64.RegularEgyptianFont %>") format('opentype');
+      }
+      @font-face {
+        font-family: 'GuardianRegularSansFont';
+        src: url("data:fonts/ttf;base64;<%= fontsBase64.RegularSansFont %>") format('opentype');
+      }
+      @font-face {
+        font-family: 'GuardianHeadlineSemiBoldFont';
+        src: url("data:fonts/otf;base64;<%= fontsBase64.HeadlineSemiBoldFont %>") format('truetype');
+      }
+      @font-face {
+        font-family: 'GuardianSansBoldFont';
+        src: url("data:fonts/ttf;base64;<%= fontsBase64.SansBoldFont %>") format('opentype');
+      }
+
       body {
-        font-family: 'Georgia', serif;
+        font-family: 'GuardianRegularEgyptianFont', sans-serif;
         font-size: 16px;
         line-height: 1.6;
         margin: 40px;
@@ -13,18 +30,18 @@
       }
 
       .header {
+        font-family: 'GuardianHeadlineSemiBoldFont', sans-serif;
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 40px;
       }
 
-      .app-title {
-        font-size: 24px;
-        font-weight: bold;
+      .feast-logo {
+        height: 40px;
       }
 
-      .logo {
+      .guardian-logo {
         height: 40px;
       }
 
@@ -41,25 +58,6 @@
 
       .labels {
         margin: 20px 0;
-      }
-
-      .label {
-        display: inline-block;
-        padding: 4px 10px;
-        margin-right: 6px;
-        border-radius: 20px;
-        font-size: 14px;
-        font-weight: 600;
-        color: white;
-      }
-
-      .label-vegetarian {
-        background-color: #2f6348;
-      }
-
-      .label-dairy-free {
-        background-color: #f5c344;
-        color: #3c2c00;
       }
 
       .timing-table {
@@ -105,41 +103,64 @@
         margin-bottom: 0.5rem;
       }
 
-      .footer {
-        border-top: 1px solid #ccc;
-        margin-top: 3rem;
-        padding-top: 1rem;
+      .recipe-footer {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #ddd;
         font-size: 14px;
-        color: #777;
+        color: #444;
       }
 
-      .footer div {
-        margin-bottom: 0.3rem;
+      .footer-line {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .footer-icon svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        color: #666;
+      }
+
+      .footer-text a {
+        color: #0077cc;
+        text-decoration: none;
       }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div class="app-title">Feast</div>
-    <img src="guardianLogo.png" class="logo" alt="Company Logo"/>
+    <div class="feast-logo">
+        <%- svgs.FeastLogo %>
+    </div>
+    <div class="guardian-logo">
+        <%- svgs.TheGuardianLogo %>
+    </div>
 </div>
 
-<div class="recipe-title"><%= title %></div>
-<% if (contributors) { %>
-    <div class="author">By <%= contributors %></div>
+<div class="recipe-title"><%= recipe.title %></div>
+<% if (recipe.contributors) { %>
+    <div class="author">By <%= recipe.contributors %></div>
 <% } %>
 
-<% if (suitableForDietIds && suitableForDietIds.length) { %>
+<% if (recipe.suitableForDietIds && recipe.suitableForDietIds.length) { %>
     <div class="labels">
-        <% for (const label of suitableForDietIds) { %>
-            <span class="label label-<%= label.replace(/\s/g, '') %>"><%= label %></span>
+        <% for (const label of recipe.suitableForDietIds) {
+            const labelKey = label.toLowerCase().replace(/\s+/g, '-');
+        %>
+        <span>
+            <%- svgs[labelKey] %>
+      </span>
         <% } %>
     </div>
 <% } %>
 
 <div class="timing-table">
-    <% for (const time of timings || []) { %>
+    <% for (const time of recipe.timings || []) { %>
         <div class="timing-row">
             <div>
                 <% if (time.qualifier === 'prep-time') { %>
@@ -163,23 +184,23 @@
         </div>
     <% } %>
 
-    <% if (serves && serves.length) { %>
+    <% if (recipe.serves && recipe.serves.length) { %>
         <div class="timing-row">
             <svg class="icon" viewBox="0 0 24 24">
                 <path d="M4 4h16v2H4zM4 8h16v2H4zM4 12h16v2H4z" fill="#000"/>
             </svg>
-            <div>Serves <%= serves[0].amount.min %> <%= serves[0].unit %></div>
+            <div>Serves <%= recipe.serves[0].amount.min %> <%= recipe.serves[0].unit %></div>
         </div>
     <% } %>
 </div>
 
-<div class="description"><%= description %></div>
+<div class="description"><%= recipe.description %></div>
 
 <div class="two-columns">
     <div class="column ingredients">
         <h3>Ingredients</h3>
         <ul>
-            <% for (const group of ingredients || []) { %>
+            <% for (const group of recipe.ingredients || []) { %>
                 <% for (const ing of group.ingredientsList || []) { %>
                     <li>
                         <%= ing.amount?.min %>
@@ -197,12 +218,39 @@
     <div class="column steps">
         <h3>Method</h3>
         <ul>
-            <% for (const step of instructions || []) { %>
+            <% for (const step of recipe.instructions || []) { %>
                 <li><%= step.description %></li>
             <% } %>
         </ul>
     </div>
 </div>
+
+<% if (recipe.bookCredit || recipe.featuredImage) { %>
+<footer class="recipe-footer">
+    <div class="footer-line">
+        <% if (recipe.bookCredit) { %>
+    <span class="footer-icon">
+      <%- svgs["feast-book-outlined"] %>
+    </span>
+        <span class="footer-text">
+        <%= recipe.bookCredit %>>
+    </span>
+        <% } %>
+    </div>
+    <div class="footer-line">
+        <% if (recipe.featuredImage) { %>
+    <span class="footer-icon">
+      <%- svgs.camera %>
+    </span>
+
+        <span class="footer-text">
+        <%= recipe.featuredImage.source %>>
+    </span>
+        <% } %>
+    </div>
+</footer>
+<% } %>
+
 
 </body>
 </html>
