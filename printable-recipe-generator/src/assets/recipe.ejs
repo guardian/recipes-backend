@@ -4,8 +4,25 @@
     <meta charset="utf-8"/>
     <title><%= recipe.title %></title>
     <style>
+      @font-face {
+        font-family: 'GuardianRegularEgyptianFont';
+        src: url("data:fonts/ttf;base64,<%= fontsBase64.RegularEgyptianFont %>") format('opentype');
+      }
+      @font-face {
+        font-family: 'GuardianRegularSansFont';
+        src: url("data:fonts/ttf;base64;<%= fontsBase64.RegularSansFont %>") format('opentype');
+      }
+      @font-face {
+        font-family: 'GuardianHeadlineSemiBoldFont';
+        src: url("data:fonts/otf;base64;<%= fontsBase64.HeadlineSemiBoldFont %>") format('truetype');
+      }
+      @font-face {
+        font-family: 'GuardianSansBoldFont';
+        src: url("data:fonts/ttf;base64;<%= fontsBase64.SansBoldFont %>") format('opentype');
+      }
+
       body {
-        font-family: 'Georgia', serif;
+        font-family: 'GuardianRegularEgyptianFont', sans-serif;
         font-size: 16px;
         line-height: 1.6;
         margin: 40px;
@@ -13,6 +30,7 @@
       }
 
       .header {
+        font-family: 'GuardianHeadlineSemiBoldFont', sans-serif;
         display: flex;
         justify-content: space-between;
         align-items: center;
