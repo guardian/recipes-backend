@@ -21,11 +21,29 @@ const svgs = {
 	),
 };
 
+//load fonts
+const fontPath = (fileName: string) =>
+	path.join(__dirname, '../assets/fonts/', fileName);
+const fontsBase64 = {
+	RegularEgyptianFont: fs
+		.readFileSync(fontPath('GuardianTextEgyptian-Regular.ttf'))
+		.toString('base64'),
+	RegularSansFont: fs
+		.readFileSync(fontPath('GuardianTextSans-Regular.ttf'))
+		.toString('base64'),
+	HeadlineSemiBoldFont: fs
+		.readFileSync(fontPath('GHGuardianHeadline-Semibold.otf'))
+		.toString('base64'),
+	SansBoldFont: fs
+		.readFileSync(fontPath('GuardianTextSans-Bold.ttf'))
+		.toString('base64'),
+};
+
 describe('Sample recipe ', () => {
 	it('should match snapshot', () => {
 		const templatePath = path.join(__dirname, '../assets/recipe.ejs');
 		const template = fs.readFileSync(templatePath, 'utf-8');
-		const html = ejs.render(template, { recipe, svgs });
+		const html = ejs.render(template, { recipe, svgs, fontsBase64 });
 		expect(html).toMatchSnapshot();
 	});
 });
