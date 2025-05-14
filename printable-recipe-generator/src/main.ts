@@ -3,6 +3,24 @@ import * as process from 'node:process';
 import path from 'path';
 import type { Data } from 'ejs';
 import { render as renderTemplate } from 'ejs';
+import fetch from 'node-fetch';
+
+//load Contributors
+async function getChefs() {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment --we know
+	const resp = await fetch(
+		'https://recipes.guardianapis.com/v2/contributors.json',
+	);
+	return resp.json();
+}
+
+let chefs = {};
+
+//Get chefs
+(async () => {
+	chefs = await getChefs();
+	console.log(chefs['profile/yotamottolenghi'].webTitle); //TODO to test - it worked here, not sure why it is not available to EJS file
+})();
 
 function renderJsonToHtml(recipeDataPath: string) {
 	//load SVGs
@@ -57,6 +75,7 @@ function renderJsonToHtml(recipeDataPath: string) {
 			recipe,
 			svgs,
 			fontsBase64,
+			chefs,
 		} as Data);
 	} catch (error) {
 		console.error('Failed to render template: ', (error as Error).message);
@@ -79,5 +98,5 @@ if (!process.argv[2]) {
 	);
 	process.exit(2);
 } else {
-	renderJsonToHtml(process.argv[2]);
+	renderJsonToHtml(process.argv[2]); //.catch(console.error);
 }

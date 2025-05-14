@@ -3,6 +3,21 @@ import path from 'path';
 import * as ejs from 'ejs';
 import recipe from '../data/sampleRecipe.json';
 
+let chefs = {};
+//load Contributors
+async function getChefs() {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment --we know
+	const resp = await fetch(
+		'https://recipes.guardianapis.com/v2/contributors.json',
+	);
+	return resp.json();
+}
+
+(async () => {
+	chefs = await getChefs();
+	console.log(chefs);
+})();
+
 //load SVGs
 const svgPath = (fileName: string) =>
 	path.join(__dirname, '../assets/svgs/', fileName);
@@ -43,7 +58,7 @@ describe('Sample recipe ', () => {
 	it('should match snapshot', () => {
 		const templatePath = path.join(__dirname, '../assets/recipe.ejs');
 		const template = fs.readFileSync(templatePath, 'utf-8');
-		const html = ejs.render(template, { recipe, svgs, fontsBase64 });
+		const html = ejs.render(template, { recipe, svgs, fontsBase64, chefs });
 		expect(html).toMatchSnapshot();
 	});
 });
