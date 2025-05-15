@@ -107,6 +107,11 @@ router.get('/api/content/by-uid', (req, resp) => {
 		});
 });
 
+router.get('/api/:region/:variant/:date/hybrid-curation.json', (req, resp) => {
+	const newUrl = `/${req.params.region}/${req.params.variant}/${req.params.date}/curation.json`;
+	resp.redirect(301, newUrl);
+});
+
 router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 	const territoryParam =
 		(req.query['ter'] as string | undefined) ?? countryCodeFromCDN(req);
