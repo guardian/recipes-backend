@@ -109,7 +109,7 @@ router.get('/api/content/by-uid', (req, resp) => {
 
 router.get('/api/:region/:variant/:date/hybrid-curation.json', (req, resp) => {
 	const newUrl = `/${req.params.region}/${req.params.variant}/${req.params.date}/curation.json`;
-	resp.status(301).setHeader('Location', newUrl).send(newUrl);
+	resp.redirect(301, newUrl);
 });
 
 router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
