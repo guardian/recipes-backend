@@ -86,23 +86,25 @@
         vertical-align: middle;
       }
 
-      .two-columns {
-        display: flex;
-        justify-content: space-between;
-        gap: 3rem;
+      .two-column-flow {
+        column-count: 2;
+        column-gap: 3rem;
       }
 
-      .column {
-        width: 50%;
+      .two-column-flow h3 {
+        break-after: avoid;
+        font-family: 'GuardianBoldSansFont', sans-serif;
+        margin-top: 1rem;
       }
 
-      .ingredients ul,
-      .steps ul {
+      .two-column-flow ul {
+        list-style-type: disc;
         padding-left: 1.5rem;
+        margin-bottom: 2rem;
       }
 
-      .ingredients li,
-      .steps li {
+      .two-column-flow li {
+        break-inside: avoid;
         font-family: 'GuardianRegularSansFont', sans-serif;
         font-size: 17px;
         margin-bottom: 0.5rem;
@@ -207,7 +209,7 @@
 
 <div class="description"><%= recipe.description %></div>
 
-<div class="two-columns">
+<div class="two-column-flow">
     <div class="column ingredients">
         <h3>Ingredients</h3>
         <ul>
@@ -226,7 +228,7 @@
         </ul>
     </div>
 
-    <div class="column steps">
+    <div class="column method">
         <h3>Method</h3>
         <ul>
             <% for (const step of recipe.instructions || []) { %>
