@@ -3,20 +3,18 @@ import path from 'path';
 import * as ejs from 'ejs';
 import recipe from '../data/sampleRecipe.json';
 
-let chefs = {};
 //load Contributors
-async function getChefs() {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment --we know
+async function getChefs(): Promise<unknown> {
 	const resp = await fetch(
 		'https://recipes.guardianapis.com/v2/contributors.json',
 	);
-	return resp.json();
+	try {
+		return resp.json().catch(console.error);
+	} catch (error) {
+		console.error('Failed to parse chefs JSON: ', error);
+		return null;
+	}
 }
-
-(async () => {
-	chefs = await getChefs();
-	console.log(chefs);
-})();
 
 //load SVGs
 const svgPath = (fileName: string) =>
@@ -58,7 +56,16 @@ describe('Sample recipe ', () => {
 	it('should match snapshot', () => {
 		const templatePath = path.join(__dirname, '../assets/recipe.ejs');
 		const template = fs.readFileSync(templatePath, 'utf-8');
-		const html = ejs.render(template, { recipe, svgs, fontsBase64, chefs });
-		expect(html).toMatchSnapshot();
+		//Get chefs and render html
+		void (async () => {
+			const chefsList = await getChefs();
+			const html = ejs.render(template, {
+				recipe,
+				svgs,
+				fontsBase64,
+				chefsList,
+			});
+			expect(html).toMatchSnapshot();
+		})();
 	});
 });

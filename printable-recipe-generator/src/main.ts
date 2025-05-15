@@ -6,15 +6,21 @@ import { render as renderTemplate } from 'ejs';
 import fetch from 'node-fetch';
 
 //load Contributors
-async function getChefs() {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment --we know
+async function getChefs(): Promise<unknown> {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- response is expected to be JSON, safe to assign
 	const resp = await fetch(
 		'https://recipes.guardianapis.com/v2/contributors.json',
 	);
-	return resp.json();
+	try {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access -- returning JSON
+		return resp.json().catch(console.error);
+	} catch (error) {
+		console.error('Failed to parse chefs JSON: ', error);
+		return null;
+	}
 }
 
-function renderJsonToHtml(
+export function renderJsonToHtml(
 	recipeDataPath: string,
 	chefs: Record<string, unknown>,
 ) {
@@ -95,10 +101,9 @@ if (!process.argv[2]) {
 	);
 	process.exit(2);
 } else {
-	//Get chefs
-	(async () => {
-		const chefsList = await getChefs();
-		console.log(chefsList['profile/yotamottolenghi'].webTitle); //TODO to test - it worked here, not sure why it is not available to EJS file
-		renderJsonToHtml(process.argv[2], chefsList); //.catch(console.error);
+	//Get chefs and render html
+	void (async () => {
+		const chefsList = (await getChefs()) as Record<string, unknown>;
+		renderJsonToHtml(process.argv[2], chefsList);
 	})();
 }
