@@ -14,15 +14,10 @@ async function getChefs() {
 	return resp.json();
 }
 
-let chefs = {};
-
-//Get chefs
-(async () => {
-	chefs = await getChefs();
-	console.log(chefs['profile/yotamottolenghi'].webTitle); //TODO to test - it worked here, not sure why it is not available to EJS file
-})();
-
-function renderJsonToHtml(recipeDataPath: string) {
+function renderJsonToHtml(
+	recipeDataPath: string,
+	chefs: Record<string, unknown>,
+) {
 	//load SVGs
 	const svgPath = (fileName: string) =>
 		path.join(__dirname, 'src', 'assets', 'svgs', fileName);
@@ -70,6 +65,8 @@ function renderJsonToHtml(recipeDataPath: string) {
 
 	//Render html
 	let renderHtml = '';
+	// @ts-expect-error -- we know this
+	console.log(chefs['profile/yotamottolenghi'].webTitle); //TODO to test - it worked here, not sure why it is not available to EJS file
 	try {
 		renderHtml = renderTemplate(template, {
 			recipe,
@@ -98,5 +95,10 @@ if (!process.argv[2]) {
 	);
 	process.exit(2);
 } else {
-	renderJsonToHtml(process.argv[2]); //.catch(console.error);
+	//Get chefs
+	(async () => {
+		const chefsList = await getChefs();
+		console.log(chefsList['profile/yotamottolenghi'].webTitle); //TODO to test - it worked here, not sure why it is not available to EJS file
+		renderJsonToHtml(process.argv[2], chefsList); //.catch(console.error);
+	})();
 }

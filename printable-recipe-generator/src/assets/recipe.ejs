@@ -153,12 +153,10 @@
 </div>
 
 <div class="recipe-title"><%= recipe.title %></div>
-<% if (recipe.contributors && (chefs && chefs.length)) { %>
+<% if (recipe.contributors && chefs[recipe.contributors]) { %>
 <div class="author">By <%=  chefs[recipe.contributors].webTitle %></div>
 <% } %>
-<% if (recipe.contributors && !(chefs && chefs.length)) { %>
-    <div class="author">By <%=  recipe.contributors %></div>
-<% } %>
+
 
 <% if (recipe.suitableForDietIds && recipe.suitableForDietIds.length) { %>
     <div class="labels">
