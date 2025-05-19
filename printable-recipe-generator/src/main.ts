@@ -84,6 +84,6 @@ if (!process.argv[2]) {
 	//Get chefs and render html
 	void (async () => {
 		const chefsList = (await getChefs()) as Record<string, ChefData>;
-		renderJsonToHtml(process.argv[2], chefsList);
+		await renderJsonToHtml(process.argv[2], chefsList);
 	})();
 }
