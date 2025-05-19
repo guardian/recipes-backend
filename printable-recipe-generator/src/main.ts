@@ -55,7 +55,7 @@ export function renderJsonToHtml(
 			svgs,
 			fontsBase64,
 			chefs,
-		} as Data);
+		});
 	} catch (error) {
 		console.error('Failed to render template: ', (error as Error).message);
 		//console.error('Recipe data was: ', JSON.stringify(recipe, null, 2));
