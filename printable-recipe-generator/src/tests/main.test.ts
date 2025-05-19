@@ -15,6 +15,16 @@ interface ChefData {
 }
 
 const chefs: Record<string, ChefData> = {
+	'profile/yotamottolenghi': {
+		webTitle: 'Yotam Ottolenghi',
+		webUrl: 'http://www.code.dev-theguardian.com/profile/yotamottolenghi',
+		apiUrl: 'http://content.code.dev-guardianapis.com/profile/yotamottolenghi',
+		bio: "<p>Originally from Jerusalem, Yotam Ottolenghi is a London-based restaurateur and food writer. He runs Nopi and Ottolenghi, and is the author of three bestselling books; his fourth book, <a href='http://www.guardianbookshop.co.uk/BerteShopWeb/viewProduct.do?ISBN=9780091957155\" title=''>Plenty More</a>, is published in September 2014</p>",
+		bylineImageUrl:
+			'https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/17/1397749341692/YotamOttolenghi.jpg',
+		bylineLargeImageUrl:
+			'https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/3/13/1394733751371/YotamOttolenghi.png',
+	},
 	'profile/nigelslater': {
 		webTitle: 'Nigel Slater',
 		webUrl: 'http://www.code.dev-theguardian.com/profile/nigelslater',
@@ -65,6 +75,32 @@ describe('Sample recipe ', () => {
 			fontsBase64,
 			chefs: null,
 		});
+		expect(html).toMatchSnapshot();
+	});
+
+	it('should match snapshot even when chefs list is empty', () => {
+		const templatePath = path.join(__dirname, '../assets/recipe.ejs');
+		const template = fs.readFileSync(templatePath, 'utf-8');
+		const html = ejs.render(template, {
+			recipe,
+			svgs,
+			fontsBase64,
+			chefs: [],
+		});
+		expect(html).toMatchSnapshot();
+	});
+
+	it('should match snapshot even when chefs list contains more then 1 chef', () => {
+		const templatePath = path.join(__dirname, '../assets/recipe.ejs');
+		const template = fs.readFileSync(templatePath, 'utf-8');
+		const html = ejs.render(template, {
+			recipe,
+			svgs,
+			fontsBase64,
+			chefs: chefs,
+		});
+		expect(html).toContain('Yotam Ottolenghi');
+		expect(html).toContain('Nigel Slater');
 		expect(html).toMatchSnapshot();
 	});
 });
