@@ -46,9 +46,23 @@
         height: 40px;
       }
 
+      .recipe-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
       .recipe-title {
         font-size: 26px;
         font-weight: bold;
+        flex: 1;
+      }
+
+      .qr-section img {
+        width: 100px;
+        height: auto;
       }
 
       .author {
@@ -143,19 +157,6 @@
         font-weight: bold;
       }
 
-      .qr-section {
-        border: 1px dashed #ccc;
-        padding: 10px;
-        max-width: 200px;
-        text-align: center;
-        font-size: 12px;
-        margin: 20px auto;
-        word-break: break-all;
-      }
-      .qr-section img {
-        width: 120px;
-        height: 120px;
-      }
     </style>
 </head>
 <body>
@@ -169,7 +170,8 @@
     </div>
 </div>
 
-<div class="recipe-title"><%= recipe.title %></div>
+<div class="recipe-header">
+<div class="recipe-title"><%= recipe.title %>
 <% if (Array.isArray(recipe.contributors)) { %>
     <div class="author">
         By
@@ -186,7 +188,14 @@
 <% if (recipe.contributors && typeof chefs != 'object' ) { %>
     <div class="author">By <%=  recipe.contributors %></div>
 <% } %>
+</div>
+    <%if (qrImageDataUrl && qrImageDataUrl!=null || qrImageDataUrl?.length>0) { %>>
 
+    <div class="qr-section">
+        <img src="<%= qrImageDataUrl %>" alt="Scan to open app" />
+    </div>
+    <% } %>
+</div>
 
 <% if (recipe.suitableForDietIds && recipe.suitableForDietIds.length) { %>
     <div class="labels">
@@ -290,16 +299,6 @@
         <% } %>
     </div>
 </footer>
-
-<%if (qrImageDataUrl && qrImageDataUrl!=null || qrImageDataUrl?.length>0) { %>>
-
-<div class="qr-section">
-    <p>📱 Open in App</p>
-    <img src="<%= qrImageDataUrl %>" alt="Scan to open app" />
-    <p>feastbraze://recipe/<%= recipe.id %></p>
-    <p>or visit: <a href="https://guardian-feast.go.link/recipe/<%= recipe.id %>">Recipe Here</a></p>
-</div>
-<% } %>
 
 <% } %>
 
