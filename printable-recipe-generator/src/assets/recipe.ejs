@@ -142,6 +142,20 @@
       h3 {
         font-weight: bold;
       }
+
+      .qr-section {
+        border: 1px dashed #ccc;
+        padding: 10px;
+        max-width: 200px;
+        text-align: center;
+        font-size: 12px;
+        margin: 20px auto;
+        word-break: break-all;
+      }
+      .qr-section img {
+        width: 120px;
+        height: 120px;
+      }
     </style>
 </head>
 <body>
@@ -276,6 +290,17 @@
         <% } %>
     </div>
 </footer>
+
+<%if (qrImageDataUrl && qrImageDataUrl!=null || qrImageDataUrl?.length>0) { %>>
+
+<div class="qr-section">
+    <p>📱 Open in App</p>
+    <img src="<%= qrImageDataUrl %>" alt="Scan to open app" />
+    <p>feastbraze://recipe/<%= recipe.id %></p>
+    <p>or visit: <a href="https://guardian-feast.go.link/recipe/<%= recipe.id %>">Recipe Here</a></p>
+</div>
+<% } %>
+
 <% } %>
 
 
