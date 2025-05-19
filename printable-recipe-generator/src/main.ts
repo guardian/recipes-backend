@@ -4,6 +4,7 @@ import path from 'path';
 import type { Data } from 'ejs';
 import { render as renderTemplate } from 'ejs';
 import fetch from 'node-fetch';
+import * as QRCode from 'qrcode';
 import { fontsBase64, svgs } from './assets/assetloader';
 
 const stage: string | undefined = process.env['STAGE'];
@@ -16,6 +17,10 @@ interface ChefData {
 	bio?: string;
 	bylineImageUrl?: string;
 	bylineLargeImageUrl?: string;
+}
+
+interface RecipeData {
+	id: string;
 }
 async function getChefs(): Promise<Record<string, ChefData> | undefined> {
 	try {
@@ -34,14 +39,20 @@ async function getChefs(): Promise<Record<string, ChefData> | undefined> {
 	}
 }
 
-export function renderJsonToHtml(
+export async function renderJsonToHtml(
 	recipeDataPath: string,
-	chefs: Record<string, unknown>,
+	chefs: Record<string, ChefData>,
 ) {
 	//load recipe JSON
 	const recipe = JSON.parse(
 		fs.readFileSync(recipeDataPath, 'utf-8'),
-	) as unknown;
+	) as RecipeData;
+
+	//load QR Code
+	const recipeId = recipe.id;
+	const deeplinkUrl = `feastbraze://recipe/${recipeId}`;
+	console.log(`deepLInkUrl: ${deeplinkUrl}`);
+	const qrImageDataUrl = await QRCode.toDataURL(deeplinkUrl);
 
 	//load template
 	const templatePath = path.join(__dirname, 'src', 'assets', 'recipe.ejs');
@@ -53,6 +64,7 @@ export function renderJsonToHtml(
 		svgs,
 		fontsBase64,
 		chefs,
+    qrImageDataUrl,
 	});
 
 	//Output
