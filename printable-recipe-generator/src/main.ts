@@ -48,19 +48,12 @@ export function renderJsonToHtml(
 	const template = fs.readFileSync(templatePath, 'utf-8');
 
 	//Render html
-	let renderHtml = '';
-	try {
-		renderHtml = renderTemplate(template, {
-			recipe,
-			svgs,
-			fontsBase64,
-			chefs,
-		});
-	} catch (error) {
-		console.error('Failed to render template: ', (error as Error).message);
-		//console.error('Recipe data was: ', JSON.stringify(recipe, null, 2));
-		process.exit(1);
-	}
+	const renderHtml = renderTemplate(template, {
+		recipe,
+		svgs,
+		fontsBase64,
+		chefs,
+	});
 
 	//Output
 	const outputPath =
