@@ -49,10 +49,9 @@ export async function renderJsonToHtml(
 	) as RecipeData;
 
 	//load QR Code
-	const recipeId = recipe.id;
-	const deeplinkUrl = `feastbraze://recipe/${recipeId}`;
-	console.log(`deepLInkUrl: ${deeplinkUrl}`);
-	const qrImageDataUrl = await QRCode.toDataURL(deeplinkUrl);
+	const qrImageDataUrl = await QRCode.toDataURL(
+		`feastbraze://recipe/${recipe.id}`,
+	);
 
 	//load template
 	const templatePath = path.join(__dirname, 'src', 'assets', 'recipe.ejs');
