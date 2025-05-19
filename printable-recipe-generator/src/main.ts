@@ -6,7 +6,7 @@ import { render as renderTemplate } from 'ejs';
 import fetch from 'node-fetch';
 import { fontsBase64, svgs } from './assets/assetloader';
 
-const stage: string = process.env['STAGE'] ?? 'CODE';
+const stage: string | undefined = process.env['STAGE'];
 
 //load Contributors
 interface ChefData {
@@ -22,7 +22,9 @@ async function getChefs(): Promise<Record<string, ChefData> | undefined> {
 		const endpoint: string =
 			stage === 'PROD'
 				? 'https://recipes.guardianapis.com/v2/contributors.json'
-				: 'https://recipes.code.dev-guardianapis.com/v2/contributors.json';
+				: stage === 'CODE'
+				? 'https://recipes.code.dev-guardianapis.com/v2/contributors.json'
+				: '';
 		const resp = await fetch(endpoint);
 		const data = (await resp.json()) as Record<string, ChefData>;
 		return data;
