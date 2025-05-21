@@ -24,16 +24,19 @@ interface RecipeData {
 async function getChefs(): Promise<Record<string, ChefData> | undefined> {
 	try {
 		const endpoint: string =
-			stage === 'PROD'
+			stage?.toLowerCase() === 'prod'
 				? 'https://recipes.guardianapis.com/v2/contributors.json'
-				: stage === 'CODE'
+				: stage?.toLowerCase() === 'code'
 				? 'https://recipes.code.dev-guardianapis.com/v2/contributors.json'
 				: '';
+		if (stage)
+			console.log(`the stage found is ${stage}, endpoint is ${endpoint}`);
+		else console.log('stage is undefined');
 		const resp = await fetch(endpoint);
 		const data = (await resp.json()) as Record<string, ChefData>;
 		return data;
 	} catch (error) {
-		console.error('Failed to parse chefs JSON: ', error);
+		console.error(`Failed to parse chefs JSON: `, error);
 		return undefined;
 	}
 }

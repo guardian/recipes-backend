@@ -200,7 +200,6 @@ exports[`Sample recipe  should match snapshot 1`] = `
             By Yotam Ottolenghi, Nigel Slater
         </div>
     
-    
 </div>
     
 </div>
@@ -686,9 +685,6 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 
 <div class="recipe-header">
 <div class="recipe-title">Mixed vegetable and potato fritters with harissa
-    
-    
-        <div class="author">By profile/yotamottolenghi,profile/nigelslater</div>
     
 </div>
     
@@ -1180,7 +1176,6 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
             By Yotam Ottolenghi, Nigel Slater
         </div>
     
-    
 </div>
     
 </div>
@@ -1667,7 +1662,6 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 <div class="recipe-header">
 <div class="recipe-title">Mixed vegetable and potato fritters with harissa
     
-    
 </div>
     
 </div>
@@ -2153,7 +2147,6 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 
 <div class="recipe-header">
 <div class="recipe-title">Mixed vegetable and potato fritters with harissa
-    
     
 </div>
     
@@ -2645,7 +2638,6 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
             By Yotam Ottolenghi, Nigel Slater
         </div>
     
-    
 </div>
     
 </div>
@@ -3135,7 +3127,6 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
         <div class="author">
             By Yotam Ottolenghi, Nigel Slater
         </div>
-    
     
 </div>
     

@@ -182,9 +182,6 @@
             By <%= names.join(', ') %>
         </div>
     <%  } } %>
-    <% if (recipe.contributors && typeof chefs != 'object' && !chefs?.[contributorId]) { %>
-        <div class="author">By <%=  recipe.contributors %></div>
-    <% } %>
 </div>
     <%if (qrImageDataUrl && qrImageDataUrl!=null || qrImageDataUrl?.length>0) { %>
         <div class="qr-section">
