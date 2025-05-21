@@ -190,9 +190,8 @@
     <div class="author">By <%=  recipe.contributors %></div>
 <% } %>
 </div>
-    <%if (qrImageDataUrl && qrImageDataUrl!=null || qrImageDataUrl?.length>0) { %>>
-
-    <div class="qr-section">
+    <%if (qrImageDataUrl && qrImageDataUrl!=null || qrImageDataUrl?.length>0) { %>
+        <div class="qr-section">
         <img src="<%= qrImageDataUrl %>" alt="Scan to open app" />
     </div>
     <% } %>
