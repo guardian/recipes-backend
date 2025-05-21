@@ -1,7 +1,6 @@
 import fs from 'fs';
 import * as process from 'node:process';
 import path from 'path';
-import type { Data } from 'ejs';
 import { render as renderTemplate } from 'ejs';
 import fetch from 'node-fetch';
 import * as QRCode from 'qrcode';
@@ -63,7 +62,7 @@ export async function renderJsonToHtml(
 		svgs,
 		fontsBase64,
 		chefs,
-    qrImageDataUrl,
+		qrImageDataUrl,
 	});
 
 	//Output
