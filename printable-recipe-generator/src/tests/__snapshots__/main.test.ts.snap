@@ -55,12 +55,11 @@ exports[`Sample recipe  should match snapshot 1`] = `
         align-items: flex-start;
         gap: 1rem;
         margin-bottom: 1.5rem;
-        margin-right: 1rem;
+        margin-right: 0.5rem;
       }
 
       .recipe-title {
         font-size: 26px;
-        font-weight: bold;
         flex: 1;
       }
 
@@ -196,23 +195,12 @@ exports[`Sample recipe  should match snapshot 1`] = `
 
 <div class="recipe-header">
 <div class="recipe-title">Mixed vegetable and potato fritters with harissa
-
-    <div class="author">
-        By
-        
-            
-                Yotam Ottolenghi
-            
-            , 
-        
-            
-                Nigel Slater
-            
-            
-        
-    </div>
-
-
+    
+        <div class="author">
+            By Yotam Ottolenghi, Nigel Slater
+        </div>
+    
+    
 </div>
     
 </div>
@@ -558,12 +546,11 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
         align-items: flex-start;
         gap: 1rem;
         margin-bottom: 1.5rem;
-        margin-right: 1rem;
+        margin-right: 0.5rem;
       }
 
       .recipe-title {
         font-size: 26px;
-        font-weight: bold;
         flex: 1;
       }
 
@@ -699,25 +686,10 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 
 <div class="recipe-header">
 <div class="recipe-title">Mixed vegetable and potato fritters with harissa
-
-    <div class="author">
-        By
-        
-            
-                profile/yotamottolenghi
-            
-            , 
-        
-            
-                profile/nigelslater
-            
-            
-        
-    </div>
-
-
-    <div class="author">By profile/yotamottolenghi,profile/nigelslater</div>
-
+    
+    
+        <div class="author">By profile/yotamottolenghi,profile/nigelslater</div>
+    
 </div>
     
 </div>
@@ -1063,12 +1035,11 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
         align-items: flex-start;
         gap: 1rem;
         margin-bottom: 1.5rem;
-        margin-right: 1rem;
+        margin-right: 0.5rem;
       }
 
       .recipe-title {
         font-size: 26px;
-        font-weight: bold;
         flex: 1;
       }
 
@@ -1204,23 +1175,12 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 
 <div class="recipe-header">
 <div class="recipe-title">Mixed vegetable and potato fritters with harissa
-
-    <div class="author">
-        By
-        
-            
-                Yotam Ottolenghi
-            
-            , 
-        
-            
-                Nigel Slater
-            
-            
-        
-    </div>
-
-
+    
+        <div class="author">
+            By Yotam Ottolenghi, Nigel Slater
+        </div>
+    
+    
 </div>
     
 </div>
@@ -1566,12 +1526,11 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
         align-items: flex-start;
         gap: 1rem;
         margin-bottom: 1.5rem;
-        margin-right: 1rem;
+        margin-right: 0.5rem;
       }
 
       .recipe-title {
         font-size: 26px;
-        font-weight: bold;
         flex: 1;
       }
 
@@ -1707,23 +1666,8 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 
 <div class="recipe-header">
 <div class="recipe-title">Mixed vegetable and potato fritters with harissa
-
-    <div class="author">
-        By
-        
-            
-                profile/yotamottolenghi
-            
-            , 
-        
-            
-                profile/nigelslater
-            
-            
-        
-    </div>
-
-
+    
+    
 </div>
     
 </div>
@@ -2069,12 +2013,11 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
         align-items: flex-start;
         gap: 1rem;
         margin-bottom: 1.5rem;
-        margin-right: 1rem;
+        margin-right: 0.5rem;
       }
 
       .recipe-title {
         font-size: 26px;
-        font-weight: bold;
         flex: 1;
       }
 
@@ -2210,23 +2153,8 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 
 <div class="recipe-header">
 <div class="recipe-title">Mixed vegetable and potato fritters with harissa
-
-    <div class="author">
-        By
-        
-            
-                profile/yotamottolenghi
-            
-            , 
-        
-            
-                profile/nigelslater
-            
-            
-        
-    </div>
-
-
+    
+    
 </div>
     
 </div>
@@ -2572,12 +2500,11 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
         align-items: flex-start;
         gap: 1rem;
         margin-bottom: 1.5rem;
-        margin-right: 1rem;
+        margin-right: 0.5rem;
       }
 
       .recipe-title {
         font-size: 26px;
-        font-weight: bold;
         flex: 1;
       }
 
@@ -2713,23 +2640,12 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 
 <div class="recipe-header">
 <div class="recipe-title">Mixed vegetable and potato fritters with harissa
-
-    <div class="author">
-        By
-        
-            
-                Yotam Ottolenghi
-            
-            , 
-        
-            
-                Nigel Slater
-            
-            
-        
-    </div>
-
-
+    
+        <div class="author">
+            By Yotam Ottolenghi, Nigel Slater
+        </div>
+    
+    
 </div>
     
 </div>
@@ -3075,12 +2991,11 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
         align-items: flex-start;
         gap: 1rem;
         margin-bottom: 1.5rem;
-        margin-right: 1rem;
+        margin-right: 0.5rem;
       }
 
       .recipe-title {
         font-size: 26px;
-        font-weight: bold;
         flex: 1;
       }
 
@@ -3216,23 +3131,12 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 
 <div class="recipe-header">
 <div class="recipe-title">Mixed vegetable and potato fritters with harissa
-
-    <div class="author">
-        By
-        
-            
-                Yotam Ottolenghi
-            
-            , 
-        
-            
-                Nigel Slater
-            
-            
-        
-    </div>
-
-
+    
+        <div class="author">
+            By Yotam Ottolenghi, Nigel Slater
+        </div>
+    
+    
 </div>
     
         <div class="qr-section">

@@ -62,7 +62,7 @@ describe('Sample recipe ', () => {
 			recipe,
 			svgs,
 			fontsBase64,
-			undefined,
+			chefs: undefined,
 			qrImageDataUrl: '',
 		});
 		expect(html).toMatchSnapshot();

@@ -52,12 +52,11 @@
         align-items: flex-start;
         gap: 1rem;
         margin-bottom: 1.5rem;
-        margin-right: 1rem;
+        margin-right: 0.5rem;
       }
 
       .recipe-title {
         font-size: 26px;
-        font-weight: bold;
         flex: 1;
       }
 
@@ -173,22 +172,19 @@
 
 <div class="recipe-header">
 <div class="recipe-title"><%= recipe.title %>
-<% if (Array.isArray(recipe.contributors)) { %>
-    <div class="author">
-        By
-        <% recipe.contributors.forEach((contributorId, index) => { %>
-            <% if (typeof chefs === 'object' && chefs?.[contributorId]) { %>
-                <%= chefs[contributorId].webTitle %>
-            <% } else { %>
-                <%= contributorId %>
-            <% } %>
-            <% if (index < recipe.contributors.length - 1) { %>, <% } %>
-        <% }) %>
-    </div>
-<% } %>
-<% if (recipe.contributors && typeof chefs != 'object' ) { %>
-    <div class="author">By <%=  recipe.contributors %></div>
-<% } %>
+    <% if (Array.isArray(recipe.contributors)) {
+        const names = recipe.contributors
+                .map(id => (chefs?.[id]?.webTitle))
+                .filter(name => name);
+    if (names.length > 0) {
+    %>
+        <div class="author">
+            By <%= names.join(', ') %>
+        </div>
+    <%  } } %>
+    <% if (recipe.contributors && typeof chefs != 'object' && !chefs?.[contributorId]) { %>
+        <div class="author">By <%=  recipe.contributors %></div>
+    <% } %>
 </div>
     <%if (qrImageDataUrl && qrImageDataUrl!=null || qrImageDataUrl?.length>0) { %>
         <div class="qr-section">
