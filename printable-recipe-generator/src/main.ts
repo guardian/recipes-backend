@@ -6,7 +6,7 @@ import fetch from 'node-fetch';
 import * as QRCode from 'qrcode';
 import { fontsBase64, svgs } from './assets/assetloader';
 
-const stage: string | undefined = process.env['STAGE'];
+const stage: string = process.env['STAGE'] ?? 'CODE'; //TODO check this, stage is undefined while running on CODE. Right now provided default CODE value
 
 //load Contributors
 interface ChefData {
@@ -24,14 +24,12 @@ interface RecipeData {
 async function getChefs(): Promise<Record<string, ChefData> | undefined> {
 	try {
 		const endpoint: string =
-			stage?.toLowerCase() === 'prod'
+			stage.toLowerCase() === 'prod'
 				? 'https://recipes.guardianapis.com/v2/contributors.json'
-				: stage?.toLowerCase() === 'code'
+				: stage.toLowerCase() === 'code'
 				? 'https://recipes.code.dev-guardianapis.com/v2/contributors.json'
 				: '';
-		if (stage)
-			console.log(`the stage found is ${stage}, endpoint is ${endpoint}`);
-		else console.log('stage is undefined');
+		console.log(`the stage found is ${stage}, endpoint is ${endpoint}`);
 		const resp = await fetch(endpoint);
 		const data = (await resp.json()) as Record<string, ChefData>;
 		return data;
