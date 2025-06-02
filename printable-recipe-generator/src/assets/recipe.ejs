@@ -172,10 +172,22 @@
 
 <div class="recipe-header">
     <div class="recipe-title"><%= recipe.title %>
-        <% if (recipe.contributors && typeof chefs === 'object' && chefs?.[recipe.contributors]) { %>
-            <div class="author">By <%=  chefs[recipe.contributors].webTitle %></div>
-        <% } %>
+        <% if (Array.isArray(recipe.contributors)) {
+            var names = [];
+            for (var i = 0; i < recipe.contributors.length; i++) {
+                var id = recipe.contributors[i];
+                if (typeof chefs === 'object' && chefs?.[id] && chefs?.[id].webTitle) {
+                    names.push(chefs[id].webTitle);
+                }
+            }
+        if (names.length > 0) {
+        %>
+            <div class="author">
+                By <%= names.join(', ') %>
+            </div>
+        <%  } } %>
     </div>
+
     <%if (qrImageDataUrl && qrImageDataUrl!=null || qrImageDataUrl?.length>0) { %>
         <div class="qr-section">
         <img src="<%= qrImageDataUrl %>" alt="Scan to open app" />
