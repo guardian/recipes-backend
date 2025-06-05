@@ -30,16 +30,16 @@ const fontPath = (fileName: string) =>
 		? path.join(__dirname, 'fonts', fileName)
 		: path.join(__dirname, 'src', 'assets', 'fonts', fileName);
 export const fontsBase64 = {
-	RegularEgyptianFont: fs
+	GuardianRegularEgyptianFont: fs
 		.readFileSync(fontPath('GuardianTextEgyptian-Regular.ttf'))
 		.toString('base64'),
-	RegularSansFont: fs
+	GuardianRegularSansFont: fs
 		.readFileSync(fontPath('GuardianTextSans-Regular.ttf'))
 		.toString('base64'),
-	HeadlineSemiBoldFont: fs
+	GuardianHeadlineSemiBoldFont: fs
 		.readFileSync(fontPath('GHGuardianHeadline-Semibold.otf'))
 		.toString('base64'),
-	SansBoldFont: fs
+	GuardianSansBoldFont: fs
 		.readFileSync(fontPath('GuardianTextSans-Bold.ttf'))
 		.toString('base64'),
 };

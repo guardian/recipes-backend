@@ -6,23 +6,23 @@
     <style>
       @font-face {
         font-family: 'GuardianRegularEgyptianFont';
-        src: url("data:font/ttf;base64,<%= fontsBase64.RegularEgyptianFont %>") format('truetype');
+        src: url("data:font/ttf;base64,<%= fontsBase64.GuardianRegularEgyptianFont %>") format('truetype');
       }
       @font-face {
         font-family: 'GuardianRegularSansFont';
-        src: url("data:font/ttf;base64;<%= fontsBase64.RegularSansFont %>") format('truetype');
+        src: url("data:font/ttf;base64;<%= fontsBase64.GuardianRegularSansFont %>") format('truetype');
       }
       @font-face {
         font-family: 'GuardianHeadlineSemiBoldFont';
-        src: url("data:font/otf;base64;<%= fontsBase64.HeadlineSemiBoldFont %>") format('opentype');
+        src: url("data:font/otf;base64;<%= fontsBase64.GuardianHeadlineSemiBoldFont %>") format('opentype');
       }
       @font-face {
         font-family: 'GuardianSansBoldFont';
-        src: url("data:font/ttf;base64;<%= fontsBase64.SansBoldFont %>") format('truetype');
+        src: url("data:font/ttf;base64;<%= fontsBase64.GuardianSansBoldFont %>") format('truetype');
       }
 
       body {
-        font-family: 'GuardianRegularEgyptianFont', sans-serif;
+        font-family: 'GuardianRegularEgyptianFont';
         font-size: 17px;
         line-height: 1.6;
         margin: 40px;
@@ -159,8 +159,11 @@
 
     </style>
 </head>
-<body>
 
+<body>
+<!--
+  Font preview -- : <%= fontsBase64.RegularEgyptianFont.substring(0, 100) %>
+-->
 <div class="header">
     <div class="feast-logo">
         <%- svgs.FeastLogo %>

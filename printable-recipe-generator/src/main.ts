@@ -57,6 +57,13 @@ export async function renderJsonToHtml(
 	const templatePath = path.join(__dirname, 'src', 'assets', 'recipe.ejs');
 	const template = fs.readFileSync(templatePath, 'utf-8');
 
+	console.log(
+		`fontsBase64.RegularEgyptianFont (first 100 chars):  ${fontsBase64.RegularEgyptianFont.slice(
+			0,
+			100,
+		)}`,
+	); //print first 100 char to prove its presence
+
 	//Render html
 	const renderHtml = renderTemplate(template, {
 		recipe,
