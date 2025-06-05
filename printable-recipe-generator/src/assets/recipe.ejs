@@ -22,7 +22,7 @@
       }
 
       body {
-        font-family: 'GuardianRegularEgyptianFont', sans-serif;
+        font-family: GuardianRegularEgyptianFont, sans-serif;
         font-size: 17px;
         line-height: 1.6;
         margin: 40px;
@@ -30,7 +30,7 @@
       }
 
       .header {
-        font-family: 'GuardianHeadlineSemiBoldFont', sans-serif;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
         font-size: 28px;
         display: flex;
         justify-content: space-between;
@@ -56,7 +56,8 @@
       }
 
       .recipe-title {
-        font-size: 26px;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
+        font-size: 28px;
         flex: 1;
       }
 
@@ -66,7 +67,7 @@
       }
 
       .author {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 20px;
         margin-bottom: 20px;
         color: #3D4D26;
@@ -87,11 +88,16 @@
       }
 
       .timing-row {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         display: flex;
         align-items: center;
         gap: 0.6rem;
+      }
+
+      .description {
+        font-family: GuardianRegularEgyptianFont, sans-serif;
+        font-size: 17px;
       }
 
       .icon {
@@ -108,7 +114,8 @@
 
       .two-column-flow h3 {
         break-after: avoid;
-        font-family: 'GuardianSansBoldFont', sans-serif;
+        font-family: GuardianSansBoldFont, sans-serif;
+        font-size: 20px;
         margin-top: 1rem;
       }
 
@@ -120,7 +127,7 @@
 
       .two-column-flow li {
         break-inside: avoid;
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 17px;
         margin-bottom: 0.5rem;
       }
@@ -148,7 +155,7 @@
       }
 
       .footer-text a {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         text-decoration: none;
       }
@@ -248,7 +255,7 @@
 <div class="description"><%= recipe.description %></div>
 
 <div class="two-column-flow">
-    <div class="column ingredients">
+    <div>
         <h3>Ingredients</h3>
         <ul>
             <% for (const group of recipe.ingredients || []) { %>
@@ -266,7 +273,7 @@
         </ul>
     </div>
 
-    <div class="column method">
+    <div>
         <h3>Method</h3>
         <ul>
             <% for (const step of recipe.instructions || []) { %>
@@ -284,7 +291,7 @@
       <%- svgs["feast-book-outlined"] %>
     </span>
         <span class="footer-text">
-        <%= recipe.bookCredit %>>
+        <%= recipe.bookCredit %>
     </span>
         <% } %>
     </div>

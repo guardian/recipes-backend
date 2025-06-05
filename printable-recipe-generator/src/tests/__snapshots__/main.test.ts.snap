@@ -25,7 +25,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
       }
 
       body {
-        font-family: 'GuardianRegularEgyptianFont', sans-serif;
+        font-family: GuardianRegularEgyptianFont, sans-serif;
         font-size: 17px;
         line-height: 1.6;
         margin: 40px;
@@ -33,7 +33,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
       }
 
       .header {
-        font-family: 'GuardianHeadlineSemiBoldFont', sans-serif;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
         font-size: 28px;
         display: flex;
         justify-content: space-between;
@@ -59,7 +59,8 @@ exports[`Sample recipe  should match snapshot 1`] = `
       }
 
       .recipe-title {
-        font-size: 26px;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
+        font-size: 28px;
         flex: 1;
       }
 
@@ -69,7 +70,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
       }
 
       .author {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 20px;
         margin-bottom: 20px;
         color: #3D4D26;
@@ -90,11 +91,16 @@ exports[`Sample recipe  should match snapshot 1`] = `
       }
 
       .timing-row {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         display: flex;
         align-items: center;
         gap: 0.6rem;
+      }
+
+      .description {
+        font-family: GuardianRegularEgyptianFont, sans-serif;
+        font-size: 17px;
       }
 
       .icon {
@@ -111,7 +117,8 @@ exports[`Sample recipe  should match snapshot 1`] = `
 
       .two-column-flow h3 {
         break-after: avoid;
-        font-family: 'GuardianSansBoldFont', sans-serif;
+        font-family: GuardianSansBoldFont, sans-serif;
+        font-size: 20px;
         margin-top: 1rem;
       }
 
@@ -123,7 +130,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
 
       .two-column-flow li {
         break-inside: avoid;
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 17px;
         margin-bottom: 0.5rem;
       }
@@ -151,7 +158,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
       }
 
       .footer-text a {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         text-decoration: none;
       }
@@ -271,7 +278,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
 <div class="description">These are inspired by Moroccan maakouda, a fried potato street food snack. It’s usually stuffed into a sandwich with lots of harissa, although you can also serve it with yoghurt, to make it more kid-friendly. Serve warm or at room temperature: they won’t be as crisp once they’ve sat around for a bit, but they’ll still taste great</div>
 
 <div class="two-column-flow">
-    <div class="column ingredients">
+    <div>
         <h3>Ingredients</h3>
         <ul>
             
@@ -457,7 +464,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
         </ul>
     </div>
 
-    <div class="column method">
+    <div>
         <h3>Method</h3>
         <ul>
             
@@ -482,6 +489,24 @@ exports[`Sample recipe  should match snapshot 1`] = `
 
 <footer class="recipe-footer">
     <div class="footer-line">
+        
+    <span class="footer-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6603_21139)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.81836 2C5.99107 2 4.50977 3.48131 4.50977 5.30859V18.5625L4.51173 18.5607C4.51042 18.5989 4.50977 18.6373 4.50977 18.6758C4.50977 20.5031 5.99107 21.9844 7.81836 21.9844H19.625L20.5001 21.123V20.3594H19.8751C18.9453 20.3594 18.1915 19.6056 18.1915 18.6758C18.1915 17.746 18.9453 16.9922 19.8751 16.9922H20.5001V2.87305L19.625 2H7.81836ZM16.5665 18.6758C16.5665 19.2906 16.7342 19.8662 17.0263 20.3594H7.81836C6.88854 20.3594 6.13477 19.6056 6.13477 18.6758C6.13477 17.746 6.88854 16.9922 7.81836 16.9922H17.0263C16.7342 17.4854 16.5665 18.061 16.5665 18.6758ZM18.8691 3.625H7.86914C7.05664 3.625 6.24414 4.375 6.24414 5.375V15.8125C6.24414 15.8125 6.86914 15.375 7.74414 15.375H18.8691V3.625Z" fill="#20201D"/>
+<path d="M7.86914 5.25H9.49414V13.75H7.86914V5.25Z" fill="#20201D"/>
+</g>
+<defs>
+<clipPath id="clip0_6603_21139">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+
+    </span>
+        <span class="footer-text">
+        Some bookCredit text to come here...
+    </span>
         
     </div>
 </footer>
@@ -519,7 +544,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
       }
 
       body {
-        font-family: 'GuardianRegularEgyptianFont', sans-serif;
+        font-family: GuardianRegularEgyptianFont, sans-serif;
         font-size: 17px;
         line-height: 1.6;
         margin: 40px;
@@ -527,7 +552,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
       }
 
       .header {
-        font-family: 'GuardianHeadlineSemiBoldFont', sans-serif;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
         font-size: 28px;
         display: flex;
         justify-content: space-between;
@@ -553,7 +578,8 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
       }
 
       .recipe-title {
-        font-size: 26px;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
+        font-size: 28px;
         flex: 1;
       }
 
@@ -563,7 +589,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
       }
 
       .author {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 20px;
         margin-bottom: 20px;
         color: #3D4D26;
@@ -584,11 +610,16 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
       }
 
       .timing-row {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         display: flex;
         align-items: center;
         gap: 0.6rem;
+      }
+
+      .description {
+        font-family: GuardianRegularEgyptianFont, sans-serif;
+        font-size: 17px;
       }
 
       .icon {
@@ -605,7 +636,8 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 
       .two-column-flow h3 {
         break-after: avoid;
-        font-family: 'GuardianSansBoldFont', sans-serif;
+        font-family: GuardianSansBoldFont, sans-serif;
+        font-size: 20px;
         margin-top: 1rem;
       }
 
@@ -617,7 +649,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 
       .two-column-flow li {
         break-inside: avoid;
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 17px;
         margin-bottom: 0.5rem;
       }
@@ -645,7 +677,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
       }
 
       .footer-text a {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         text-decoration: none;
       }
@@ -761,7 +793,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 <div class="description">These are inspired by Moroccan maakouda, a fried potato street food snack. It’s usually stuffed into a sandwich with lots of harissa, although you can also serve it with yoghurt, to make it more kid-friendly. Serve warm or at room temperature: they won’t be as crisp once they’ve sat around for a bit, but they’ll still taste great</div>
 
 <div class="two-column-flow">
-    <div class="column ingredients">
+    <div>
         <h3>Ingredients</h3>
         <ul>
             
@@ -947,7 +979,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
         </ul>
     </div>
 
-    <div class="column method">
+    <div>
         <h3>Method</h3>
         <ul>
             
@@ -972,6 +1004,24 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 
 <footer class="recipe-footer">
     <div class="footer-line">
+        
+    <span class="footer-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6603_21139)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.81836 2C5.99107 2 4.50977 3.48131 4.50977 5.30859V18.5625L4.51173 18.5607C4.51042 18.5989 4.50977 18.6373 4.50977 18.6758C4.50977 20.5031 5.99107 21.9844 7.81836 21.9844H19.625L20.5001 21.123V20.3594H19.8751C18.9453 20.3594 18.1915 19.6056 18.1915 18.6758C18.1915 17.746 18.9453 16.9922 19.8751 16.9922H20.5001V2.87305L19.625 2H7.81836ZM16.5665 18.6758C16.5665 19.2906 16.7342 19.8662 17.0263 20.3594H7.81836C6.88854 20.3594 6.13477 19.6056 6.13477 18.6758C6.13477 17.746 6.88854 16.9922 7.81836 16.9922H17.0263C16.7342 17.4854 16.5665 18.061 16.5665 18.6758ZM18.8691 3.625H7.86914C7.05664 3.625 6.24414 4.375 6.24414 5.375V15.8125C6.24414 15.8125 6.86914 15.375 7.74414 15.375H18.8691V3.625Z" fill="#20201D"/>
+<path d="M7.86914 5.25H9.49414V13.75H7.86914V5.25Z" fill="#20201D"/>
+</g>
+<defs>
+<clipPath id="clip0_6603_21139">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+
+    </span>
+        <span class="footer-text">
+        Some bookCredit text to come here...
+    </span>
         
     </div>
 </footer>
@@ -1009,7 +1059,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
       }
 
       body {
-        font-family: 'GuardianRegularEgyptianFont', sans-serif;
+        font-family: GuardianRegularEgyptianFont, sans-serif;
         font-size: 17px;
         line-height: 1.6;
         margin: 40px;
@@ -1017,7 +1067,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
       }
 
       .header {
-        font-family: 'GuardianHeadlineSemiBoldFont', sans-serif;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
         font-size: 28px;
         display: flex;
         justify-content: space-between;
@@ -1043,7 +1093,8 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
       }
 
       .recipe-title {
-        font-size: 26px;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
+        font-size: 28px;
         flex: 1;
       }
 
@@ -1053,7 +1104,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
       }
 
       .author {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 20px;
         margin-bottom: 20px;
         color: #3D4D26;
@@ -1074,11 +1125,16 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
       }
 
       .timing-row {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         display: flex;
         align-items: center;
         gap: 0.6rem;
+      }
+
+      .description {
+        font-family: GuardianRegularEgyptianFont, sans-serif;
+        font-size: 17px;
       }
 
       .icon {
@@ -1095,7 +1151,8 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 
       .two-column-flow h3 {
         break-after: avoid;
-        font-family: 'GuardianSansBoldFont', sans-serif;
+        font-family: GuardianSansBoldFont, sans-serif;
+        font-size: 20px;
         margin-top: 1rem;
       }
 
@@ -1107,7 +1164,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 
       .two-column-flow li {
         break-inside: avoid;
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 17px;
         margin-bottom: 0.5rem;
       }
@@ -1135,7 +1192,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
       }
 
       .footer-text a {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         text-decoration: none;
       }
@@ -1255,7 +1312,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 <div class="description">These are inspired by Moroccan maakouda, a fried potato street food snack. It’s usually stuffed into a sandwich with lots of harissa, although you can also serve it with yoghurt, to make it more kid-friendly. Serve warm or at room temperature: they won’t be as crisp once they’ve sat around for a bit, but they’ll still taste great</div>
 
 <div class="two-column-flow">
-    <div class="column ingredients">
+    <div>
         <h3>Ingredients</h3>
         <ul>
             
@@ -1441,7 +1498,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
         </ul>
     </div>
 
-    <div class="column method">
+    <div>
         <h3>Method</h3>
         <ul>
             
@@ -1466,6 +1523,24 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 
 <footer class="recipe-footer">
     <div class="footer-line">
+        
+    <span class="footer-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6603_21139)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.81836 2C5.99107 2 4.50977 3.48131 4.50977 5.30859V18.5625L4.51173 18.5607C4.51042 18.5989 4.50977 18.6373 4.50977 18.6758C4.50977 20.5031 5.99107 21.9844 7.81836 21.9844H19.625L20.5001 21.123V20.3594H19.8751C18.9453 20.3594 18.1915 19.6056 18.1915 18.6758C18.1915 17.746 18.9453 16.9922 19.8751 16.9922H20.5001V2.87305L19.625 2H7.81836ZM16.5665 18.6758C16.5665 19.2906 16.7342 19.8662 17.0263 20.3594H7.81836C6.88854 20.3594 6.13477 19.6056 6.13477 18.6758C6.13477 17.746 6.88854 16.9922 7.81836 16.9922H17.0263C16.7342 17.4854 16.5665 18.061 16.5665 18.6758ZM18.8691 3.625H7.86914C7.05664 3.625 6.24414 4.375 6.24414 5.375V15.8125C6.24414 15.8125 6.86914 15.375 7.74414 15.375H18.8691V3.625Z" fill="#20201D"/>
+<path d="M7.86914 5.25H9.49414V13.75H7.86914V5.25Z" fill="#20201D"/>
+</g>
+<defs>
+<clipPath id="clip0_6603_21139">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+
+    </span>
+        <span class="footer-text">
+        Some bookCredit text to come here...
+    </span>
         
     </div>
 </footer>
@@ -1503,7 +1578,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
       }
 
       body {
-        font-family: 'GuardianRegularEgyptianFont', sans-serif;
+        font-family: GuardianRegularEgyptianFont, sans-serif;
         font-size: 17px;
         line-height: 1.6;
         margin: 40px;
@@ -1511,7 +1586,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
       }
 
       .header {
-        font-family: 'GuardianHeadlineSemiBoldFont', sans-serif;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
         font-size: 28px;
         display: flex;
         justify-content: space-between;
@@ -1537,7 +1612,8 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
       }
 
       .recipe-title {
-        font-size: 26px;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
+        font-size: 28px;
         flex: 1;
       }
 
@@ -1547,7 +1623,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
       }
 
       .author {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 20px;
         margin-bottom: 20px;
         color: #3D4D26;
@@ -1568,11 +1644,16 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
       }
 
       .timing-row {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         display: flex;
         align-items: center;
         gap: 0.6rem;
+      }
+
+      .description {
+        font-family: GuardianRegularEgyptianFont, sans-serif;
+        font-size: 17px;
       }
 
       .icon {
@@ -1589,7 +1670,8 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 
       .two-column-flow h3 {
         break-after: avoid;
-        font-family: 'GuardianSansBoldFont', sans-serif;
+        font-family: GuardianSansBoldFont, sans-serif;
+        font-size: 20px;
         margin-top: 1rem;
       }
 
@@ -1601,7 +1683,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 
       .two-column-flow li {
         break-inside: avoid;
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 17px;
         margin-bottom: 0.5rem;
       }
@@ -1629,7 +1711,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
       }
 
       .footer-text a {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         text-decoration: none;
       }
@@ -1745,7 +1827,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 <div class="description">These are inspired by Moroccan maakouda, a fried potato street food snack. It’s usually stuffed into a sandwich with lots of harissa, although you can also serve it with yoghurt, to make it more kid-friendly. Serve warm or at room temperature: they won’t be as crisp once they’ve sat around for a bit, but they’ll still taste great</div>
 
 <div class="two-column-flow">
-    <div class="column ingredients">
+    <div>
         <h3>Ingredients</h3>
         <ul>
             
@@ -1931,7 +2013,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
         </ul>
     </div>
 
-    <div class="column method">
+    <div>
         <h3>Method</h3>
         <ul>
             
@@ -1956,6 +2038,24 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 
 <footer class="recipe-footer">
     <div class="footer-line">
+        
+    <span class="footer-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6603_21139)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.81836 2C5.99107 2 4.50977 3.48131 4.50977 5.30859V18.5625L4.51173 18.5607C4.51042 18.5989 4.50977 18.6373 4.50977 18.6758C4.50977 20.5031 5.99107 21.9844 7.81836 21.9844H19.625L20.5001 21.123V20.3594H19.8751C18.9453 20.3594 18.1915 19.6056 18.1915 18.6758C18.1915 17.746 18.9453 16.9922 19.8751 16.9922H20.5001V2.87305L19.625 2H7.81836ZM16.5665 18.6758C16.5665 19.2906 16.7342 19.8662 17.0263 20.3594H7.81836C6.88854 20.3594 6.13477 19.6056 6.13477 18.6758C6.13477 17.746 6.88854 16.9922 7.81836 16.9922H17.0263C16.7342 17.4854 16.5665 18.061 16.5665 18.6758ZM18.8691 3.625H7.86914C7.05664 3.625 6.24414 4.375 6.24414 5.375V15.8125C6.24414 15.8125 6.86914 15.375 7.74414 15.375H18.8691V3.625Z" fill="#20201D"/>
+<path d="M7.86914 5.25H9.49414V13.75H7.86914V5.25Z" fill="#20201D"/>
+</g>
+<defs>
+<clipPath id="clip0_6603_21139">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+
+    </span>
+        <span class="footer-text">
+        Some bookCredit text to come here...
+    </span>
         
     </div>
 </footer>
@@ -1993,7 +2093,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
       }
 
       body {
-        font-family: 'GuardianRegularEgyptianFont', sans-serif;
+        font-family: GuardianRegularEgyptianFont, sans-serif;
         font-size: 17px;
         line-height: 1.6;
         margin: 40px;
@@ -2001,7 +2101,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
       }
 
       .header {
-        font-family: 'GuardianHeadlineSemiBoldFont', sans-serif;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
         font-size: 28px;
         display: flex;
         justify-content: space-between;
@@ -2027,7 +2127,8 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
       }
 
       .recipe-title {
-        font-size: 26px;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
+        font-size: 28px;
         flex: 1;
       }
 
@@ -2037,7 +2138,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
       }
 
       .author {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 20px;
         margin-bottom: 20px;
         color: #3D4D26;
@@ -2058,11 +2159,16 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
       }
 
       .timing-row {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         display: flex;
         align-items: center;
         gap: 0.6rem;
+      }
+
+      .description {
+        font-family: GuardianRegularEgyptianFont, sans-serif;
+        font-size: 17px;
       }
 
       .icon {
@@ -2079,7 +2185,8 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 
       .two-column-flow h3 {
         break-after: avoid;
-        font-family: 'GuardianSansBoldFont', sans-serif;
+        font-family: GuardianSansBoldFont, sans-serif;
+        font-size: 20px;
         margin-top: 1rem;
       }
 
@@ -2091,7 +2198,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 
       .two-column-flow li {
         break-inside: avoid;
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 17px;
         margin-bottom: 0.5rem;
       }
@@ -2119,7 +2226,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
       }
 
       .footer-text a {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         text-decoration: none;
       }
@@ -2235,7 +2342,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 <div class="description">These are inspired by Moroccan maakouda, a fried potato street food snack. It’s usually stuffed into a sandwich with lots of harissa, although you can also serve it with yoghurt, to make it more kid-friendly. Serve warm or at room temperature: they won’t be as crisp once they’ve sat around for a bit, but they’ll still taste great</div>
 
 <div class="two-column-flow">
-    <div class="column ingredients">
+    <div>
         <h3>Ingredients</h3>
         <ul>
             
@@ -2421,7 +2528,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
         </ul>
     </div>
 
-    <div class="column method">
+    <div>
         <h3>Method</h3>
         <ul>
             
@@ -2446,6 +2553,24 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 
 <footer class="recipe-footer">
     <div class="footer-line">
+        
+    <span class="footer-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6603_21139)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.81836 2C5.99107 2 4.50977 3.48131 4.50977 5.30859V18.5625L4.51173 18.5607C4.51042 18.5989 4.50977 18.6373 4.50977 18.6758C4.50977 20.5031 5.99107 21.9844 7.81836 21.9844H19.625L20.5001 21.123V20.3594H19.8751C18.9453 20.3594 18.1915 19.6056 18.1915 18.6758C18.1915 17.746 18.9453 16.9922 19.8751 16.9922H20.5001V2.87305L19.625 2H7.81836ZM16.5665 18.6758C16.5665 19.2906 16.7342 19.8662 17.0263 20.3594H7.81836C6.88854 20.3594 6.13477 19.6056 6.13477 18.6758C6.13477 17.746 6.88854 16.9922 7.81836 16.9922H17.0263C16.7342 17.4854 16.5665 18.061 16.5665 18.6758ZM18.8691 3.625H7.86914C7.05664 3.625 6.24414 4.375 6.24414 5.375V15.8125C6.24414 15.8125 6.86914 15.375 7.74414 15.375H18.8691V3.625Z" fill="#20201D"/>
+<path d="M7.86914 5.25H9.49414V13.75H7.86914V5.25Z" fill="#20201D"/>
+</g>
+<defs>
+<clipPath id="clip0_6603_21139">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+
+    </span>
+        <span class="footer-text">
+        Some bookCredit text to come here...
+    </span>
         
     </div>
 </footer>
@@ -2483,7 +2608,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
       }
 
       body {
-        font-family: 'GuardianRegularEgyptianFont', sans-serif;
+        font-family: GuardianRegularEgyptianFont, sans-serif;
         font-size: 17px;
         line-height: 1.6;
         margin: 40px;
@@ -2491,7 +2616,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
       }
 
       .header {
-        font-family: 'GuardianHeadlineSemiBoldFont', sans-serif;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
         font-size: 28px;
         display: flex;
         justify-content: space-between;
@@ -2517,7 +2642,8 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
       }
 
       .recipe-title {
-        font-size: 26px;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
+        font-size: 28px;
         flex: 1;
       }
 
@@ -2527,7 +2653,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
       }
 
       .author {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 20px;
         margin-bottom: 20px;
         color: #3D4D26;
@@ -2548,11 +2674,16 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
       }
 
       .timing-row {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         display: flex;
         align-items: center;
         gap: 0.6rem;
+      }
+
+      .description {
+        font-family: GuardianRegularEgyptianFont, sans-serif;
+        font-size: 17px;
       }
 
       .icon {
@@ -2569,7 +2700,8 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 
       .two-column-flow h3 {
         break-after: avoid;
-        font-family: 'GuardianSansBoldFont', sans-serif;
+        font-family: GuardianSansBoldFont, sans-serif;
+        font-size: 20px;
         margin-top: 1rem;
       }
 
@@ -2581,7 +2713,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 
       .two-column-flow li {
         break-inside: avoid;
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 17px;
         margin-bottom: 0.5rem;
       }
@@ -2609,7 +2741,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
       }
 
       .footer-text a {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         text-decoration: none;
       }
@@ -2729,7 +2861,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 <div class="description">These are inspired by Moroccan maakouda, a fried potato street food snack. It’s usually stuffed into a sandwich with lots of harissa, although you can also serve it with yoghurt, to make it more kid-friendly. Serve warm or at room temperature: they won’t be as crisp once they’ve sat around for a bit, but they’ll still taste great</div>
 
 <div class="two-column-flow">
-    <div class="column ingredients">
+    <div>
         <h3>Ingredients</h3>
         <ul>
             
@@ -2915,7 +3047,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
         </ul>
     </div>
 
-    <div class="column method">
+    <div>
         <h3>Method</h3>
         <ul>
             
@@ -2940,6 +3072,24 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 
 <footer class="recipe-footer">
     <div class="footer-line">
+        
+    <span class="footer-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6603_21139)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.81836 2C5.99107 2 4.50977 3.48131 4.50977 5.30859V18.5625L4.51173 18.5607C4.51042 18.5989 4.50977 18.6373 4.50977 18.6758C4.50977 20.5031 5.99107 21.9844 7.81836 21.9844H19.625L20.5001 21.123V20.3594H19.8751C18.9453 20.3594 18.1915 19.6056 18.1915 18.6758C18.1915 17.746 18.9453 16.9922 19.8751 16.9922H20.5001V2.87305L19.625 2H7.81836ZM16.5665 18.6758C16.5665 19.2906 16.7342 19.8662 17.0263 20.3594H7.81836C6.88854 20.3594 6.13477 19.6056 6.13477 18.6758C6.13477 17.746 6.88854 16.9922 7.81836 16.9922H17.0263C16.7342 17.4854 16.5665 18.061 16.5665 18.6758ZM18.8691 3.625H7.86914C7.05664 3.625 6.24414 4.375 6.24414 5.375V15.8125C6.24414 15.8125 6.86914 15.375 7.74414 15.375H18.8691V3.625Z" fill="#20201D"/>
+<path d="M7.86914 5.25H9.49414V13.75H7.86914V5.25Z" fill="#20201D"/>
+</g>
+<defs>
+<clipPath id="clip0_6603_21139">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+
+    </span>
+        <span class="footer-text">
+        Some bookCredit text to come here...
+    </span>
         
     </div>
 </footer>
@@ -2977,7 +3127,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
       }
 
       body {
-        font-family: 'GuardianRegularEgyptianFont', sans-serif;
+        font-family: GuardianRegularEgyptianFont, sans-serif;
         font-size: 17px;
         line-height: 1.6;
         margin: 40px;
@@ -2985,7 +3135,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
       }
 
       .header {
-        font-family: 'GuardianHeadlineSemiBoldFont', sans-serif;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
         font-size: 28px;
         display: flex;
         justify-content: space-between;
@@ -3011,7 +3161,8 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
       }
 
       .recipe-title {
-        font-size: 26px;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
+        font-size: 28px;
         flex: 1;
       }
 
@@ -3021,7 +3172,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
       }
 
       .author {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 20px;
         margin-bottom: 20px;
         color: #3D4D26;
@@ -3042,11 +3193,16 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
       }
 
       .timing-row {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         display: flex;
         align-items: center;
         gap: 0.6rem;
+      }
+
+      .description {
+        font-family: GuardianRegularEgyptianFont, sans-serif;
+        font-size: 17px;
       }
 
       .icon {
@@ -3063,7 +3219,8 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 
       .two-column-flow h3 {
         break-after: avoid;
-        font-family: 'GuardianSansBoldFont', sans-serif;
+        font-family: GuardianSansBoldFont, sans-serif;
+        font-size: 20px;
         margin-top: 1rem;
       }
 
@@ -3075,7 +3232,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 
       .two-column-flow li {
         break-inside: avoid;
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 17px;
         margin-bottom: 0.5rem;
       }
@@ -3103,7 +3260,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
       }
 
       .footer-text a {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         text-decoration: none;
       }
@@ -3227,7 +3384,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 <div class="description">These are inspired by Moroccan maakouda, a fried potato street food snack. It’s usually stuffed into a sandwich with lots of harissa, although you can also serve it with yoghurt, to make it more kid-friendly. Serve warm or at room temperature: they won’t be as crisp once they’ve sat around for a bit, but they’ll still taste great</div>
 
 <div class="two-column-flow">
-    <div class="column ingredients">
+    <div>
         <h3>Ingredients</h3>
         <ul>
             
@@ -3413,7 +3570,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
         </ul>
     </div>
 
-    <div class="column method">
+    <div>
         <h3>Method</h3>
         <ul>
             
@@ -3438,6 +3595,24 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 
 <footer class="recipe-footer">
     <div class="footer-line">
+        
+    <span class="footer-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6603_21139)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.81836 2C5.99107 2 4.50977 3.48131 4.50977 5.30859V18.5625L4.51173 18.5607C4.51042 18.5989 4.50977 18.6373 4.50977 18.6758C4.50977 20.5031 5.99107 21.9844 7.81836 21.9844H19.625L20.5001 21.123V20.3594H19.8751C18.9453 20.3594 18.1915 19.6056 18.1915 18.6758C18.1915 17.746 18.9453 16.9922 19.8751 16.9922H20.5001V2.87305L19.625 2H7.81836ZM16.5665 18.6758C16.5665 19.2906 16.7342 19.8662 17.0263 20.3594H7.81836C6.88854 20.3594 6.13477 19.6056 6.13477 18.6758C6.13477 17.746 6.88854 16.9922 7.81836 16.9922H17.0263C16.7342 17.4854 16.5665 18.061 16.5665 18.6758ZM18.8691 3.625H7.86914C7.05664 3.625 6.24414 4.375 6.24414 5.375V15.8125C6.24414 15.8125 6.86914 15.375 7.74414 15.375H18.8691V3.625Z" fill="#20201D"/>
+<path d="M7.86914 5.25H9.49414V13.75H7.86914V5.25Z" fill="#20201D"/>
+</g>
+<defs>
+<clipPath id="clip0_6603_21139">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+
+    </span>
+        <span class="footer-text">
+        Some bookCredit text to come here...
+    </span>
         
     </div>
 </footer>
