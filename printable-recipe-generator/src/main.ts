@@ -58,7 +58,7 @@ export async function renderJsonToHtml(
 	const template = fs.readFileSync(templatePath, 'utf-8');
 
 	console.log(
-		`fontsBase64.RegularEgyptianFont (first 100 chars):  ${fontsBase64.RegularEgyptianFont.slice(
+		`fontsBase64.RegularEgyptianFont (first 100 chars):  ${fontsBase64.GuardianRegularEgyptianFont.slice(
 			0,
 			100,
 		)}`,
