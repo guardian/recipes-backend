@@ -6,23 +6,23 @@
     <style>
       @font-face {
         font-family: 'GuardianRegularEgyptianFont';
-        src: url("data:fonts/ttf;base64,<%= fontsBase64.RegularEgyptianFont %>") format('opentype');
+        src: url("data:application/x-font-ttf;base64,<%= fontsBase64.GuardianRegularEgyptianFont %>") format('truetype');
       }
       @font-face {
         font-family: 'GuardianRegularSansFont';
-        src: url("data:fonts/ttf;base64;<%= fontsBase64.RegularSansFont %>") format('opentype');
+        src: url("data:application/x-font-ttf;base64,<%= fontsBase64.GuardianRegularSansFont %>") format('truetype');
       }
       @font-face {
         font-family: 'GuardianHeadlineSemiBoldFont';
-        src: url("data:fonts/otf;base64;<%= fontsBase64.HeadlineSemiBoldFont %>") format('truetype');
+        src: url("data:application/x-font-opentype;base64,<%= fontsBase64.GuardianHeadlineSemiBoldFont %>") format('opentype');
       }
       @font-face {
         font-family: 'GuardianSansBoldFont';
-        src: url("data:fonts/ttf;base64;<%= fontsBase64.SansBoldFont %>") format('opentype');
+        src: url("data:application/x-font-ttf;base64,<%= fontsBase64.GuardianSansBoldFont %>") format('truetype');
       }
 
       body {
-        font-family: 'GuardianRegularEgyptianFont', sans-serif;
+        font-family: GuardianRegularEgyptianFont, sans-serif;
         font-size: 17px;
         line-height: 1.6;
         margin: 40px;
@@ -30,7 +30,7 @@
       }
 
       .header {
-        font-family: 'GuardianHeadlineSemiBoldFont', sans-serif;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
         font-size: 28px;
         display: flex;
         justify-content: space-between;
@@ -46,13 +46,28 @@
         height: 40px;
       }
 
+      .recipe-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        margin-right: 0.5rem;
+      }
+
       .recipe-title {
-        font-size: 26px;
-        font-weight: bold;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
+        font-size: 28px;
+        flex: 1;
+      }
+
+      .qr-section img {
+        width: 100px;
+        height: auto;
       }
 
       .author {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 20px;
         margin-bottom: 20px;
         color: #3D4D26;
@@ -73,11 +88,16 @@
       }
 
       .timing-row {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         display: flex;
         align-items: center;
         gap: 0.6rem;
+      }
+
+      .description {
+        font-family: GuardianRegularEgyptianFont, sans-serif;
+        font-size: 17px;
       }
 
       .icon {
@@ -94,7 +114,8 @@
 
       .two-column-flow h3 {
         break-after: avoid;
-        font-family: 'GuardianBoldSansFont', sans-serif;
+        font-family: GuardianSansBoldFont, sans-serif;
+        font-size: 20px;
         margin-top: 1rem;
       }
 
@@ -106,7 +127,7 @@
 
       .two-column-flow li {
         break-inside: avoid;
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 17px;
         margin-bottom: 0.5rem;
       }
@@ -134,7 +155,7 @@
       }
 
       .footer-text a {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         text-decoration: none;
       }
@@ -142,10 +163,14 @@
       h3 {
         font-weight: bold;
       }
+
     </style>
 </head>
-<body>
 
+<body>
+<!--
+  Font preview -- : <%= fontsBase64.GuardianRegularEgyptianFont.substring(0, 100) %>
+-->
 <div class="header">
     <div class="feast-logo">
         <%- svgs.FeastLogo %>
@@ -155,24 +180,30 @@
     </div>
 </div>
 
-<div class="recipe-title"><%= recipe.title %></div>
-<% if (Array.isArray(recipe.contributors)) { %>
-    <div class="author">
-        By
-        <% recipe.contributors.forEach((contributorId, index) => { %>
-            <% if (typeof chefs === 'object' && chefs?.[contributorId]) { %>
-                <%= chefs[contributorId].webTitle %>
-            <% } else { %>
-                <%= contributorId %>
-            <% } %>
-            <% if (index < recipe.contributors.length - 1) { %>, <% } %>
-        <% }) %>
+<div class="recipe-header">
+    <div class="recipe-title"><%= recipe.title %>
+        <% if (Array.isArray(recipe.contributors)) {
+            var names = [];
+            for (var i = 0; i < recipe.contributors.length; i++) {
+                var id = recipe.contributors[i];
+                if (typeof chefs === 'object' && chefs?.[id] && chefs?.[id].webTitle) {
+                    names.push(chefs[id].webTitle);
+                }
+            }
+        if (names.length > 0) {
+        %>
+            <div class="author">
+                By <%= names.join(', ') %>
+            </div>
+        <%  } } %>
     </div>
-<% } %>
-<% if (recipe.contributors && typeof chefs != 'object' ) { %>
-    <div class="author">By <%=  recipe.contributors %></div>
-<% } %>
 
+    <%if (qrImageDataUrl && qrImageDataUrl!=null || qrImageDataUrl?.length>0) { %>
+        <div class="qr-section">
+        <img src="<%= qrImageDataUrl %>" alt="Scan to open app" />
+    </div>
+    <% } %>
+</div>
 
 <% if (recipe.suitableForDietIds && recipe.suitableForDietIds.length) { %>
     <div class="labels">
@@ -224,7 +255,7 @@
 <div class="description"><%= recipe.description %></div>
 
 <div class="two-column-flow">
-    <div class="column ingredients">
+    <div>
         <h3>Ingredients</h3>
         <ul>
             <% for (const group of recipe.ingredients || []) { %>
@@ -242,7 +273,7 @@
         </ul>
     </div>
 
-    <div class="column method">
+    <div>
         <h3>Method</h3>
         <ul>
             <% for (const step of recipe.instructions || []) { %>
@@ -260,22 +291,12 @@
       <%- svgs["feast-book-outlined"] %>
     </span>
         <span class="footer-text">
-        <%= recipe.bookCredit %>>
-    </span>
-        <% } %>
-    </div>
-    <div class="footer-line">
-        <% if (recipe.featuredImage) { %>
-    <span class="footer-icon">
-      <%- svgs.camera %>
-    </span>
-
-        <span class="footer-text">
-        <%= recipe.featuredImage.source %>>
+        <%= recipe.bookCredit %>
     </span>
         <% } %>
     </div>
 </footer>
+
 <% } %>
 
 
