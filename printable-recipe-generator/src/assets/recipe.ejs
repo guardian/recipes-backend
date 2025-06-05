@@ -6,19 +6,19 @@
     <style>
       @font-face {
         font-family: 'GuardianRegularEgyptianFont';
-        src: url("data:font/ttf;base64,<%= fontsBase64.GuardianRegularEgyptianFont %>") format('truetype');
+        src: url("data:application/x-font-ttf;base64,<%= fontsBase64.GuardianRegularEgyptianFont %>") format('truetype');
       }
       @font-face {
         font-family: 'GuardianRegularSansFont';
-        src: url("data:font/ttf;base64;<%= fontsBase64.GuardianRegularSansFont %>") format('truetype');
+        src: url("data:application/x-font-ttf;base64,<%= fontsBase64.GuardianRegularSansFont %>") format('truetype');
       }
       @font-face {
         font-family: 'GuardianHeadlineSemiBoldFont';
-        src: url("data:font/otf;base64;<%= fontsBase64.GuardianHeadlineSemiBoldFont %>") format('opentype');
+        src: url("data:application/x-font-opentype;base64,<%= fontsBase64.GuardianHeadlineSemiBoldFont %>") format('opentype');
       }
       @font-face {
         font-family: 'GuardianSansBoldFont';
-        src: url("data:font/ttf;base64;<%= fontsBase64.GuardianSansBoldFont %>") format('truetype');
+        src: url("data:application/x-font-ttf;base64,<%= fontsBase64.GuardianSansBoldFont %>") format('truetype');
       }
 
       body {
@@ -108,7 +108,7 @@
 
       .two-column-flow h3 {
         break-after: avoid;
-        font-family: 'GuardianBoldSansFont', sans-serif;
+        font-family: 'GuardianSansBoldFont', sans-serif;
         margin-top: 1rem;
       }
 
