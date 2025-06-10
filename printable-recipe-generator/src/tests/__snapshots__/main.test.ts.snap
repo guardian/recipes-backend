@@ -187,13 +187,13 @@ exports[`Sample recipe  should match snapshot 1`] = `
 
       @media print {
         body {
-          /*margin:1cm;*/
+          margin:auto;
           padding: 0;
           print-color-adjust: exact;
         }
 
         .container {
-          /*margin:1cm;*/
+          margin:auto;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
@@ -216,7 +216,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
 
         @page {
           size: A4;
-          margin: 1cm;
+          /*margin: 2cm;*/
         }
       }
 
@@ -755,13 +755,13 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 
       @media print {
         body {
-          /*margin:1cm;*/
+          margin:auto;
           padding: 0;
           print-color-adjust: exact;
         }
 
         .container {
-          /*margin:1cm;*/
+          margin:auto;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
@@ -784,7 +784,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 
         @page {
           size: A4;
-          margin: 1cm;
+          /*margin: 2cm;*/
         }
       }
 
@@ -1319,13 +1319,13 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 
       @media print {
         body {
-          /*margin:1cm;*/
+          margin:auto;
           padding: 0;
           print-color-adjust: exact;
         }
 
         .container {
-          /*margin:1cm;*/
+          margin:auto;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
@@ -1348,7 +1348,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 
         @page {
           size: A4;
-          margin: 1cm;
+          /*margin: 2cm;*/
         }
       }
 
@@ -1887,13 +1887,13 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 
       @media print {
         body {
-          /*margin:1cm;*/
+          margin:auto;
           padding: 0;
           print-color-adjust: exact;
         }
 
         .container {
-          /*margin:1cm;*/
+          margin:auto;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
@@ -1916,7 +1916,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 
         @page {
           size: A4;
-          margin: 1cm;
+          /*margin: 2cm;*/
         }
       }
 
@@ -2451,13 +2451,13 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 
       @media print {
         body {
-          /*margin:1cm;*/
+          margin:auto;
           padding: 0;
           print-color-adjust: exact;
         }
 
         .container {
-          /*margin:1cm;*/
+          margin:auto;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
@@ -2480,7 +2480,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 
         @page {
           size: A4;
-          margin: 1cm;
+          /*margin: 2cm;*/
         }
       }
 
@@ -3015,13 +3015,13 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 
       @media print {
         body {
-          /*margin:1cm;*/
+          margin:auto;
           padding: 0;
           print-color-adjust: exact;
         }
 
         .container {
-          /*margin:1cm;*/
+          margin:auto;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
@@ -3044,7 +3044,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 
         @page {
           size: A4;
-          margin: 1cm;
+          /*margin: 2cm;*/
         }
       }
 
@@ -3583,13 +3583,13 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 
       @media print {
         body {
-          /*margin:1cm;*/
+          margin:auto;
           padding: 0;
           print-color-adjust: exact;
         }
 
         .container {
-          /*margin:1cm;*/
+          margin:auto;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
@@ -3612,7 +3612,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 
         @page {
           size: A4;
-          margin: 1cm;
+          /*margin: 2cm;*/
         }
       }
 
