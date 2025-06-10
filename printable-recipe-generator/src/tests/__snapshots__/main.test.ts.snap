@@ -110,7 +110,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
         display: flex;
         align-items: stretch; /*children stretch to same height*/
         gap: 2rem;
-        margin-top: 1rem;
+        margin-top: 0.5rem;
       }
 
       .two-column-flow > div {
@@ -157,7 +157,6 @@ exports[`Sample recipe  should match snapshot 1`] = `
         display: flex;
         align-items: flex-start;
         gap: 10px;
-        margin-bottom: 10px;
       }
 
       .footer-icon svg {
@@ -179,62 +178,33 @@ exports[`Sample recipe  should match snapshot 1`] = `
 
       @media print {
         body {
-          margin: 0;
+          margin:1cm;
           padding: 0;
           print-color-adjust: exact;
-          height: 100%;
         }
 
         .container {
+          margin:1cm;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
-          height: 100%;
         }
 
         .recipe-content {
           flex: 1;
         }
 
-
         .footer {
-          display: block;
-          padding-top: 1rem;
-          margin-top: auto;
+          display: flex;
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          page-break-before: avoid;
           break-before: avoid;
-          position: static; /* important: no fixed */
-        }
-
-        .no-print {
-          display: none !important; /* Hide anything not needed */
+          flex: 2;
         }
       }
-
-      html, body {
-        height: 100%;
-      }
-
-      @page {
-        size: A4;
-        margin: 1cm;
-      }
-
-      .container {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
-
-      .recipe-content {
-        flex: 1;
-      }
-
 
     </style>
 </head>
@@ -548,6 +518,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
 </div>
     </div>
 
+    <div>
 
 <footer class="footer">
     <div class="footer-line">
@@ -574,6 +545,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
 </footer>
 
 
+</div>
 
 </div>
 </body>
@@ -691,7 +663,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
         display: flex;
         align-items: stretch; /*children stretch to same height*/
         gap: 2rem;
-        margin-top: 1rem;
+        margin-top: 0.5rem;
       }
 
       .two-column-flow > div {
@@ -738,7 +710,6 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
         display: flex;
         align-items: flex-start;
         gap: 10px;
-        margin-bottom: 10px;
       }
 
       .footer-icon svg {
@@ -760,62 +731,33 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 
       @media print {
         body {
-          margin: 0;
+          margin:1cm;
           padding: 0;
           print-color-adjust: exact;
-          height: 100%;
         }
 
         .container {
+          margin:1cm;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
-          height: 100%;
         }
 
         .recipe-content {
           flex: 1;
         }
 
-
         .footer {
-          display: block;
-          padding-top: 1rem;
-          margin-top: auto;
+          display: flex;
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          page-break-before: avoid;
           break-before: avoid;
-          position: static; /* important: no fixed */
-        }
-
-        .no-print {
-          display: none !important; /* Hide anything not needed */
+          flex: 2;
         }
       }
-
-      html, body {
-        height: 100%;
-      }
-
-      @page {
-        size: A4;
-        margin: 1cm;
-      }
-
-      .container {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
-
-      .recipe-content {
-        flex: 1;
-      }
-
 
     </style>
 </head>
@@ -1125,6 +1067,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 </div>
     </div>
 
+    <div>
 
 <footer class="footer">
     <div class="footer-line">
@@ -1151,6 +1094,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 </footer>
 
 
+</div>
 
 </div>
 </body>
@@ -1268,7 +1212,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
         display: flex;
         align-items: stretch; /*children stretch to same height*/
         gap: 2rem;
-        margin-top: 1rem;
+        margin-top: 0.5rem;
       }
 
       .two-column-flow > div {
@@ -1315,7 +1259,6 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
         display: flex;
         align-items: flex-start;
         gap: 10px;
-        margin-bottom: 10px;
       }
 
       .footer-icon svg {
@@ -1337,62 +1280,33 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 
       @media print {
         body {
-          margin: 0;
+          margin:1cm;
           padding: 0;
           print-color-adjust: exact;
-          height: 100%;
         }
 
         .container {
+          margin:1cm;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
-          height: 100%;
         }
 
         .recipe-content {
           flex: 1;
         }
 
-
         .footer {
-          display: block;
-          padding-top: 1rem;
-          margin-top: auto;
+          display: flex;
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          page-break-before: avoid;
           break-before: avoid;
-          position: static; /* important: no fixed */
-        }
-
-        .no-print {
-          display: none !important; /* Hide anything not needed */
+          flex: 2;
         }
       }
-
-      html, body {
-        height: 100%;
-      }
-
-      @page {
-        size: A4;
-        margin: 1cm;
-      }
-
-      .container {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
-
-      .recipe-content {
-        flex: 1;
-      }
-
 
     </style>
 </head>
@@ -1706,6 +1620,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 </div>
     </div>
 
+    <div>
 
 <footer class="footer">
     <div class="footer-line">
@@ -1732,6 +1647,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 </footer>
 
 
+</div>
 
 </div>
 </body>
@@ -1849,7 +1765,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
         display: flex;
         align-items: stretch; /*children stretch to same height*/
         gap: 2rem;
-        margin-top: 1rem;
+        margin-top: 0.5rem;
       }
 
       .two-column-flow > div {
@@ -1896,7 +1812,6 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
         display: flex;
         align-items: flex-start;
         gap: 10px;
-        margin-bottom: 10px;
       }
 
       .footer-icon svg {
@@ -1918,62 +1833,33 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 
       @media print {
         body {
-          margin: 0;
+          margin:1cm;
           padding: 0;
           print-color-adjust: exact;
-          height: 100%;
         }
 
         .container {
+          margin:1cm;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
-          height: 100%;
         }
 
         .recipe-content {
           flex: 1;
         }
 
-
         .footer {
-          display: block;
-          padding-top: 1rem;
-          margin-top: auto;
+          display: flex;
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          page-break-before: avoid;
           break-before: avoid;
-          position: static; /* important: no fixed */
-        }
-
-        .no-print {
-          display: none !important; /* Hide anything not needed */
+          flex: 2;
         }
       }
-
-      html, body {
-        height: 100%;
-      }
-
-      @page {
-        size: A4;
-        margin: 1cm;
-      }
-
-      .container {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
-
-      .recipe-content {
-        flex: 1;
-      }
-
 
     </style>
 </head>
@@ -2283,6 +2169,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 </div>
     </div>
 
+    <div>
 
 <footer class="footer">
     <div class="footer-line">
@@ -2309,6 +2196,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 </footer>
 
 
+</div>
 
 </div>
 </body>
@@ -2426,7 +2314,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
         display: flex;
         align-items: stretch; /*children stretch to same height*/
         gap: 2rem;
-        margin-top: 1rem;
+        margin-top: 0.5rem;
       }
 
       .two-column-flow > div {
@@ -2473,7 +2361,6 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
         display: flex;
         align-items: flex-start;
         gap: 10px;
-        margin-bottom: 10px;
       }
 
       .footer-icon svg {
@@ -2495,62 +2382,33 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 
       @media print {
         body {
-          margin: 0;
+          margin:1cm;
           padding: 0;
           print-color-adjust: exact;
-          height: 100%;
         }
 
         .container {
+          margin:1cm;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
-          height: 100%;
         }
 
         .recipe-content {
           flex: 1;
         }
 
-
         .footer {
-          display: block;
-          padding-top: 1rem;
-          margin-top: auto;
+          display: flex;
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          page-break-before: avoid;
           break-before: avoid;
-          position: static; /* important: no fixed */
-        }
-
-        .no-print {
-          display: none !important; /* Hide anything not needed */
+          flex: 2;
         }
       }
-
-      html, body {
-        height: 100%;
-      }
-
-      @page {
-        size: A4;
-        margin: 1cm;
-      }
-
-      .container {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
-
-      .recipe-content {
-        flex: 1;
-      }
-
 
     </style>
 </head>
@@ -2860,6 +2718,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 </div>
     </div>
 
+    <div>
 
 <footer class="footer">
     <div class="footer-line">
@@ -2886,6 +2745,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 </footer>
 
 
+</div>
 
 </div>
 </body>
@@ -3003,7 +2863,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
         display: flex;
         align-items: stretch; /*children stretch to same height*/
         gap: 2rem;
-        margin-top: 1rem;
+        margin-top: 0.5rem;
       }
 
       .two-column-flow > div {
@@ -3050,7 +2910,6 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
         display: flex;
         align-items: flex-start;
         gap: 10px;
-        margin-bottom: 10px;
       }
 
       .footer-icon svg {
@@ -3072,62 +2931,33 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 
       @media print {
         body {
-          margin: 0;
+          margin:1cm;
           padding: 0;
           print-color-adjust: exact;
-          height: 100%;
         }
 
         .container {
+          margin:1cm;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
-          height: 100%;
         }
 
         .recipe-content {
           flex: 1;
         }
 
-
         .footer {
-          display: block;
-          padding-top: 1rem;
-          margin-top: auto;
+          display: flex;
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          page-break-before: avoid;
           break-before: avoid;
-          position: static; /* important: no fixed */
-        }
-
-        .no-print {
-          display: none !important; /* Hide anything not needed */
+          flex: 2;
         }
       }
-
-      html, body {
-        height: 100%;
-      }
-
-      @page {
-        size: A4;
-        margin: 1cm;
-      }
-
-      .container {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
-
-      .recipe-content {
-        flex: 1;
-      }
-
 
     </style>
 </head>
@@ -3441,6 +3271,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 </div>
     </div>
 
+    <div>
 
 <footer class="footer">
     <div class="footer-line">
@@ -3467,6 +3298,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 </footer>
 
 
+</div>
 
 </div>
 </body>
@@ -3584,7 +3416,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
         display: flex;
         align-items: stretch; /*children stretch to same height*/
         gap: 2rem;
-        margin-top: 1rem;
+        margin-top: 0.5rem;
       }
 
       .two-column-flow > div {
@@ -3631,7 +3463,6 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
         display: flex;
         align-items: flex-start;
         gap: 10px;
-        margin-bottom: 10px;
       }
 
       .footer-icon svg {
@@ -3653,62 +3484,33 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 
       @media print {
         body {
-          margin: 0;
+          margin:1cm;
           padding: 0;
           print-color-adjust: exact;
-          height: 100%;
         }
 
         .container {
+          margin:1cm;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
-          height: 100%;
         }
 
         .recipe-content {
           flex: 1;
         }
 
-
         .footer {
-          display: block;
-          padding-top: 1rem;
-          margin-top: auto;
+          display: flex;
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          page-break-before: avoid;
           break-before: avoid;
-          position: static; /* important: no fixed */
-        }
-
-        .no-print {
-          display: none !important; /* Hide anything not needed */
+          flex: 2;
         }
       }
-
-      html, body {
-        height: 100%;
-      }
-
-      @page {
-        size: A4;
-        margin: 1cm;
-      }
-
-      .container {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
-
-      .recipe-content {
-        flex: 1;
-      }
-
 
     </style>
 </head>
@@ -4026,6 +3828,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 </div>
     </div>
 
+    <div>
 
 <footer class="footer">
     <div class="footer-line">
@@ -4052,6 +3855,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 </footer>
 
 
+</div>
 
 </div>
 </body>

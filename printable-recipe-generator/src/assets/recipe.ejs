@@ -107,7 +107,7 @@
         display: flex;
         align-items: stretch; /*children stretch to same height*/
         gap: 2rem;
-        margin-top: 1rem;
+        margin-top: 0.5rem;
       }
 
       .two-column-flow > div {
@@ -154,7 +154,6 @@
         display: flex;
         align-items: flex-start;
         gap: 10px;
-        margin-bottom: 10px;
       }
 
       .footer-icon svg {
@@ -176,62 +175,33 @@
 
       @media print {
         body {
-          margin: 0;
+          margin:1cm;
           padding: 0;
           print-color-adjust: exact;
-          height: 100%;
         }
 
         .container {
+          margin:1cm;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
-          height: 100%;
         }
 
         .recipe-content {
           flex: 1;
         }
 
-
         .footer {
-          display: block;
-          padding-top: 1rem;
-          margin-top: auto;
+          display: flex;
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          page-break-before: avoid;
           break-before: avoid;
-          position: static; /* important: no fixed */
-        }
-
-        .no-print {
-          display: none !important; /* Hide anything not needed */
+          flex: 2;
         }
       }
-
-      html, body {
-        height: 100%;
-      }
-
-      @page {
-        size: A4;
-        margin: 1cm;
-      }
-
-      .container {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
-
-      .recipe-content {
-        flex: 1;
-      }
-
 
     </style>
 </head>
@@ -333,6 +303,7 @@
 </div>
     </div>
 
+    <div>
 <% if (recipe.bookCredit || recipe.featuredImage) { %>
 <footer class="footer">
     <div class="footer-line">
@@ -348,6 +319,7 @@
 </footer>
 
 <% } %>
+</div>
 
 </div>
 </body>
