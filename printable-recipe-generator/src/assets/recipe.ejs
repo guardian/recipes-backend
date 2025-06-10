@@ -103,18 +103,27 @@
         vertical-align: middle;
       }
 
+      /*.two-column-flow {*/
+      /*  display: flex;*/
+      /*  align-items: stretch; !*children stretch to same height*!*/
+      /*  gap: 2rem;*/
+      /*  margin-top: 0.5rem;*/
+      /*}*/
+
       .two-column-flow {
         display: flex;
-        align-items: stretch; /*children stretch to same height*/
-        gap: 2rem;
-        margin-top: 0.5rem;
+        column-count: 2;
+        column-gap: 3rem;
+        margin-top: 2rem;
       }
 
       .two-column-flow > div {
         flex: 1; /*equal width columns*/
-        display: flex;
-        flex-direction: column;
+        /*display: flex;*/
+        /*flex-direction: column;*/
       }
+
+
 
       .two-column-flow h3 {
         break-after: avoid;
