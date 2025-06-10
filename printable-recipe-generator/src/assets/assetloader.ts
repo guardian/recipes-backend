@@ -22,6 +22,8 @@ export const svgs = {
 		svgPath('feast-book-outlined.svg'),
 		'utf-8',
 	),
+	'clock-filled': fs.readFileSync(svgPath('clock-filled.svg'), 'utf-8'),
+	'knife-and-fork': fs.readFileSync(svgPath('knife-and-fork.svg'), 'utf-8'),
 };
 
 //load fonts

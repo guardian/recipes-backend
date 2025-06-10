@@ -311,36 +311,29 @@ exports[`Sample recipe  should match snapshot 1`] = `
 <div class="timing-table">
     
         <div class="timing-row">
-            <div>
-                
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10" stroke="#000" stroke-width="2" fill="none"/>
-                        <path d="M12 6v6l4 2" stroke="#000" stroke-width="2" fill="none"/>
-                    </svg>
-                
-            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.142 13.142 16.5 9 16.5C4.85795 16.5 1.5 13.142 1.5 9C1.5 4.85795 4.85795 1.5 9 1.5C13.142 1.5 16.5 4.85795 16.5 9ZM9.81828 8.76137L9.32396 2.86364H8.65919L8.14783 9.25569L9.01715 10.125L13.7728 9.68183V9.00001L9.81828 8.76137Z" fill="#20201D"/>
+</svg>
+
             <div>Prep 25 min</div>
         </div>
     
         <div class="timing-row">
-            <div>
-                
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M4 10h16v2H4z" fill="#000"/>
-                        <circle cx="6" cy="16" r="2" fill="#000"/>
-                        <circle cx="18" cy="16" r="2" fill="#000"/>
-                    </svg>
-                
-            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.142 13.142 16.5 9 16.5C4.85795 16.5 1.5 13.142 1.5 9C1.5 4.85795 4.85795 1.5 9 1.5C13.142 1.5 16.5 4.85795 16.5 9ZM9.81828 8.76137L9.32396 2.86364H8.65919L8.14783 9.25569L9.01715 10.125L13.7728 9.68183V9.00001L9.81828 8.76137Z" fill="#20201D"/>
+</svg>
+
             <div>Cook 1 hr 20 min</div>
         </div>
     
 
     
         <div class="timing-row">
-            <svg class="icon" viewBox="0 0 24 24">
-                <path d="M4 4h16v2H4zM4 8h16v2H4zM4 12h16v2H4z" fill="#000"/>
-            </svg>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.7275 0.75H11.9775C11.9775 0.75 10.2563 7.63875 10.1963 7.87125C10.14 8.10375 10.2563 8.34 10.44 8.44125C10.5075 8.47875 10.8375 8.66999 11.2275 8.89124V16.875L11.6025 17.25H12.3525L12.7275 16.875V0.75Z" fill="#20201D"/>
+<path d="M7.1025 0.75V5.25H6.54L6.36 0.75H5.6025L5.41875 5.25H4.85625V0.75H4.10625C4.10625 0.75 3.7725 5.42625 3.7575 5.62125C3.73875 5.8875 3.78375 6.02626 3.93 6.12376C4.41 6.44251 5.5575 7.32375 5.5275 8.25L5.23125 16.875L5.60625 17.25H6.35625L6.73125 16.875L6.435 8.26875C6.435 8.26875 6.435 8.25375 6.435 8.24625C6.405 7.3275 7.5525 6.44251 8.0325 6.12376C8.1825 6.02626 8.22375 5.8875 8.205 5.62125L7.85625 0.75H7.1025Z" fill="#20201D"/>
+</svg>
+
             <div>Serves 16 fritters</div>
         </div>
     
@@ -898,36 +891,29 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 <div class="timing-table">
     
         <div class="timing-row">
-            <div>
-                
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10" stroke="#000" stroke-width="2" fill="none"/>
-                        <path d="M12 6v6l4 2" stroke="#000" stroke-width="2" fill="none"/>
-                    </svg>
-                
-            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.142 13.142 16.5 9 16.5C4.85795 16.5 1.5 13.142 1.5 9C1.5 4.85795 4.85795 1.5 9 1.5C13.142 1.5 16.5 4.85795 16.5 9ZM9.81828 8.76137L9.32396 2.86364H8.65919L8.14783 9.25569L9.01715 10.125L13.7728 9.68183V9.00001L9.81828 8.76137Z" fill="#20201D"/>
+</svg>
+
             <div>Prep 25 min</div>
         </div>
     
         <div class="timing-row">
-            <div>
-                
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M4 10h16v2H4z" fill="#000"/>
-                        <circle cx="6" cy="16" r="2" fill="#000"/>
-                        <circle cx="18" cy="16" r="2" fill="#000"/>
-                    </svg>
-                
-            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.142 13.142 16.5 9 16.5C4.85795 16.5 1.5 13.142 1.5 9C1.5 4.85795 4.85795 1.5 9 1.5C13.142 1.5 16.5 4.85795 16.5 9ZM9.81828 8.76137L9.32396 2.86364H8.65919L8.14783 9.25569L9.01715 10.125L13.7728 9.68183V9.00001L9.81828 8.76137Z" fill="#20201D"/>
+</svg>
+
             <div>Cook 1 hr 20 min</div>
         </div>
     
 
     
         <div class="timing-row">
-            <svg class="icon" viewBox="0 0 24 24">
-                <path d="M4 4h16v2H4zM4 8h16v2H4zM4 12h16v2H4z" fill="#000"/>
-            </svg>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.7275 0.75H11.9775C11.9775 0.75 10.2563 7.63875 10.1963 7.87125C10.14 8.10375 10.2563 8.34 10.44 8.44125C10.5075 8.47875 10.8375 8.66999 11.2275 8.89124V16.875L11.6025 17.25H12.3525L12.7275 16.875V0.75Z" fill="#20201D"/>
+<path d="M7.1025 0.75V5.25H6.54L6.36 0.75H5.6025L5.41875 5.25H4.85625V0.75H4.10625C4.10625 0.75 3.7725 5.42625 3.7575 5.62125C3.73875 5.8875 3.78375 6.02626 3.93 6.12376C4.41 6.44251 5.5575 7.32375 5.5275 8.25L5.23125 16.875L5.60625 17.25H6.35625L6.73125 16.875L6.435 8.26875C6.435 8.26875 6.435 8.25375 6.435 8.24625C6.405 7.3275 7.5525 6.44251 8.0325 6.12376C8.1825 6.02626 8.22375 5.8875 8.205 5.62125L7.85625 0.75H7.1025Z" fill="#20201D"/>
+</svg>
+
             <div>Serves 16 fritters</div>
         </div>
     
@@ -1489,36 +1475,29 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 <div class="timing-table">
     
         <div class="timing-row">
-            <div>
-                
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10" stroke="#000" stroke-width="2" fill="none"/>
-                        <path d="M12 6v6l4 2" stroke="#000" stroke-width="2" fill="none"/>
-                    </svg>
-                
-            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.142 13.142 16.5 9 16.5C4.85795 16.5 1.5 13.142 1.5 9C1.5 4.85795 4.85795 1.5 9 1.5C13.142 1.5 16.5 4.85795 16.5 9ZM9.81828 8.76137L9.32396 2.86364H8.65919L8.14783 9.25569L9.01715 10.125L13.7728 9.68183V9.00001L9.81828 8.76137Z" fill="#20201D"/>
+</svg>
+
             <div>Prep 25 min</div>
         </div>
     
         <div class="timing-row">
-            <div>
-                
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M4 10h16v2H4z" fill="#000"/>
-                        <circle cx="6" cy="16" r="2" fill="#000"/>
-                        <circle cx="18" cy="16" r="2" fill="#000"/>
-                    </svg>
-                
-            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.142 13.142 16.5 9 16.5C4.85795 16.5 1.5 13.142 1.5 9C1.5 4.85795 4.85795 1.5 9 1.5C13.142 1.5 16.5 4.85795 16.5 9ZM9.81828 8.76137L9.32396 2.86364H8.65919L8.14783 9.25569L9.01715 10.125L13.7728 9.68183V9.00001L9.81828 8.76137Z" fill="#20201D"/>
+</svg>
+
             <div>Cook 1 hr 20 min</div>
         </div>
     
 
     
         <div class="timing-row">
-            <svg class="icon" viewBox="0 0 24 24">
-                <path d="M4 4h16v2H4zM4 8h16v2H4zM4 12h16v2H4z" fill="#000"/>
-            </svg>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.7275 0.75H11.9775C11.9775 0.75 10.2563 7.63875 10.1963 7.87125C10.14 8.10375 10.2563 8.34 10.44 8.44125C10.5075 8.47875 10.8375 8.66999 11.2275 8.89124V16.875L11.6025 17.25H12.3525L12.7275 16.875V0.75Z" fill="#20201D"/>
+<path d="M7.1025 0.75V5.25H6.54L6.36 0.75H5.6025L5.41875 5.25H4.85625V0.75H4.10625C4.10625 0.75 3.7725 5.42625 3.7575 5.62125C3.73875 5.8875 3.78375 6.02626 3.93 6.12376C4.41 6.44251 5.5575 7.32375 5.5275 8.25L5.23125 16.875L5.60625 17.25H6.35625L6.73125 16.875L6.435 8.26875C6.435 8.26875 6.435 8.25375 6.435 8.24625C6.405 7.3275 7.5525 6.44251 8.0325 6.12376C8.1825 6.02626 8.22375 5.8875 8.205 5.62125L7.85625 0.75H7.1025Z" fill="#20201D"/>
+</svg>
+
             <div>Serves 16 fritters</div>
         </div>
     
@@ -2076,36 +2055,29 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 <div class="timing-table">
     
         <div class="timing-row">
-            <div>
-                
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10" stroke="#000" stroke-width="2" fill="none"/>
-                        <path d="M12 6v6l4 2" stroke="#000" stroke-width="2" fill="none"/>
-                    </svg>
-                
-            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.142 13.142 16.5 9 16.5C4.85795 16.5 1.5 13.142 1.5 9C1.5 4.85795 4.85795 1.5 9 1.5C13.142 1.5 16.5 4.85795 16.5 9ZM9.81828 8.76137L9.32396 2.86364H8.65919L8.14783 9.25569L9.01715 10.125L13.7728 9.68183V9.00001L9.81828 8.76137Z" fill="#20201D"/>
+</svg>
+
             <div>Prep 25 min</div>
         </div>
     
         <div class="timing-row">
-            <div>
-                
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M4 10h16v2H4z" fill="#000"/>
-                        <circle cx="6" cy="16" r="2" fill="#000"/>
-                        <circle cx="18" cy="16" r="2" fill="#000"/>
-                    </svg>
-                
-            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.142 13.142 16.5 9 16.5C4.85795 16.5 1.5 13.142 1.5 9C1.5 4.85795 4.85795 1.5 9 1.5C13.142 1.5 16.5 4.85795 16.5 9ZM9.81828 8.76137L9.32396 2.86364H8.65919L8.14783 9.25569L9.01715 10.125L13.7728 9.68183V9.00001L9.81828 8.76137Z" fill="#20201D"/>
+</svg>
+
             <div>Cook 1 hr 20 min</div>
         </div>
     
 
     
         <div class="timing-row">
-            <svg class="icon" viewBox="0 0 24 24">
-                <path d="M4 4h16v2H4zM4 8h16v2H4zM4 12h16v2H4z" fill="#000"/>
-            </svg>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.7275 0.75H11.9775C11.9775 0.75 10.2563 7.63875 10.1963 7.87125C10.14 8.10375 10.2563 8.34 10.44 8.44125C10.5075 8.47875 10.8375 8.66999 11.2275 8.89124V16.875L11.6025 17.25H12.3525L12.7275 16.875V0.75Z" fill="#20201D"/>
+<path d="M7.1025 0.75V5.25H6.54L6.36 0.75H5.6025L5.41875 5.25H4.85625V0.75H4.10625C4.10625 0.75 3.7725 5.42625 3.7575 5.62125C3.73875 5.8875 3.78375 6.02626 3.93 6.12376C4.41 6.44251 5.5575 7.32375 5.5275 8.25L5.23125 16.875L5.60625 17.25H6.35625L6.73125 16.875L6.435 8.26875C6.435 8.26875 6.435 8.25375 6.435 8.24625C6.405 7.3275 7.5525 6.44251 8.0325 6.12376C8.1825 6.02626 8.22375 5.8875 8.205 5.62125L7.85625 0.75H7.1025Z" fill="#20201D"/>
+</svg>
+
             <div>Serves 16 fritters</div>
         </div>
     
@@ -2663,36 +2635,29 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 <div class="timing-table">
     
         <div class="timing-row">
-            <div>
-                
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10" stroke="#000" stroke-width="2" fill="none"/>
-                        <path d="M12 6v6l4 2" stroke="#000" stroke-width="2" fill="none"/>
-                    </svg>
-                
-            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.142 13.142 16.5 9 16.5C4.85795 16.5 1.5 13.142 1.5 9C1.5 4.85795 4.85795 1.5 9 1.5C13.142 1.5 16.5 4.85795 16.5 9ZM9.81828 8.76137L9.32396 2.86364H8.65919L8.14783 9.25569L9.01715 10.125L13.7728 9.68183V9.00001L9.81828 8.76137Z" fill="#20201D"/>
+</svg>
+
             <div>Prep 25 min</div>
         </div>
     
         <div class="timing-row">
-            <div>
-                
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M4 10h16v2H4z" fill="#000"/>
-                        <circle cx="6" cy="16" r="2" fill="#000"/>
-                        <circle cx="18" cy="16" r="2" fill="#000"/>
-                    </svg>
-                
-            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.142 13.142 16.5 9 16.5C4.85795 16.5 1.5 13.142 1.5 9C1.5 4.85795 4.85795 1.5 9 1.5C13.142 1.5 16.5 4.85795 16.5 9ZM9.81828 8.76137L9.32396 2.86364H8.65919L8.14783 9.25569L9.01715 10.125L13.7728 9.68183V9.00001L9.81828 8.76137Z" fill="#20201D"/>
+</svg>
+
             <div>Cook 1 hr 20 min</div>
         </div>
     
 
     
         <div class="timing-row">
-            <svg class="icon" viewBox="0 0 24 24">
-                <path d="M4 4h16v2H4zM4 8h16v2H4zM4 12h16v2H4z" fill="#000"/>
-            </svg>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.7275 0.75H11.9775C11.9775 0.75 10.2563 7.63875 10.1963 7.87125C10.14 8.10375 10.2563 8.34 10.44 8.44125C10.5075 8.47875 10.8375 8.66999 11.2275 8.89124V16.875L11.6025 17.25H12.3525L12.7275 16.875V0.75Z" fill="#20201D"/>
+<path d="M7.1025 0.75V5.25H6.54L6.36 0.75H5.6025L5.41875 5.25H4.85625V0.75H4.10625C4.10625 0.75 3.7725 5.42625 3.7575 5.62125C3.73875 5.8875 3.78375 6.02626 3.93 6.12376C4.41 6.44251 5.5575 7.32375 5.5275 8.25L5.23125 16.875L5.60625 17.25H6.35625L6.73125 16.875L6.435 8.26875C6.435 8.26875 6.435 8.25375 6.435 8.24625C6.405 7.3275 7.5525 6.44251 8.0325 6.12376C8.1825 6.02626 8.22375 5.8875 8.205 5.62125L7.85625 0.75H7.1025Z" fill="#20201D"/>
+</svg>
+
             <div>Serves 16 fritters</div>
         </div>
     
@@ -3254,36 +3219,29 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 <div class="timing-table">
     
         <div class="timing-row">
-            <div>
-                
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10" stroke="#000" stroke-width="2" fill="none"/>
-                        <path d="M12 6v6l4 2" stroke="#000" stroke-width="2" fill="none"/>
-                    </svg>
-                
-            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.142 13.142 16.5 9 16.5C4.85795 16.5 1.5 13.142 1.5 9C1.5 4.85795 4.85795 1.5 9 1.5C13.142 1.5 16.5 4.85795 16.5 9ZM9.81828 8.76137L9.32396 2.86364H8.65919L8.14783 9.25569L9.01715 10.125L13.7728 9.68183V9.00001L9.81828 8.76137Z" fill="#20201D"/>
+</svg>
+
             <div>Prep 25 min</div>
         </div>
     
         <div class="timing-row">
-            <div>
-                
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M4 10h16v2H4z" fill="#000"/>
-                        <circle cx="6" cy="16" r="2" fill="#000"/>
-                        <circle cx="18" cy="16" r="2" fill="#000"/>
-                    </svg>
-                
-            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.142 13.142 16.5 9 16.5C4.85795 16.5 1.5 13.142 1.5 9C1.5 4.85795 4.85795 1.5 9 1.5C13.142 1.5 16.5 4.85795 16.5 9ZM9.81828 8.76137L9.32396 2.86364H8.65919L8.14783 9.25569L9.01715 10.125L13.7728 9.68183V9.00001L9.81828 8.76137Z" fill="#20201D"/>
+</svg>
+
             <div>Cook 1 hr 20 min</div>
         </div>
     
 
     
         <div class="timing-row">
-            <svg class="icon" viewBox="0 0 24 24">
-                <path d="M4 4h16v2H4zM4 8h16v2H4zM4 12h16v2H4z" fill="#000"/>
-            </svg>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.7275 0.75H11.9775C11.9775 0.75 10.2563 7.63875 10.1963 7.87125C10.14 8.10375 10.2563 8.34 10.44 8.44125C10.5075 8.47875 10.8375 8.66999 11.2275 8.89124V16.875L11.6025 17.25H12.3525L12.7275 16.875V0.75Z" fill="#20201D"/>
+<path d="M7.1025 0.75V5.25H6.54L6.36 0.75H5.6025L5.41875 5.25H4.85625V0.75H4.10625C4.10625 0.75 3.7725 5.42625 3.7575 5.62125C3.73875 5.8875 3.78375 6.02626 3.93 6.12376C4.41 6.44251 5.5575 7.32375 5.5275 8.25L5.23125 16.875L5.60625 17.25H6.35625L6.73125 16.875L6.435 8.26875C6.435 8.26875 6.435 8.25375 6.435 8.24625C6.405 7.3275 7.5525 6.44251 8.0325 6.12376C8.1825 6.02626 8.22375 5.8875 8.205 5.62125L7.85625 0.75H7.1025Z" fill="#20201D"/>
+</svg>
+
             <div>Serves 16 fritters</div>
         </div>
     
@@ -3849,36 +3807,29 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 <div class="timing-table">
     
         <div class="timing-row">
-            <div>
-                
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10" stroke="#000" stroke-width="2" fill="none"/>
-                        <path d="M12 6v6l4 2" stroke="#000" stroke-width="2" fill="none"/>
-                    </svg>
-                
-            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.142 13.142 16.5 9 16.5C4.85795 16.5 1.5 13.142 1.5 9C1.5 4.85795 4.85795 1.5 9 1.5C13.142 1.5 16.5 4.85795 16.5 9ZM9.81828 8.76137L9.32396 2.86364H8.65919L8.14783 9.25569L9.01715 10.125L13.7728 9.68183V9.00001L9.81828 8.76137Z" fill="#20201D"/>
+</svg>
+
             <div>Prep 25 min</div>
         </div>
     
         <div class="timing-row">
-            <div>
-                
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M4 10h16v2H4z" fill="#000"/>
-                        <circle cx="6" cy="16" r="2" fill="#000"/>
-                        <circle cx="18" cy="16" r="2" fill="#000"/>
-                    </svg>
-                
-            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 9C16.5 13.142 13.142 16.5 9 16.5C4.85795 16.5 1.5 13.142 1.5 9C1.5 4.85795 4.85795 1.5 9 1.5C13.142 1.5 16.5 4.85795 16.5 9ZM9.81828 8.76137L9.32396 2.86364H8.65919L8.14783 9.25569L9.01715 10.125L13.7728 9.68183V9.00001L9.81828 8.76137Z" fill="#20201D"/>
+</svg>
+
             <div>Cook 1 hr 20 min</div>
         </div>
     
 
     
         <div class="timing-row">
-            <svg class="icon" viewBox="0 0 24 24">
-                <path d="M4 4h16v2H4zM4 8h16v2H4zM4 12h16v2H4z" fill="#000"/>
-            </svg>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.7275 0.75H11.9775C11.9775 0.75 10.2563 7.63875 10.1963 7.87125C10.14 8.10375 10.2563 8.34 10.44 8.44125C10.5075 8.47875 10.8375 8.66999 11.2275 8.89124V16.875L11.6025 17.25H12.3525L12.7275 16.875V0.75Z" fill="#20201D"/>
+<path d="M7.1025 0.75V5.25H6.54L6.36 0.75H5.6025L5.41875 5.25H4.85625V0.75H4.10625C4.10625 0.75 3.7725 5.42625 3.7575 5.62125C3.73875 5.8875 3.78375 6.02626 3.93 6.12376C4.41 6.44251 5.5575 7.32375 5.5275 8.25L5.23125 16.875L5.60625 17.25H6.35625L6.73125 16.875L6.435 8.26875C6.435 8.26875 6.435 8.25375 6.435 8.24625C6.405 7.3275 7.5525 6.44251 8.0325 6.12376C8.1825 6.02626 8.22375 5.8875 8.205 5.62125L7.85625 0.75H7.1025Z" fill="#20201D"/>
+</svg>
+
             <div>Serves 16 fritters</div>
         </div>
     

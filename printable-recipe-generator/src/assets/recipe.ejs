@@ -291,33 +291,14 @@
 <div class="timing-table">
     <% for (const time of recipe.timings || []) { %>
         <div class="timing-row">
-            <div>
-                <% if (time.qualifier === 'prep-time') { %>
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10" stroke="#000" stroke-width="2" fill="none"/>
-                        <path d="M12 6v6l4 2" stroke="#000" stroke-width="2" fill="none"/>
-                    </svg>
-                <% } else if (time.qualifier === 'cook-time') { %>
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M4 10h16v2H4z" fill="#000"/>
-                        <circle cx="6" cy="16" r="2" fill="#000"/>
-                        <circle cx="18" cy="16" r="2" fill="#000"/>
-                    </svg>
-                <% } else if (time.qualifier === 'marinate-time') { %>
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M12 3v18M5 12h14" stroke="#000" stroke-width="2" fill="none"/>
-                    </svg>
-                <% } %>
-            </div>
+            <%- svgs["clock-filled"] %>
             <div><%= time.text %></div>
         </div>
     <% } %>
 
     <% if (recipe.serves && recipe.serves.length) { %>
         <div class="timing-row">
-            <svg class="icon" viewBox="0 0 24 24">
-                <path d="M4 4h16v2H4zM4 8h16v2H4zM4 12h16v2H4z" fill="#000"/>
-            </svg>
+            <%- svgs["knife-and-fork"] %>
             <div>Serves <%= recipe.serves[0].amount.min %> <%= recipe.serves[0].unit %></div>
         </div>
     <% } %>
