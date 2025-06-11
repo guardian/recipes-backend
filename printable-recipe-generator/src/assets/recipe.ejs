@@ -60,10 +60,11 @@
         line-height: 115%;
       }
 
-      .qr-section img {
+      .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid #000;
+        border: 1px solid blue;
+        padding: 1px;
       }
 
       .author {
@@ -194,6 +195,10 @@
         @page {
           size: A4;
           /*margin: 1.5cm;*/
+        }
+
+        .qr-section{
+          print-color-adjust: exact;
         }
       }
 

@@ -63,10 +63,11 @@ exports[`Sample recipe  should match snapshot 1`] = `
         line-height: 115%;
       }
 
-      .qr-section img {
+      .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid #000;
+        border: 1px solid blue;
+        padding: 1px;
       }
 
       .author {
@@ -197,6 +198,10 @@ exports[`Sample recipe  should match snapshot 1`] = `
         @page {
           size: A4;
           /*margin: 1.5cm;*/
+        }
+
+        .qr-section{
+          print-color-adjust: exact;
         }
       }
 
@@ -611,10 +616,11 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
         line-height: 115%;
       }
 
-      .qr-section img {
+      .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid #000;
+        border: 1px solid blue;
+        padding: 1px;
       }
 
       .author {
@@ -745,6 +751,10 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
         @page {
           size: A4;
           /*margin: 1.5cm;*/
+        }
+
+        .qr-section{
+          print-color-adjust: exact;
         }
       }
 
@@ -1155,10 +1165,11 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
         line-height: 115%;
       }
 
-      .qr-section img {
+      .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid #000;
+        border: 1px solid blue;
+        padding: 1px;
       }
 
       .author {
@@ -1289,6 +1300,10 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
         @page {
           size: A4;
           /*margin: 1.5cm;*/
+        }
+
+        .qr-section{
+          print-color-adjust: exact;
         }
       }
 
@@ -1703,10 +1718,11 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
         line-height: 115%;
       }
 
-      .qr-section img {
+      .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid #000;
+        border: 1px solid blue;
+        padding: 1px;
       }
 
       .author {
@@ -1837,6 +1853,10 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
         @page {
           size: A4;
           /*margin: 1.5cm;*/
+        }
+
+        .qr-section{
+          print-color-adjust: exact;
         }
       }
 
@@ -2247,10 +2267,11 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
         line-height: 115%;
       }
 
-      .qr-section img {
+      .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid #000;
+        border: 1px solid blue;
+        padding: 1px;
       }
 
       .author {
@@ -2381,6 +2402,10 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
         @page {
           size: A4;
           /*margin: 1.5cm;*/
+        }
+
+        .qr-section{
+          print-color-adjust: exact;
         }
       }
 
@@ -2791,10 +2816,11 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
         line-height: 115%;
       }
 
-      .qr-section img {
+      .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid #000;
+        border: 1px solid blue;
+        padding: 1px;
       }
 
       .author {
@@ -2925,6 +2951,10 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
         @page {
           size: A4;
           /*margin: 1.5cm;*/
+        }
+
+        .qr-section{
+          print-color-adjust: exact;
         }
       }
 
@@ -3339,10 +3369,11 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
         line-height: 115%;
       }
 
-      .qr-section img {
+      .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid #000;
+        border: 1px solid blue;
+        padding: 1px;
       }
 
       .author {
@@ -3473,6 +3504,10 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
         @page {
           size: A4;
           /*margin: 1.5cm;*/
+        }
+
+        .qr-section{
+          print-color-adjust: exact;
         }
       }
 
