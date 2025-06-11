@@ -173,9 +173,9 @@ exports[`Sample recipe  should match snapshot 1`] = `
 
         .container {
           margin:auto;
-          display: flex;
-          flex-direction: column;
-          min-height: 100vh;
+          /*display: flex;*/
+          /*flex-direction: column;*/
+          /*min-height: 100vh;*/
         }
 
         .recipe-content {
@@ -193,9 +193,9 @@ exports[`Sample recipe  should match snapshot 1`] = `
           text-align: left;
           color: #444;
           background: white;
-          break-inside: avoid;
-          break-before: avoid;
-          page-break-before: avoid;
+          /*break-inside: avoid;*/
+          /*break-before: avoid;*/
+          /*page-break-before: avoid;*/
           margin-top: 2rem;
           flex: 2;
         }
@@ -730,9 +730,9 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 
         .container {
           margin:auto;
-          display: flex;
-          flex-direction: column;
-          min-height: 100vh;
+          /*display: flex;*/
+          /*flex-direction: column;*/
+          /*min-height: 100vh;*/
         }
 
         .recipe-content {
@@ -750,9 +750,9 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
           text-align: left;
           color: #444;
           background: white;
-          break-inside: avoid;
-          break-before: avoid;
-          page-break-before: avoid;
+          /*break-inside: avoid;*/
+          /*break-before: avoid;*/
+          /*page-break-before: avoid;*/
           margin-top: 2rem;
           flex: 2;
         }
@@ -1283,9 +1283,9 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 
         .container {
           margin:auto;
-          display: flex;
-          flex-direction: column;
-          min-height: 100vh;
+          /*display: flex;*/
+          /*flex-direction: column;*/
+          /*min-height: 100vh;*/
         }
 
         .recipe-content {
@@ -1303,9 +1303,9 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
           text-align: left;
           color: #444;
           background: white;
-          break-inside: avoid;
-          break-before: avoid;
-          page-break-before: avoid;
+          /*break-inside: avoid;*/
+          /*break-before: avoid;*/
+          /*page-break-before: avoid;*/
           margin-top: 2rem;
           flex: 2;
         }
@@ -1840,9 +1840,9 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 
         .container {
           margin:auto;
-          display: flex;
-          flex-direction: column;
-          min-height: 100vh;
+          /*display: flex;*/
+          /*flex-direction: column;*/
+          /*min-height: 100vh;*/
         }
 
         .recipe-content {
@@ -1860,9 +1860,9 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
           text-align: left;
           color: #444;
           background: white;
-          break-inside: avoid;
-          break-before: avoid;
-          page-break-before: avoid;
+          /*break-inside: avoid;*/
+          /*break-before: avoid;*/
+          /*page-break-before: avoid;*/
           margin-top: 2rem;
           flex: 2;
         }
@@ -2393,9 +2393,9 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 
         .container {
           margin:auto;
-          display: flex;
-          flex-direction: column;
-          min-height: 100vh;
+          /*display: flex;*/
+          /*flex-direction: column;*/
+          /*min-height: 100vh;*/
         }
 
         .recipe-content {
@@ -2413,9 +2413,9 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
           text-align: left;
           color: #444;
           background: white;
-          break-inside: avoid;
-          break-before: avoid;
-          page-break-before: avoid;
+          /*break-inside: avoid;*/
+          /*break-before: avoid;*/
+          /*page-break-before: avoid;*/
           margin-top: 2rem;
           flex: 2;
         }
@@ -2946,9 +2946,9 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 
         .container {
           margin:auto;
-          display: flex;
-          flex-direction: column;
-          min-height: 100vh;
+          /*display: flex;*/
+          /*flex-direction: column;*/
+          /*min-height: 100vh;*/
         }
 
         .recipe-content {
@@ -2966,9 +2966,9 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
           text-align: left;
           color: #444;
           background: white;
-          break-inside: avoid;
-          break-before: avoid;
-          page-break-before: avoid;
+          /*break-inside: avoid;*/
+          /*break-before: avoid;*/
+          /*page-break-before: avoid;*/
           margin-top: 2rem;
           flex: 2;
         }
@@ -3503,9 +3503,9 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 
         .container {
           margin:auto;
-          display: flex;
-          flex-direction: column;
-          min-height: 100vh;
+          /*display: flex;*/
+          /*flex-direction: column;*/
+          /*min-height: 100vh;*/
         }
 
         .recipe-content {
@@ -3523,9 +3523,9 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
           text-align: left;
           color: #444;
           background: white;
-          break-inside: avoid;
-          break-before: avoid;
-          page-break-before: avoid;
+          /*break-inside: avoid;*/
+          /*break-before: avoid;*/
+          /*page-break-before: avoid;*/
           margin-top: 2rem;
           flex: 2;
         }
