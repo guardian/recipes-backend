@@ -111,7 +111,6 @@ exports[`Sample recipe  should match snapshot 1`] = `
       }
 
       .two-column-flow h3 {
-        break-after: avoid;
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
@@ -183,6 +182,10 @@ exports[`Sample recipe  should match snapshot 1`] = `
           flex: 1;
         }
 
+        .two-column-flow{
+          column-fill: auto; /*ensures natural top-to-bottom flow*/
+        }
+
         .footer {
           display: flex;
           border-top: 1px solid #ccc;
@@ -190,7 +193,9 @@ exports[`Sample recipe  should match snapshot 1`] = `
           text-align: left;
           color: #444;
           background: white;
+          break-inside: avoid;
           break-before: avoid;
+          page-break-before: avoid;
           margin-top: 2rem;
           flex: 2;
         }
@@ -543,8 +548,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
         
     </div>
 </footer>
-
-
+    
 </div>
 
 </div>
@@ -664,7 +668,6 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
       }
 
       .two-column-flow h3 {
-        break-after: avoid;
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
@@ -736,6 +739,10 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
           flex: 1;
         }
 
+        .two-column-flow{
+          column-fill: auto; /*ensures natural top-to-bottom flow*/
+        }
+
         .footer {
           display: flex;
           border-top: 1px solid #ccc;
@@ -743,7 +750,9 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
           text-align: left;
           color: #444;
           background: white;
+          break-inside: avoid;
           break-before: avoid;
+          page-break-before: avoid;
           margin-top: 2rem;
           flex: 2;
         }
@@ -1092,8 +1101,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
         
     </div>
 </footer>
-
-
+    
 </div>
 
 </div>
@@ -1213,7 +1221,6 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
       }
 
       .two-column-flow h3 {
-        break-after: avoid;
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
@@ -1285,6 +1292,10 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
           flex: 1;
         }
 
+        .two-column-flow{
+          column-fill: auto; /*ensures natural top-to-bottom flow*/
+        }
+
         .footer {
           display: flex;
           border-top: 1px solid #ccc;
@@ -1292,7 +1303,9 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
           text-align: left;
           color: #444;
           background: white;
+          break-inside: avoid;
           break-before: avoid;
+          page-break-before: avoid;
           margin-top: 2rem;
           flex: 2;
         }
@@ -1645,8 +1658,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
         
     </div>
 </footer>
-
-
+    
 </div>
 
 </div>
@@ -1766,7 +1778,6 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
       }
 
       .two-column-flow h3 {
-        break-after: avoid;
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
@@ -1838,6 +1849,10 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
           flex: 1;
         }
 
+        .two-column-flow{
+          column-fill: auto; /*ensures natural top-to-bottom flow*/
+        }
+
         .footer {
           display: flex;
           border-top: 1px solid #ccc;
@@ -1845,7 +1860,9 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
           text-align: left;
           color: #444;
           background: white;
+          break-inside: avoid;
           break-before: avoid;
+          page-break-before: avoid;
           margin-top: 2rem;
           flex: 2;
         }
@@ -2194,8 +2211,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
         
     </div>
 </footer>
-
-
+    
 </div>
 
 </div>
@@ -2315,7 +2331,6 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
       }
 
       .two-column-flow h3 {
-        break-after: avoid;
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
@@ -2387,6 +2402,10 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
           flex: 1;
         }
 
+        .two-column-flow{
+          column-fill: auto; /*ensures natural top-to-bottom flow*/
+        }
+
         .footer {
           display: flex;
           border-top: 1px solid #ccc;
@@ -2394,7 +2413,9 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
           text-align: left;
           color: #444;
           background: white;
+          break-inside: avoid;
           break-before: avoid;
+          page-break-before: avoid;
           margin-top: 2rem;
           flex: 2;
         }
@@ -2743,8 +2764,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
         
     </div>
 </footer>
-
-
+    
 </div>
 
 </div>
@@ -2864,7 +2884,6 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
       }
 
       .two-column-flow h3 {
-        break-after: avoid;
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
@@ -2936,6 +2955,10 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
           flex: 1;
         }
 
+        .two-column-flow{
+          column-fill: auto; /*ensures natural top-to-bottom flow*/
+        }
+
         .footer {
           display: flex;
           border-top: 1px solid #ccc;
@@ -2943,7 +2966,9 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
           text-align: left;
           color: #444;
           background: white;
+          break-inside: avoid;
           break-before: avoid;
+          page-break-before: avoid;
           margin-top: 2rem;
           flex: 2;
         }
@@ -3296,8 +3321,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
         
     </div>
 </footer>
-
-
+    
 </div>
 
 </div>
@@ -3417,7 +3441,6 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
       }
 
       .two-column-flow h3 {
-        break-after: avoid;
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
@@ -3489,6 +3512,10 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
           flex: 1;
         }
 
+        .two-column-flow{
+          column-fill: auto; /*ensures natural top-to-bottom flow*/
+        }
+
         .footer {
           display: flex;
           border-top: 1px solid #ccc;
@@ -3496,7 +3523,9 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
           text-align: left;
           color: #444;
           background: white;
+          break-inside: avoid;
           break-before: avoid;
+          page-break-before: avoid;
           margin-top: 2rem;
           flex: 2;
         }
@@ -3853,8 +3882,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
         
     </div>
 </footer>
-
-
+    
 </div>
 
 </div>
