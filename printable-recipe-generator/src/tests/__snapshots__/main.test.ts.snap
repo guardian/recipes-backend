@@ -66,7 +66,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
       .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid blue;
+        border: 1px solid black;
         padding: 1px;
       }
 
@@ -619,7 +619,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
       .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid blue;
+        border: 1px solid black;
         padding: 1px;
       }
 
@@ -1168,7 +1168,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
       .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid blue;
+        border: 1px solid black;
         padding: 1px;
       }
 
@@ -1721,7 +1721,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
       .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid blue;
+        border: 1px solid black;
         padding: 1px;
       }
 
@@ -2270,7 +2270,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
       .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid blue;
+        border: 1px solid black;
         padding: 1px;
       }
 
@@ -2819,7 +2819,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
       .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid blue;
+        border: 1px solid black;
         padding: 1px;
       }
 
@@ -3372,7 +3372,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
       .qr-section img{
         width: 120px;
         height: auto;
-        border: 1px solid blue;
+        border: 1px solid black;
         padding: 1px;
       }
 
