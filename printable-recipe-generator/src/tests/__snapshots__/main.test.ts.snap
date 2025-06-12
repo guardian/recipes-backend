@@ -102,30 +102,56 @@ exports[`Sample recipe  should match snapshot 1`] = `
         font-size: 17px;
       }
 
+      /*.two-column-flow {*/
+      /*  display: flex;*/
+      /*  column-count: 2;*/
+      /*  column-gap: 1.5rem;*/
+      /*  !*break-inside: avoid;*!*/
+      /*  !*page-break-inside: avoid;*!*/
+      /*  margin-top: 3rem;*/
+      /*}*/
+
       .two-column-flow {
-        column-count: 2;
-        column-gap: 1.5rem;
-        /*break-inside: avoid;*/
-        /*page-break-inside: avoid;*/
-        margin-top: 3rem;
+        display: flex;
+        align-items: stretch; /*children stretch to same height*/
+        gap: 2rem;
+        margin-top: 1rem;
+      }
+
+      .two-column-flow > div {
+        flex: 1; /*equal width columns*/
+        display: flex;
+        flex-direction: column;
       }
 
       .two-column-flow h3 {
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
-        break-after: avoid;
-        page-break-after: avoid;
+        /*break-after: avoid;*/
+        /*page-break-after: avoid;*/
       }
 
-      .two-column-flow ul {
+      .ingredient{
         padding-left: 1.5rem;
         margin-bottom: 2rem;
+        list-style-type: none;
+        flex: 1; /*make ul stretch to fill available height*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
+      }
+
+      .method{
+        padding-left: 1.5rem;
+        margin-bottom: 2rem;
+        flex: 1; /*make ul stretch to fill available height*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
       }
 
       .two-column-flow li {
-        break-inside: avoid;
-        page-break-inside: avoid;
+        /*break-inside: avoid;*/
+        /*page-break-inside: avoid;*/
         font-size: 17px;
         font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
@@ -167,7 +193,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
       @media print {
         body {
           margin:auto;
-          padding: 0;
+          padding: 1cm;
           print-color-adjust: exact;
         }
 
@@ -182,9 +208,9 @@ exports[`Sample recipe  should match snapshot 1`] = `
           flex: 1;
         }
 
-        .two-column-flow{
-          column-fill: auto; /*ensures natural top-to-bottom flow*/
-        }
+        /*.two-column-flow{*/
+        /*  column-fill: auto; !*ensures natural top-to-bottom flow*!*/
+        /*}*/
 
         .footer {
           /*display: flex;*/
@@ -316,7 +342,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
 <div class="two-column-flow">
     <div>
         <h3>Ingredients</h3>
-        <ul>
+        <ul class="ingredient">
             
                 
                     <li>
@@ -502,7 +528,7 @@ exports[`Sample recipe  should match snapshot 1`] = `
 
     <div>
         <h3>Method</h3>
-        <ul>
+        <ul class="method">
             
                 <li>Put the potatoes and two teaspoons of salt in a medium saucepan for which you have a lid, add enough water to cover by about 3cm, then bring to a boil on a medium-high heat. Lower the heat to medium, cover and leave to cook for eight minutes, or until the potatoes are easily pierced with a knife. Drain well, then, once they’re cool enough to handle, use a potato ricer to rice the potatoes into a large bowl (if you don’t have a ricer, use a masher).</li>
             
@@ -659,30 +685,56 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
         font-size: 17px;
       }
 
+      /*.two-column-flow {*/
+      /*  display: flex;*/
+      /*  column-count: 2;*/
+      /*  column-gap: 1.5rem;*/
+      /*  !*break-inside: avoid;*!*/
+      /*  !*page-break-inside: avoid;*!*/
+      /*  margin-top: 3rem;*/
+      /*}*/
+
       .two-column-flow {
-        column-count: 2;
-        column-gap: 1.5rem;
-        /*break-inside: avoid;*/
-        /*page-break-inside: avoid;*/
-        margin-top: 3rem;
+        display: flex;
+        align-items: stretch; /*children stretch to same height*/
+        gap: 2rem;
+        margin-top: 1rem;
+      }
+
+      .two-column-flow > div {
+        flex: 1; /*equal width columns*/
+        display: flex;
+        flex-direction: column;
       }
 
       .two-column-flow h3 {
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
-        break-after: avoid;
-        page-break-after: avoid;
+        /*break-after: avoid;*/
+        /*page-break-after: avoid;*/
       }
 
-      .two-column-flow ul {
+      .ingredient{
         padding-left: 1.5rem;
         margin-bottom: 2rem;
+        list-style-type: none;
+        flex: 1; /*make ul stretch to fill available height*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
+      }
+
+      .method{
+        padding-left: 1.5rem;
+        margin-bottom: 2rem;
+        flex: 1; /*make ul stretch to fill available height*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
       }
 
       .two-column-flow li {
-        break-inside: avoid;
-        page-break-inside: avoid;
+        /*break-inside: avoid;*/
+        /*page-break-inside: avoid;*/
         font-size: 17px;
         font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
@@ -724,7 +776,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
       @media print {
         body {
           margin:auto;
-          padding: 0;
+          padding: 1cm;
           print-color-adjust: exact;
         }
 
@@ -739,9 +791,9 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
           flex: 1;
         }
 
-        .two-column-flow{
-          column-fill: auto; /*ensures natural top-to-bottom flow*/
-        }
+        /*.two-column-flow{*/
+        /*  column-fill: auto; !*ensures natural top-to-bottom flow*!*/
+        /*}*/
 
         .footer {
           /*display: flex;*/
@@ -869,7 +921,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 <div class="two-column-flow">
     <div>
         <h3>Ingredients</h3>
-        <ul>
+        <ul class="ingredient">
             
                 
                     <li>
@@ -1055,7 +1107,7 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 
     <div>
         <h3>Method</h3>
-        <ul>
+        <ul class="method">
             
                 <li>Put the potatoes and two teaspoons of salt in a medium saucepan for which you have a lid, add enough water to cover by about 3cm, then bring to a boil on a medium-high heat. Lower the heat to medium, cover and leave to cook for eight minutes, or until the potatoes are easily pierced with a knife. Drain well, then, once they’re cool enough to handle, use a potato ricer to rice the potatoes into a large bowl (if you don’t have a ricer, use a masher).</li>
             
@@ -1212,30 +1264,56 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
         font-size: 17px;
       }
 
+      /*.two-column-flow {*/
+      /*  display: flex;*/
+      /*  column-count: 2;*/
+      /*  column-gap: 1.5rem;*/
+      /*  !*break-inside: avoid;*!*/
+      /*  !*page-break-inside: avoid;*!*/
+      /*  margin-top: 3rem;*/
+      /*}*/
+
       .two-column-flow {
-        column-count: 2;
-        column-gap: 1.5rem;
-        /*break-inside: avoid;*/
-        /*page-break-inside: avoid;*/
-        margin-top: 3rem;
+        display: flex;
+        align-items: stretch; /*children stretch to same height*/
+        gap: 2rem;
+        margin-top: 1rem;
+      }
+
+      .two-column-flow > div {
+        flex: 1; /*equal width columns*/
+        display: flex;
+        flex-direction: column;
       }
 
       .two-column-flow h3 {
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
-        break-after: avoid;
-        page-break-after: avoid;
+        /*break-after: avoid;*/
+        /*page-break-after: avoid;*/
       }
 
-      .two-column-flow ul {
+      .ingredient{
         padding-left: 1.5rem;
         margin-bottom: 2rem;
+        list-style-type: none;
+        flex: 1; /*make ul stretch to fill available height*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
+      }
+
+      .method{
+        padding-left: 1.5rem;
+        margin-bottom: 2rem;
+        flex: 1; /*make ul stretch to fill available height*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
       }
 
       .two-column-flow li {
-        break-inside: avoid;
-        page-break-inside: avoid;
+        /*break-inside: avoid;*/
+        /*page-break-inside: avoid;*/
         font-size: 17px;
         font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
@@ -1277,7 +1355,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
       @media print {
         body {
           margin:auto;
-          padding: 0;
+          padding: 1cm;
           print-color-adjust: exact;
         }
 
@@ -1292,9 +1370,9 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
           flex: 1;
         }
 
-        .two-column-flow{
-          column-fill: auto; /*ensures natural top-to-bottom flow*/
-        }
+        /*.two-column-flow{*/
+        /*  column-fill: auto; !*ensures natural top-to-bottom flow*!*/
+        /*}*/
 
         .footer {
           /*display: flex;*/
@@ -1426,7 +1504,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 <div class="two-column-flow">
     <div>
         <h3>Ingredients</h3>
-        <ul>
+        <ul class="ingredient">
             
                 
                     <li>
@@ -1612,7 +1690,7 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 
     <div>
         <h3>Method</h3>
-        <ul>
+        <ul class="method">
             
                 <li>Put the potatoes and two teaspoons of salt in a medium saucepan for which you have a lid, add enough water to cover by about 3cm, then bring to a boil on a medium-high heat. Lower the heat to medium, cover and leave to cook for eight minutes, or until the potatoes are easily pierced with a knife. Drain well, then, once they’re cool enough to handle, use a potato ricer to rice the potatoes into a large bowl (if you don’t have a ricer, use a masher).</li>
             
@@ -1769,30 +1847,56 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
         font-size: 17px;
       }
 
+      /*.two-column-flow {*/
+      /*  display: flex;*/
+      /*  column-count: 2;*/
+      /*  column-gap: 1.5rem;*/
+      /*  !*break-inside: avoid;*!*/
+      /*  !*page-break-inside: avoid;*!*/
+      /*  margin-top: 3rem;*/
+      /*}*/
+
       .two-column-flow {
-        column-count: 2;
-        column-gap: 1.5rem;
-        /*break-inside: avoid;*/
-        /*page-break-inside: avoid;*/
-        margin-top: 3rem;
+        display: flex;
+        align-items: stretch; /*children stretch to same height*/
+        gap: 2rem;
+        margin-top: 1rem;
+      }
+
+      .two-column-flow > div {
+        flex: 1; /*equal width columns*/
+        display: flex;
+        flex-direction: column;
       }
 
       .two-column-flow h3 {
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
-        break-after: avoid;
-        page-break-after: avoid;
+        /*break-after: avoid;*/
+        /*page-break-after: avoid;*/
       }
 
-      .two-column-flow ul {
+      .ingredient{
         padding-left: 1.5rem;
         margin-bottom: 2rem;
+        list-style-type: none;
+        flex: 1; /*make ul stretch to fill available height*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
+      }
+
+      .method{
+        padding-left: 1.5rem;
+        margin-bottom: 2rem;
+        flex: 1; /*make ul stretch to fill available height*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
       }
 
       .two-column-flow li {
-        break-inside: avoid;
-        page-break-inside: avoid;
+        /*break-inside: avoid;*/
+        /*page-break-inside: avoid;*/
         font-size: 17px;
         font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
@@ -1834,7 +1938,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
       @media print {
         body {
           margin:auto;
-          padding: 0;
+          padding: 1cm;
           print-color-adjust: exact;
         }
 
@@ -1849,9 +1953,9 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
           flex: 1;
         }
 
-        .two-column-flow{
-          column-fill: auto; /*ensures natural top-to-bottom flow*/
-        }
+        /*.two-column-flow{*/
+        /*  column-fill: auto; !*ensures natural top-to-bottom flow*!*/
+        /*}*/
 
         .footer {
           /*display: flex;*/
@@ -1979,7 +2083,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 <div class="two-column-flow">
     <div>
         <h3>Ingredients</h3>
-        <ul>
+        <ul class="ingredient">
             
                 
                     <li>
@@ -2165,7 +2269,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 
     <div>
         <h3>Method</h3>
-        <ul>
+        <ul class="method">
             
                 <li>Put the potatoes and two teaspoons of salt in a medium saucepan for which you have a lid, add enough water to cover by about 3cm, then bring to a boil on a medium-high heat. Lower the heat to medium, cover and leave to cook for eight minutes, or until the potatoes are easily pierced with a knife. Drain well, then, once they’re cool enough to handle, use a potato ricer to rice the potatoes into a large bowl (if you don’t have a ricer, use a masher).</li>
             
@@ -2322,30 +2426,56 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
         font-size: 17px;
       }
 
+      /*.two-column-flow {*/
+      /*  display: flex;*/
+      /*  column-count: 2;*/
+      /*  column-gap: 1.5rem;*/
+      /*  !*break-inside: avoid;*!*/
+      /*  !*page-break-inside: avoid;*!*/
+      /*  margin-top: 3rem;*/
+      /*}*/
+
       .two-column-flow {
-        column-count: 2;
-        column-gap: 1.5rem;
-        /*break-inside: avoid;*/
-        /*page-break-inside: avoid;*/
-        margin-top: 3rem;
+        display: flex;
+        align-items: stretch; /*children stretch to same height*/
+        gap: 2rem;
+        margin-top: 1rem;
+      }
+
+      .two-column-flow > div {
+        flex: 1; /*equal width columns*/
+        display: flex;
+        flex-direction: column;
       }
 
       .two-column-flow h3 {
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
-        break-after: avoid;
-        page-break-after: avoid;
+        /*break-after: avoid;*/
+        /*page-break-after: avoid;*/
       }
 
-      .two-column-flow ul {
+      .ingredient{
         padding-left: 1.5rem;
         margin-bottom: 2rem;
+        list-style-type: none;
+        flex: 1; /*make ul stretch to fill available height*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
+      }
+
+      .method{
+        padding-left: 1.5rem;
+        margin-bottom: 2rem;
+        flex: 1; /*make ul stretch to fill available height*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
       }
 
       .two-column-flow li {
-        break-inside: avoid;
-        page-break-inside: avoid;
+        /*break-inside: avoid;*/
+        /*page-break-inside: avoid;*/
         font-size: 17px;
         font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
@@ -2387,7 +2517,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
       @media print {
         body {
           margin:auto;
-          padding: 0;
+          padding: 1cm;
           print-color-adjust: exact;
         }
 
@@ -2402,9 +2532,9 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
           flex: 1;
         }
 
-        .two-column-flow{
-          column-fill: auto; /*ensures natural top-to-bottom flow*/
-        }
+        /*.two-column-flow{*/
+        /*  column-fill: auto; !*ensures natural top-to-bottom flow*!*/
+        /*}*/
 
         .footer {
           /*display: flex;*/
@@ -2532,7 +2662,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 <div class="two-column-flow">
     <div>
         <h3>Ingredients</h3>
-        <ul>
+        <ul class="ingredient">
             
                 
                     <li>
@@ -2718,7 +2848,7 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 
     <div>
         <h3>Method</h3>
-        <ul>
+        <ul class="method">
             
                 <li>Put the potatoes and two teaspoons of salt in a medium saucepan for which you have a lid, add enough water to cover by about 3cm, then bring to a boil on a medium-high heat. Lower the heat to medium, cover and leave to cook for eight minutes, or until the potatoes are easily pierced with a knife. Drain well, then, once they’re cool enough to handle, use a potato ricer to rice the potatoes into a large bowl (if you don’t have a ricer, use a masher).</li>
             
@@ -2875,30 +3005,56 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
         font-size: 17px;
       }
 
+      /*.two-column-flow {*/
+      /*  display: flex;*/
+      /*  column-count: 2;*/
+      /*  column-gap: 1.5rem;*/
+      /*  !*break-inside: avoid;*!*/
+      /*  !*page-break-inside: avoid;*!*/
+      /*  margin-top: 3rem;*/
+      /*}*/
+
       .two-column-flow {
-        column-count: 2;
-        column-gap: 1.5rem;
-        /*break-inside: avoid;*/
-        /*page-break-inside: avoid;*/
-        margin-top: 3rem;
+        display: flex;
+        align-items: stretch; /*children stretch to same height*/
+        gap: 2rem;
+        margin-top: 1rem;
+      }
+
+      .two-column-flow > div {
+        flex: 1; /*equal width columns*/
+        display: flex;
+        flex-direction: column;
       }
 
       .two-column-flow h3 {
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
-        break-after: avoid;
-        page-break-after: avoid;
+        /*break-after: avoid;*/
+        /*page-break-after: avoid;*/
       }
 
-      .two-column-flow ul {
+      .ingredient{
         padding-left: 1.5rem;
         margin-bottom: 2rem;
+        list-style-type: none;
+        flex: 1; /*make ul stretch to fill available height*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
+      }
+
+      .method{
+        padding-left: 1.5rem;
+        margin-bottom: 2rem;
+        flex: 1; /*make ul stretch to fill available height*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
       }
 
       .two-column-flow li {
-        break-inside: avoid;
-        page-break-inside: avoid;
+        /*break-inside: avoid;*/
+        /*page-break-inside: avoid;*/
         font-size: 17px;
         font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
@@ -2940,7 +3096,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
       @media print {
         body {
           margin:auto;
-          padding: 0;
+          padding: 1cm;
           print-color-adjust: exact;
         }
 
@@ -2955,9 +3111,9 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
           flex: 1;
         }
 
-        .two-column-flow{
-          column-fill: auto; /*ensures natural top-to-bottom flow*/
-        }
+        /*.two-column-flow{*/
+        /*  column-fill: auto; !*ensures natural top-to-bottom flow*!*/
+        /*}*/
 
         .footer {
           /*display: flex;*/
@@ -3089,7 +3245,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 <div class="two-column-flow">
     <div>
         <h3>Ingredients</h3>
-        <ul>
+        <ul class="ingredient">
             
                 
                     <li>
@@ -3275,7 +3431,7 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 
     <div>
         <h3>Method</h3>
-        <ul>
+        <ul class="method">
             
                 <li>Put the potatoes and two teaspoons of salt in a medium saucepan for which you have a lid, add enough water to cover by about 3cm, then bring to a boil on a medium-high heat. Lower the heat to medium, cover and leave to cook for eight minutes, or until the potatoes are easily pierced with a knife. Drain well, then, once they’re cool enough to handle, use a potato ricer to rice the potatoes into a large bowl (if you don’t have a ricer, use a masher).</li>
             
@@ -3432,30 +3588,56 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
         font-size: 17px;
       }
 
+      /*.two-column-flow {*/
+      /*  display: flex;*/
+      /*  column-count: 2;*/
+      /*  column-gap: 1.5rem;*/
+      /*  !*break-inside: avoid;*!*/
+      /*  !*page-break-inside: avoid;*!*/
+      /*  margin-top: 3rem;*/
+      /*}*/
+
       .two-column-flow {
-        column-count: 2;
-        column-gap: 1.5rem;
-        /*break-inside: avoid;*/
-        /*page-break-inside: avoid;*/
-        margin-top: 3rem;
+        display: flex;
+        align-items: stretch; /*children stretch to same height*/
+        gap: 2rem;
+        margin-top: 1rem;
+      }
+
+      .two-column-flow > div {
+        flex: 1; /*equal width columns*/
+        display: flex;
+        flex-direction: column;
       }
 
       .two-column-flow h3 {
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
-        break-after: avoid;
-        page-break-after: avoid;
+        /*break-after: avoid;*/
+        /*page-break-after: avoid;*/
       }
 
-      .two-column-flow ul {
+      .ingredient{
         padding-left: 1.5rem;
         margin-bottom: 2rem;
+        list-style-type: none;
+        flex: 1; /*make ul stretch to fill available height*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
+      }
+
+      .method{
+        padding-left: 1.5rem;
+        margin-bottom: 2rem;
+        flex: 1; /*make ul stretch to fill available height*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
       }
 
       .two-column-flow li {
-        break-inside: avoid;
-        page-break-inside: avoid;
+        /*break-inside: avoid;*/
+        /*page-break-inside: avoid;*/
         font-size: 17px;
         font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
@@ -3497,7 +3679,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
       @media print {
         body {
           margin:auto;
-          padding: 0;
+          padding: 1cm;
           print-color-adjust: exact;
         }
 
@@ -3512,9 +3694,9 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
           flex: 1;
         }
 
-        .two-column-flow{
-          column-fill: auto; /*ensures natural top-to-bottom flow*/
-        }
+        /*.two-column-flow{*/
+        /*  column-fill: auto; !*ensures natural top-to-bottom flow*!*/
+        /*}*/
 
         .footer {
           /*display: flex;*/
@@ -3650,7 +3832,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 <div class="two-column-flow">
     <div>
         <h3>Ingredients</h3>
-        <ul>
+        <ul class="ingredient">
             
                 
                     <li>
@@ -3836,7 +4018,7 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 
     <div>
         <h3>Method</h3>
-        <ul>
+        <ul class="method">
             
                 <li>Put the potatoes and two teaspoons of salt in a medium saucepan for which you have a lid, add enough water to cover by about 3cm, then bring to a boil on a medium-high heat. Lower the heat to medium, cover and leave to cook for eight minutes, or until the potatoes are easily pierced with a knife. Drain well, then, once they’re cool enough to handle, use a potato ricer to rice the potatoes into a large bowl (if you don’t have a ricer, use a masher).</li>
             
