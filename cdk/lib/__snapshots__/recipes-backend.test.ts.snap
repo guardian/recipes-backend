@@ -1571,6 +1571,16 @@ def sort_filter_rules(json_obj):
       "Properties": {
         "ContainerDefinitions": [
           {
+            "Environment": [
+              {
+                "Name": "STAGE",
+                "Value": "TEST",
+              },
+              {
+                "Name": "STACK",
+                "Value": "feast",
+              },
+            ],
             "Essential": true,
             "Image": {
               "Fn::Join": [
