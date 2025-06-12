@@ -125,6 +125,10 @@ export class PrintableRecipeGenerator extends Construct {
 			logging: LogDriver.awsLogs({
 				streamPrefix: 'printable-recipe-generator-',
 			}),
+      environment: {
+        "STAGE": scope.stage,
+        "STACK":scope.stack
+      },
 			workingDirectory: '/home/pdfrender',
 		});
 

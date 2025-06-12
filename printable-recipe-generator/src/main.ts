@@ -6,7 +6,7 @@ import fetch from 'node-fetch';
 import * as QRCode from 'qrcode';
 import { fontsBase64, svgs } from './assets/assetloader';
 
-const stage: string = process.env['STAGE'] ?? 'CODE'; //TODO check this, stage is undefined while running on CODE. Right now provided default CODE value
+const stage: string = process.env['STAGE'] ?? 'CODE';
 
 //load Contributors
 interface ChefData {
