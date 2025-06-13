@@ -103,15 +103,6 @@ exports[`Sample recipe  should match snapshot 1`] = `
         font-size: 17px;
       }
 
-      /*.two-column-flow {*/
-      /*  display: flex;*/
-      /*  column-count: 2;*/
-      /*  column-gap: 1.5rem;*/
-      /*  !*break-inside: avoid;*!*/
-      /*  !*page-break-inside: avoid;*!*/
-      /*  margin-top: 3rem;*/
-      /*}*/
-
       .two-column-flow {
         display: flex;
         align-items: stretch; /*children stretch to same height*/
@@ -129,8 +120,6 @@ exports[`Sample recipe  should match snapshot 1`] = `
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
-        /*break-after: avoid;*/
-        /*page-break-after: avoid;*/
       }
 
       .ingredient{
@@ -138,8 +127,6 @@ exports[`Sample recipe  should match snapshot 1`] = `
         margin-bottom: 2rem;
         list-style-type: none;
         flex: 1; /*make ul stretch to fill available height*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
         margin-left:-1.2rem;
         margin-top: -0.2rem;
       }
@@ -148,14 +135,10 @@ exports[`Sample recipe  should match snapshot 1`] = `
         padding-left: 1.5rem;
         margin-bottom: 2rem;
         flex: 1; /*make ul stretch to fill available height*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
         margin-top: -0.2rem;
       }
 
       .two-column-flow li {
-        /*break-inside: avoid;*/
-        /*page-break-inside: avoid;*/
         font-size: 17px;
         font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
@@ -203,36 +186,25 @@ exports[`Sample recipe  should match snapshot 1`] = `
 
         .container {
           margin:auto;
-          /*display: flex;*/
-          /*flex-direction: column;*/
-          /*min-height: 100vh;*/
         }
 
         .recipe-content {
           flex: 1;
         }
 
-        /*.two-column-flow{*/
-        /*  column-fill: auto; !*ensures natural top-to-bottom flow*!*/
-        /*}*/
 
         .footer {
-          /*display: flex;*/
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          /*break-inside: avoid;*/
-          /*break-before: avoid;*/
-          /*page-break-before: avoid;*/
           margin-top: 2rem;
           flex: 2;
         }
 
         @page {
           size: A4;
-          /*margin: 1.5cm;*/
         }
 
         .qr-section{
@@ -690,15 +662,6 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
         font-size: 17px;
       }
 
-      /*.two-column-flow {*/
-      /*  display: flex;*/
-      /*  column-count: 2;*/
-      /*  column-gap: 1.5rem;*/
-      /*  !*break-inside: avoid;*!*/
-      /*  !*page-break-inside: avoid;*!*/
-      /*  margin-top: 3rem;*/
-      /*}*/
-
       .two-column-flow {
         display: flex;
         align-items: stretch; /*children stretch to same height*/
@@ -716,8 +679,6 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
-        /*break-after: avoid;*/
-        /*page-break-after: avoid;*/
       }
 
       .ingredient{
@@ -725,8 +686,6 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
         margin-bottom: 2rem;
         list-style-type: none;
         flex: 1; /*make ul stretch to fill available height*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
         margin-left:-1.2rem;
         margin-top: -0.2rem;
       }
@@ -735,14 +694,10 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
         padding-left: 1.5rem;
         margin-bottom: 2rem;
         flex: 1; /*make ul stretch to fill available height*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
         margin-top: -0.2rem;
       }
 
       .two-column-flow li {
-        /*break-inside: avoid;*/
-        /*page-break-inside: avoid;*/
         font-size: 17px;
         font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
@@ -790,36 +745,25 @@ exports[`Sample recipe  should match snapshot even when chefs are undefined 1`] 
 
         .container {
           margin:auto;
-          /*display: flex;*/
-          /*flex-direction: column;*/
-          /*min-height: 100vh;*/
         }
 
         .recipe-content {
           flex: 1;
         }
 
-        /*.two-column-flow{*/
-        /*  column-fill: auto; !*ensures natural top-to-bottom flow*!*/
-        /*}*/
 
         .footer {
-          /*display: flex;*/
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          /*break-inside: avoid;*/
-          /*break-before: avoid;*/
-          /*page-break-before: avoid;*/
           margin-top: 2rem;
           flex: 2;
         }
 
         @page {
           size: A4;
-          /*margin: 1.5cm;*/
         }
 
         .qr-section{
@@ -1273,15 +1217,6 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
         font-size: 17px;
       }
 
-      /*.two-column-flow {*/
-      /*  display: flex;*/
-      /*  column-count: 2;*/
-      /*  column-gap: 1.5rem;*/
-      /*  !*break-inside: avoid;*!*/
-      /*  !*page-break-inside: avoid;*!*/
-      /*  margin-top: 3rem;*/
-      /*}*/
-
       .two-column-flow {
         display: flex;
         align-items: stretch; /*children stretch to same height*/
@@ -1299,8 +1234,6 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
-        /*break-after: avoid;*/
-        /*page-break-after: avoid;*/
       }
 
       .ingredient{
@@ -1308,8 +1241,6 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
         margin-bottom: 2rem;
         list-style-type: none;
         flex: 1; /*make ul stretch to fill available height*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
         margin-left:-1.2rem;
         margin-top: -0.2rem;
       }
@@ -1318,14 +1249,10 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
         padding-left: 1.5rem;
         margin-bottom: 2rem;
         flex: 1; /*make ul stretch to fill available height*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
         margin-top: -0.2rem;
       }
 
       .two-column-flow li {
-        /*break-inside: avoid;*/
-        /*page-break-inside: avoid;*/
         font-size: 17px;
         font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
@@ -1373,36 +1300,25 @@ exports[`Sample recipe  should match snapshot even when chefs list contains more
 
         .container {
           margin:auto;
-          /*display: flex;*/
-          /*flex-direction: column;*/
-          /*min-height: 100vh;*/
         }
 
         .recipe-content {
           flex: 1;
         }
 
-        /*.two-column-flow{*/
-        /*  column-fill: auto; !*ensures natural top-to-bottom flow*!*/
-        /*}*/
 
         .footer {
-          /*display: flex;*/
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          /*break-inside: avoid;*/
-          /*break-before: avoid;*/
-          /*page-break-before: avoid;*/
           margin-top: 2rem;
           flex: 2;
         }
 
         @page {
           size: A4;
-          /*margin: 1.5cm;*/
         }
 
         .qr-section{
@@ -1860,15 +1776,6 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
         font-size: 17px;
       }
 
-      /*.two-column-flow {*/
-      /*  display: flex;*/
-      /*  column-count: 2;*/
-      /*  column-gap: 1.5rem;*/
-      /*  !*break-inside: avoid;*!*/
-      /*  !*page-break-inside: avoid;*!*/
-      /*  margin-top: 3rem;*/
-      /*}*/
-
       .two-column-flow {
         display: flex;
         align-items: stretch; /*children stretch to same height*/
@@ -1886,8 +1793,6 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
-        /*break-after: avoid;*/
-        /*page-break-after: avoid;*/
       }
 
       .ingredient{
@@ -1895,8 +1800,6 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
         margin-bottom: 2rem;
         list-style-type: none;
         flex: 1; /*make ul stretch to fill available height*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
         margin-left:-1.2rem;
         margin-top: -0.2rem;
       }
@@ -1905,14 +1808,10 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
         padding-left: 1.5rem;
         margin-bottom: 2rem;
         flex: 1; /*make ul stretch to fill available height*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
         margin-top: -0.2rem;
       }
 
       .two-column-flow li {
-        /*break-inside: avoid;*/
-        /*page-break-inside: avoid;*/
         font-size: 17px;
         font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
@@ -1960,36 +1859,25 @@ exports[`Sample recipe  should match snapshot even when chefs list is empty 1`] 
 
         .container {
           margin:auto;
-          /*display: flex;*/
-          /*flex-direction: column;*/
-          /*min-height: 100vh;*/
         }
 
         .recipe-content {
           flex: 1;
         }
 
-        /*.two-column-flow{*/
-        /*  column-fill: auto; !*ensures natural top-to-bottom flow*!*/
-        /*}*/
 
         .footer {
-          /*display: flex;*/
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          /*break-inside: avoid;*/
-          /*break-before: avoid;*/
-          /*page-break-before: avoid;*/
           margin-top: 2rem;
           flex: 2;
         }
 
         @page {
           size: A4;
-          /*margin: 1.5cm;*/
         }
 
         .qr-section{
@@ -2443,15 +2331,6 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
         font-size: 17px;
       }
 
-      /*.two-column-flow {*/
-      /*  display: flex;*/
-      /*  column-count: 2;*/
-      /*  column-gap: 1.5rem;*/
-      /*  !*break-inside: avoid;*!*/
-      /*  !*page-break-inside: avoid;*!*/
-      /*  margin-top: 3rem;*/
-      /*}*/
-
       .two-column-flow {
         display: flex;
         align-items: stretch; /*children stretch to same height*/
@@ -2469,8 +2348,6 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
-        /*break-after: avoid;*/
-        /*page-break-after: avoid;*/
       }
 
       .ingredient{
@@ -2478,8 +2355,6 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
         margin-bottom: 2rem;
         list-style-type: none;
         flex: 1; /*make ul stretch to fill available height*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
         margin-left:-1.2rem;
         margin-top: -0.2rem;
       }
@@ -2488,14 +2363,10 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
         padding-left: 1.5rem;
         margin-bottom: 2rem;
         flex: 1; /*make ul stretch to fill available height*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
         margin-top: -0.2rem;
       }
 
       .two-column-flow li {
-        /*break-inside: avoid;*/
-        /*page-break-inside: avoid;*/
         font-size: 17px;
         font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
@@ -2543,36 +2414,25 @@ exports[`Sample recipe  should match snapshot even when chefs list is null 1`] =
 
         .container {
           margin:auto;
-          /*display: flex;*/
-          /*flex-direction: column;*/
-          /*min-height: 100vh;*/
         }
 
         .recipe-content {
           flex: 1;
         }
 
-        /*.two-column-flow{*/
-        /*  column-fill: auto; !*ensures natural top-to-bottom flow*!*/
-        /*}*/
 
         .footer {
-          /*display: flex;*/
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          /*break-inside: avoid;*/
-          /*break-before: avoid;*/
-          /*page-break-before: avoid;*/
           margin-top: 2rem;
           flex: 2;
         }
 
         @page {
           size: A4;
-          /*margin: 1.5cm;*/
         }
 
         .qr-section{
@@ -3026,15 +2886,6 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
         font-size: 17px;
       }
 
-      /*.two-column-flow {*/
-      /*  display: flex;*/
-      /*  column-count: 2;*/
-      /*  column-gap: 1.5rem;*/
-      /*  !*break-inside: avoid;*!*/
-      /*  !*page-break-inside: avoid;*!*/
-      /*  margin-top: 3rem;*/
-      /*}*/
-
       .two-column-flow {
         display: flex;
         align-items: stretch; /*children stretch to same height*/
@@ -3052,8 +2903,6 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
-        /*break-after: avoid;*/
-        /*page-break-after: avoid;*/
       }
 
       .ingredient{
@@ -3061,8 +2910,6 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
         margin-bottom: 2rem;
         list-style-type: none;
         flex: 1; /*make ul stretch to fill available height*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
         margin-left:-1.2rem;
         margin-top: -0.2rem;
       }
@@ -3071,14 +2918,10 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
         padding-left: 1.5rem;
         margin-bottom: 2rem;
         flex: 1; /*make ul stretch to fill available height*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
         margin-top: -0.2rem;
       }
 
       .two-column-flow li {
-        /*break-inside: avoid;*/
-        /*page-break-inside: avoid;*/
         font-size: 17px;
         font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
@@ -3126,36 +2969,25 @@ exports[`Sample recipe  should match snapshot when QR code is not present 1`] = 
 
         .container {
           margin:auto;
-          /*display: flex;*/
-          /*flex-direction: column;*/
-          /*min-height: 100vh;*/
         }
 
         .recipe-content {
           flex: 1;
         }
 
-        /*.two-column-flow{*/
-        /*  column-fill: auto; !*ensures natural top-to-bottom flow*!*/
-        /*}*/
 
         .footer {
-          /*display: flex;*/
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          /*break-inside: avoid;*/
-          /*break-before: avoid;*/
-          /*page-break-before: avoid;*/
           margin-top: 2rem;
           flex: 2;
         }
 
         @page {
           size: A4;
-          /*margin: 1.5cm;*/
         }
 
         .qr-section{
@@ -3613,15 +3445,6 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
         font-size: 17px;
       }
 
-      /*.two-column-flow {*/
-      /*  display: flex;*/
-      /*  column-count: 2;*/
-      /*  column-gap: 1.5rem;*/
-      /*  !*break-inside: avoid;*!*/
-      /*  !*page-break-inside: avoid;*!*/
-      /*  margin-top: 3rem;*/
-      /*}*/
-
       .two-column-flow {
         display: flex;
         align-items: stretch; /*children stretch to same height*/
@@ -3639,8 +3462,6 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
         font-family: GuardianSansBoldFont, sans-serif;
         font-size: 20px;
         margin-top: 0.5rem;
-        /*break-after: avoid;*/
-        /*page-break-after: avoid;*/
       }
 
       .ingredient{
@@ -3648,8 +3469,6 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
         margin-bottom: 2rem;
         list-style-type: none;
         flex: 1; /*make ul stretch to fill available height*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
         margin-left:-1.2rem;
         margin-top: -0.2rem;
       }
@@ -3658,14 +3477,10 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
         padding-left: 1.5rem;
         margin-bottom: 2rem;
         flex: 1; /*make ul stretch to fill available height*/
-        /*display: flex;*/
-        /*flex-direction: column;*/
         margin-top: -0.2rem;
       }
 
       .two-column-flow li {
-        /*break-inside: avoid;*/
-        /*page-break-inside: avoid;*/
         font-size: 17px;
         font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
@@ -3713,36 +3528,25 @@ exports[`Sample recipe  should match snapshot when QR code is present 1`] = `
 
         .container {
           margin:auto;
-          /*display: flex;*/
-          /*flex-direction: column;*/
-          /*min-height: 100vh;*/
         }
 
         .recipe-content {
           flex: 1;
         }
 
-        /*.two-column-flow{*/
-        /*  column-fill: auto; !*ensures natural top-to-bottom flow*!*/
-        /*}*/
 
         .footer {
-          /*display: flex;*/
           border-top: 1px solid #ccc;
           font-size: 14px;
           text-align: left;
           color: #444;
           background: white;
-          /*break-inside: avoid;*/
-          /*break-before: avoid;*/
-          /*page-break-before: avoid;*/
           margin-top: 2rem;
           flex: 2;
         }
 
         @page {
           size: A4;
-          /*margin: 1.5cm;*/
         }
 
         .qr-section{

@@ -8,6 +8,11 @@ import { fontsBase64, svgs } from './assets/assetloader';
 
 const stage: string = process.env['STAGE'] ?? 'CODE';
 
+const baseUrl =
+	stage === 'PROD'
+		? 'https://recipes.guardianapis.com'
+		: 'https://recipes.code.dev-guardianapis.com';
+
 //load Contributors
 interface ChefData {
 	webTitle: string;
@@ -23,12 +28,7 @@ interface RecipeData {
 }
 async function getChefs(): Promise<Record<string, ChefData> | undefined> {
 	try {
-		const endpoint: string =
-			stage.toLowerCase() === 'prod'
-				? 'https://recipes.guardianapis.com/v2/contributors.json'
-				: stage.toLowerCase() === 'code'
-				? 'https://recipes.code.dev-guardianapis.com/v2/contributors.json'
-				: '';
+		const endpoint = `${baseUrl}/v2/contributors.json`;
 		console.log(`the stage found is ${stage}, endpoint is ${endpoint}`);
 		const resp = await fetch(endpoint);
 		const data = (await resp.json()) as Record<string, ChefData>;
