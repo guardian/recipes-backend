@@ -6,23 +6,23 @@
     <style>
       @font-face {
         font-family: 'GuardianRegularEgyptianFont';
-        src: url("data:fonts/ttf;base64,<%= fontsBase64.RegularEgyptianFont %>") format('opentype');
+        src: url("data:application/x-font-ttf;base64,<%= fontsBase64.GuardianRegularEgyptianFont %>") format('truetype');
       }
       @font-face {
         font-family: 'GuardianRegularSansFont';
-        src: url("data:fonts/ttf;base64;<%= fontsBase64.RegularSansFont %>") format('opentype');
+        src: url("data:application/x-font-ttf;base64,<%= fontsBase64.GuardianRegularSansFont %>") format('truetype');
       }
       @font-face {
         font-family: 'GuardianHeadlineSemiBoldFont';
-        src: url("data:fonts/otf;base64;<%= fontsBase64.HeadlineSemiBoldFont %>") format('truetype');
+        src: url("data:application/x-font-opentype;base64,<%= fontsBase64.GuardianHeadlineSemiBoldFont %>") format('opentype');
       }
       @font-face {
         font-family: 'GuardianSansBoldFont';
-        src: url("data:fonts/ttf;base64;<%= fontsBase64.SansBoldFont %>") format('opentype');
+        src: url("data:application/x-font-ttf;base64,<%= fontsBase64.GuardianSansBoldFont %>") format('truetype');
       }
 
       body {
-        font-family: 'GuardianRegularEgyptianFont', sans-serif;
+        font-family: GuardianRegularEgyptianFont, sans-serif;
         font-size: 17px;
         line-height: 1.6;
         margin: 40px;
@@ -30,7 +30,7 @@
       }
 
       .header {
-        font-family: 'GuardianHeadlineSemiBoldFont', sans-serif;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
         font-size: 28px;
         display: flex;
         justify-content: space-between;
@@ -46,84 +46,115 @@
         height: 40px;
       }
 
+      .recipe-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
       .recipe-title {
-        font-size: 26px;
-        font-weight: bold;
+        font-family: GuardianHeadlineSemiBoldFont, sans-serif;
+        font-size: 28px;
+        flex: 1;
+        line-height: 115%;
+        max-width: 80%;
+      }
+
+      .qr-section img{
+        width: 100px;
+        height: auto;
+        border: 1px solid black;
+        padding: 2px;
       }
 
       .author {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 20px;
         margin-bottom: 20px;
         color: #3D4D26;
       }
 
       .labels {
-        margin: 20px 0;
+        margin-bottom: 0.1rem;
       }
 
       .timing-table {
-        display: flex;
-        flex-wrap: wrap;
+        display: block;
         gap: 2rem;
-        padding: 1rem 0;
         border-top: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
         margin-bottom: 2rem;
       }
 
       .timing-row {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         display: flex;
         align-items: center;
         gap: 0.6rem;
       }
 
-      .icon {
-        width: 20px;
-        height: 20px;
-        vertical-align: middle;
+      .description {
+        font-family: GuardianRegularEgyptianFont, sans-serif;
+        font-size: 17px;
       }
 
       .two-column-flow {
-        column-count: 2;
-        column-gap: 3rem;
-        margin-top: 2rem;
-      }
-
-      .two-column-flow h3 {
-        break-after: avoid;
-        font-family: 'GuardianBoldSansFont', sans-serif;
+        display: flex;
+        align-items: stretch; /*children stretch to same height*/
+        gap: 2rem;
         margin-top: 1rem;
       }
 
-      .two-column-flow ul {
-        list-style-type: disc;
+      .two-column-flow > div {
+        flex: 1; /*equal width columns*/
+        display: flex;
+        flex-direction: column;
+      }
+
+      .two-column-flow h3 {
+        font-family: GuardianSansBoldFont, sans-serif;
+        font-size: 20px;
+        margin-top: 0.5rem;
+      }
+
+      .ingredient{
         padding-left: 1.5rem;
         margin-bottom: 2rem;
+        list-style-type: none;
+        flex: 1; /*make ul stretch to fill available height*/
+        margin-left:-1.2rem;
+        margin-top: -0.2rem;
+      }
+
+      .method{
+        padding-left: 1.5rem;
+        margin-bottom: 2rem;
+        flex: 1; /*make ul stretch to fill available height*/
+        margin-top: -0.2rem;
       }
 
       .two-column-flow li {
-        break-inside: avoid;
-        font-family: 'GuardianRegularSansFont', sans-serif;
         font-size: 17px;
+        font-family: GuardianRegularSansFont, sans-serif;
         margin-bottom: 0.5rem;
       }
 
-      .recipe-footer {
-        margin-top: 40px;
-        padding-top: 20px;
+
+      .footer {
+        padding-top: 5px;
         border-top: 1px solid #ddd;
         font-size: 14px;
         color: #444;
+        page-break-inside: avoid;
+        break-inside: avoid;
       }
 
       .footer-line {
         display: flex;
         align-items: flex-start;
         gap: 10px;
-        margin-bottom: 10px;
       }
 
       .footer-icon svg {
@@ -134,7 +165,7 @@
       }
 
       .footer-text a {
-        font-family: 'GuardianRegularSansFont', sans-serif;
+        font-family: GuardianRegularSansFont, sans-serif;
         font-size: 15px;
         text-decoration: none;
       }
@@ -142,10 +173,49 @@
       h3 {
         font-weight: bold;
       }
+
+      @media print {
+        body {
+          margin:auto;
+          padding: 1cm;
+          print-color-adjust: exact;
+        }
+
+        .container {
+          margin:auto;
+        }
+
+        .recipe-content {
+          flex: 1;
+        }
+
+
+        .footer {
+          border-top: 1px solid #ccc;
+          font-size: 14px;
+          text-align: left;
+          color: #444;
+          background: white;
+          margin-top: 2rem;
+          flex: 2;
+        }
+
+        @page {
+          size: A4;
+        }
+
+        .qr-section{
+          print-color-adjust: exact;
+        }
+      }
+
+
     </style>
 </head>
-<body>
 
+<body>
+<div class="container">
+    <div class="recipe-content">
 <div class="header">
     <div class="feast-logo">
         <%- svgs.FeastLogo %>
@@ -155,24 +225,30 @@
     </div>
 </div>
 
-<div class="recipe-title"><%= recipe.title %></div>
-<% if (Array.isArray(recipe.contributors)) { %>
-    <div class="author">
-        By
-        <% recipe.contributors.forEach((contributorId, index) => { %>
-            <% if (typeof chefs === 'object' && chefs?.[contributorId]) { %>
-                <%= chefs[contributorId].webTitle %>
-            <% } else { %>
-                <%= contributorId %>
-            <% } %>
-            <% if (index < recipe.contributors.length - 1) { %>, <% } %>
-        <% }) %>
+<div class="recipe-header">
+    <div class="recipe-title"><%= recipe.title %>
+        <% if (Array.isArray(recipe.contributors)) {
+            var names = [];
+            for (var i = 0; i < recipe.contributors.length; i++) {
+                var id = recipe.contributors[i];
+                if (typeof chefs === 'object' && chefs?.[id] && chefs?.[id].webTitle) {
+                    names.push(chefs[id].webTitle);
+                }
+            }
+        if (names.length > 0) {
+        %>
+            <div class="author">
+                By <%= names.join(', ') %>
+            </div>
+        <%  } } %>
     </div>
-<% } %>
-<% if (recipe.contributors && typeof chefs != 'object' ) { %>
-    <div class="author">By <%=  recipe.contributors %></div>
-<% } %>
 
+    <%if (qrImageDataUrl && qrImageDataUrl!=null || qrImageDataUrl?.length>0) { %>
+        <div class="qr-section">
+        <img src="<%= qrImageDataUrl %>" alt="Scan to open app" />
+    </div>
+    <% } %>
+</div>
 
 <% if (recipe.suitableForDietIds && recipe.suitableForDietIds.length) { %>
     <div class="labels">
@@ -189,33 +265,14 @@
 <div class="timing-table">
     <% for (const time of recipe.timings || []) { %>
         <div class="timing-row">
-            <div>
-                <% if (time.qualifier === 'prep-time') { %>
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10" stroke="#000" stroke-width="2" fill="none"/>
-                        <path d="M12 6v6l4 2" stroke="#000" stroke-width="2" fill="none"/>
-                    </svg>
-                <% } else if (time.qualifier === 'cook-time') { %>
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M4 10h16v2H4z" fill="#000"/>
-                        <circle cx="6" cy="16" r="2" fill="#000"/>
-                        <circle cx="18" cy="16" r="2" fill="#000"/>
-                    </svg>
-                <% } else if (time.qualifier === 'marinate-time') { %>
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M12 3v18M5 12h14" stroke="#000" stroke-width="2" fill="none"/>
-                    </svg>
-                <% } %>
-            </div>
+            <%- svgs["clock-filled"] %>
             <div><%= time.text %></div>
         </div>
     <% } %>
 
     <% if (recipe.serves && recipe.serves.length) { %>
         <div class="timing-row">
-            <svg class="icon" viewBox="0 0 24 24">
-                <path d="M4 4h16v2H4zM4 8h16v2H4zM4 12h16v2H4z" fill="#000"/>
-            </svg>
+            <%- svgs["knife-and-fork"] %>
             <div>Serves <%= recipe.serves[0].amount.min %> <%= recipe.serves[0].unit %></div>
         </div>
     <% } %>
@@ -224,9 +281,9 @@
 <div class="description"><%= recipe.description %></div>
 
 <div class="two-column-flow">
-    <div class="column ingredients">
+    <div>
         <h3>Ingredients</h3>
-        <ul>
+        <ul class="ingredient">
             <% for (const group of recipe.ingredients || []) { %>
                 <% for (const ing of group.ingredientsList || []) { %>
                     <li>
@@ -242,42 +299,34 @@
         </ul>
     </div>
 
-    <div class="column method">
+    <div>
         <h3>Method</h3>
-        <ul>
+        <ul class="method">
             <% for (const step of recipe.instructions || []) { %>
                 <li><%= step.description %></li>
             <% } %>
         </ul>
     </div>
 </div>
+    </div>
 
+    <div>
 <% if (recipe.bookCredit || recipe.featuredImage) { %>
-<footer class="recipe-footer">
+<footer class="footer">
     <div class="footer-line">
         <% if (recipe.bookCredit) { %>
     <span class="footer-icon">
       <%- svgs["feast-book-outlined"] %>
     </span>
         <span class="footer-text">
-        <%= recipe.bookCredit %>>
-    </span>
-        <% } %>
-    </div>
-    <div class="footer-line">
-        <% if (recipe.featuredImage) { %>
-    <span class="footer-icon">
-      <%- svgs.camera %>
-    </span>
-
-        <span class="footer-text">
-        <%= recipe.featuredImage.source %>>
+        <%= recipe.bookCredit %>
     </span>
         <% } %>
     </div>
 </footer>
-<% } %>
+    <% } %>
+</div>
 
-
+</div>
 </body>
 </html>

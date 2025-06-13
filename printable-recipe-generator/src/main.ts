@@ -1,12 +1,17 @@
 import fs from 'fs';
 import * as process from 'node:process';
 import path from 'path';
-import type { Data } from 'ejs';
 import { render as renderTemplate } from 'ejs';
 import fetch from 'node-fetch';
+import * as QRCode from 'qrcode';
 import { fontsBase64, svgs } from './assets/assetloader';
 
-const stage: string | undefined = process.env['STAGE'];
+const stage: string = process.env['STAGE'] ?? 'CODE';
+
+const baseUrl =
+	stage === 'PROD'
+		? 'https://recipes.guardianapis.com'
+		: 'https://recipes.code.dev-guardianapis.com';
 
 //load Contributors
 interface ChefData {
@@ -17,31 +22,36 @@ interface ChefData {
 	bylineImageUrl?: string;
 	bylineLargeImageUrl?: string;
 }
+
+interface RecipeData {
+	id: string;
+}
 async function getChefs(): Promise<Record<string, ChefData> | undefined> {
 	try {
-		const endpoint: string =
-			stage === 'PROD'
-				? 'https://recipes.guardianapis.com/v2/contributors.json'
-				: stage === 'CODE'
-				? 'https://recipes.code.dev-guardianapis.com/v2/contributors.json'
-				: '';
+		const endpoint = `${baseUrl}/v2/contributors.json`;
+		console.log(`the stage found is ${stage}, endpoint is ${endpoint}`);
 		const resp = await fetch(endpoint);
 		const data = (await resp.json()) as Record<string, ChefData>;
 		return data;
 	} catch (error) {
-		console.error('Failed to parse chefs JSON: ', error);
+		console.error(`Failed to parse chefs JSON: `, error);
 		return undefined;
 	}
 }
 
-export function renderJsonToHtml(
+export async function renderJsonToHtml(
 	recipeDataPath: string,
-	chefs: Record<string, unknown>,
+	chefs: Record<string, ChefData>,
 ) {
 	//load recipe JSON
 	const recipe = JSON.parse(
 		fs.readFileSync(recipeDataPath, 'utf-8'),
-	) as unknown;
+	) as RecipeData;
+
+	//load QR Code
+	const qrImageDataUrl = await QRCode.toDataURL(
+		`feastbraze://recipe/${recipe.id}`,
+	);
 
 	//load template
 	const templatePath = path.join(__dirname, 'src', 'assets', 'recipe.ejs');
@@ -53,6 +63,7 @@ export function renderJsonToHtml(
 		svgs,
 		fontsBase64,
 		chefs,
+		qrImageDataUrl,
 	});
 
 	//Output
@@ -73,6 +84,6 @@ if (!process.argv[2]) {
 	//Get chefs and render html
 	void (async () => {
 		const chefsList = (await getChefs()) as Record<string, ChefData>;
-		renderJsonToHtml(process.argv[2], chefsList);
+		await renderJsonToHtml(process.argv[2], chefsList);
 	})();
 }
