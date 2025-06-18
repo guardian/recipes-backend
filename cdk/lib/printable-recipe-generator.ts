@@ -182,5 +182,15 @@ export class PrintableRecipeGenerator extends Construct {
 				detailType: ['recipe-update'],
 			},
 		});
+
+		new Rule(this, 'ReindexConnect', {
+			enabled: scope.stage !== 'PROD', //only enabled in the CODE environment until design work fully implemented, but available for testing in PROD
+			eventBus,
+			targets: [ruleTarget],
+			eventPattern: {
+				source: ['pdf-reindex'],
+				detailType: ['recipe-update'],
+			},
+		});
 	}
 }
