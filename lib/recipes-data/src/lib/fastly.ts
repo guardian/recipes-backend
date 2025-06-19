@@ -69,7 +69,7 @@ export async function sendFastlyPurgeRequest({
 			: {
 					'Fastly-Soft-Purge': '1',
 					...baseHeaders,
-			  };
+				};
 
 	if (DebugLogsEnabled) console.debug('urlToPurge is ', urlToPurge);
 	const response = await fetch(urlToPurge, {
