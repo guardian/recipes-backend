@@ -45,6 +45,9 @@ async function loadIndexForAllIds(): Promise<string[]> {
 async function loadRecipeJson(checksum: string): Promise<string> {
 	const url = `${contentUrl}/${checksum}`;
 	const response = await fetch(url);
+	if (response.status === 404) {
+		throw new Error(`404 Not Found for recipe Checksum:  ${checksum}`);
+	}
 	if (response.status !== 200)
 		throw new Error(
 			`Failed to fetch recipe JSON for ID ${checksum}: ${response.status}`,
@@ -103,10 +106,29 @@ void (async (): Promise<void> => {
 			const batch = batches[i];
 			console.log(`Processing batch ${i + 1} with ${batch.length} IDs...`);
 			const recipeData = await Promise.all(
-				batch.map(async (checksum) => await loadRecipeJson(checksum)),
+				batch.map(async (checksum) => {
+					try {
+						return await loadRecipeJson(checksum);
+					} catch (err) {
+						if (err instanceof Error && err.message.includes('404')) {
+							console.warn(`Skipping missing recipe for ID ${checksum}`);
+							return null;
+						}
+						throw err; // Re-throw non-404 errors
+					}
+				}),
 			);
-			console.log('Sending batch to EventBridge now..');
-			await sendToEventBridge(recipeData);
+			console.log('Filter valid json');
+			const validRecipeData = recipeData.filter((r): r is string => r !== null);
+
+			if (validRecipeData.length > 0) {
+				console.log('Sending batch to EventBridge now..');
+				await sendToEventBridge(validRecipeData);
+			} else {
+				console.warn(
+					`No valid recipes in this batch, skipping send to Eventbridge.`,
+				);
+			}
 		}
 	} catch (err) {
 		console.error('Batch process failed:', err);
