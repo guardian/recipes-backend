@@ -6,7 +6,9 @@ import {
 } from '@aws-sdk/client-eventbridge';
 import fetch from 'node-fetch';
 
-const REGION = 'eu-west-1';
+console.log('Trigger script starting...');
+
+const REGION: string = process.env['AWS_REGION'] ?? 'eu-west-1';
 const stage: string = process.env['STAGE'] ?? 'CODE';
 const recipeBaseUrl =
 	stage === 'PROD'
@@ -17,6 +19,8 @@ const contentUrl = `${recipeBaseUrl}/content`;
 const BATCH_SIZE = 10; //limitation of Put Item to Event Bridge
 
 const eb = new EventBridgeClient({ region: REGION });
+
+console.log('Trigger script started...');
 
 interface RecipeIndexSchema {
 	checksum: string;
@@ -39,17 +43,17 @@ async function loadIndexForAllIds(): Promise<string[]> {
 }
 
 async function loadRecipeJson(checksum: string): Promise<string> {
-	const url = `${contentUrl}/${checksum}.json`;
+	const url = `${contentUrl}/${checksum}`;
 	const response = await fetch(url);
-	if (response.status == 200)
+	if (response.status !== 200)
 		throw new Error(
 			`Failed to fetch recipe JSON for ID ${checksum}: ${response.status}`,
 		);
 	else {
 		const result = (await response.json()) as string;
-		console.log(
-			`Recipe Id's found from Index, length ${JSON.stringify(result)}`,
-		);
+		// console.log(
+		// 	`Recipe JSON found from Index, length ${JSON.stringify(result)}`,
+		// );
 		return result;
 	}
 }
@@ -88,10 +92,11 @@ async function sendToEventBridge(recipes: string[]): Promise<void> {
 	}
 }
 
-export const handler = async (): Promise<void> => {
+void (async (): Promise<void> => {
 	try {
 		console.log('Fetching index from URL...');
 		const checksums = await loadIndexForAllIds();
+		console.log('Storing in batches of 10...');
 		const batches = storeInBatches(checksums, BATCH_SIZE);
 
 		for (let i = 0; i < batches.length; i++) {
@@ -100,9 +105,10 @@ export const handler = async (): Promise<void> => {
 			const recipeData = await Promise.all(
 				batch.map(async (checksum) => await loadRecipeJson(checksum)),
 			);
+			console.log('Sending batch to EventBridge now..');
 			await sendToEventBridge(recipeData);
 		}
 	} catch (err) {
 		console.error('Batch process failed:', err);
 	}
-};
+})();
