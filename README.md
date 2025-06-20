@@ -74,7 +74,7 @@ seen by end-users until their app refreshes its content.
 ## Refreshing credentials
 
 We use Fastly as our CDN fronting this content; unfortunately, this means that we need to provision a credential for it to access the static
-content and then manually rotate this credential.  See Fastly's docs at https://docs.fastly.com/en/guides/amazon-s3#using-an-amazon-s3-private-bucket for
+content and then manually rotate this credential. See Fastly's docs at https://docs.fastly.com/en/guides/amazon-s3#using-an-amazon-s3-private-bucket for
 more information and check in with DevX security for the latest on our policies regarding credentials.
 
 You can find the credential rotation process here: [doc/Rotating Credentials.md](doc/Rotating%20Credentials.md)
@@ -154,7 +154,7 @@ inherent in checking for them. Furthermore, it's important the the app can work 
 
 ### Why no search API?
 
-The data here is for _retrieval_ only; search is a seperate concern which is implemented at https://github.com/guardian/recipe-search-backend.  This is because the search
+The data here is for _retrieval_ only; search is a seperate concern which is implemented at https://github.com/guardian/recipe-search-backend. This is because the search
 uses a different tech stack to do advanced semantic search wheras the code here is only concerned with pushing the recipe data into a place where it can
 easily be retrieved.
 
@@ -176,7 +176,7 @@ publication status
 
 ### lambda/publish-todays-curation
 
-This lambda function runs once a day to take that day's curation from the dated folders where it is stored and copy it to the "current" curation.  It's
+This lambda function runs once a day to take that day's curation from the dated folders where it is stored and copy it to the "current" curation. It's
 also triggered by S3 when a new curation data json is written to dated folders; if the date is todays then it is published immediately
 
 ### lambda/profile-cache-rebuild

@@ -11,49 +11,49 @@ jobs:
   printable-recipes-generator:
     runs-on: ubuntu-latest
     permissions:
-          id-token: write
-          contents: read
-          checks: write
-          issues: read
-          pull-requests: write
+      id-token: write
+      contents: read
+      checks: write
+      issues: read
+      pull-requests: write
     steps:
-          - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-          - uses: actions/setup-node@v3
-            with:
-              node-version-file: .nvmrc
-              cache: 'npm'
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
 
-          - run: npm ci
+      - run: npm ci
 
-          - run: npm run nx run printable-recipe-generator:build
+      - run: npm run nx run printable-recipe-generator:build
 
-          - name: Set up QEMU
-            uses: docker/setup-qemu-action@v3
-          - name: Set up Docker Buildx
-            uses: docker/setup-buildx-action@v3
-          - uses: aws-actions/configure-aws-credentials@v4
-            with:
-              aws-region: eu-west-1
-              role-to-assume: ${{secrets.GU_ECR_ROLE_ARN}}
-          - uses: aws-actions/amazon-ecr-login@v2
-            id: ecr-login
-            with:
-              mask-password: "true"
-            continue-on-error: true
-          - name: Build and push
-            uses: docker/build-push-action@v5
-            env:
-              REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-              IMAGE_TAG: ${{ github.run_number }}
-            with:
-              context: printable-recipe-generator/docker
-              platforms: linux/arm64
-              push: true
-              tags: ${{ env.REGISTRY }}/recipes-backend/printable-recipes:${{ env.IMAGE_TAG }}
-              cache-from: type=gha
-              cache-to: type=gha,mode=max
-              provenance: false
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-1
+          role-to-assume: ${{secrets.GU_ECR_ROLE_ARN}}
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: ecr-login
+        with:
+          mask-password: 'true'
+        continue-on-error: true
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG: ${{ github.run_number }}
+        with:
+          context: printable-recipe-generator/docker
+          platforms: linux/arm64
+          push: true
+          tags: ${{ env.REGISTRY }}/recipes-backend/printable-recipes:${{ env.IMAGE_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: false
   build:
     runs-on: ubuntu-latest
 

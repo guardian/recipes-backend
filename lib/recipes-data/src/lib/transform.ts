@@ -114,7 +114,7 @@ export const addSponsorsTransform: (
 							validTo: sponsor.validTo?.iso8601,
 							targeting: sponsor.targeting?.publishedSince?.iso8601,
 						};
-				  }),
+					}),
 	});
 };
 

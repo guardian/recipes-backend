@@ -159,7 +159,7 @@ export async function findRecentLocalisation(
 					? {
 							...deduplicatedLocalisation,
 							items: deduplicatedLocalisation.items.slice(0, cutoff),
-					  }
+						}
 					: deduplicatedLocalisation;
 			} else {
 				//we have not been asked to de-duplicate
@@ -167,7 +167,7 @@ export async function findRecentLocalisation(
 					? {
 							...maybeLocalisation,
 							items: maybeLocalisation.items.slice(0, cutoff),
-					  }
+						}
 					: maybeLocalisation;
 			}
 		}

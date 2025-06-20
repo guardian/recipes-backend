@@ -4,19 +4,21 @@
 	"sourceRoot": "printable-recipe-generator/src",
 	"projectType": "application",
 	"targets": {
-    "build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["tar cv * | gzip > ../../printable-recipe-generator/docker/printable-recipe-generator.tar.gz"],
-        "cwd": "dist/printable-recipe-generator"
-      },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "transpile"
-        }
-      ]
-    },
+		"build": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": [
+					"tar cv * | gzip > ../../printable-recipe-generator/docker/printable-recipe-generator.tar.gz"
+				],
+				"cwd": "dist/printable-recipe-generator"
+			},
+			"dependsOn": [
+				{
+					"projects": "self",
+					"target": "transpile"
+				}
+			]
+		},
 		"transpile": {
 			"executor": "@nx/esbuild:esbuild",
 			"outputs": ["{options.outputPath}"],
@@ -26,7 +28,7 @@
 				"outputPath": "dist/printable-recipe-generator",
 				"format": ["cjs"],
 				"bundle": true,
-        "thirdParty": true,
+				"thirdParty": true,
 				"main": "printable-recipe-generator/src/main.ts",
 				"tsConfig": "printable-recipe-generator/tsconfig.app.json",
 				"assets": ["printable-recipe-generator/src/assets/**/*"],
