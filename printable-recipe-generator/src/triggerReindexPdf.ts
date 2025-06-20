@@ -24,12 +24,19 @@ console.log('Trigger script started...');
 
 interface RecipeIndexSchema {
 	checksum: string;
+	recipeUID: string;
 }
 interface IndexSchema {
 	recipes: RecipeIndexSchema[];
 }
 
-async function loadIndexForAllIds(): Promise<string[]> {
+interface RecipeSchema {
+	uid: string;
+	checksum: string;
+	blob: Record<string, unknown>;
+}
+
+async function loadIndexForAllIds(): Promise<IndexSchema> {
 	const response = await fetch(indexUrl);
 
 	if (response.status !== 200) {
@@ -39,25 +46,32 @@ async function loadIndexForAllIds(): Promise<string[]> {
 	const result = (await response.json()) as IndexSchema;
 
 	console.log(`Recipe Id's found from Index, length ${result.recipes.length}`);
-	return result.recipes.map((_) => _.checksum);
+	return result; // .recipes.map((r) => r.checksum);
 }
 
-async function loadRecipeJson(checksum: string): Promise<string> {
-	const url = `${contentUrl}/${checksum}`;
+async function loadRecipeJson(
+	recipeItem: RecipeIndexSchema,
+): Promise<RecipeSchema> {
+	const url = `${contentUrl}/${recipeItem.checksum}`;
 	const response = await fetch(url);
 	if (response.status === 404) {
-		throw new Error(`404 Not Found for recipe Checksum:  ${checksum}`);
+		throw new Error(
+			`404 Not Found for recipe Checksum:  ${recipeItem.checksum}`,
+		);
 	}
 	if (response.status !== 200)
 		throw new Error(
-			`Failed to fetch recipe JSON for ID ${checksum}: ${response.status}`,
+			`Failed to fetch recipe JSON for ID ${recipeItem.checksum}: ${response.status}`,
 		);
 	else {
-		const result = (await response.json()) as string;
-		// console.log(
-		// 	`Recipe JSON found from Index, length ${JSON.stringify(result)}`,
-		// );
-		return result;
+		const result = (await response.json()) as Record<string, unknown>;
+
+		const recipeSchemaResult: RecipeSchema = {
+			uid: recipeItem.recipeUID,
+			checksum: recipeItem.checksum,
+			blob: result,
+		};
+		return recipeSchemaResult;
 	}
 }
 
@@ -72,13 +86,17 @@ function storeInBatches<T>(array: T[], size: number): T[][] {
 	return result;
 }
 
-async function sendToEventBridge(recipes: string[]): Promise<void> {
+async function sendToEventBridge(recipes: RecipeSchema[]): Promise<void> {
 	const entries: PutEventsRequestEntry[] = recipes.map((r) => ({
 		Source: 'pdf-reindex',
 		DetailType: 'recipe-update',
-		EventBusName: 'default',
+		EventBusName: `publication-events-${stage}`,
 		Time: new Date(),
-		Detail: JSON.stringify(r),
+		Detail: JSON.stringify({
+			uid: r.uid,
+			checksum: r.checksum,
+			blob: r.blob,
+		}),
 	}));
 
 	for (let i = 0; i < entries.length; i += 10) {
@@ -98,20 +116,25 @@ async function sendToEventBridge(recipes: string[]): Promise<void> {
 void (async (): Promise<void> => {
 	try {
 		console.log('Fetching index from URL...');
-		const checksums = await loadIndexForAllIds();
+		const recipeItems = await loadIndexForAllIds();
 		console.log('Storing in batches of 10...');
-		const batches = storeInBatches(checksums, BATCH_SIZE);
+		const batches = storeInBatches(recipeItems.recipes, BATCH_SIZE);
 
-		for (let i = 0; i < batches.length; i++) {
+		for (let i = 0; i < 10; i++) {
+			//Limit to 10 batches for TESTING
+			//for (let i = 0; i < batches.length; i++) {
 			const batch = batches[i];
 			console.log(`Processing batch ${i + 1} with ${batch.length} IDs...`);
 			const recipeData = await Promise.all(
-				batch.map(async (checksum) => {
+				batch.map(async (recipeItem) => {
 					try {
-						return await loadRecipeJson(checksum);
+						console.log(`Processing recipeItem: ${JSON.stringify(recipeItem)}`);
+						return await loadRecipeJson(recipeItem);
 					} catch (err) {
 						if (err instanceof Error && err.message.includes('404')) {
-							console.warn(`Skipping missing recipe for ID ${checksum}`);
+							console.warn(
+								`Skipping missing recipe for ID ${recipeItem.checksum}`,
+							);
 							return null;
 						}
 						throw err; // Re-throw non-404 errors
@@ -119,7 +142,9 @@ void (async (): Promise<void> => {
 				}),
 			);
 			console.log('Filter valid json');
-			const validRecipeData = recipeData.filter((r): r is string => r !== null);
+			const validRecipeData = recipeData.filter(
+				(r): r is RecipeSchema => r !== null,
+			);
 
 			if (validRecipeData.length > 0) {
 				console.log('Sending batch to EventBridge now..');
