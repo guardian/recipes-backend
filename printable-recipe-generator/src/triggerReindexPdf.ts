@@ -33,7 +33,7 @@ interface IndexSchema {
 interface RecipeSchema {
 	uid: string;
 	checksum: string;
-	blob: Record<string, unknown>;
+	blob: string;
 }
 
 async function loadIndexForAllIds(): Promise<IndexSchema> {
@@ -64,7 +64,7 @@ async function loadRecipeJson(
 			`Failed to fetch recipe JSON for ID ${recipeItem.checksum}: ${response.status}`,
 		);
 	else {
-		const result = (await response.json()) as Record<string, unknown>;
+		const result = await response.text();
 
 		const recipeSchemaResult: RecipeSchema = {
 			uid: recipeItem.recipeUID,
