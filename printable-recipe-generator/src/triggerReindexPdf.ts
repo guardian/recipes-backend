@@ -5,6 +5,7 @@ import {
 	PutEventsCommand,
 } from '@aws-sdk/client-eventbridge';
 import fetch from 'node-fetch';
+import { Recipe } from '@recipes-api/lib/facia';
 
 console.log('Trigger script starting...');
 
@@ -47,6 +48,20 @@ async function loadIndexForAllIds(): Promise<IndexSchema> {
 
 	console.log(`Recipe Id's found from Index, length ${result.recipes.length}`);
 	return result; // .recipes.map((r) => r.checksum);
+}
+
+async function pdfAlreadyExists(
+	recipeItem: RecipeIndexSchema,
+): Promise<boolean> {
+	const url = `${contentUrl}/${recipeItem.checksum}.pdf`;
+	const response = await fetch(url, { method: 'HEAD' });
+	if (response.status === 200) {
+		return true;
+	} else if (response.status === 404) {
+		return false;
+	} else {
+		throw new Error(`Unexpected response to HEAD ${url}: ${response.status}`);
+	}
 }
 
 async function loadRecipeJson(
@@ -95,7 +110,6 @@ async function sendToEventBridge(recipes: RecipeSchema[]): Promise<void> {
 		Detail: JSON.stringify({
 			uid: r.uid,
 			checksum: r.checksum,
-			blob: r.blob,
 		}),
 	}));
 
@@ -113,6 +127,19 @@ async function sendToEventBridge(recipes: RecipeSchema[]): Promise<void> {
 	}
 }
 
+async function filterOnlyNeeded(
+	recipes: RecipeIndexSchema[],
+): Promise<RecipeIndexSchema[]> {
+	const result: RecipeIndexSchema[] = [];
+
+	for (const r of recipes) {
+		if (!(await pdfAlreadyExists(r))) {
+			result.push(r);
+		}
+	}
+	return result;
+}
+
 void (async (): Promise<void> => {
 	try {
 		console.log('Fetching index from URL...');
@@ -120,13 +147,14 @@ void (async (): Promise<void> => {
 		console.log('Storing in batches of 10...');
 		const batches = storeInBatches(recipeItems.recipes, BATCH_SIZE);
 
-		for (let i = 0; i < 10; i++) {
-			//Limit to 10 batches for TESTING
-			//for (let i = 0; i < batches.length; i++) {
-			const batch = batches[i];
-			console.log(`Processing batch ${i + 1} with ${batch.length} IDs...`);
+		let page = 0;
+
+		for (const batch of batches) {
+			console.log(`Processing batch ${page + 1} with ${batch.length} IDs...`);
+			const filteredBatch = await filterOnlyNeeded(batch);
+
 			const recipeData = await Promise.all(
-				batch.map(async (recipeItem) => {
+				filteredBatch.map(async (recipeItem) => {
 					try {
 						console.log(`Processing recipeItem: ${JSON.stringify(recipeItem)}`);
 						return await loadRecipeJson(recipeItem);
@@ -154,6 +182,7 @@ void (async (): Promise<void> => {
 					`No valid recipes in this batch, skipping send to Eventbridge.`,
 				);
 			}
+			page++;
 		}
 	} catch (err) {
 		console.error('Batch process failed:', err);
