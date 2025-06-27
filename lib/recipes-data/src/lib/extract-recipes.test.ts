@@ -39,7 +39,7 @@ describe('extractRecipeData', () => {
 			? (JSON.parse(testBlock.elements[1].recipeTypeData.recipeJson) as Record<
 					string,
 					unknown
-			  >)
+				>)
 			: {};
 		const expected = JSON.stringify({
 			...originalContent,
@@ -60,7 +60,7 @@ describe('extractRecipeData', () => {
 			? (JSON.parse(testBlock.elements[3].recipeTypeData.recipeJson) as Record<
 					string,
 					unknown
-			  >)
+				>)
 			: {};
 		const expected = JSON.stringify({
 			...originalContent,
@@ -145,7 +145,7 @@ describe('extractRecipeData', () => {
 			? (JSON.parse(testBlock.elements[1].recipeTypeData.recipeJson) as Record<
 					string,
 					unknown
-			  >)
+				>)
 			: {};
 		const expected = JSON.stringify({
 			...originalContent,
@@ -178,7 +178,7 @@ describe('extractRecipeData', () => {
 			? (JSON.parse(testBlock.elements[1].recipeTypeData.recipeJson) as Record<
 					string,
 					unknown
-			  >)
+				>)
 			: {};
 		const expected = JSON.stringify({
 			...originalContent,

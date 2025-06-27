@@ -39,15 +39,27 @@ async function getChefs(): Promise<Record<string, ChefData> | undefined> {
 	}
 }
 
+export async function downloadRecipeContent(
+	recipeUuid: string,
+): Promise<RecipeData> {
+	const path = `${baseUrl}/api/content/by-uid/${recipeUuid}`;
+	console.log(`Obtaining recipe data from ${path}`);
+	const response = await fetch(path); //This should follow the redirect by default
+	const content = await response.text();
+	if (response.status == 200) {
+		return JSON.parse(content) as RecipeData;
+	} else {
+		console.error(
+			`Unable to retrieve recipe data: server responded ${response.status} ${content}`,
+		);
+		throw new Error(`Unable to retrieve recipe data`);
+	}
+}
+
 export async function renderJsonToHtml(
-	recipeDataPath: string,
+	recipe: RecipeData,
 	chefs: Record<string, ChefData>,
 ) {
-	//load recipe JSON
-	const recipe = JSON.parse(
-		fs.readFileSync(recipeDataPath, 'utf-8'),
-	) as RecipeData;
-
 	//load QR Code
 	const qrImageDataUrl = await QRCode.toDataURL(
 		`feastbraze://recipe/${recipe.id}`,
@@ -77,13 +89,23 @@ export async function renderJsonToHtml(
 
 if (!process.argv[2]) {
 	console.error(
-		'You must pass the name of the json file to render on the commandline!',
+		'You must pass the uuid of the recipe to render on the commandline!',
 	);
 	process.exit(2);
 } else {
 	//Get chefs and render html
 	void (async () => {
 		const chefsList = (await getChefs()) as Record<string, ChefData>;
-		await renderJsonToHtml(process.argv[2], chefsList);
-	})();
+		const recipeJson = await downloadRecipeContent(process.argv[2]);
+		await renderJsonToHtml(recipeJson, chefsList);
+	})().then(
+		() => {
+			console.log('Done');
+			process.exit(0);
+		},
+		(err) => {
+			console.error(err);
+			process.exit(1);
+		},
+	);
 }

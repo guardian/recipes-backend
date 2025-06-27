@@ -2060,6 +2060,88 @@ def sort_filter_rules(json_obj):
       },
       "Type": "AWS::Events::Rule",
     },
+    "PrintableRecipesReindexConnect1DEF31CE": {
+      "Properties": {
+        "EventBusName": {
+          "Ref": "EventBus",
+        },
+        "EventPattern": {
+          "detail-type": [
+            "recipe-update",
+          ],
+          "source": [
+            "pdf-reindex",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition",
+                  },
+                  ":ecs:",
+                  {
+                    "Ref": "AWS::Region",
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId",
+                  },
+                  ":cluster/",
+                  {
+                    "Ref": "ClusterArn",
+                  },
+                ],
+              ],
+            },
+            "EcsParameters": {
+              "LaunchType": "FARGATE",
+              "NetworkConfiguration": {
+                "AwsVpcConfiguration": {
+                  "AssignPublicIp": "DISABLED",
+                  "SecurityGroups": [
+                    {
+                      "Fn::GetAtt": [
+                        "PrintableRecipesPrintableRecipeGenTDSecurityGroup2E72B084",
+                        "GroupId",
+                      ],
+                    },
+                  ],
+                  "Subnets": {
+                    "Ref": "VpcPrivateParam",
+                  },
+                },
+              },
+              "TaskCount": 1,
+              "TaskDefinitionArn": {
+                "Ref": "PrintableRecipesPrintableRecipeGenTD7D170872",
+              },
+            },
+            "Id": "Target0",
+            "InputTransformer": {
+              "InputPathsMap": {
+                "detail-blob": "$.detail.blob",
+                "detail-checksum": "$.detail.checksum",
+                "detail-uid": "$.detail.uid",
+              },
+              "InputTemplate": "{"containerOverrides":[{"name":"main","environment":[{"name":"RECIPE_UID","value":<detail-uid>},{"name":"RECIPE_CSID","value":<detail-checksum>},{"name":"CONTENT","value":<detail-blob>},{"name":"BUCKET","value":"feast-recipes-static-test"}]}]}",
+            },
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "PrintableRecipesPrintableRecipeGenTDEventsRole01897D42",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
     "PublishContributors7FDDEA0E": {
       "DependsOn": [
         "PublishContributorsServiceRoleDefaultPolicyEEA7218F",

@@ -174,11 +174,21 @@ export class PrintableRecipeGenerator extends Construct {
 		});
 
 		new Rule(this, 'PublicationConnect', {
-			enabled: scope.stage !== 'PROD', //only enabled in the CODE environment until design work fully implemented, but available for testing in PROD
+			enabled: true,
 			eventBus,
 			targets: [ruleTarget],
 			eventPattern: {
 				source: ['recipe-responder'],
+				detailType: ['recipe-update'],
+			},
+		});
+
+		new Rule(this, 'ReindexConnect', {
+			enabled: true,
+			eventBus,
+			targets: [ruleTarget],
+			eventPattern: {
+				source: ['pdf-reindex'],
 				detailType: ['recipe-update'],
 			},
 		});

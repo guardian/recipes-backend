@@ -87,8 +87,8 @@ export function getFirstPublishedDate(
 	return block.firstPublishedDate
 		? capiDateTimeToDate(block.firstPublishedDate)
 		: content.fields?.firstPublicationDate
-		? capiDateTimeToDate(content.fields.firstPublicationDate)
-		: undefined;
+			? capiDateTimeToDate(content.fields.firstPublicationDate)
+			: undefined;
 }
 
 export function getPublishedDate(
@@ -101,8 +101,8 @@ export function getPublishedDate(
 	return block.publishedDate
 		? capiDateTimeToDate(block.publishedDate)
 		: feastChannel?.fields.publicationDate
-		? capiDateTimeToDate(feastChannel.fields.publicationDate)
-		: undefined;
+			? capiDateTimeToDate(feastChannel.fields.publicationDate)
+			: undefined;
 }
 
 /**
