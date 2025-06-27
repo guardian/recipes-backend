@@ -3,7 +3,6 @@
 #log the recipe UUID and checksum ID
 echo "RECIPE UUID is $RECIPE_UID"
 echo "CHECKSUM ID is $RECIPE_CSID"
-#echo "CONTENT is $CONTENT"
 
 #Run the renderer on that file
 echo "Render the json to html.."
