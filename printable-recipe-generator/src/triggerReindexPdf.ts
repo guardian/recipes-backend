@@ -130,14 +130,13 @@ async function sendToEventBridge(recipes: RecipeSchema[]): Promise<void> {
 async function filterOnlyNeeded(
 	recipes: RecipeIndexSchema[],
 ): Promise<RecipeIndexSchema[]> {
-	const result: RecipeIndexSchema[] = [];
-
-	for (const r of recipes) {
-		if (!(await pdfAlreadyExists(r))) {
-			result.push(r);
-		}
-	}
-	return result;
+	const results = await Promise.all(
+		recipes.map(async (r) => {
+			const exists = await pdfAlreadyExists(r);
+			return exists ? null : r;
+		}),
+	);
+	return results.filter((r): r is RecipeIndexSchema => r !== null);
 }
 
 void (async (): Promise<void> => {
