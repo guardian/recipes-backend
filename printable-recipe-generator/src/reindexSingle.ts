@@ -20,8 +20,6 @@ const BATCH_SIZE = 10; //limitation of Put Item to Event Bridge
 
 const eb = new EventBridgeClient({ region: REGION });
 
-console.log('Trigger script started...');
-
 interface RecipeIndexSchema {
 	checksum: string;
 	recipeUID: string;
@@ -47,20 +45,6 @@ async function loadIndexForAllIds(): Promise<IndexSchema> {
 
 	console.log(`Recipe Id's found from Index, length ${result.recipes.length}`);
 	return result; // .recipes.map((r) => r.checksum);
-}
-
-async function pdfAlreadyExists(
-	recipeItem: RecipeIndexSchema,
-): Promise<boolean> {
-	const url = `${contentUrl}/${recipeItem.checksum}.pdf`;
-	const response = await fetch(url, { method: 'HEAD' });
-	if (response.status === 200) {
-		return true;
-	} else if (response.status === 404) {
-		return false;
-	} else {
-		throw new Error(`Unexpected response to HEAD ${url}: ${response.status}`);
-	}
 }
 
 async function loadRecipeJson(
@@ -89,15 +73,18 @@ async function loadRecipeJson(
 	}
 }
 
-function storeInBatches<T>(array: T[], size: number): T[][] {
-	//prepare batches of 10
-	const result: T[][] = [];
-	if (array.length > 0) {
-		for (let i = 0; i < array.length; i += size) {
-			result.push(array.slice(i, i + size));
-		}
+async function pdfAlreadyExists(
+	recipeItem: RecipeIndexSchema,
+): Promise<boolean> {
+	const url = `${contentUrl}/${recipeItem.checksum}.pdf`;
+	const response = await fetch(url, { method: 'HEAD' });
+	if (response.status === 200) {
+		return true;
+	} else if (response.status === 404) {
+		return false;
+	} else {
+		throw new Error(`Unexpected response to HEAD ${url}: ${response.status}`);
 	}
-	return result;
 }
 
 async function sendToEventBridge(recipes: RecipeSchema[]): Promise<void> {
@@ -139,48 +126,28 @@ async function filterOnlyNeeded(
 }
 
 void (async (): Promise<void> => {
+	if (!process.argv[2] || process.argv[2] == '') {
+		console.log(
+			'You must provide either the checksum ID or unique ID for the recipe to reindex',
+		);
+
+		process.exit(2);
+	}
+
 	try {
 		console.log('Fetching index from URL...');
 		const recipeItems = await loadIndexForAllIds();
-		console.log('Storing in batches of 10...');
-		const batches = storeInBatches(recipeItems.recipes, BATCH_SIZE);
 
-		let page = 0;
+		const maybeItem =
+			recipeItems.recipes.find((ent) => ent.checksum === process.argv[2]) ??
+			recipeItems.recipes.find((ent) => ent.recipeUID === process.argv[2]);
 
-		for (const batch of batches) {
-			console.log(`Processing batch ${page + 1} with ${batch.length} IDs...`);
-			const filteredBatch = await filterOnlyNeeded(batch);
-
-			const recipeData = await Promise.all(
-				filteredBatch.map(async (recipeItem) => {
-					try {
-						console.log(`Processing recipeItem: ${JSON.stringify(recipeItem)}`);
-						return await loadRecipeJson(recipeItem);
-					} catch (err) {
-						if (err instanceof Error && err.message.includes('404')) {
-							console.warn(
-								`Skipping missing recipe for ID ${recipeItem.checksum}`,
-							);
-							return null;
-						}
-						throw err; // Re-throw non-404 errors
-					}
-				}),
-			);
-			console.log('Filter valid json');
-			const validRecipeData = recipeData.filter(
-				(r): r is RecipeSchema => r !== null,
-			);
-
-			if (validRecipeData.length > 0) {
-				console.log('Sending batch to EventBridge now..');
-				await sendToEventBridge(validRecipeData);
-			} else {
-				console.warn(
-					`No valid recipes in this batch, skipping send to Eventbridge.`,
-				);
-			}
-			page++;
+		if (maybeItem) {
+			const content = await loadRecipeJson(maybeItem);
+			console.log('Sending batch to EventBridge now..');
+			await sendToEventBridge([content]);
+		} else {
+			console.log('Could not find any recipe with that ID');
 		}
 	} catch (err) {
 		console.error('Batch process failed:', err);

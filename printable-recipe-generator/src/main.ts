@@ -40,9 +40,9 @@ async function getChefs(): Promise<Record<string, ChefData> | undefined> {
 }
 
 export async function downloadRecipeContent(
-	recipeUuid: string,
+	recipeCsid: string,
 ): Promise<RecipeData> {
-	const path = `${baseUrl}/api/content/by-uid/${recipeUuid}`;
+	const path = `${baseUrl}/content/${recipeCsid}`;
 	console.log(`Obtaining recipe data from ${path}`);
 	const response = await fetch(path); //This should follow the redirect by default
 	const content = await response.text();
