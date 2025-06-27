@@ -7,7 +7,7 @@ echo "CHECKSUM ID is $RECIPE_CSID"
 #Run the renderer on that file
 echo "Render the json to html.."
 RECIPE_HTML_OUTPUT="./recipe.html"
-node /printable-recipe-generator/main.js "$RECIPE_UID" "$RECIPE_HTML_OUTPUT"
+node /printable-recipe-generator/main.js "$RECIPE_CSID" "$RECIPE_HTML_OUTPUT"
 if [ "$?" != "0" ]; then
   echo ERROR Could not render HTML!
   exit 2
