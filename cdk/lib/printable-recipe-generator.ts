@@ -160,10 +160,6 @@ export class PrintableRecipeGenerator extends Construct {
 							name: 'RECIPE_CSID',
 							value: EventField.fromPath('$.detail.checksum'),
 						},
-						// {
-						// 	name: 'CONTENT',
-						// 	value: EventField.fromPath('$.detail.blob'),
-						// },
 						{
 							name: 'BUCKET',
 							value: `feast-recipes-static-${scope.stage.toLowerCase()}`,
