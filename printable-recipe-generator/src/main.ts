@@ -46,9 +46,8 @@ export async function downloadRecipeContent(
 	console.log(`Obtaining recipe data from ${path}`);
 	const response = await fetch(path); //This should follow the redirect by default
 	const content = await response.text();
-	const normalisedContent = content.normalize('NFC'); //to avoid special character/unicode issue in recipe data, where EFC fails to read and hence no PDF
 	if (response.status == 200) {
-		return JSON.parse(normalisedContent) as RecipeData;
+		return JSON.parse(content) as RecipeData;
 	} else {
 		console.error(
 			`Unable to retrieve recipe data: server responded ${response.status} ${content}`,
