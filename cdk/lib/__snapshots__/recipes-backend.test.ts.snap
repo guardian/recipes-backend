@@ -2043,11 +2043,10 @@ def sort_filter_rules(json_obj):
             "Id": "Target0",
             "InputTransformer": {
               "InputPathsMap": {
-                "detail-blob": "$.detail.blob",
                 "detail-checksum": "$.detail.checksum",
                 "detail-uid": "$.detail.uid",
               },
-              "InputTemplate": "{"containerOverrides":[{"name":"main","environment":[{"name":"RECIPE_UID","value":<detail-uid>},{"name":"RECIPE_CSID","value":<detail-checksum>},{"name":"CONTENT","value":<detail-blob>},{"name":"BUCKET","value":"feast-recipes-static-test"}]}]}",
+              "InputTemplate": "{"containerOverrides":[{"name":"main","environment":[{"name":"RECIPE_UID","value":<detail-uid>},{"name":"RECIPE_CSID","value":<detail-checksum>},{"name":"BUCKET","value":"feast-recipes-static-test"}]}]}",
             },
             "RoleArn": {
               "Fn::GetAtt": [
@@ -2125,11 +2124,10 @@ def sort_filter_rules(json_obj):
             "Id": "Target0",
             "InputTransformer": {
               "InputPathsMap": {
-                "detail-blob": "$.detail.blob",
                 "detail-checksum": "$.detail.checksum",
                 "detail-uid": "$.detail.uid",
               },
-              "InputTemplate": "{"containerOverrides":[{"name":"main","environment":[{"name":"RECIPE_UID","value":<detail-uid>},{"name":"RECIPE_CSID","value":<detail-checksum>},{"name":"CONTENT","value":<detail-blob>},{"name":"BUCKET","value":"feast-recipes-static-test"}]}]}",
+              "InputTemplate": "{"containerOverrides":[{"name":"main","environment":[{"name":"RECIPE_UID","value":<detail-uid>},{"name":"RECIPE_CSID","value":<detail-checksum>},{"name":"BUCKET","value":"feast-recipes-static-test"}]}]}",
             },
             "RoleArn": {
               "Fn::GetAtt": [
