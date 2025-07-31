@@ -1,5 +1,6 @@
 import * as process from 'node:process';
 import type { Storage } from '@google-cloud/storage';
+import { registerMetric } from '@recipes-api/cwmetrics';
 import { loadConfig } from './config';
 import { getStorageClient } from './gcloud';
 import type { IncomingDataRow } from './models';
@@ -54,12 +55,14 @@ export const handler = async (eventRaw: unknown) => {
 			container,
 		);
 		console.log(`Completed`);
+		await registerMetric('SuccessfulDynamicFronts', 1);
 	} else {
 		console.error(
 			`Invalid invoke data, missing either country key or GCS path. Got ${JSON.stringify(
 				event,
 			)}.`,
 		);
+		await registerMetric('FailedDynamicFronts', 0);
 		throw new Error('Invalid invoke data');
 	}
 };
