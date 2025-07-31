@@ -62,7 +62,7 @@ export const handler = async (eventRaw: unknown) => {
 				event,
 			)}.`,
 		);
-		await registerMetric('FailedDynamicFronts', 0);
+		await registerMetric('FailedDynamicFronts', 1);
 		throw new Error('Invalid invoke data');
 	}
 };
