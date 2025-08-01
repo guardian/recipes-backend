@@ -44,6 +44,15 @@ export class DynamicFronts extends Construct {
 						}),
 					],
 				}),
+				MetricPut: new PolicyDocument({
+					statements: [
+						new PolicyStatement({
+							effect: Effect.ALLOW,
+							resources: ['*'],
+							actions: ['cloudwatch:PutMetricData'],
+						}),
+					],
+				}),
 			},
 		});
 
