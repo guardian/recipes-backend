@@ -605,6 +605,19 @@ def sort_filter_rules(json_obj):
             },
             "PolicyName": "S3Put",
           },
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "cloudwatch:PutMetricData",
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "MetricPut",
+          },
         ],
         "RoleName": "dynamic-fronts-fetcher-TEST",
         "Tags": [

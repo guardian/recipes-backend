@@ -9,7 +9,9 @@ export type KnownMetric =
 	| 'FailedRecipes'
 	| 'SuccessfulRecipes'
 	| 'UpdatesTotalOfArticle'
-	| 'FailedAnnouncements';
+	| 'FailedAnnouncements'
+	| 'FailedDynamicFronts'
+	| 'SuccessfulDynamicFronts';
 
 export async function registerMetric(metricName: KnownMetric, value: number) {
 	const req = new PutMetricDataCommand({
