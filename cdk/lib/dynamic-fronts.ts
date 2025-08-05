@@ -1,5 +1,13 @@
 import { GuParameter, type GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
+import { aws_sns, Duration } from 'aws-cdk-lib';
+import {
+	Alarm,
+	ComparisonOperator,
+	Metric,
+	TreatMissingData,
+} from 'aws-cdk-lib/aws-cloudwatch';
+import { SnsAction } from 'aws-cdk-lib/aws-cloudwatch-actions';
 import {
 	AccountPrincipal,
 	Effect,
@@ -13,9 +21,11 @@ import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { IBucket } from 'aws-cdk-lib/aws-s3';
 import { CfnOutput } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
+import type { ExternalParameters } from './external_parameters';
 
 interface DynamicFrontsProps {
 	destBucket: IBucket;
+	externalParameters: ExternalParameters;
 }
 
 export class DynamicFronts extends Construct {
@@ -97,5 +107,35 @@ export class DynamicFronts extends Construct {
 			value: xar.roleArn,
 			key: 'DynamicFrontsFetcherXAR',
 		});
+
+		const nonUrgentAlarmTopic = aws_sns.Topic.fromTopicArn(
+			this,
+			'nonurgent-alarm',
+			props.externalParameters.nonUrgentAlarmTopicArn.stringValue,
+		);
+		const failedDynamicContainerMetric = new Metric({
+			namespace: 'RecipeBackend',
+			metricName: 'FailedDynamicContainer',
+			statistic: 'Average',
+			period: Duration.hours(1),
+		});
+		const failedDynamicContainerAlarm = new Alarm(
+			this,
+			'FailedDynamicContainerAlarm',
+			{
+				metric: failedDynamicContainerMetric,
+				threshold: 1,
+				evaluationPeriods: 1,
+				comparisonOperator:
+					ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+				alarmDescription:
+					'Raised if any failed dynamic container metric is recorded in a hour',
+				treatMissingData: TreatMissingData.IGNORE,
+			},
+		);
+
+		failedDynamicContainerAlarm.addAlarmAction(
+			new SnsAction(nonUrgentAlarmTopic),
+		);
 	}
 }

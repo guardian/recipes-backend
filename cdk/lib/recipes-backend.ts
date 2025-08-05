@@ -383,6 +383,7 @@ export class RecipesBackend extends GuStack {
 
 		new DynamicFronts(this, 'DynamicFronts', {
 			destBucket: serving.staticBucket,
+			externalParameters,
 		});
 
 		new PrintableRecipeGenerator(this, 'PrintableRecipes', { eventBus });

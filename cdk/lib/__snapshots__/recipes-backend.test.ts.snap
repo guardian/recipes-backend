@@ -485,6 +485,43 @@ def sort_filter_rules(json_obj):
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
+    "DynamicFrontsFailedDynamicContainerAlarmEAC7CEFB": {
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "externalsnonurgentalarmarnParameter3CDDBCA7",
+          },
+        ],
+        "AlarmDescription": "Raised if any failed dynamic container metric is recorded in a hour",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "EvaluationPeriods": 1,
+        "MetricName": "FailedDynamicContainer",
+        "Namespace": "RecipeBackend",
+        "Period": 3600,
+        "Statistic": "Average",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "feast",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "Threshold": 1,
+        "TreatMissingData": "ignore",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
     "DynamicFrontsFetcher3EADD89B": {
       "DependsOn": [
         "DynamicFrontsFetcherRoleDefaultPolicyC29B02CC",
