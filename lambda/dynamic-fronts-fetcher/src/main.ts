@@ -55,14 +55,13 @@ export const handler = async (eventRaw: unknown) => {
 			container,
 		);
 		console.log(`Completed`);
-		await registerMetric('SuccessfulDynamicFronts', 1);
 	} else {
 		console.error(
 			`Invalid invoke data, missing either country key or GCS path. Got ${JSON.stringify(
 				event,
 			)}.`,
 		);
-		await registerMetric('FailedDynamicFronts', 1);
+		await registerMetric('FailedDynamicContainer', 1);
 		throw new Error('Invalid invoke data');
 	}
 };
