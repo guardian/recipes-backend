@@ -518,7 +518,7 @@ def sort_filter_rules(json_obj):
           },
         ],
         "Threshold": 1,
-        "TreatMissingData": "ignore",
+        "TreatMissingData": "notBreaching",
       },
       "Type": "AWS::CloudWatch::Alarm",
     },

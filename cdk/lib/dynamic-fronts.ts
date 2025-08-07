@@ -130,7 +130,7 @@ export class DynamicFronts extends Construct {
 					ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
 				alarmDescription:
 					'Raised if any failed dynamic container metric is recorded in a hour',
-				treatMissingData: TreatMissingData.IGNORE,
+				treatMissingData: TreatMissingData.NOT_BREACHING,
 			},
 		);
 
