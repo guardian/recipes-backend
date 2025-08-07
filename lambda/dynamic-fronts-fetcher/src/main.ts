@@ -1,5 +1,6 @@
 import * as process from 'node:process';
 import type { Storage } from '@google-cloud/storage';
+import { registerMetric } from '@recipes-api/cwmetrics';
 import { loadConfig } from './config';
 import { getStorageClient } from './gcloud';
 import type { IncomingDataRow } from './models';
@@ -60,6 +61,7 @@ export const handler = async (eventRaw: unknown) => {
 				event,
 			)}.`,
 		);
+		await registerMetric('FailedDynamicContainer', 1);
 		throw new Error('Invalid invoke data');
 	}
 };
