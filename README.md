@@ -207,3 +207,7 @@ Runnable script that allows you to forcibly remove all recipes from a given arti
 ### tools/fill-db
 
 Runnable script that fills the index table with junk data. This is from initial testing and will be removed, don't use it.
+
+### Just in case if CI fails in dependabot PR(s)
+We haven't provided creds to Dependabot as of now so a push to the PR should work and re-run the CI
+We will look into this for longer run.
