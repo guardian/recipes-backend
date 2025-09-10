@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/guardian/recipes-backend/refs/heads/main/schema/instruction.json",
+  "title": "Instruction",
+  "description": "A single cooking instruction step with optional images",
+  "type": "object",
+  "properties": {
+    "stepNumber": {
+      "type": "number",
+      "description": "The sequential number of this instruction step"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the cooking step"
+    },
+    "images": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Array of image URLs or identifiers for this step"
+    }
+  },
+  "required": [
+    "stepNumber",
+    "description"
+  ]
+}
+

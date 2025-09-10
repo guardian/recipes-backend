@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/guardian/recipes-backend/refs/heads/main/schema/image.json",
+  "title": "Image",
+  "description": "Image metadata including URL, media identifiers, and attribution",
+  "type": "object",
+  "properties": {
+    "url": {
+      "type": "string",
+      "description": "The URL of the image"
+    },
+    "mediaId": {
+      "type": "string",
+      "description": "Unique identifier for the media"
+    },
+    "cropId": {
+      "type": "string",
+      "description": "Identifier for the specific crop of the image"
+    },
+    "source": {
+      "type": "string",
+      "description": "Source of the image"
+    },
+    "photographer": {
+      "type": "string",
+      "description": "Name of the photographer"
+    },
+    "imageType": {
+      "type": "string",
+      "description": "Type or category of the image"
+    },
+    "caption": {
+      "type": "string",
+      "description": "Caption or description of the image"
+    },
+    "mediaApiUrl": {
+      "type": "string",
+      "description": "API URL for accessing the media"
+    }
+  },
+  "required": [
+    "url",
+    "mediaId",
+    "cropId"
+  ]
+}
+
