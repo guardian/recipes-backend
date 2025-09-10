@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/guardian/recipes-backend/refs/heads/main/schema/recipe-template.json",
+  "title": "RecipeV3",
+  "description": "Complete recipe with metadata, ingredients, instructions, and categorization",
+  "type": "object",
+  "required": [
+    "id"
+  ],
+  "properties": {
+    "isAppReady": {
+      "type": "boolean",
+      "description": "Whether the recipe is ready for app display"
+    },
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the recipe"
+    },
+    "canonicalArticle": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "URL or identifier of the canonical article"
+    },
+    "composerId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Identifier for the content management system"
+    },
+    "webPublicationDate": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Date when the recipe was published on the web"
+    },
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Title of the recipe"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Description or summary of the recipe"
+    },
+    "bookCredit": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Credit to cookbook or publication source"
+    },
+    "serves": {
+      "type": "array",
+      "description": "Information about how many people the recipe serves",
+      "items": {
+        "$ref": "serves.json"
+      }
+    },
+    "featuredImage": {
+      "anyOf": [
+        {
+          "$ref": "image.json"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Main image for the recipe"
+    },
+    "timings": {
+      "type": "array",
+      "description": "Various timing information (prep, cook, total, etc.)",
+      "items": {
+        "$ref": "timing.json"
+      }
+    },
+    "instructions": {
+      "type": "array",
+      "description": "Step-by-step cooking instructions",
+      "items": {
+        "$ref": "instruction.json"
+      }
+    },
+    "instructionsTemplate": {
+      "type": "array",
+      "description": "Step-by-step cooking instructions using string templates",
+      "items": {
+        "$ref": "instruction-template.json"
+      }
+    },
+    "contributors": {
+      "type": "array",
+      "description": "List of people who contributed to the recipe",
+      "items": {
+        "type": "string"
+      }
+    },
+    "byline": {
+      "type": "array",
+      "description": "Author or chef attribution",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ingredients": {
+      "type": "array",
+      "description": "Ingredients organized by sections",
+      "items": {
+        "$ref": "ingredients-list.json"
+      }
+    },
+    "ingredientsTemplate": {
+      "type": "array",
+      "description": "Ingredients organized by sections using string templates",
+      "items": {
+        "$ref": "ingredients-template-list.json"
+      }
+    },
+    "celebrationIds": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "Identifiers for celebrations or holidays associated with the recipe",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "cuisineIds": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "Identifiers for cuisine types",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "mealTypeIds": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "Identifiers for meal types (breakfast, lunch, dinner, etc.)",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "suitableForDietIds": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "Identifiers for dietary restrictions the recipe accommodates",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "utensilsAndApplianceIds": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "Identifiers for required utensils and appliances",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "techniquesUsedIds": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "Identifiers for cooking techniques used in the recipe",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "difficultyLevel": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Difficulty level of the recipe (e.g., 'easy', 'medium', 'hard')"
+    }
+  }
+}
+
