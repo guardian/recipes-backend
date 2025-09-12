@@ -10,6 +10,7 @@ export * from './lib/eventbus';
 export * from './lib/eventbridge-models';
 export * from './lib/config';
 export * from './lib/consume-readable';
+export { convertToRecipeV2 } from './lib/compatibility';
 
 export { sendFastlyPurgeRequestWithRetries } from './lib/fastly';
 export {

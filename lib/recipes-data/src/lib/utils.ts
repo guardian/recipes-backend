@@ -3,7 +3,6 @@ import type { CapiDateTime } from '@guardian/content-api-models/v1/capiDateTime'
 import { parseISO } from 'date-fns';
 import Int64 from 'node-int64';
 import { RetryDelaySeconds } from './config';
-import type { RecipeReference, RecipeReferenceWithoutChecksum } from './models';
 
 /**
  * Returns a Promise that resolves after the time specified in the config parameter RETRY_DELAY. Defaults to 1s if the
@@ -15,14 +14,10 @@ export async function awaitableDelay(): Promise<void> {
 	);
 }
 
-export function calculateChecksum(
-	src: RecipeReferenceWithoutChecksum,
-): RecipeReference {
+export function calculateChecksum(src: string): string {
 	const hasher = createHash('sha256');
-	hasher.update(src.jsonBlob);
-	const checksum = hasher.digest('base64url'); //base64 encoding should be more byte-efficient
-
-	return { ...src, checksum };
+	hasher.update(src);
+	return hasher.digest('base64url'); //base64 encoding should be more byte-efficient
 }
 
 export function makeCapiDateTime(from: string): CapiDateTime {

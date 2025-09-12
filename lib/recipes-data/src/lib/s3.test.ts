@@ -28,6 +28,13 @@ jest.mock('./fastly', () => ({
 	sendFastlyPurgeRequestWithRetries: jest.fn(),
 }));
 
+const recipeReference = {
+	recipeUID: 'some-uid-here',
+	sponsorshipCount: 0,
+	recipeV2Blob: { jsonBlob: 'this-is-json', checksum: 'xxxyyyzzz' },
+	recipeV3Blob: { jsonBlob: 'this-is-json', checksum: 'xxxyyyzzz' },
+};
+
 describe('s3.publishRecipeContent', () => {
 	beforeEach(() => {
 		s3Mock.reset();
@@ -38,12 +45,7 @@ describe('s3.publishRecipeContent', () => {
 		s3Mock.on(PutObjectCommand).resolves({});
 
 		await publishRecipeContent({
-			recipe: {
-				recipeUID: 'some-uid-here',
-				jsonBlob: 'this-is-json',
-				checksum: 'xxxyyyzzz',
-				sponsorshipCount: 0,
-			},
+			recipe: recipeReference,
 			staticBucketName,
 			fastlyApiKey,
 			contentPrefix,
@@ -82,12 +84,7 @@ describe('s3.publishRecipeContent', () => {
 
 		await expect(
 			publishRecipeContent({
-				recipe: {
-					recipeUID: 'some-uid-here',
-					jsonBlob: 'this-is-json',
-					checksum: 'xxxyyyzzz',
-					sponsorshipCount: 0,
-				},
+				recipe: recipeReference,
 				staticBucketName,
 				fastlyApiKey,
 				contentPrefix,
@@ -110,12 +107,7 @@ describe('s3.publishRecipeContent', () => {
 
 		await expect(
 			publishRecipeContent({
-				recipe: {
-					recipeUID: 'some-uid-here',
-					jsonBlob: 'this-is-json',
-					checksum: 'xxxyyyzzz',
-					sponsorshipCount: 0,
-				},
+				recipe: recipeReference,
 				staticBucketName,
 				fastlyApiKey,
 				contentPrefix,
