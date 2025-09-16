@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/guardian/recipes-backend/refs/heads/main/schema/ingredient-item.json",
+  "title": "Ingredient Item",
+  "description": "Individual ingredient item with amount, unit, and optional modifiers",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Name of the ingredient"
+    },
+    "amount": {
+      "anyOf": [
+        {
+          "$ref": "range.json"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Amount of the ingredient as a range or null"
+    },
+    "unit": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Unit of measurement for the ingredient"
+    },
+    "ingredientId": {
+      "type": "string",
+      "description": "Unique identifier for the ingredient"
+    },
+    "prefix": {
+      "type": "string",
+      "description": "Text prefix for the ingredient"
+    },
+    "suffix": {
+      "type": "string",
+      "description": "Text suffix for the ingredient"
+    },
+    "optional": {
+      "type": "boolean",
+      "description": "Whether the ingredient is optional"
+    },
+    "text": {
+      "type": "string",
+      "description": "Full text representation of the ingredient"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}
+

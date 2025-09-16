@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/guardian/recipes-backend/refs/heads/main/schema/serves.json",
+  "title": "Serves",
+  "description": "Information about how many servings the recipe makes",
+  "type": "object",
+  "properties": {
+    "amount": {
+      "anyOf": [
+        {
+          "$ref": "range.json"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Number of servings as a range or null"
+    },
+    "unit": {
+      "type": "string",
+      "description": "Unit for the serving amount (e.g., 'people', 'portions')"
+    },
+    "text": {
+      "type": "string",
+      "description": "Human-readable text representation of the serving information"
+    }
+  },
+  "required": [
+    "amount",
+    "unit"
+  ]
+}
+

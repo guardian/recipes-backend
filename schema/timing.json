@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/guardian/recipes-backend/refs/heads/main/schema/timing.json",
+  "title": "Timing",
+  "description": "Timing information for recipe preparation or cooking",
+  "type": "object",
+  "properties": {
+    "qualifier": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Type of timing (e.g., 'prep time', 'cook time', 'total time')"
+    },
+    "durationInMins": {
+      "anyOf": [
+        {
+          "$ref": "range.json"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Duration in minutes as a range or null"
+    },
+    "text": {
+      "type": "string",
+      "description": "Human-readable text representation of the timing"
+    }
+  },
+  "required": [
+    "qualifier",
+    "durationInMins"
+  ]
+}
+

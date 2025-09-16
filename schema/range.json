@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/guardian/recipes-backend/refs/heads/main/schema/range.json",
+  "title": "Range",
+  "description": "A numeric range with minimum and maximum values",
+  "type": "object",
+  "properties": {
+    "min": {
+      "type": "number",
+      "description": "The minimum value of the range"
+    },
+    "max": {
+      "type": "number",
+      "description": "The maximum value of the range"
+    }
+  },
+  "required": [
+    "min",
+    "max"
+  ],
+  "additionalProperties": false
+}

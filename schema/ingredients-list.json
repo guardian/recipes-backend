@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/guardian/recipes-backend/refs/heads/main/schema/ingredients-list.json",
+  "title": "Ingredients List",
+  "description": "A section of ingredients with an optional section name",
+  "type": "object",
+  "properties": {
+    "recipeSection": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Name of the recipe section (e.g., 'For the sauce', 'For the garnish')"
+    },
+    "ingredientsList": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "List of ingredients in this section",
+      "items": {
+        "$ref": "ingredient-item.json"
+      }
+    }
+  },
+  "required": [
+    "ingredientsList"
+  ]
+}
+
