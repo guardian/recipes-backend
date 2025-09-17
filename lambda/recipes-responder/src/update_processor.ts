@@ -155,9 +155,7 @@ export async function handleContentUpdate({
 		return allRecipes.length + entriesToRemove.length;
 	} catch (err) {
 		//log out what actually caused the breakage
-		console.error('Failed article was: ', JSON.stringify(content));
-		console.error('------------');
-		console.error(err);
+		console.error('Failed article was: ', JSON.stringify(content), err);
 		throw err;
 	}
 }
