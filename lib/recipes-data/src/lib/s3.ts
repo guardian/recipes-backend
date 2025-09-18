@@ -57,18 +57,18 @@ export async function publishRecipeContent({
 	attempt?: number;
 }): Promise<void> {
 	const realAttempt = attempt ?? 1;
-	if (!recipe.checksum) {
+	if (!recipe.recipeV3Blob.checksum) {
 		throw new Error(
 			'publishRecipeContent: Cannot output recipe data without a checksum',
 		);
 	}
 
-	const Key = `content/${recipe.checksum}`;
+	const Key = `content/${recipe.recipeV3Blob.checksum}`;
 
 	const req = new PutObjectCommand({
 		Bucket: staticBucketName,
 		Key,
-		Body: recipe.jsonBlob,
+		Body: recipe.recipeV3Blob.jsonBlob,
 		ContentType: 'application/json',
 		//ChecksumSHA256: recipe.checksum,  //This is commented out because the format is wrong. Left here because we want to fix it but not hold up PR approval.
 		CacheControl: DefaultCacheControlParams,

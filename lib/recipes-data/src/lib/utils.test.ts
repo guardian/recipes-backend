@@ -1,6 +1,6 @@
 import type { CapiDateTime } from '@guardian/content-api-models/v1/capiDateTime';
 import Int64 from 'node-int64';
-import type { RecipeReferenceWithoutChecksum } from './models';
+import type { CAPIRecipeReference } from './models';
 import {
 	calculateChecksum,
 	capiDateTimeToDate,
@@ -9,17 +9,13 @@ import {
 
 describe('calculateChecksum', () => {
 	it('should checksum the content into base64', () => {
-		const input: RecipeReferenceWithoutChecksum = {
+		const input: CAPIRecipeReference = {
 			recipeUID: 'blahblah',
 			jsonBlob: 'foodisgoodwatchitburn',
 			sponsorshipCount: 0,
 		};
-		const result = calculateChecksum(input);
-		expect(result.recipeUID).toEqual(input.recipeUID);
-		expect(result.jsonBlob).toEqual(input.jsonBlob);
-		expect(result.checksum).toEqual(
-			'6rIHocBjte3q9jPnLtzQhtFsDabFUKQGVk3VMuorRB8',
-		);
+		const result = calculateChecksum(input.jsonBlob);
+		expect(result).toEqual('6rIHocBjte3q9jPnLtzQhtFsDabFUKQGVk3VMuorRB8');
 	});
 });
 

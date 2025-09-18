@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/guardian/recipes-backend/refs/heads/main/schema/recipe.json",
-  "title": "Recipe",
+  "title": "RecipeV2",
   "description": "Complete recipe with metadata, ingredients, instructions, and categorization",
   "type": "object",
   "required": [

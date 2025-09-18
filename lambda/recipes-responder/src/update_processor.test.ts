@@ -1,12 +1,13 @@
 import type { Content } from '@guardian/content-api-models/v1/content';
 import { ContentType } from '@guardian/content-api-models/v1/contentType';
 import type {
+	CAPIRecipeReference,
 	RecipeIndexEntry,
-	RecipeReferenceWithoutChecksum,
 } from '@recipes-api/lib/recipes-data';
 import {
 	announceNewRecipe,
 	calculateChecksum,
+	convertToRecipeV2,
 	extractAllRecipesFromArticle,
 	insertNewRecipe,
 	publishRecipeContent,
@@ -24,6 +25,7 @@ const outgoingEventBus = 'outgoing-event-bus';
 
 jest.mock('@recipes-api/lib/recipes-data', () => ({
 	calculateChecksum: jest.fn(),
+	convertToRecipeV2: jest.fn(),
 	extractAllRecipesFromArticle: jest.fn(),
 	insertNewRecipe: jest.fn(),
 	publishRecipeContent: jest.fn(),
@@ -51,7 +53,7 @@ describe('update_processor.handleContentUpdate', () => {
 	});
 
 	it('should extract recipes from the content, publish those and take-down any that were no longer needed', async () => {
-		const refsInArticle: RecipeReferenceWithoutChecksum[] = [
+		const refsInArticle: CAPIRecipeReference[] = [
 			{ recipeUID: 'uid-recep-1', jsonBlob: '', sponsorshipCount: 0 },
 			{ recipeUID: 'uid-recep-2', jsonBlob: '', sponsorshipCount: 0 },
 			{ recipeUID: 'uid-recep-3', jsonBlob: '', sponsorshipCount: 0 },
@@ -82,26 +84,20 @@ describe('update_processor.handleContentUpdate', () => {
 
 		calculateChecksum
 			// @ts-ignore -- Typescript doesn't know that this is a mock
-			.mockReturnValueOnce({
-				recipeUID: 'uid-recep-1',
-				jsonBlob: '',
-				checksum: 'abcd1',
-				sponsorshipCount: 0,
-			})
+			.mockReturnValueOnce('abcd1')
 			// @ts-ignore -- Typescript doesn't know that this is a mock
-			.mockReturnValueOnce({
-				recipeUID: 'uid-recep-2',
-				jsonBlob: '',
-				checksum: 'efgh',
-				sponsorshipCount: 0,
-			})
+			.mockReturnValueOnce('abcd1')
 			// @ts-ignore -- Typescript doesn't know that this is a mock
-			.mockReturnValueOnce({
-				recipeUID: 'uid-recep-3',
-				jsonBlob: '',
-				checksum: 'xyzp',
-				sponsorshipCount: 0,
-			});
+			.mockReturnValueOnce('efgh')
+			// @ts-ignore -- Typescript doesn't know that this is a mock
+			.mockReturnValueOnce('efgh')
+			// @ts-ignore -- Typescript doesn't know that this is a mock
+			.mockReturnValueOnce('xyzp')
+			// @ts-ignore -- Typescript doesn't know that this is a mock
+			.mockReturnValueOnce('xyzp');
+
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		convertToRecipeV2.mockReturnValue('');
 
 		await handleContentUpdate({
 			content: fakeContent,
@@ -114,7 +110,7 @@ describe('update_processor.handleContentUpdate', () => {
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(extractAllRecipesFromArticle.mock.calls.length).toEqual(1);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(calculateChecksum.mock.calls.length).toEqual(3);
+		expect(calculateChecksum.mock.calls.length).toEqual(6);
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(insertNewRecipe.mock.calls.length).toEqual(3);
@@ -151,22 +147,22 @@ describe('update_processor.handleContentUpdate', () => {
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(publishRecipeContent.mock.calls[0][0].recipe).toEqual({
 			recipeUID: 'uid-recep-1',
-			checksum: 'abcd1',
-			jsonBlob: '',
+			recipeV3Blob: { jsonBlob: '', checksum: 'abcd1' },
+			recipeV2Blob: { jsonBlob: '', checksum: 'abcd1' },
 			sponsorshipCount: 0,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(publishRecipeContent.mock.calls[1][0].recipe).toEqual({
 			recipeUID: 'uid-recep-2',
-			checksum: 'efgh',
-			jsonBlob: '',
+			recipeV3Blob: { jsonBlob: '', checksum: 'efgh' },
+			recipeV2Blob: { jsonBlob: '', checksum: 'efgh' },
 			sponsorshipCount: 0,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(publishRecipeContent.mock.calls[2][0].recipe).toEqual({
 			recipeUID: 'uid-recep-3',
-			checksum: 'xyzp',
-			jsonBlob: '',
+			recipeV3Blob: { jsonBlob: '', checksum: 'xyzp' },
+			recipeV2Blob: { jsonBlob: '', checksum: 'xyzp' },
 			sponsorshipCount: 0,
 		});
 
@@ -205,7 +201,7 @@ describe('update_processor.handleContentUpdate', () => {
 	});
 
 	it('should ignore a piece of content that is not an article', async () => {
-		const refsInArticle: RecipeReferenceWithoutChecksum[] = [
+		const refsInArticle: CAPIRecipeReference[] = [
 			{ recipeUID: 'uid-recep-1', jsonBlob: '', sponsorshipCount: 0 },
 			{ recipeUID: 'uid-recep-2', jsonBlob: '', sponsorshipCount: 0 },
 			{ recipeUID: 'uid-recep-3', jsonBlob: '', sponsorshipCount: 0 },
@@ -285,7 +281,7 @@ describe('update_processor.handleContentUpdate', () => {
 	});
 
 	it('should be fine if there is no recipe content', async () => {
-		const refsInArticle: RecipeReferenceWithoutChecksum[] = [];
+		const refsInArticle: CAPIRecipeReference[] = [];
 
 		const refsToRemove: RecipeIndexEntry[] = [];
 
@@ -325,7 +321,7 @@ describe('update_processor.handleContentUpdate', () => {
 	});
 
 	it('should publish as normal if the telemetry fails', async () => {
-		const refsInArticle: RecipeReferenceWithoutChecksum[] = [
+		const refsInArticle: CAPIRecipeReference[] = [
 			{ recipeUID: 'uid-recep-1', jsonBlob: '', sponsorshipCount: 0 },
 			{ recipeUID: 'uid-recep-2', jsonBlob: '', sponsorshipCount: 0 },
 			{ recipeUID: 'uid-recep-3', jsonBlob: '', sponsorshipCount: 0 },
@@ -360,26 +356,19 @@ describe('update_processor.handleContentUpdate', () => {
 
 		calculateChecksum
 			// @ts-ignore -- Typescript doesn't know that this is a mock
-			.mockReturnValueOnce({
-				recipeUID: 'uid-recep-1',
-				jsonBlob: '',
-				checksum: 'abcd1',
-				sponsorshipCount: 0,
-			})
+			.mockReturnValueOnce('abcd1')
 			// @ts-ignore -- Typescript doesn't know that this is a mock
-			.mockReturnValueOnce({
-				recipeUID: 'uid-recep-2',
-				jsonBlob: '',
-				checksum: 'efgh',
-				sponsorshipCount: 0,
-			})
+			.mockReturnValueOnce('abcd1')
 			// @ts-ignore -- Typescript doesn't know that this is a mock
-			.mockReturnValueOnce({
-				recipeUID: 'uid-recep-3',
-				jsonBlob: '',
-				checksum: 'xyzp',
-				sponsorshipCount: 0,
-			});
+			.mockReturnValueOnce('efgh')
+			// @ts-ignore -- Typescript doesn't know that this is a mock
+			.mockReturnValueOnce('efgh')
+			// @ts-ignore -- Typescript doesn't know that this is a mock
+			.mockReturnValueOnce('xyzp')
+			// @ts-ignore -- Typescript doesn't know that this is a mock
+			.mockReturnValueOnce('xyzp');
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		convertToRecipeV2.mockReturnValue('');
 
 		await handleContentUpdate({
 			content: fakeContent,
@@ -392,7 +381,7 @@ describe('update_processor.handleContentUpdate', () => {
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(extractAllRecipesFromArticle.mock.calls.length).toEqual(1);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(calculateChecksum.mock.calls.length).toEqual(3);
+		expect(calculateChecksum.mock.calls.length).toEqual(6);
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(insertNewRecipe.mock.calls.length).toEqual(3);
@@ -429,22 +418,22 @@ describe('update_processor.handleContentUpdate', () => {
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(publishRecipeContent.mock.calls[0][0].recipe).toEqual({
 			recipeUID: 'uid-recep-1',
-			checksum: 'abcd1',
-			jsonBlob: '',
+			recipeV3Blob: { jsonBlob: '', checksum: 'abcd1' },
+			recipeV2Blob: { jsonBlob: '', checksum: 'abcd1' },
 			sponsorshipCount: 0,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(publishRecipeContent.mock.calls[1][0].recipe).toEqual({
 			recipeUID: 'uid-recep-2',
-			checksum: 'efgh',
-			jsonBlob: '',
+			recipeV3Blob: { jsonBlob: '', checksum: 'efgh' },
+			recipeV2Blob: { jsonBlob: '', checksum: 'efgh' },
 			sponsorshipCount: 0,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(publishRecipeContent.mock.calls[2][0].recipe).toEqual({
 			recipeUID: 'uid-recep-3',
-			checksum: 'xyzp',
-			jsonBlob: '',
+			recipeV3Blob: { jsonBlob: '', checksum: 'xyzp' },
+			recipeV2Blob: { jsonBlob: '', checksum: 'xyzp' },
 			sponsorshipCount: 0,
 		});
 
