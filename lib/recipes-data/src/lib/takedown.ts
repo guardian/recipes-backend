@@ -5,7 +5,7 @@ import {
 } from './dynamo';
 import { announceNewRecipe } from './eventbus';
 import type { RecipeIndexEntry } from './models';
-import { removeRecipeContent } from './s3';
+import { removeRecipeContent } from './s3-recipe-repository';
 import { sendTelemetryEvent } from './telemetry';
 
 enum TakedownMode {

@@ -31,7 +31,7 @@ export const RetryDelaySeconds = process.env['RETRY_DELAY']
 	: 1;
 export const getFastlyApiKey = createGetMandatoryParameter('FASTLY_API_KEY');
 
-//Used by s3.ts
+//Used by s3-recipe-repository.ts
 export const getStaticBucketName = createGetMandatoryParameter('STATIC_BUCKET');
 
 export const getCapiBaseUrl = createGetMandatoryParameter('CAPI_BASE_URL');

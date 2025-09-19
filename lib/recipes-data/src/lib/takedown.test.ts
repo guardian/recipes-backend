@@ -6,7 +6,7 @@ import {
 	removeRecipe,
 } from './dynamo';
 import type { RecipeIndexEntry } from './models';
-import { removeRecipeContent } from './s3';
+import { removeRecipeContent } from './s3-recipe-repository';
 import {
 	recipesToTakeDown,
 	removeAllRecipesForArticle,
@@ -23,7 +23,7 @@ jest.mock('./config', () => ({
 	ImageDpr: 1,
 }));
 
-jest.mock('./s3', () => ({
+jest.mock('./s3-recipe-repository', () => ({
 	removeRecipeContent: jest.fn(),
 }));
 

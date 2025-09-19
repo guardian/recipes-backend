@@ -8,7 +8,7 @@ import {
 import { mockClient } from 'aws-sdk-client-mock';
 import { MaximumRetries } from './config';
 import { sendFastlyPurgeRequestWithRetries } from './fastly';
-import { publishRecipeContent, removeRecipeContent } from './s3';
+import { publishRecipeContent, removeRecipeContent } from './s3-recipe-repository';
 import { awaitableDelay } from './utils';
 
 const s3Mock = mockClient(S3Client);
