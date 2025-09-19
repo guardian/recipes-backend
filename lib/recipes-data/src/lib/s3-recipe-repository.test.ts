@@ -8,7 +8,10 @@ import {
 import { mockClient } from 'aws-sdk-client-mock';
 import { MaximumRetries } from './config';
 import { sendFastlyPurgeRequestWithRetries } from './fastly';
-import { publishRecipeContent, removeRecipeContent } from './s3-recipe-repository';
+import {
+	publishRecipeContent,
+	removeRecipeContent,
+} from './s3-recipe-repository';
 import { awaitableDelay } from './utils';
 
 const s3Mock = mockClient(S3Client);
@@ -26,6 +29,7 @@ jest.mock('./utils', () => ({
 
 jest.mock('./fastly', () => ({
 	sendFastlyPurgeRequestWithRetries: jest.fn(),
+	FastlyError: class FastlyError extends Error {},
 }));
 
 const recipeReference = {
@@ -49,16 +53,17 @@ describe('s3.publishRecipeContent', () => {
 			staticBucketName,
 			fastlyApiKey,
 			contentPrefix,
+			shouldPublishV2: true,
 		});
 
-		expect(s3Mock.calls().length).toEqual(1);
+		expect(s3Mock.calls().length).toEqual(2);
 		const uploadArgs = s3Mock.call(0).firstArg as PutObjectCommand;
 		expect(uploadArgs.input.Body).toEqual('this-is-json');
 		expect(uploadArgs.input.Key).toEqual(`content/xxxyyyzzz`);
 		expect(uploadArgs.input.Bucket).toEqual('contentbucket');
 		expect(s3Mock.commandCalls(DeleteObjectCommand).length).toEqual(0);
 		//@ts-ignore -- Typescript doesn't know that this is a mock
-		expect(sendFastlyPurgeRequestWithRetries.mock.calls.length).toEqual(1);
+		expect(sendFastlyPurgeRequestWithRetries.mock.calls.length).toEqual(2);
 		expect(
 			//@ts-ignore -- Typescript doesn't know that this is a mock
 			sendFastlyPurgeRequestWithRetries.mock.calls[0][0].contentPath,
@@ -88,8 +93,9 @@ describe('s3.publishRecipeContent', () => {
 				staticBucketName,
 				fastlyApiKey,
 				contentPrefix,
+				shouldPublishV2: true,
 			}),
-		).rejects.toThrow(Error('Could not write to S3, see logs for details.'));
+		).rejects.toThrow(Error('Could not write to S3'));
 
 		expect(s3Mock.calls().length).toEqual(MaximumRetries);
 		expect(s3Mock.commandCalls(DeleteObjectCommand).length).toEqual(0);
@@ -111,6 +117,7 @@ describe('s3.publishRecipeContent', () => {
 				staticBucketName,
 				fastlyApiKey,
 				contentPrefix,
+				shouldPublishV2: true,
 			}),
 		).rejects.toThrow(Error);
 

@@ -41,6 +41,7 @@ jest.mock('lib/recipes-data/src/lib/config', () => ({
 	getStaticBucketName: () => 'static-bucket',
 	getOutgoingEventBus: () => 'outgoing-event-bus',
 	getCapiBaseUrl: () => 'https://content.guardianapis.com',
+	getShouldPublishV2: () => true,
 }));
 
 jest.mock('@recipes-api/cwmetrics', () => ({

@@ -48,6 +48,7 @@ export async function handleContentUpdateByCapiUrl({
 	fastlyApiKey,
 	contentPrefix,
 	outgoingEventBus,
+	shouldPublishV2,
 }: {
 	contentType?: ContentType;
 	capiUrl: string;
@@ -56,6 +57,7 @@ export async function handleContentUpdateByCapiUrl({
 	fastlyApiKey: string;
 	contentPrefix: string;
 	outgoingEventBus: string;
+	shouldPublishV2: boolean;
 }): Promise<number> {
 	if (contentType != ContentType.ARTICLE) return 0; //no point processing live-blogs etc.
 
@@ -85,6 +87,7 @@ export async function handleContentUpdateByCapiUrl({
 					fastlyApiKey,
 					contentPrefix,
 					outgoingEventBus,
+					shouldPublishV2,
 				});
 			} else {
 				console.error(

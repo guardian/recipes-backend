@@ -25,12 +25,14 @@ async function publishRecipe({
 	staticBucketName,
 	fastlyApiKey,
 	contentPrefix,
+	shouldPublishV2,
 }: {
 	canonicalArticleId: string;
 	recipe: RecipeReference;
 	staticBucketName: string;
 	fastlyApiKey: string;
 	contentPrefix: string;
+	shouldPublishV2: boolean;
 }): Promise<void> {
 	try {
 		await sendTelemetryEvent(
@@ -49,6 +51,7 @@ async function publishRecipe({
 		staticBucketName: staticBucketName,
 		fastlyApiKey,
 		contentPrefix,
+		shouldPublishV2,
 	});
 	console.log(`INFO [${canonicalArticleId}] - updating index table...`);
 	await insertNewRecipe(canonicalArticleId, {
@@ -89,12 +92,14 @@ export async function handleContentUpdate({
 	fastlyApiKey,
 	contentPrefix,
 	outgoingEventBus,
+	shouldPublishV2,
 }: {
 	content: Content;
 	staticBucketName: string;
 	fastlyApiKey: string;
 	contentPrefix: string;
 	outgoingEventBus: string;
+	shouldPublishV2: boolean;
 }): Promise<number> {
 	try {
 		if (content.type != ContentType.ARTICLE) return 0; //no point processing live-blogs etc.
@@ -137,6 +142,7 @@ export async function handleContentUpdate({
 					staticBucketName,
 					fastlyApiKey,
 					contentPrefix,
+					shouldPublishV2,
 				}),
 			),
 		);

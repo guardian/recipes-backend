@@ -105,6 +105,7 @@ describe('update_processor.handleContentUpdate', () => {
 			fastlyApiKey,
 			contentPrefix,
 			outgoingEventBus,
+			shouldPublishV2: true,
 		});
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
@@ -258,6 +259,7 @@ describe('update_processor.handleContentUpdate', () => {
 			fastlyApiKey,
 			contentPrefix,
 			outgoingEventBus,
+			shouldPublishV2: true,
 		});
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
@@ -298,6 +300,7 @@ describe('update_processor.handleContentUpdate', () => {
 			fastlyApiKey,
 			contentPrefix,
 			outgoingEventBus,
+			shouldPublishV2: true,
 		});
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
@@ -376,6 +379,7 @@ describe('update_processor.handleContentUpdate', () => {
 			fastlyApiKey,
 			contentPrefix,
 			outgoingEventBus,
+			shouldPublishV2: true,
 		});
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock

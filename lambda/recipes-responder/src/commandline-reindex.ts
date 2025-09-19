@@ -89,6 +89,7 @@ async function reindex(
 					fastlyApiKey,
 					contentPrefix,
 					outgoingEventBus,
+					shouldPublishV2: true,
 				});
 			} else {
 				throw new Error(
