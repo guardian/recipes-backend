@@ -6,7 +6,7 @@ import {
 import { v4 as uuid } from 'uuid';
 import {
 	type RecipeDatabaseEntry,
-	RecipeDatabaseEntryToDynamo,
+	recipeDatabaseEntryToDynamo,
 } from '@recipes-api/lib/recipes-data';
 
 const tableName = process.env['TABLE_NAME'];
@@ -17,6 +17,7 @@ function createRecord(count: number): RecipeDatabaseEntry[] {
 	const now = new Date();
 
 	const out: RecipeDatabaseEntry[] = [];
+	const fakeHash = Math.random().toString(36).slice(-10);
 
 	for (let i = 0; i < count; i++) {
 		out.push({
@@ -24,7 +25,11 @@ function createRecord(count: number): RecipeDatabaseEntry[] {
 
 			recipeUID: uuid(),
 			lastUpdated: now,
-			recipeVersion: Math.random().toString(36).slice(-10),
+			recipeVersion: fakeHash,
+			versions: {
+				v2: fakeHash,
+				v3: fakeHash,
+			},
 			sponsorshipCount: 0,
 		});
 	}
@@ -59,7 +64,7 @@ let recipes = 0;
 while (recipes < limit) {
 	const countForArticle = Math.ceil(Math.random() * 5);
 	const dataToPush = createRecord(countForArticle).map(
-		RecipeDatabaseEntryToDynamo,
+		recipeDatabaseEntryToDynamo,
 	);
 
 	await batchWrite(dataToPush);

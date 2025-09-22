@@ -3,6 +3,7 @@ import {
 	INDEX_JSON,
 	retrieveIndexData,
 	V2_INDEX_JSON,
+	V3_INDEX_JSON,
 	writeIndexData,
 } from '@recipes-api/lib/recipes-data';
 import {
@@ -46,17 +47,27 @@ export const handler: Handler = async () => {
 	console.log('Done.');
 	await writeIndexData({
 		indexData: indexDataForUnSponsoredRecipes,
-		Key: INDEX_JSON,
+		key: INDEX_JSON,
 		staticBucketName,
 		contentPrefix,
 		fastlyApiKey,
+		filterOnVersion: 2,
 	});
 	await writeIndexData({
 		indexData: indexDataForAllRecipes,
-		Key: V2_INDEX_JSON,
+		key: V2_INDEX_JSON,
 		staticBucketName,
 		contentPrefix,
 		fastlyApiKey,
+		filterOnVersion: 2,
+	});
+	await writeIndexData({
+		indexData: indexDataForAllRecipes,
+		key: V3_INDEX_JSON,
+		staticBucketName,
+		contentPrefix,
+		fastlyApiKey,
+		filterOnVersion: 3,
 	});
 	console.log('All completed.');
 };

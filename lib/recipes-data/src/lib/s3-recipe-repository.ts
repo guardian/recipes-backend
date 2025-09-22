@@ -235,24 +235,30 @@ async function getExistingEtag(
  */
 export async function writeIndexData({
 	indexData,
-	Key,
+	key,
 	staticBucketName,
 	contentPrefix,
 	fastlyApiKey,
+	filterOnVersion,
 }: {
 	indexData: RecipeIndex;
-	Key: string;
+	key: string;
 	staticBucketName: string;
 	contentPrefix: string;
 	fastlyApiKey: string;
+	filterOnVersion: number;
 }) {
+	console.log(`Filtering data on version ${filterOnVersion}`);
+	indexData.recipes = indexData.recipes.filter(
+		(r) => (r.version ?? 2) === filterOnVersion,
+	);
 	console.log('Marshalling data...');
 	const formattedData = JSON.stringify(indexData);
 
-	console.log(`Done. Writing to s3://${staticBucketName}/${Key}...`);
+	console.log(`Done. Writing to s3://${staticBucketName}/${key}...`);
 	const req = new PutObjectCommand({
 		Bucket: staticBucketName,
-		Key,
+		Key: key,
 		Body: formattedData,
 		ContentType: 'application/json',
 		CacheControl: makeCacheControl(3600), //cache for up to 60mins
@@ -261,7 +267,7 @@ export async function writeIndexData({
 	await s3Client.send(req);
 	console.log('Done. Purging CDN...');
 	await sendFastlyPurgeRequest({
-		contentPath: Key,
+		contentPath: key,
 		apiKey: fastlyApiKey,
 		contentPrefix,
 	});

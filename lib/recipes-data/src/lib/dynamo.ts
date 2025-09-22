@@ -12,19 +12,22 @@ import {
 	QueryCommand,
 	ScanCommand,
 } from '@aws-sdk/client-dynamodb';
-import { formatISO } from 'date-fns';
 import {
 	lastUpdatedIndex as IndexName,
 	MaximumRetries,
 	indexTableName as TableName,
 } from './config';
 import type {
+	RecipeDatabaseEntry,
 	RecipeDatabaseKey,
 	RecipeIndex,
 	RecipeIndexEntry,
 } from './models';
-import { RecipeIndexEntryFromDynamo } from './models';
-import { awaitableDelay, nowTime } from './utils';
+import {
+	recipeDatabaseEntryToDynamo,
+	recipeIndexEntriesFromDynamo,
+} from './models';
+import { awaitableDelay } from './utils';
 
 const client = new DynamoDBClient({ region: process.env['AWS_REGION'] });
 
@@ -48,7 +51,7 @@ async function retrieveIndexPage(
 	return {
 		ExclusiveStartKey: response.LastEvaluatedKey,
 		recipes: response.Items
-			? response.Items.map(RecipeIndexEntryFromDynamo)
+			? response.Items.flatMap(recipeIndexEntriesFromDynamo)
 			: [],
 	};
 }
@@ -78,12 +81,14 @@ export async function recipesforArticle(
 	});
 
 	const response = await client.send(req);
-	return response.Items ? response.Items.map(RecipeIndexEntryFromDynamo) : [];
+	return response.Items
+		? response.Items.flatMap(recipeIndexEntriesFromDynamo)
+		: [];
 }
 
 export async function recipeByUID(
 	recipeUID: string,
-): Promise<RecipeIndexEntry | null> {
+): Promise<RecipeIndexEntry[]> {
 	const req = new QueryCommand({
 		TableName,
 		KeyConditionExpression: 'recipeUID=:uid',
@@ -95,8 +100,8 @@ export async function recipeByUID(
 
 	const response = await client.send(req);
 	return response.Items && response.Items.length > 0
-		? RecipeIndexEntryFromDynamo(response.Items[0])
-		: null;
+		? recipeIndexEntriesFromDynamo(response.Items[0])
+		: [];
 }
 
 export async function multipleRecipesByUid(
@@ -105,9 +110,7 @@ export async function multipleRecipesByUid(
 	console.debug(`Lookup request for ${uidList.length} ids`);
 
 	const results = await Promise.all(uidList.map(recipeByUID));
-
-	//Filter out any "not found"
-	return results.filter((result) => !!result) as RecipeIndexEntry[];
+	return results.flatMap((a) => a);
 }
 
 /**
@@ -181,7 +184,7 @@ export async function removeAllRecipeIndexEntriesForArticle(
 		const entries: RecipeIndexEntry[] = contentToRemove.Items
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- dbEntry["recipeUID"] _can_ be undefined in reality
 			.filter((dbEntry) => !!dbEntry['recipeUID']?.S)
-			.map(RecipeIndexEntryFromDynamo);
+			.flatMap(recipeIndexEntriesFromDynamo);
 
 		const recepts: RecipeDatabaseKey[] = contentToRemove.Items
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- dbEntry["recipeUID"] _can_ be undefined in reality
@@ -268,18 +271,12 @@ export async function bulkRemoveRecipe(
 }
 
 export async function insertNewRecipe(
-	canonicalArticleId: string,
-	entry: RecipeIndexEntry,
+	entry: RecipeDatabaseEntry,
 ): Promise<void> {
+	const item = recipeDatabaseEntryToDynamo(entry);
 	const req = new PutItemCommand({
 		TableName,
-		Item: {
-			capiArticleId: { S: canonicalArticleId },
-			recipeUID: { S: entry.recipeUID },
-			recipeVersion: { S: entry.checksum },
-			sponsorshipCount: { N: entry.sponsorshipCount.toString() },
-			lastUpdated: { S: formatISO(nowTime()) },
-		},
+		Item: item,
 	});
 	await client.send(req);
 }

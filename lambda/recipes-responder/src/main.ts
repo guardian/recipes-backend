@@ -12,6 +12,7 @@ import {
 	ReindexEventDetail,
 	retrieveIndexData,
 	V2_INDEX_JSON,
+	V3_INDEX_JSON,
 	writeIndexData,
 } from '@recipes-api/lib/recipes-data';
 import type {
@@ -231,17 +232,27 @@ export const handler: Handler<
 
 		await writeIndexData({
 			indexData: indexDataForUnSponsoredRecipes,
-			Key: INDEX_JSON,
+			key: INDEX_JSON,
 			contentPrefix,
 			staticBucketName,
 			fastlyApiKey,
+			filterOnVersion: 2,
 		});
 		await writeIndexData({
 			indexData: indexDataForAllRecipes,
-			Key: V2_INDEX_JSON,
+			key: V2_INDEX_JSON,
 			staticBucketName,
 			contentPrefix,
 			fastlyApiKey,
+			filterOnVersion: 2,
+		});
+		await writeIndexData({
+			indexData: indexDataForAllRecipes,
+			key: V3_INDEX_JSON,
+			staticBucketName,
+			contentPrefix,
+			fastlyApiKey,
+			filterOnVersion: 3,
 		});
 		console.log('Finished rebuilding index');
 	} else {

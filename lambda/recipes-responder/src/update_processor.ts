@@ -54,11 +54,16 @@ async function publishRecipe({
 		shouldPublishV2,
 	});
 	console.log(`INFO [${canonicalArticleId}] - updating index table...`);
-	await insertNewRecipe(canonicalArticleId, {
+	await insertNewRecipe({
 		recipeUID: recipe.recipeUID,
-		checksum: recipe.recipeV3Blob.checksum,
+		recipeVersion: recipe.recipeV2Blob.checksum,
+		versions: {
+			v2: recipe.recipeV2Blob.checksum,
+			v3: recipe.recipeV3Blob.checksum,
+		},
 		capiArticleId: canonicalArticleId,
 		sponsorshipCount: recipe.sponsorshipCount,
+		lastUpdated: new Date(),
 	});
 }
 

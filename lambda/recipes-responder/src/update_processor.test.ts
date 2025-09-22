@@ -116,32 +116,44 @@ describe('update_processor.handleContentUpdate', () => {
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(insertNewRecipe.mock.calls.length).toEqual(3);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(insertNewRecipe.mock.calls[0][0]).toEqual('path/to/content'); //canonical article ID
+		expect(insertNewRecipe.mock.calls[0][0]).toEqual(
+			expect.objectContaining({
+				recipeVersion: 'abcd1',
+				recipeUID: 'uid-recep-1',
+				capiArticleId: 'path/to/content',
+				sponsorshipCount: 0,
+				versions: {
+					v2: 'abcd1',
+					v3: 'abcd1',
+				},
+			}),
+		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(insertNewRecipe.mock.calls[0][1]).toEqual({
-			checksum: 'abcd1',
-			recipeUID: 'uid-recep-1',
-			capiArticleId: 'path/to/content',
-			sponsorshipCount: 0,
-		}); //recipe data
+		expect(insertNewRecipe.mock.calls[1][0]).toEqual(
+			expect.objectContaining({
+				recipeVersion: 'efgh',
+				recipeUID: 'uid-recep-2',
+				capiArticleId: 'path/to/content',
+				sponsorshipCount: 0,
+				versions: {
+					v2: 'efgh',
+					v3: 'efgh',
+				},
+			}),
+		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(insertNewRecipe.mock.calls[1][0]).toEqual('path/to/content'); //canonical article ID
-		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(insertNewRecipe.mock.calls[1][1]).toEqual({
-			checksum: 'efgh',
-			recipeUID: 'uid-recep-2',
-			capiArticleId: 'path/to/content',
-			sponsorshipCount: 0,
-		}); //recipe data
-		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(insertNewRecipe.mock.calls[2][0]).toEqual('path/to/content'); //canonical article ID
-		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(insertNewRecipe.mock.calls[2][1]).toEqual({
-			checksum: 'xyzp',
-			recipeUID: 'uid-recep-3',
-			capiArticleId: 'path/to/content',
-			sponsorshipCount: 0,
-		}); //recipe data
+		expect(insertNewRecipe.mock.calls[2][0]).toEqual(
+			expect.objectContaining({
+				recipeVersion: 'xyzp',
+				recipeUID: 'uid-recep-3',
+				capiArticleId: 'path/to/content',
+				sponsorshipCount: 0,
+				versions: {
+					v2: 'xyzp',
+					v3: 'xyzp',
+				},
+			}),
+		);
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(publishRecipeContent.mock.calls.length).toEqual(3);
@@ -390,32 +402,44 @@ describe('update_processor.handleContentUpdate', () => {
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(insertNewRecipe.mock.calls.length).toEqual(3);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(insertNewRecipe.mock.calls[0][0]).toEqual('path/to/content'); //canonical article ID
+		expect(insertNewRecipe.mock.calls[0][0]).toEqual(
+			expect.objectContaining({
+				recipeVersion: 'abcd1',
+				recipeUID: 'uid-recep-1',
+				capiArticleId: 'path/to/content',
+				sponsorshipCount: 0,
+				versions: {
+					v2: 'abcd1',
+					v3: 'abcd1',
+				},
+			}),
+		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(insertNewRecipe.mock.calls[0][1]).toEqual({
-			checksum: 'abcd1',
-			recipeUID: 'uid-recep-1',
-			capiArticleId: 'path/to/content',
-			sponsorshipCount: 0,
-		}); //recipe data
+		expect(insertNewRecipe.mock.calls[1][0]).toEqual(
+			expect.objectContaining({
+				recipeVersion: 'efgh',
+				recipeUID: 'uid-recep-2',
+				capiArticleId: 'path/to/content',
+				sponsorshipCount: 0,
+				versions: {
+					v2: 'efgh',
+					v3: 'efgh',
+				},
+			}),
+		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(insertNewRecipe.mock.calls[1][0]).toEqual('path/to/content'); //canonical article ID
-		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(insertNewRecipe.mock.calls[1][1]).toEqual({
-			checksum: 'efgh',
-			recipeUID: 'uid-recep-2',
-			capiArticleId: 'path/to/content',
-			sponsorshipCount: 0,
-		}); //recipe data
-		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(insertNewRecipe.mock.calls[2][0]).toEqual('path/to/content'); //canonical article ID
-		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(insertNewRecipe.mock.calls[2][1]).toEqual({
-			checksum: 'xyzp',
-			recipeUID: 'uid-recep-3',
-			capiArticleId: 'path/to/content',
-			sponsorshipCount: 0,
-		}); //recipe data
+		expect(insertNewRecipe.mock.calls[2][0]).toEqual(
+			expect.objectContaining({
+				recipeVersion: 'xyzp',
+				recipeUID: 'uid-recep-3',
+				capiArticleId: 'path/to/content',
+				sponsorshipCount: 0,
+				versions: {
+					v2: 'xyzp',
+					v3: 'xyzp',
+				},
+			}),
+		);
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(publishRecipeContent.mock.calls.length).toEqual(3);

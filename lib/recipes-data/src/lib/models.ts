@@ -1,5 +1,10 @@
 import type { AttributeValue } from '@aws-sdk/client-dynamodb';
-import { formatISO, parseISO } from 'date-fns';
+import { formatISO } from 'date-fns';
+
+interface Versions {
+	v2: string;
+	v3: string | null;
+}
 
 /**
  * RecipeDatabaseKey contains the fields necessary to uniquely identify a recipe in the index
@@ -15,7 +20,9 @@ interface RecipeDatabaseKey {
  */
 interface RecipeDatabaseEntry extends RecipeDatabaseKey {
 	lastUpdated: Date;
+	/** @deprecated use versions */
 	recipeVersion: string;
+	versions: Versions;
 	sponsorshipCount: number;
 }
 
@@ -27,17 +34,31 @@ export interface RecipeIndexEntry {
 	recipeUID: string;
 	capiArticleId: string;
 	sponsorshipCount: number;
+	version?: number;
 }
 
-export function RecipeDatabaseEntryToIndex(
+export function recipeDatabaseEntryToIndexEntries(
 	from: RecipeDatabaseEntry,
-): RecipeIndexEntry {
-	return {
-		checksum: from.recipeVersion,
-		recipeUID: from.recipeUID,
-		capiArticleId: from.capiArticleId,
-		sponsorshipCount: from.sponsorshipCount,
-	};
+): RecipeIndexEntry[] {
+	const entries: RecipeIndexEntry[] = [
+		{
+			checksum: from.versions.v2,
+			recipeUID: from.recipeUID,
+			capiArticleId: from.capiArticleId,
+			sponsorshipCount: from.sponsorshipCount,
+			version: 2,
+		},
+	];
+	if (from.versions.v3) {
+		entries.push({
+			checksum: from.versions.v3,
+			recipeUID: from.recipeUID,
+			capiArticleId: from.capiArticleId,
+			sponsorshipCount: from.sponsorshipCount,
+			version: 3,
+		});
+	}
+	return entries;
 }
 
 /**
@@ -102,39 +123,29 @@ export interface ChefData {
 export type ChefInfoFile = Record<string, ChefData>;
 
 /**
- * Helper function to un-marshal a raw dynamo record into a RecipeDatabaseEntry structure.
- * Note, this will not throw if the fields are not present; instead, capiArticleId will be an empty string ("")
- * @param raw - record to unmarshal, from the Dynamo API
- * @return a RecipeDatabaseEntry
- */
-export function RecipeDatabaseEntryFromDynamo(
-	raw: Record<string, AttributeValue>,
-): RecipeDatabaseEntry {
-	return {
-		capiArticleId: raw['capiArticleId'].S ?? '',
-		recipeUID: raw['recipeUID'].S ?? '',
-		lastUpdated: raw['lastUpdated'].S
-			? parseISO(raw['lastUpdated'].S)
-			: new Date(1970, 0, 0),
-		recipeVersion: raw['recipeVersion'].S ?? '',
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- on old records, `raw["sponsorshipCount"]` _can_ return `null` even though eslint thinks it can't.
-		sponsorshipCount: parseInt(raw['sponsorshipCount']?.N ?? '0'),
-	};
-}
-
-/**
  * Helper function to marshal a RecipeDatabaseEntry structure into a raw dynamo record.
  * @param ent - a RecipeDatabaseEntry
  * @return a record suitable for pushing to the Dynamo API
  */
-export function RecipeDatabaseEntryToDynamo(
+export function recipeDatabaseEntryToDynamo(
 	ent: RecipeDatabaseEntry,
 ): Record<string, AttributeValue> {
+	let versions: Record<string, AttributeValue> = {
+		versions: { M: { v2: { S: ent.versions.v2 } } },
+	};
+	if (ent.versions.v3) {
+		versions = {
+			versions: {
+				M: { v2: { S: ent.versions.v2 }, v3: { S: ent.versions.v3 } },
+			},
+		};
+	}
 	return {
 		capiArticleId: { S: ent.capiArticleId },
 		recipeUID: { S: ent.recipeUID },
 		lastUpdated: { S: formatISO(ent.lastUpdated) },
-		recipeVersion: { S: ent.recipeVersion },
+		recipeVersion: { S: ent.versions.v2 },
+		...versions,
 		sponsorshipCount: { N: ent.sponsorshipCount.toString() },
 	};
 }
@@ -147,16 +158,25 @@ export function RecipeDatabaseEntryToDynamo(
  * @param raw - a raw Dynamo record from the API
  * @return a RecipeIndexEntry subset record
  */
-export function RecipeIndexEntryFromDynamo(
+export function recipeIndexEntriesFromDynamo(
 	raw: Record<string, AttributeValue>,
-): RecipeIndexEntry {
-	return {
-		checksum: raw['recipeVersion'].S ?? '',
-		recipeUID: raw['recipeUID'].S ?? '',
-		capiArticleId: raw['capiArticleId'].S ?? '',
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- on old records, `raw["sponsorshipCount"]` _can_ return `null` even though eslint thinks it can't.
-		sponsorshipCount: parseInt(raw['sponsorshipCount']?.N ?? '0'),
-	};
+): RecipeIndexEntry[] {
+	/* eslint-disable @typescript-eslint/no-unnecessary-condition -- on old records, `raw["sponsorshipCount"]` _can_ return `null` even though eslint thinks it can't. */
+	type HashAndVersion = { h: string; v: number };
+	const hashes: HashAndVersion[] = [
+		{ h: raw['versions']?.M?.['v2']?.S ?? raw['recipeVersion']?.S, v: 2 },
+		{ h: raw['versions']?.M?.['v3']?.S, v: 3 }, // h is potentially undefined here
+	].filter(({ h }) => h) as HashAndVersion[]; // Removes entries with falsy hashes
+	return hashes.map((h) => {
+		return {
+			checksum: h.h,
+			recipeUID: raw['recipeUID'].S ?? '',
+			capiArticleId: raw['capiArticleId'].S ?? '',
+			sponsorshipCount: parseInt(raw['sponsorshipCount']?.N ?? '0'),
+			version: h.v,
+		};
+	});
+	/* eslint-enable @typescript-eslint/no-unnecessary-condition */
 }
 
 export type RecipeImage = {

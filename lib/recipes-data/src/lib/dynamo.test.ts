@@ -12,8 +12,8 @@ import {
 } from './dynamo';
 import type { RecipeDatabaseEntry, RecipeDatabaseKey } from './models';
 import {
-	RecipeDatabaseEntryToDynamo,
-	RecipeDatabaseEntryToIndex,
+	recipeDatabaseEntryToDynamo,
+	recipeDatabaseEntryToIndexEntries,
 } from './models';
 
 jest.mock('./config', () => ({
@@ -184,6 +184,10 @@ describe('dynamodb', () => {
 					capiArticleId: 'path/to/article',
 					recipeUID: 'recep1',
 					recipeVersion: 'xxxyyyzzz',
+					versions: {
+						v2: 'xxxyyyzzz',
+						v3: null,
+					},
 					sponsorshipCount: 0,
 					lastUpdated: new Date(),
 				},
@@ -191,6 +195,10 @@ describe('dynamodb', () => {
 					capiArticleId: 'path/to/article',
 					recipeUID: 'recep2',
 					recipeVersion: 'xxxyyyzzz',
+					versions: {
+						v2: 'xxxyyyzzz',
+						v3: null,
+					},
 					sponsorshipCount: 0,
 					lastUpdated: new Date(),
 				},
@@ -198,6 +206,10 @@ describe('dynamodb', () => {
 					capiArticleId: 'path/to/article',
 					recipeUID: 'recep3',
 					recipeVersion: 'xxxyyyzzz',
+					versions: {
+						v2: 'xxxyyyzzz',
+						v3: null,
+					},
 					sponsorshipCount: 0,
 					lastUpdated: new Date(),
 				},
@@ -205,18 +217,24 @@ describe('dynamodb', () => {
 					capiArticleId: 'path/to/article',
 					recipeUID: 'recep4',
 					recipeVersion: 'xxxyyyzzz',
+					versions: {
+						v2: 'xxxyyyzzz',
+						v3: null,
+					},
 					sponsorshipCount: 0,
 					lastUpdated: new Date(),
 				},
 			];
 			mockDynamoClient.on(QueryCommand).resolves({
-				Items: fakeRecords.map(RecipeDatabaseEntryToDynamo),
+				Items: fakeRecords.map(recipeDatabaseEntryToDynamo),
 			});
 			mockDynamoClient.on(BatchWriteItemCommand).resolves({});
 
 			const result =
 				await removeAllRecipeIndexEntriesForArticle('path/to/article');
-			expect(result).toEqual(fakeRecords.map(RecipeDatabaseEntryToIndex));
+			expect(result).toEqual(
+				fakeRecords.flatMap(recipeDatabaseEntryToIndexEntries),
+			);
 			expect(mockDynamoClient.commandCalls(QueryCommand).length).toEqual(1);
 			expect(
 				mockDynamoClient.commandCalls(BatchWriteItemCommand).length,
@@ -248,13 +266,15 @@ describe('dynamodb', () => {
 		it('should not break if there is nothing to do', async () => {
 			const fakeRecords: RecipeDatabaseEntry[] = [];
 			mockDynamoClient.on(QueryCommand).resolves({
-				Items: fakeRecords.map(RecipeDatabaseEntryToDynamo),
+				Items: fakeRecords.map(recipeDatabaseEntryToDynamo),
 			});
 			mockDynamoClient.on(BatchWriteItemCommand).resolves({});
 
 			const result =
 				await removeAllRecipeIndexEntriesForArticle('path/to/article');
-			expect(result).toEqual(fakeRecords.map(RecipeDatabaseEntryToIndex));
+			expect(result).toEqual(
+				fakeRecords.map(recipeDatabaseEntryToIndexEntries),
+			);
 			expect(mockDynamoClient.commandCalls(QueryCommand).length).toEqual(1);
 			expect(
 				mockDynamoClient.commandCalls(BatchWriteItemCommand).length,
