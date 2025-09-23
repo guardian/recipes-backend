@@ -138,12 +138,14 @@ export async function removeRecipe(
 			capiArticleId: { S: canonicalArticleId },
 			recipeUID: { S: recipeUID },
 		},
-		ConditionExpression: recipeChecksum ? `recipeVersion = :ver` : undefined,
+		ConditionExpression: recipeChecksum
+			? `(attribute_exists(recipeVersion) AND recipeVersion = :ver) OR (attribute_exists(versions.v2) AND versions.v2 = :ver) OR (attribute_exists(versions.v3) AND versions.v3 = :ver)`
+			: undefined,
 		ExpressionAttributeValues,
 	});
 
 	try {
-		return client.send(req);
+		return await client.send(req);
 	} catch (err) {
 		if (err instanceof ConditionalCheckFailedException) {
 			console.log(

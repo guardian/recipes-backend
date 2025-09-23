@@ -249,11 +249,14 @@ export async function writeIndexData({
 	filterOnVersion: number;
 }) {
 	console.log(`Filtering data on version ${filterOnVersion}`);
-	indexData.recipes = indexData.recipes.filter(
-		(r) => (r.version ?? 2) === filterOnVersion,
-	);
+	const filteredIndexData = {
+		...indexData,
+		recipes: indexData.recipes.filter(
+			(r) => (r.version ?? 2) === filterOnVersion,
+		),
+	};
 	console.log('Marshalling data...');
-	const formattedData = JSON.stringify(indexData);
+	const formattedData = JSON.stringify(filteredIndexData);
 
 	console.log(`Done. Writing to s3://${staticBucketName}/${key}...`);
 	const req = new PutObjectCommand({
