@@ -119,6 +119,11 @@ export class RecipesBackend extends GuStack {
 			},
 		);
 
+		const shouldPublishV2Param = new GuParameter(this, 'ShouldPublishV2', {
+			fromSSM: true,
+			default: `/${this.stage}/${this.stack}/${app}/should-publish-v2`,
+		});
+
 		const reindexBatchSizeParam = new GuParameter(
 			this,
 			'reindexBatchSizeParam',
@@ -168,6 +173,7 @@ export class RecipesBackend extends GuStack {
 					this.stage === 'PROD'
 						? 'https://content.guardianapis.com'
 						: 'https://content.code.dev-guardianapis.com',
+				SHOULD_PUBLISH_V2: shouldPublishV2Param.valueAsString,
 			},
 			initialPolicy: [
 				new PolicyStatement({

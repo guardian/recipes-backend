@@ -15,6 +15,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "GuParameter",
       "GuParameter",
       "GuParameter",
+      "GuParameter",
       "GuLambdaFunction",
       "GuLambdaFunction",
       "GuLambdaErrorPercentageAlarm",
@@ -91,6 +92,10 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     },
     "RepoName": {
       "Default": "/TEST/feast/recipes-backend/ecr-repo-printables",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "ShouldPublishV2": {
+      "Default": "/TEST/feast/recipes-responder/should-publish-v2",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "TelemetryTopic": {
@@ -4971,6 +4976,9 @@ def sort_filter_rules(json_obj):
             "LAST_UPDATED_INDEX": "idxArticleLastUpdated",
             "OUTGOING_EVENT_BUS": {
               "Ref": "EventBus",
+            },
+            "SHOULD_PUBLISH_V2": {
+              "Ref": "ShouldPublishV2",
             },
             "STACK": "feast",
             "STAGE": "TEST",

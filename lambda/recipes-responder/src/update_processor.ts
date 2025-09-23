@@ -122,15 +122,17 @@ export async function handleContentUpdate({
 		);
 		if (allRecipes.length == 0 && entriesToRemove.length == 0) return 0; //no point hanging around and noising up the logs
 		await Promise.all(
-			entriesToRemove.map((recep) =>
-				removeRecipeVersion({
-					canonicalArticleId: content.id,
-					recipe: recep,
-					staticBucketName,
-					fastlyApiKey,
-					contentPrefix,
-				}),
-			),
+			entriesToRemove
+				.filter((recep) => shouldPublishV2 || (recep.version ?? 2) > 2) // only take down v2 if we're publishing v2
+				.map((recep) =>
+					removeRecipeVersion({
+						canonicalArticleId: content.id,
+						recipe: recep,
+						staticBucketName,
+						fastlyApiKey,
+						contentPrefix,
+					}),
+				),
 		);
 		console.log(
 			`INFO [${content.id}] - ${entriesToRemove.length} removed/superceded recipes have been removed from the store`,
