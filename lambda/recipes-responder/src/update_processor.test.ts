@@ -11,6 +11,7 @@ import {
 	extractAllRecipesFromArticle,
 	insertNewRecipe,
 	publishRecipeContent,
+	recipesforArticle,
 	recipesToTakeDown,
 	removeRecipeVersion,
 	sendTelemetryEvent,
@@ -29,6 +30,7 @@ jest.mock('@recipes-api/lib/recipes-data', () => ({
 	extractAllRecipesFromArticle: jest.fn(),
 	insertNewRecipe: jest.fn(),
 	publishRecipeContent: jest.fn(),
+	recipesforArticle: jest.fn(),
 	recipesToTakeDown: jest.fn(),
 	removeRecipeVersion: jest.fn(),
 	sendTelemetryEvent: jest.fn(),
@@ -497,5 +499,77 @@ describe('update_processor.handleContentUpdate', () => {
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(announceNewRecipe.mock.calls.length).toEqual(1);
+	});
+
+	it('should use existing v2 hash when shouldPublishV2 is false', async () => {
+		const refsInArticle: CAPIRecipeReference[] = [
+			{
+				recipeUID: 'uid-recep-1',
+				jsonBlob: 'new-recipe-data',
+				sponsorshipCount: 0,
+			},
+		];
+
+		const existingDbRecipes = [
+			{
+				recipeUID: 'uid-recep-1',
+				version: 2,
+				checksum: 'existing-v2-hash',
+				capiArticleId: 'path/to/content',
+				sponsorshipCount: 0,
+			},
+		];
+
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		extractAllRecipesFromArticle.mockReturnValue(
+			Promise.resolve(refsInArticle),
+		);
+
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		recipesToTakeDown.mockReturnValue([]);
+
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		recipesforArticle.mockReturnValue(Promise.resolve(existingDbRecipes));
+
+		calculateChecksum
+			// @ts-ignore -- Typescript doesn't know that this is a mock
+			.mockReturnValueOnce('new-v2-hash') // for v2 blob
+			// @ts-ignore -- Typescript doesn't know that this is a mock
+			.mockReturnValueOnce('new-v3-hash'); // for v3 blob
+
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		convertToRecipeV2.mockReturnValue('converted-v2-data');
+
+		await handleContentUpdate({
+			content: fakeContent,
+			staticBucketName,
+			fastlyApiKey,
+			contentPrefix,
+			outgoingEventBus,
+			shouldPublishV2: false,
+		});
+
+		// Should call recipesforArticle to get existing DB recipes
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		expect(recipesforArticle.mock.calls.length).toEqual(1);
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		expect(recipesforArticle.mock.calls[0][0]).toEqual('path/to/content');
+
+		// Should insert recipe with existing v2 hash but new v3 hash
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		expect(insertNewRecipe.mock.calls.length).toEqual(1);
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		expect(insertNewRecipe.mock.calls[0][0]).toEqual(
+			expect.objectContaining({
+				recipeUID: 'uid-recep-1',
+				recipeVersion: 'existing-v2-hash', // Should use existing v2 hash
+				capiArticleId: 'path/to/content',
+				sponsorshipCount: 0,
+				versions: {
+					v2: 'existing-v2-hash', // Should preserve existing v2 hash
+					v3: 'new-v3-hash', // Should use new v3 hash
+				},
+			}),
+		);
 	});
 });

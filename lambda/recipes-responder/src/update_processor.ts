@@ -4,6 +4,7 @@ import type {
 	CAPIRecipeReference,
 	RecipeReference,
 } from '@recipes-api/lib/recipes-data';
+import { recipesforArticle } from '@recipes-api/lib/recipes-data';
 import {
 	announceNewRecipe,
 	calculateChecksum,
@@ -53,12 +54,21 @@ async function publishRecipe({
 		contentPrefix,
 		shouldPublishV2,
 	});
+
+	let v2Hash = recipe.recipeV2Blob.checksum;
+	if (!shouldPublishV2) {
+		// when we don't publish v2, we want to ensure we're not updating the index
+		const existingDbRecipes = await recipesforArticle(canonicalArticleId);
+		const v2Recipe = existingDbRecipes.find((r) => r.version == 2);
+		v2Hash = v2Recipe?.version == 2 ? v2Recipe.checksum : v2Hash;
+	}
+
 	console.log(`INFO [${canonicalArticleId}] - updating index table...`);
 	await insertNewRecipe({
 		recipeUID: recipe.recipeUID,
-		recipeVersion: recipe.recipeV2Blob.checksum,
+		recipeVersion: v2Hash,
 		versions: {
-			v2: recipe.recipeV2Blob.checksum,
+			v2: v2Hash,
 			v3: recipe.recipeV3Blob.checksum,
 		},
 		capiArticleId: canonicalArticleId,
