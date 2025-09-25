@@ -195,5 +195,5 @@ export async function recipesToTakeDown(
 	const currentSet = await recipesforArticle(canonicalArticleId);
 
 	//ES6 does not give us a Set.difference method, unfortunately. So we have to do it here.
-	return currentSet.filter((rec) => !toKeepSet.has(rec.checksum));
+	return currentSet.filter((rec) => !toKeepSet.has(rec.recipeUID));
 }

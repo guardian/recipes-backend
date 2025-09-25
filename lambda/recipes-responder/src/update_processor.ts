@@ -4,7 +4,6 @@ import type {
 	CAPIRecipeReference,
 	RecipeReference,
 } from '@recipes-api/lib/recipes-data';
-import { recipesforArticle } from '@recipes-api/lib/recipes-data';
 import {
 	announceNewRecipe,
 	calculateChecksum,
@@ -12,7 +11,9 @@ import {
 	extractAllRecipesFromArticle,
 	insertNewRecipe,
 	publishRecipeContent,
+	recipeByUID,
 	recipesToTakeDown,
+	removeRecipeContent,
 	removeRecipeVersion,
 	sendTelemetryEvent,
 } from '@recipes-api/lib/recipes-data';
@@ -55,11 +56,15 @@ async function publishRecipe({
 		shouldPublishV2,
 	});
 
+	const existingDbRecipes = await recipeByUID(recipe.recipeUID);
+
 	let v2Hash = recipe.recipeV2Blob.checksum;
 	if (!shouldPublishV2) {
-		// when we don't publish v2, we want to ensure we're not updating the index
-		const existingDbRecipes = await recipesforArticle(canonicalArticleId);
+		// when we don't publish v2, we want to ensure we're not updating the index v2
 		const v2Recipe = existingDbRecipes.find((r) => r.version == 2);
+		console.log(
+			`shouldPublishV2: false. Replacing v2 hash with existing DB value: ${v2Recipe?.checksum ?? 'none'}`,
+		);
 		v2Hash = v2Recipe?.version == 2 ? v2Recipe.checksum : v2Hash;
 	}
 
@@ -75,6 +80,24 @@ async function publishRecipe({
 		sponsorshipCount: recipe.sponsorshipCount,
 		lastUpdated: new Date(),
 	});
+
+	const existingChecksums = existingDbRecipes.map((r) => r.checksum);
+	const newChecksums = [recipe.recipeV3Blob.checksum, v2Hash];
+	const checkSumsToDelete = existingChecksums.filter(
+		(c) => !newChecksums.includes(c),
+	);
+	await Promise.all(
+		checkSumsToDelete.map(
+			async (checksum) =>
+				await removeRecipeContent({
+					recipeSHA: checksum,
+					staticBucketName,
+					fastlyApiKey,
+					contentPrefix,
+					purgeType: 'soft',
+				}),
+		),
+	);
 }
 
 function toRecipeReference(

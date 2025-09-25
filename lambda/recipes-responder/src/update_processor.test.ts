@@ -11,8 +11,9 @@ import {
 	extractAllRecipesFromArticle,
 	insertNewRecipe,
 	publishRecipeContent,
-	recipesforArticle,
+	recipeByUID,
 	recipesToTakeDown,
+	removeRecipeContent,
 	removeRecipeVersion,
 	sendTelemetryEvent,
 } from '@recipes-api/lib/recipes-data';
@@ -30,11 +31,12 @@ jest.mock('@recipes-api/lib/recipes-data', () => ({
 	extractAllRecipesFromArticle: jest.fn(),
 	insertNewRecipe: jest.fn(),
 	publishRecipeContent: jest.fn(),
-	recipesforArticle: jest.fn(),
 	recipesToTakeDown: jest.fn(),
+	removeRecipeContent: jest.fn(),
 	removeRecipeVersion: jest.fn(),
 	sendTelemetryEvent: jest.fn(),
 	announceNewRecipe: jest.fn(),
+	recipeByUID: jest.fn(),
 }));
 
 const fakeContent: Content = {
@@ -75,6 +77,9 @@ describe('update_processor.handleContentUpdate', () => {
 				sponsorshipCount: 0,
 			},
 		];
+
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		recipeByUID.mockReturnValue(Promise.resolve([]));
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		extractAllRecipesFromArticle.mockReturnValue(
@@ -360,6 +365,11 @@ describe('update_processor.handleContentUpdate', () => {
 		];
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
+		recipeByUID.mockReturnValue(Promise.resolve([]));
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		removeRecipeContent.mockReturnValue(Promise.resolve());
+
+		// @ts-ignore -- Typescript doesn't know that this is a mock
 		extractAllRecipesFromArticle.mockReturnValue(
 			Promise.resolve(refsInArticle),
 		);
@@ -518,7 +528,17 @@ describe('update_processor.handleContentUpdate', () => {
 				capiArticleId: 'path/to/content',
 				sponsorshipCount: 0,
 			},
+			{
+				recipeUID: 'uid-recep-1',
+				version: 3,
+				checksum: 'existing-v3-hash',
+				capiArticleId: 'path/to/content',
+				sponsorshipCount: 0,
+			},
 		];
+
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		recipeByUID.mockReturnValue(Promise.resolve(existingDbRecipes));
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		extractAllRecipesFromArticle.mockReturnValue(
@@ -527,9 +547,6 @@ describe('update_processor.handleContentUpdate', () => {
 
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		recipesToTakeDown.mockReturnValue([]);
-
-		// @ts-ignore -- Typescript doesn't know that this is a mock
-		recipesforArticle.mockReturnValue(Promise.resolve(existingDbRecipes));
 
 		calculateChecksum
 			// @ts-ignore -- Typescript doesn't know that this is a mock
@@ -549,12 +566,6 @@ describe('update_processor.handleContentUpdate', () => {
 			shouldPublishV2: false,
 		});
 
-		// Should call recipesforArticle to get existing DB recipes
-		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(recipesforArticle.mock.calls.length).toEqual(1);
-		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(recipesforArticle.mock.calls[0][0]).toEqual('path/to/content');
-
 		// Should insert recipe with existing v2 hash but new v3 hash
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(insertNewRecipe.mock.calls.length).toEqual(1);
@@ -570,6 +581,13 @@ describe('update_processor.handleContentUpdate', () => {
 					v3: 'new-v3-hash', // Should use new v3 hash
 				},
 			}),
+		);
+
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		expect(removeRecipeContent.mock.calls.length).toEqual(1);
+		// @ts-ignore -- Typescript doesn't know that this is a mock
+		expect(removeRecipeContent.mock.calls[0][0].recipeSHA).toEqual(
+			'existing-v3-hash',
 		);
 	});
 });
