@@ -264,7 +264,7 @@ export async function writeIndexData({
 		Key: key,
 		Body: formattedData,
 		ContentType: 'application/json',
-		CacheControl: makeCacheControl(3600), //cache for up to 60mins
+		CacheControl: makeCacheControl(300), //cache for up to 5 minutes
 	});
 
 	await s3Client.send(req);

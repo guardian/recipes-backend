@@ -43,8 +43,8 @@ async function retrieveIndexPage(
 ): Promise<DataPage> {
 	const req = new ScanCommand({
 		ExclusiveStartKey,
-		IndexName,
 		TableName,
+		IndexName,
 	});
 
 	const response = await client.send(req);
