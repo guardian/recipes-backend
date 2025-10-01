@@ -44,6 +44,7 @@ def build_prompt(ingredients: list[dict]) -> str:
       - brown and/or puy lentils => brown lentils
       - thinly sliced in cross-section circles (we use a mandolin) red onion => sliced onion
       - tinned peaches in syrup => ignored
+      - unsalted butter => butter
 
 
     You'll receive a batch of ingredients, each with an id, a name, a prefix and a suffix.

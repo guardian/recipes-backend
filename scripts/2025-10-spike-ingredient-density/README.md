@@ -57,3 +57,4 @@ brown and/or puy lentils => brown lentils // but here we do care?
 thinly sliced in cross-section circles (we use a mandolin) red onion => sliced red onion => don't care about the colour
 
 ```
+- Result after day 1. Focusing on ingredients measured in g or kg, and ignoring any tinned ingredient, we normalise 23873 ingredients into 3136 unique ingredients.
