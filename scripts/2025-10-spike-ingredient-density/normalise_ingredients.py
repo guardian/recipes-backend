@@ -3,6 +3,7 @@ import sqlite3
 import json
 from sqlite3 import Connection
 from textwrap import dedent
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from llm import LLMClient
 
@@ -47,19 +48,58 @@ def build_prompt(ingredients: list[dict]) -> str:
   prompt += f"\nHere are the ingredients:\n{rendered_ingredient}\n"
   return prompt
 
-def process_one_batch(conn: Connection, llm_client: LLMClient, batch_size=100) -> bool:
-  batch = select_next_batch(conn, batch_size=batch_size)
-  logging.info(f"Selected {len(batch)} ingredients for normalization.")
-  if len(batch) == 0:
+def process_llm_batch(ingredients: list[dict], llm_client: LLMClient) -> list[dict]:
+  """Process a batch of ingredients through LLM and return normalized results"""
+  if not ingredients:
+    return []
+
+  prompt = build_prompt(ingredients)
+  result = llm_client.call_llm(prompt)
+  logging.debug(f"LLM response for batch of {len(ingredients)}: {result}")
+  result = result.replace("```json", "").replace("```", "")
+
+  return json.loads(result)
+
+def process_multiple_batches(conn: Connection, llm_client: LLMClient, batch_size=100, parallel_batches=4) -> bool:
+  # Fetch a large batch of ingredients
+  large_batch = select_next_batch(conn, batch_size=batch_size*parallel_batches)
+  logging.info(f"Selected {len(large_batch)} ingredients for normalization.")
+
+  if len(large_batch) == 0:
     logging.info("No more ingredients to process. Exiting.")
     return False
 
-  prompt = build_prompt(batch)
-  result = llm_client.call_llm(prompt)
-  logging.debug(f"LLM response: {result}")
-  result = result.replace("```json", "").replace("```", "")
+  batches = []
+  for i in range(0, len(large_batch), batch_size):
+    batch = large_batch[i:i + batch_size]
+    if batch:  # Only add non-empty batches
+      batches.append(batch)
 
-  for normalised in json.loads(result):
+  logging.info(f"Split into {len(batches)} batches for parallel LLM processing")
+
+  # Process batches in parallel
+  all_results = []
+  with ThreadPoolExecutor(max_workers=parallel_batches) as executor:
+    # Submit all LLM tasks
+    future_to_batch = {
+      executor.submit(process_llm_batch, batch, llm_client): i
+      for i, batch in enumerate(batches)
+    }
+
+    # Collect results as they complete
+    for future in as_completed(future_to_batch):
+      batch_idx = future_to_batch[future]
+      try:
+        batch_results = future.result()
+        all_results.extend(batch_results)
+        logging.info(f"Completed LLM processing for batch {batch_idx + 1}/{len(batches)}")
+      except Exception as exc:
+        logging.error(f"Batch {batch_idx} generated an exception: {exc}")
+        # Continue processing other batches even if one fails
+
+  # Write all results to database sequentially (safe for SQLite)
+  logging.info(f"Writing {len(all_results)} normalized ingredients to database")
+  for normalised in all_results:
     conn.execute("""
       update ingredient
       set density_ingredient = :density_ingredient
@@ -68,9 +108,10 @@ def process_one_batch(conn: Connection, llm_client: LLMClient, batch_size=100) -
       'density_ingredient': normalised['normalised_name'],
       'ingredient_id': normalised['ingredient_id']
     })
-  conn.commit()
-  return True
 
+  conn.commit()
+  logging.info("Database update committed successfully")
+  return True
 
 def main():
   conn = sqlite3.connect('recipes.db', check_same_thread=False, uri=True)
@@ -78,9 +119,10 @@ def main():
 
   llm_client = LLMClient()
 
-  should_continue = True
   while True:
-    should_continue = process_one_batch(conn, llm_client, batch_size=100)
+    should_continue = process_multiple_batches(conn, llm_client, batch_size=100, parallel_batches=4)
+    if not should_continue:
+      break
 
 if __name__ == "__main__":
   main()
