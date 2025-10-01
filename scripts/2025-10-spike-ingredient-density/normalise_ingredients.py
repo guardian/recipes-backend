@@ -47,22 +47,17 @@ def build_prompt(ingredients: list[dict]) -> str:
   prompt += f"\nHere are the ingredients:\n{rendered_ingredient}\n"
   return prompt
 
-
-def main():
-  conn = sqlite3.connect('recipes.db', check_same_thread=False, uri=True)
-  conn.row_factory = sqlite3.Row
-
-  llm_client = LLMClient()
-
-  batch = select_next_batch(conn, batch_size=3)
-  print(batch)
+def process_one_batch(conn: Connection, llm_client: LLMClient, batch_size=100) -> bool:
+  batch = select_next_batch(conn, batch_size=batch_size)
   logging.info(f"Selected {len(batch)} ingredients for normalization.")
+  if len(batch) == 0:
+    logging.info("No more ingredients to process. Exiting.")
+    return False
 
   prompt = build_prompt(batch)
   result = llm_client.call_llm(prompt)
   logging.debug(f"LLM response: {result}")
   result = result.replace("```json", "").replace("```", "")
-  print(result)
 
   for normalised in json.loads(result):
     conn.execute("""
@@ -74,6 +69,18 @@ def main():
       'ingredient_id': normalised['ingredient_id']
     })
   conn.commit()
+  return True
+
+
+def main():
+  conn = sqlite3.connect('recipes.db', check_same_thread=False, uri=True)
+  conn.row_factory = sqlite3.Row
+
+  llm_client = LLMClient()
+
+  should_continue = True
+  while True:
+    should_continue = process_one_batch(conn, llm_client, batch_size=100)
 
 if __name__ == "__main__":
   main()

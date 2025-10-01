@@ -18,7 +18,7 @@ class LLMClient:
   def call_llm(self, prompt: str, temperature: float = 0) -> str:
     native_request = {
       "anthropic_version": "bedrock-2023-05-31",
-      "max_tokens": 1024,
+      "max_tokens": 64000,
       "temperature": temperature,
       "messages": [
         {
