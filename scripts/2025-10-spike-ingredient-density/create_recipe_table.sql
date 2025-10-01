@@ -2,12 +2,12 @@
 -- This script creates normalized tables and migrates data from recipe_raw
 
 -- Drop existing tables if they exist
-DROP TABLE IF EXISTS instructions;
-DROP TABLE IF EXISTS ingredients;
-DROP TABLE IF EXISTS recipes;
+DROP TABLE IF EXISTS instruction;
+DROP TABLE IF EXISTS ingredient;
+DROP TABLE IF EXISTS recipe;
 
 -- Create recipes table
-CREATE TABLE recipes (
+CREATE TABLE recipe (
     recipe_id TEXT UNIQUE NOT NULL,  -- Original recipe ID from JSON
     title TEXT NOT NULL,
     description TEXT,
@@ -53,7 +53,8 @@ CREATE TABLE recipes (
 );
 
 -- Create ingredients table
-CREATE TABLE ingredients (
+CREATE TABLE ingredient (
+    ingredient_id INTEGER PRIMARY KEY AUTOINCREMENT,
     recipe_id TEXT NOT NULL,
     recipe_section TEXT,  -- e.g., "For the sumac onions"
     ingredient_order INTEGER,  -- Order within the section
@@ -73,25 +74,26 @@ CREATE TABLE ingredients (
     optional BOOLEAN DEFAULT FALSE,
     empty_amount_is_ok BOOLEAN DEFAULT FALSE,
 
-    FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id)
+    FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id)
 );
 
 -- Create instructions table
-CREATE TABLE instructions (
+CREATE TABLE instruction (
+    instruction_id INTEGER PRIMARY KEY AUTOINCREMENT,
     recipe_id TEXT NOT NULL,
     step_number INTEGER,
     description TEXT,
 
-    FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id)
+    FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id)
 );
 
 -- Create indexes for better performance
-CREATE INDEX idx_ingredients_recipe_id ON ingredients(recipe_id);
-CREATE INDEX idx_instructions_recipe_id ON instructions(recipe_id);
-CREATE INDEX idx_recipes_recipe_id ON recipes(recipe_id);
+CREATE INDEX idx_ingredient_recipe_id ON ingredient(recipe_id);
+CREATE INDEX idx_instruction_recipe_id ON instruction(recipe_id);
+CREATE INDEX idx_recipe_recipe_id ON recipe(recipe_id);
 
 -- Migration script to populate normalized tables from recipe_raw
-INSERT INTO recipes (
+INSERT INTO recipe (
     recipe_id, title, description, difficulty_level, book_credit,
     canonical_article, composer_id, featured_image_url, featured_image_caption,
     featured_image_photographer, preview_image_url, serves_min, serves_max,
@@ -176,7 +178,7 @@ ingredient_items AS (
     FROM ingredient_items
     WHERE item_idx < item_count - 1
 )
-INSERT INTO ingredients (
+INSERT INTO ingredient (
     recipe_id, recipe_section, ingredient_order, name, text,
     amount_min, amount_max, unit, prefix, suffix, optional, empty_amount_is_ok
 )
@@ -221,7 +223,7 @@ WITH RECURSIVE instruction_steps AS (
     FROM instruction_steps
     WHERE step_idx < step_count - 1
 )
-INSERT INTO instructions (recipe_id, step_number, description)
+INSERT INTO instruction (recipe_id, step_number, description)
 SELECT
     is_steps.recipe_id,
     is_steps.step_idx + 1 as step_number,
@@ -230,6 +232,6 @@ FROM instruction_steps is_steps;
 
 -- Display summary of migrated data
 SELECT 'Migration Summary:' as summary;
-SELECT 'Recipes migrated: ' || COUNT(*) as count FROM recipes;
-SELECT 'Ingredients migrated: ' || COUNT(*) as count FROM ingredients;
-SELECT 'Instructions migrated: ' || COUNT(*) as count FROM instructions;
+SELECT 'Recipes migrated: ' || COUNT(*) as count FROM recipe;
+SELECT 'Ingredients migrated: ' || COUNT(*) as count FROM ingredient;
+SELECT 'Instructions migrated: ' || COUNT(*) as count FROM instruction;

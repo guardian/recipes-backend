@@ -43,3 +43,4 @@ Steps:
 - Vibe coded a script to load all the recipes in a database `build-db.sh`
 - Two recipes have a duplicate ID `rm data/ofBT9I5CpDmW1fFKxVDsv8yTOykqLbCcWyEWjs3-hAg` `rm data/SZ415NP_nfkkwb1-ybWY7xPRnpvaI5zDsMZgUCdrsXA`, rerun db script
 - Rebased on recipe-template-2 to get the latest schema, then re-run the code generation
+- Hesitating between starting from the files in the data folder or by reading ingredients to process from the db. I'm adding a primary key to the db rows and will start from the db.

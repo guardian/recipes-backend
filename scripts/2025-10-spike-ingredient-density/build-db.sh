@@ -38,19 +38,19 @@ echo "Migration completed. Results:"
 
 # Check the results
 echo ""
-echo "=== RECIPES TABLE ==="
-sqlite3 "$DB" "SELECT COUNT(*) as recipe_count FROM recipes;"
-sqlite3 "$DB" "SELECT recipe_id, title, difficulty_level FROM recipes LIMIT 3;"
+echo "=== RECIPE TABLE ==="
+sqlite3 "$DB" "SELECT COUNT(*) as recipe_count FROM recipe;"
+sqlite3 "$DB" "SELECT recipe_id, title, difficulty_level FROM recipe LIMIT 3;"
 
 echo ""
-echo "=== INGREDIENTS TABLE ==="
-sqlite3 "$DB" "SELECT COUNT(*) as ingredient_count FROM ingredients;"
-sqlite3 "$DB" "SELECT recipe_id, recipe_section, name, text FROM ingredients LIMIT 5;"
+echo "=== INGREDIENT TABLE ==="
+sqlite3 "$DB" "SELECT COUNT(*) as ingredient_count FROM ingredient;"
+sqlite3 "$DB" "SELECT recipe_id, recipe_section, name, text FROM ingredient LIMIT 5;"
 
 echo ""
-echo "=== INSTRUCTIONS TABLE ==="
-sqlite3 "$DB" "SELECT COUNT(*) as instruction_count FROM instructions;"
-sqlite3 "$DB" "SELECT recipe_id, step_number, description FROM instructions LIMIT 3;"
+echo "=== INSTRUCTION TABLE ==="
+sqlite3 "$DB" "SELECT COUNT(*) as instruction_count FROM instruction;"
+sqlite3 "$DB" "SELECT recipe_id, step_number, description FROM instruction LIMIT 3;"
 
 echo ""
 echo "Test completed!"
