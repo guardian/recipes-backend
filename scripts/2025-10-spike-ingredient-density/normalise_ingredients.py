@@ -16,7 +16,6 @@ def select_next_batch(conn: Connection, batch_size=100) -> list[dict]:
     from ingredient
     where lower(trim(ingredient.unit)) in ('g', 'kg')
       and density_ingredient is null
-    group by concat(prefix, name, suffix)
     order by 1 desc
     limit :batch_size;
   """)
