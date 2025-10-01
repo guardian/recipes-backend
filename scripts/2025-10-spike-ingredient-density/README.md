@@ -42,3 +42,4 @@ Steps:
 - Downloading all the individual recipes into the data folder `aws s3 sync --profile feast --exclude '*.pdf' s3://feast-recipes-static-prod/content/ ./data/`
 - Vibe coded a script to load all the recipes in a database `build-db.sh`
 - Two recipes have a duplicate ID `rm data/ofBT9I5CpDmW1fFKxVDsv8yTOykqLbCcWyEWjs3-hAg` `rm data/SZ415NP_nfkkwb1-ybWY7xPRnpvaI5zDsMZgUCdrsXA`, rerun db script
+- Rebased on recipe-template-2 to get the latest schema, then re-run the code generation
