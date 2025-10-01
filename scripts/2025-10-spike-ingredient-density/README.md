@@ -44,3 +44,16 @@ Steps:
 - Two recipes have a duplicate ID `rm data/ofBT9I5CpDmW1fFKxVDsv8yTOykqLbCcWyEWjs3-hAg` `rm data/SZ415NP_nfkkwb1-ybWY7xPRnpvaI5zDsMZgUCdrsXA`, rerun db script
 - Rebased on recipe-template-2 to get the latest schema, then re-run the code generation
 - Hesitating between starting from the files in the data folder or by reading ingredients to process from the db. I'm adding a primary key to the db rows and will start from the db.
+- Got the prototype running by reading from the DB and processing 4 batches of 100 ingredients in parallel. First results look interesting but need to iterate on the prompt:
+```
+small leeks => small leek // we may not want to keep the size of the leek
+small courgettes => small courgette // same here
+
+tinned peaches in syrup => tinned peaches // we don't care about tins, so maybe tell the LLM to ignore these
+sourdough bread,"cut into 2cm-thick slices, lightly toasted and cut again into 4cm chunks" => sourdough bread chunks // the fact the bread is sourdough is not relevant
+
+yellow pepper,"(about 2), stalks, seeds and pith removed and discarded, flesh thinly sliced" => sliced yellow pepper // don't care about the colour
+brown and/or puy lentils => brown lentils // but here we do care?
+thinly sliced in cross-section circles (we use a mandolin) red onion => sliced red onion => don't care about the colour
+
+```

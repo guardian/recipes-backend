@@ -30,13 +30,22 @@ def build_prompt(ingredients: list[dict]) -> str:
   prompt = dedent("""
     We're trying to facilitate unit conversion in our database of recipes. For each ingredient I'll give you, I want you to normalise it to its simplest form, such that we can identify which density we need to gather.
     The normalised name should preserve the way the ingredient is shaped or cut as this has an impact on density, though there is no need to be extremely precise. "finely chopped" and "chopped" can be treated the same, for instance.
+    Sliced, diced, chopped are all useful descriptors to keep.
+    You will normalise any tinned ingredient as "ignored" as we won't convert these ingredients.
+    As a general rule we don't keep the colour of the ingredient in its normalised name unless it has an effect on density. So red or green pepper => don't care, but green lentil vs coral lentil matters.
     For instance:
       - ripe mangoes -> mango
       - 1 garlic clove, peeled and finely chopped -> chopped garlic
-      - 200g cherry tomatoes, halved -> cherry tomatoes
-      - 1 small red onion, finely chopped -> chopped red onion
+      - 200g cherry tomatoes, halved -> cherry tomato
+      - 1 small red onion, finely chopped -> chopped onion
       - Leftover potato skins, ideally with a little flesh still left on – aim for 1-2 skins per person -> potato skins
       - plain flour -> plain flour
+      - small leeks -> leek
+      - stalks, seeds and pith removed and discarded, flesh thinly sliced yellow pepper => sliced pepper
+      - brown and/or puy lentils => brown lentils
+      - thinly sliced in cross-section circles (we use a mandolin) red onion => sliced onion
+      - tinned peaches in syrup => ignored
+
 
     You'll receive a batch of ingredients, each with an id, a name, a prefix and a suffix.
     You'll respond with a JSON array of objects, each with the following fields:
