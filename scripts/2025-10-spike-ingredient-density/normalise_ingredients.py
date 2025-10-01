@@ -15,6 +15,7 @@ def select_next_batch(conn: Connection, batch_size=100) -> list[dict]:
     select ingredient.ingredient_id, name, suffix, prefix
     from ingredient
     where lower(trim(ingredient.unit)) in ('g', 'kg')
+      and density_ingredient is null
     group by concat(prefix, name, suffix)
     order by 1 desc
     limit :batch_size;
@@ -99,6 +100,7 @@ def process_multiple_batches(conn: Connection, llm_client: LLMClient, batch_size
 
   # Write all results to database sequentially (safe for SQLite)
   logging.info(f"Writing {len(all_results)} normalized ingredients to database")
+
   for normalised in all_results:
     conn.execute("""
       update ingredient
