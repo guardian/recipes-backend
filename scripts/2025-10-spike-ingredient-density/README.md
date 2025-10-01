@@ -1,0 +1,44 @@
+# Spike ingredient density
+
+This work focuses on enabling the unit conversion of our recipes from UK (metric) to US (imperial).
+
+Anything expressed as a volume can be converted to cups pretty easily as cups is a unit of volume. This represents about 800 ingredients.
+However, any ingredient expressed as a weight can only be converted to cups if we have its density. This around 4500 distinct ingredients.
+
+## Data
+
+We have
+- our corpus of about 7000 recipes, totalling 84000 ingredients
+- a [list of ingredient density](https://docs.google.com/spreadsheets/d/1XGVOonMclR14JOS7tfwfd772tr8k9V7CYsrAay6Uz4g/edit?gid=0#gid=0) as measured by someone hired by The Guardian
+
+
+## Diary
+### 2025-10-01
+
+Focus on trying to understand what's the intersection between these two datasets.
+
+The main challenge resides in the fact that we're trying to match two free form strings, with all the variation that can exist.
+
+For instance here's a sample of onion ingredients in our recipes:
+
+```
+baby onions
+brown onion
+brown onions
+brown onions (about 3)
+button onions or shallots
+chopped onion
+chopped red onion
+```
+
+And here's how it's captured in our density mapping `Onions (fresh, diced)`
+
+My current thinking is to have a normalization  phase `1 brown onion, diced` => `diced onion` then `Onions (fresh, diced)` => `diced onion` and attempt to match on the normalised text.
+
+This normalisation phase could be done by an LLM, that's what I'll explore today.
+
+Steps:
+- Generating the model with quicktype `npx quicktype --src-lang schema --lang python --pydantic-base-model --out models.py ../../schema/*.json`
+- Downloading all the individual recipes into the data folder `aws s3 sync --profile feast --exclude '*.pdf' s3://feast-recipes-static-prod/content/ ./data/`
+- Vibe coded a script to load all the recipes in a database `build-db.sh`
+- Two recipes have a duplicate ID `rm data/ofBT9I5CpDmW1fFKxVDsv8yTOykqLbCcWyEWjs3-hAg` `rm data/SZ415NP_nfkkwb1-ybWY7xPRnpvaI5zDsMZgUCdrsXA`, rerun db script
