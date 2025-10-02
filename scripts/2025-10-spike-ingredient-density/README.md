@@ -94,22 +94,22 @@ where not exists (select 1
                     ))
 ```
 
-| x    |recipe count|      % | popularity | xth ingredient |
-|------|------------|--------|------------|----------------|
-|    1 |       1503 | 21.8 % |       1309 | caster sugar   |
-|   50 |       2584 | 37.6 % |         53 | granulated sugar |
-|  100 |       3171 | 46.1 % |         26 | salt           | <- salt not well normalised
-|  150 |       3610 | 52.5 % |         17 | grated carrot |
-|  200 |       3948 | 57.5 % |         13 | grated beetroot |
-|  300 |       4467 | 65.5 % |          8 | blackcurrant   |
-|  400 |       4845 | 70.5 % |          5 | whole milk |
-|  500 |       5151 | 74.9 % |          4 | mangetout|
-|  600 |       5389 | 78.4 % |          3 | pistachio paste |
-|  700 |       5599 | 81.5 % |          3 | agave syrup |
-|  800 |       5741 | 83.5 % |          2 | moong dal |
-|  900 |       5895 | 85.8 % |          2 | crumbled goat cheese |
-| 1000 |       6032 | 87.7 % |          1 | wasabi |
-| 1872 |       6812 | 99.1 % |          1 | not sure why not 100%|
+| x    |recipe count|      % | popularity | xth ingredient        |
+|------|------------|--------|------------|-----------------------|
+|    1 |       1503 | 21.8 % |       1309 | caster sugar          |
+|   50 |       2584 | 37.6 % |         53 | granulated sugar      |
+|  100 |       3171 | 46.1 % |         26 | salt                  | <- salt not well normalised
+|  150 |       3610 | 52.5 % |         17 | grated carrot         |
+|  200 |       3948 | 57.5 % |         13 | grated beetroot       |
+|  300 |       4467 | 65.5 % |          8 | blackcurrant          |
+|  400 |       4845 | 70.5 % |          5 | whole milk            |
+|  500 |       5151 | 74.9 % |          4 | mangetout             |
+|  600 |       5389 | 78.4 % |          3 | pistachio paste       |
+|  700 |       5599 | 81.5 % |          3 | agave syrup           |
+|  800 |       5741 | 83.5 % |          2 | moong dal             |
+|  900 |       5895 | 85.8 % |          2 | crumbled goat cheese  |
+| 1000 |       6032 | 87.7 % |          1 | wasabi                |
+| 1872 |       6812 | 99.1 % |          1 | not sure why not 100% |
 
 300 seems to be where there's the most value per ingredient
 
