@@ -31,26 +31,38 @@ def build_prompt(ingredients: list[dict]) -> str:
     The normalised name should preserve the way the ingredient is shaped or cut as this has an impact on density, though there is no need to be extremely precise. "finely chopped" and "chopped" can be treated the same, for instance.
     Sliced, diced, chopped are all useful descriptors to keep.
     You will normalise any tinned ingredient as "ignored" as we won't convert these ingredients.
-    As a general rule we don't keep the colour of the ingredient in its normalised name unless it has an effect on density. So red or green pepper => don't care, but green lentil vs coral lentil matters.
+    As a general rule we don't keep the colour of the ingredient in its normalised name unless it has an effect on density. So red or green pepper => don't care, just keep "bell pepper", but green lentil vs coral lentil matters.
+    The normalised form will be as short as possible, lower case and singular.
     For instance:
       - ripe mangoes -> mango
       - 1 garlic clove, peeled and finely chopped -> chopped garlic
       - 200g cherry tomatoes, halved -> cherry tomato
       - 1 small red onion, finely chopped -> chopped onion
-      - Leftover potato skins, ideally with a little flesh still left on – aim for 1-2 skins per person -> potato skins
+      - Leftover potato skins, ideally with a little flesh still left on – aim for 1-2 skins per person -> potato skin
       - plain flour -> plain flour
       - small leeks -> leek
-      - stalks, seeds and pith removed and discarded, flesh thinly sliced yellow pepper => sliced pepper
-      - brown and/or puy lentils => brown lentils
-      - thinly sliced in cross-section circles (we use a mandolin) red onion => sliced onion
-      - tinned peaches in syrup => ignored
-      - unsalted butter => butter
-
+      - stalks, seeds and pith removed and discarded, flesh thinly sliced yellow pepper -> sliced pepper
+      - brown and/or puy lentils -> brown lentil
+      - thinly sliced in cross-section circles (we use a mandolin) red onion -> sliced onion
+      - tinned peaches in syrup -> ignored
+      - unsalted butter -> butter
+      - chopped floury potato -> chopped potato
+      - chopped new potato -> chopped potato
+      - cooked potato -> potato
+      - cubed potato -> diced potato
+      - sliced maris piper potato -> sliced potato
+      - sliced salad onion -> sliced spring onion
+      - sumac onion -> onion
+      - julienned spring onion -> sliced spring onion
+      - baby onion -> onion
+      - pink peppercorns -> peppercorn
+      - 00 pasta flour or tipo 00 flour -> 00 flour
+      - flaked almonds -> flaked almond
 
     You'll receive a batch of ingredients, each with an id, a name, a prefix and a suffix.
     You'll respond with a JSON array of objects, each with the following fields:
       - ingredient_id: the id of the ingredient
-      - normalised_name: the normalised name of the ingredient, in lowercase, singular if possible
+      - normalised_name: the normalised name of the ingredient
   """)
 
   # dump the ingredient as a json array
