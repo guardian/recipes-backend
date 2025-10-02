@@ -28,10 +28,12 @@ def select_next_batch(conn: Connection, batch_size=100) -> list[dict]:
 def build_prompt(ingredients: list[dict]) -> str:
   prompt = dedent("""
     We're trying to facilitate unit conversion in our database of recipes. For each ingredient I'll give you, I want you to normalise it to its simplest form, such that we can identify which density we need to gather.
+
+    ## Normalisation
     The normalised name should preserve the way the ingredient is shaped or cut as this has an impact on density, though there is no need to be extremely precise. "finely chopped" and "chopped" can be treated the same, for instance.
     Sliced, diced, chopped are all useful descriptors to keep.
-    You will normalise any tinned ingredient as "ignored" as we won't convert these ingredients.
-    As a general rule we don't keep the colour of the ingredient in its normalised name unless it has an effect on density. So red or green pepper => don't care, just keep "bell pepper", but green lentil vs coral lentil matters.
+    We don't keep the colour of the ingredient in its normalised name unless it has an effect on density. So red or green pepper => don't care, just keep "bell pepper", but green lentil vs coral lentil matters.
+    You will normalise any tinned ingredient as "tin" as we won't convert these ingredients.
     The normalised form will be as short as possible, lower case and singular.
     For instance:
       - ripe mangoes -> mango
@@ -44,7 +46,7 @@ def build_prompt(ingredients: list[dict]) -> str:
       - stalks, seeds and pith removed and discarded, flesh thinly sliced yellow pepper -> sliced pepper
       - brown and/or puy lentils -> brown lentil
       - thinly sliced in cross-section circles (we use a mandolin) red onion -> sliced onion
-      - tinned peaches in syrup -> ignored
+      - tinned peaches in syrup -> tin
       - unsalted butter -> butter
       - chopped floury potato -> chopped potato
       - chopped new potato -> chopped potato
@@ -59,10 +61,23 @@ def build_prompt(ingredients: list[dict]) -> str:
       - 00 pasta flour or tipo 00 flour -> 00 flour
       - flaked almonds -> flaked almond
 
+    ## US Customary or not
+    You'll also need to decide whether the ingredient is typically expressed in cups or tbsp in the US.
+    The general rule to apply is: if it's a dry ingredient that can be scooped into a cup or tablespoon, then yes.
+    Otherwise it depends on its preparation state, or its consistency (liquid, paste, yoghurt etc).
+
+    For instance Flour, sugar, oats, rice, yoghurt, cream, jam, chutney or jelly are all typically expressed in cups.
+    However Butter, fish, meat, herbs and spices and pasta are not.
+
+    Carrots or almonds won't be expressed in cups, but grated carrot or sliced almonds should be.
+    Same for chopped, sliced, diced, shredded, crushed, minced vegetables and nuts etc: customary system.
+
+    ## Format
     You'll receive a batch of ingredients, each with an id, a name, a prefix and a suffix.
     You'll respond with a JSON array of objects, each with the following fields:
       - ingredient_id: the id of the ingredient
       - normalised_name: the normalised name of the ingredient
+      - us_customary: true if the ingredient is typically expressed in cups / tbsp in the US, false otherwise
   """)
 
   # dump the ingredient as a json array
@@ -125,11 +140,13 @@ def process_multiple_batches(conn: Connection, llm_client: LLMClient, batch_size
   for normalised in all_results:
     conn.execute("""
       update ingredient
-      set density_ingredient = :density_ingredient
+      set density_ingredient = :density_ingredient,
+          us_customary = :us_customary
       where ingredient_id = :ingredient_id
     """, {
       'density_ingredient': normalised['normalised_name'],
-      'ingredient_id': normalised['ingredient_id']
+      'ingredient_id': normalised['ingredient_id'],
+      'us_customary': int(normalised['us_customary']),
     })
 
   conn.commit()

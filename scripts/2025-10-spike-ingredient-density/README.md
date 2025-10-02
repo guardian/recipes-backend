@@ -62,3 +62,4 @@ thinly sliced in cross-section circles (we use a mandolin) red onion => sliced r
 ### 2025-10-02
 - starting the day by reviewing what was produced yesterday, and iterating over the prompt. Re-triggering the processing (takes about 40 minutes). We're down to 2513 unique ingredients.
 - it occurs to me that a lot of ingredients shouldn't be expressed in cups. Pasta, meat, fish, etc. I should adapt my code and get the LLM to flag what should be converted and what shouldn't.
+- iterate more on the prompt, introduce a flag us_customary that describes whether an ingredient should be converted or not.
