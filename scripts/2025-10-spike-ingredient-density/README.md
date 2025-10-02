@@ -63,3 +63,52 @@ thinly sliced in cross-section circles (we use a mandolin) red onion => sliced r
 - starting the day by reviewing what was produced yesterday, and iterating over the prompt. Re-triggering the processing (takes about 40 minutes). We're down to 2513 unique ingredients.
 - it occurs to me that a lot of ingredients shouldn't be expressed in cups. Pasta, meat, fish, etc. I should adapt my code and get the LLM to flag what should be converted and what shouldn't.
 - iterate more on the prompt, introduce a flag us_customary that describes whether an ingredient should be converted or not.
+- once we only select the ones that (according to an llm) should be using the us customary system, we're down to 1872 unique normalised ingredients
+
+#### How many ingredients do we need density for?
+Now to the million $ question. What percentage of our recipes can we cover by only having the density of x ingredients?
+
+The SQL request is this one (and I hope I got it right).
+We're taking the most popular ingredients that should use the us customary system, and pretending we have the density for there.
+Then we're looking for all the recipes where there aren't any ingredient that need us_customary that aren't part of the popular ingredients. 
+It's a double negative but that's the only way I found to express this in SQL
+
+```sql
+with ingredient_with_density_known as (select ingredient.density_ingredient, count(*)
+                                       from ingredient
+                                       where ingredient.us_customary = 1
+                                       group by ingredient.density_ingredient
+                                       order by count(*) desc
+                                       limit x) -- this is where the x variable is
+select count(distinct r.recipe_id) / 6872.0 * 100.0 as coverage,
+       count(distinct r.recipe_id)                  as absolute
+from recipe r
+where not exists (select 1
+                  from ingredient i
+                  where i.recipe_id = r.recipe_id
+                    and i.us_customary = 1
+                    and (
+                    not exists (select 1
+                                from ingredient_with_density_known p
+                                where p.density_ingredient = i.density_ingredient)
+                    ))
+```
+
+| x    |recipe count|      % | popularity | xth ingredient |
+|------|------------|--------|------------|----------------|
+|    1 |       1503 | 21.8 % |       1309 | caster sugar   |
+|   50 |       2584 | 37.6 % |         53 | granulated sugar |
+|  100 |       3171 | 46.1 % |         26 | salt           | <- salt not well normalised
+|  150 |       3610 | 52.5 % |         17 | grated carrot |
+|  200 |       3948 | 57.5 % |         13 | grated beetroot |
+|  300 |       4467 | 65.5 % |          8 | blackcurrant   |
+|  400 |       4845 | 70.5 % |          5 | whole milk |
+|  500 |       5151 | 74.9 % |          4 | mangetout|
+|  600 |       5389 | 78.4 % |          3 | pistachio paste |
+|  700 |       5599 | 81.5 % |          3 | agave syrup |
+|  800 |       5741 | 83.5 % |          2 | moong dal |
+|  900 |       5895 | 85.8 % |          2 | crumbled goat cheese |
+| 1000 |       6032 | 87.7 % |          1 | wasabi |
+| 1872 |       6812 | 99.1 % |          1 | not sure why not 100%|
+
+300 seems to be where there's the most value per ingredient
