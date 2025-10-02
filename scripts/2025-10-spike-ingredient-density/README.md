@@ -38,7 +38,7 @@ My current thinking is to have a normalization  phase `1 brown onion, diced` => 
 This normalisation phase could be done by an LLM, that's what I'll explore today.
 
 Steps:
-- Generating the model with quicktype `npx quicktype --src-lang schema --lang python --pydantic-base-model --out models.py ../../schema/*.json`
+- ~~Generating the model with quicktype `npx quicktype --src-lang schema --lang python --pydantic-base-model --out models.py ../../schema/*.json`~~ => never used
 - Downloading all the individual recipes into the data folder `aws s3 sync --profile feast --exclude '*.pdf' s3://feast-recipes-static-prod/content/ ./data/`
 - Vibe coded a script to load all the recipes in a database `build-db.sh`
 - Two recipes have a duplicate ID `rm data/ofBT9I5CpDmW1fFKxVDsv8yTOykqLbCcWyEWjs3-hAg` `rm data/SZ415NP_nfkkwb1-ybWY7xPRnpvaI5zDsMZgUCdrsXA`, rerun db script
@@ -112,3 +112,10 @@ where not exists (select 1
 | 1872 |       6812 | 99.1 % |          1 | not sure why not 100%|
 
 300 seems to be where there's the most value per ingredient
+
+#### How many of these ingredient's density do we already have?
+
+- [This doc](https://docs.google.com/spreadsheets/d/1XGVOonMclR14JOS7tfwfd772tr8k9V7CYsrAay6Uz4g/edit?gid=0#gid=0), measured by the Guardian contains about 150 to 200. 
+- [This other doc](https://www.fao.org/4/ap815e/ap815e.pdf) published by the USDA contains a whole bunch of ingredient density.
+
+How many can we match if we make it go through the same normalisation process?
