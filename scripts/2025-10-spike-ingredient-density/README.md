@@ -119,3 +119,14 @@ where not exists (select 1
 - [This other doc](https://www.fao.org/4/ap815e/ap815e.pdf) published by the USDA contains a whole bunch of ingredient density.
 
 How many can we match if we make it go through the same normalisation process?
+
+- Exported the guardian measures to CSV
+- Wrote some code to normalise the ingredients and insert it into a new table
+  - Out of the 199 ingredients in the dataset, 144 are in the recipes.
+  - Coverage is underwhelming at 25.3% and 1743 recipes.
+
+### 2025-10-03
+  // TODO investigate:
+    - why is our coverage so low
+    - what ingredients are in the guardian density dataset but not in our recipes
+    - export and normalise the data from the USDA dataset
