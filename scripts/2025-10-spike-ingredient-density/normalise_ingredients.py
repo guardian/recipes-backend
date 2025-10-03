@@ -14,7 +14,7 @@ def build_prompt(ingredients: list[dict]) -> str:
     Sliced, diced, chopped are all useful descriptors to keep.
     We don't keep the colour of the ingredient in its normalised name unless it has an effect on density. So red or green pepper => don't care, just keep "bell pepper", but green lentil vs coral lentil matters.
     You will normalise any tinned ingredient as "tin" as we won't convert these ingredients.
-    The normalised form will be as short as possible, lower case and singular.
+    The normalised form will be as short as possible, always using the british spelling, lower case and singular.
     For instance:
       - ripe mangoes -> mango
       - 1 garlic clove, peeled and finely chopped -> chopped garlic
@@ -30,6 +30,7 @@ def build_prompt(ingredients: list[dict]) -> str:
       - unsalted butter -> butter
       - chopped floury potato -> chopped potato
       - chopped new potato -> chopped potato
+      - chopped large zucchini -> chopped courgette
       - cooked potato -> potato
       - cubed potato -> diced potato
       - sliced maris piper potato -> sliced potato
@@ -40,6 +41,9 @@ def build_prompt(ingredients: list[dict]) -> str:
       - pink peppercorns -> peppercorn
       - 00 pasta flour or tipo 00 flour -> 00 flour
       - flaked almonds -> flaked almond
+      - Natural yogurt -> yoghurt
+      - sea salt flakes -> salt
+      - all purpose flour -> flour
 
     ## US Customary or not
     You'll also need to decide whether the ingredient is typically expressed in cups or tbsp in the US.
