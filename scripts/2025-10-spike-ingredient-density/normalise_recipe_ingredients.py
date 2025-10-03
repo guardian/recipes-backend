@@ -5,7 +5,7 @@ from textwrap import dedent
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from llm import LLMClient
-from normalise_imgredients import process_llm_batch
+from normalise_ingredients import process_llm_batch
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

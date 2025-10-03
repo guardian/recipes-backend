@@ -130,3 +130,7 @@ How many can we match if we make it go through the same normalisation process?
     - why is our coverage so low
     - what ingredients are in the guardian density dataset but not in our recipes
     - export and normalise the data from the USDA dataset
+
+- started by transcribing the usda dataset into a csv for solid ingredients
+- then adapted the script to normalise the datasets so it can process both
+- with both dataset we're at 28.1%. Very underwhelming. I suspect the normalisation isn't good enough
