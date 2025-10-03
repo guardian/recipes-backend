@@ -14,7 +14,7 @@ def build_prompt(ingredients: list[dict]) -> str:
     Sliced, diced, chopped are all useful descriptors to keep.
     We don't keep the colour of the ingredient in its normalised name unless it has an effect on density. So red or green pepper => don't care, just keep "bell pepper", but green lentil vs coral lentil matters.
     You will normalise any tinned ingredient as "tin" as we won't convert these ingredients.
-    The normalised form will be as short as possible, always using the british spelling, lower case and singular.
+    The normalised form will be as short as possible, always using the british spelling, lower case, no accent and singular.
     For instance:
       - ripe mangoes -> mango
       - 1 garlic clove, peeled and finely chopped -> chopped garlic
@@ -43,7 +43,13 @@ def build_prompt(ingredients: list[dict]) -> str:
       - flaked almonds -> flaked almond
       - Natural yogurt -> yoghurt
       - sea salt flakes -> salt
-      - all purpose flour -> flour
+      - all purpose flour -> plain flour
+      - almond meal -> ground almond
+      - slivered almond -> flaked almond
+      - wasabi paste -> wasabi
+      - basmati rice -> long grain rice
+      - creme fraiche -> sour cream
+      - soured cream -> sour cream
 
     ## US Customary or not
     You'll also need to decide whether the ingredient is typically expressed in cups or tbsp in the US.
@@ -51,7 +57,7 @@ def build_prompt(ingredients: list[dict]) -> str:
     Otherwise it depends on its preparation state, or its consistency (liquid, paste, yoghurt etc).
 
     For instance Flour, sugar, oats, rice, yoghurt, cream, jam, chutney or jelly are all typically expressed in cups.
-    However Butter, fish, meat, herbs and spices and pasta are not.
+    However Butter, fish, meat, herbs (dill, parsley, coriander etc) and spices and pasta are not.
 
     Carrots or almonds won't be expressed in cups, but grated carrot or sliced almonds should be.
     Same for chopped, sliced, diced, shredded, crushed, minced vegetables and nuts etc: customary system.

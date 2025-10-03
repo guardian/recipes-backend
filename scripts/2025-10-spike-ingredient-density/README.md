@@ -126,12 +126,48 @@ How many can we match if we make it go through the same normalisation process?
   - Coverage is underwhelming at 25.3% and 1743 recipes.
 
 ### 2025-10-03
-  // TODO investigate:
-    - why is our coverage so low
-    - what ingredients are in the guardian density dataset but not in our recipes
-    - export and normalise the data from the USDA dataset
 
 - started by transcribing the usda dataset into a csv for solid ingredients
 - then adapted the script to normalise the datasets so it can process both
 - with both dataset we're at 28.1%. Very underwhelming. I suspect the normalisation isn't good enough
 - iterate over prompt to enforce british spelling, this should improve matching
+- after re-normalisation and re-processing, we're at 31.3%, 2150 recipes covered.
+
+- Looking for the most popular ingredients in neither database to identify missing ingredients or normalisation issues
+```sql
+select ingredient.density_ingredient, count(*)
+from ingredient
+where ingredient.us_customary = 1
+and not exists (select 1 from density where ingredient.density_ingredient = density.normalised_name)
+group by ingredient.density_ingredient
+order by count(*) desc
+```
+
+side note, our measurement seem widely out of whack with USDA sometimes.
+(gu) sour cream: 0.44 when usda is ~1
+Side note 2, this book might come in handy https://www.goodreads.com/book/show/172569.McCance_and_Widdowson_s_The_Composition_of_Foods
+
+| density_ingredient     | count | Notes                                                                                                          |
+|------------------------|-------|----------------------------------------------------------------------------------------------------------------|
+| caster sugar           | 1354  | Missing, this is in neither db. We have multiple granulated sugars, with vastly different densities 0.51-0.7   |
+| plain flour            | 1044  | Normalisation issue                                                                                            |
+| ground almond          | 194   | same as "almond meal" ?                                                                                        |
+| chopped parsley        | 193   | Shouldn't be us customary -> normalisation issue                                                               |
+| chopped coriander      | 175   | Shouldn't be us customary -> normalisation issue                                                               |
+| light brown sugar      | 111   | Mathing issue, should match to "Brown sugar (dark or light, packed)"                                           |
+| greek yoghurt          | 111   | Normalisation issue? could be matched to yoghurt                                                               |
+| flaked almond          | 108   | Matching issue, could be sliced almond or slivered almond                                                      |
+| grated cheddar         | 105   | Matching issue, could be matched to grated cheese                                                              |
+| basmati rice           | 91    | Matching issue, could be matched to long grain rice                                                            |
+| crème fraîche          | 88    | Matching issue, could be matched to cream or sour cream                                                        |
+| grated ginger          | 87    | Missing                                                                                                        |                                                                                                   |                                                                                              
+| double cream           | 81    | Wasn't transcribed, but it is in the usda dataset                                                              |
+| chopped dill           | 75    | Shouldn't be us customary -> normalisation issue                                                               |
+| chopped ginger         | 68    | Could be matched to "sliced ginger"?                                                                           |
+| chopped dark chocolate | 65    | Missing                                                                                                        |
+| soft brown sugar       | 61    | Not sure if there's a nuance with light brown sugar                                                            |
+| soured cream           | 60    | Matching issue, could be matched to cream or sour cream                                                        |
+| chopped tomato         | 59    | Missing                                                                                                        |
+| pumpkin seed           | 57    | Missing                                                                                                        |
+
+will iterate on prompt and re-run one last time for the day
