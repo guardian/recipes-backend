@@ -170,4 +170,64 @@ Side note 2, this book might come in handy https://www.goodreads.com/book/show/1
 | chopped tomato         | 59    | Missing                                                                                                        |
 | pumpkin seed           | 57    | Missing                                                                                                        |
 
-will iterate on prompt and re-run one last time for the day
+will iterate on prompt and re-run one last time for the day.
+
+We're now at 31.5% coverage with the guardian dataset only, and 36% with both.
+
+The coverage request now looks like this:
+
+```sql
+with merged_density as (select *
+                        from (select ingredient.density_ingredient, count(*)
+                              from ingredient
+                              where ingredient.us_customary = 1
+                                and not exists (select 1
+                                                from density
+                                                where ingredient.density_ingredient = density.normalised_name)
+                              group by ingredient.density_ingredient
+                              order by count(*) desc
+                              limit 200)
+                        union
+                        select density.normalised_name, 0
+                        from density
+                        -- where density.source = './datasets/guardian.csv'
+                        )
+select (select count(*) - 468 from merged_density) as extra_ingredients,
+       count(distinct r.recipe_id)                  as absolute,
+       count(distinct r.recipe_id) / 6872.0 as coverage
+from recipe r
+where not exists (select 1
+                  from ingredient i
+                  where i.recipe_id = r.recipe_id
+                    and i.us_customary = 1
+                    and (
+                      not exists (select 1
+                                  from merged_density d
+                                  where d.density_ingredient = i.density_ingredient)
+                      ));
+```
+
+and gives:
+
+| Extra Ingredients | Total | 	 recipes	% |
+|-------------------|-------|--------------|
+| 0                 | 	2500 | 	36.38%      |
+| 20                | 	3487 | 	50.74%      |
+| 40                | 	3810 | 	55.44%      |
+| 60                | 	4053 | 	58.98%      |
+| 80                | 	4251 | 	61.86%      |
+| 100               | 	4407 | 	64.13%      |
+| 120               | 	4525 | 	65.85%      |
+| 140               | 	4658 | 	67.78%      |
+| 160               | 	4770 | 	69.41%      |
+| 180               | 	4870 | 	70.87%      |
+| 200               | 	4960 | 	72.18%      |
+| 220               | 	5030 | 	73.20%      |
+| 240               | 	5106 | 	74.30%      |
+| 260               | 	5180 | 	75.38%      |
+| 280               | 	5248 | 	76.37%      |
+| 300               | 	5314 | 	77.33%      |
+| 400               | 	5581 | 	81.21%      |
+| 600               | 	5944 | 	86.50%      |
+| 800               | 	6227 | 	90.61%      |
+| 1000              | 	6401 | 	93.15%      |
