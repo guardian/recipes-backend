@@ -11,8 +11,8 @@ datasets= {
     'specific_gravity': 'specific_gravity',
     'ingredient': 'ingredient'
   },
-  'usda': {
-    'file': './datasets/usda.csv',
+  'fao': {
+    'file': './datasets/fao.csv',
     'density': 'Density in g/ml (including mass and bulk density)',
     'specific_gravity': 'Specific gravity',
     'ingredient': 'Food name and description'

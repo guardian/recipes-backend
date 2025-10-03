@@ -116,7 +116,7 @@ where not exists (select 1
 #### How many of these ingredient's density do we already have?
 
 - [This doc](https://docs.google.com/spreadsheets/d/1XGVOonMclR14JOS7tfwfd772tr8k9V7CYsrAay6Uz4g/edit?gid=0#gid=0), measured by the Guardian contains about 150 to 200. 
-- [This other doc](https://www.fao.org/4/ap815e/ap815e.pdf) published by the USDA contains a whole bunch of ingredient density.
+- [This other doc](https://www.fao.org/4/ap815e/ap815e.pdf) published by the FAO contains a whole bunch of ingredient density.
 
 How many can we match if we make it go through the same normalisation process?
 
@@ -127,7 +127,7 @@ How many can we match if we make it go through the same normalisation process?
 
 ### 2025-10-03
 
-- started by transcribing the usda dataset into a csv for solid ingredients
+- started by transcribing the FAO dataset into a csv for solid ingredients
 - then adapted the script to normalise the datasets so it can process both
 - with both dataset we're at 28.1%. Very underwhelming. I suspect the normalisation isn't good enough
 - iterate over prompt to enforce british spelling, this should improve matching
@@ -143,8 +143,8 @@ group by ingredient.density_ingredient
 order by count(*) desc
 ```
 
-side note, our measurement seem widely out of whack with USDA sometimes.
-(gu) sour cream: 0.44 when usda is ~1
+side note, our measurement seem widely out of whack with FAO sometimes.
+(gu) sour cream: 0.44 when FAO is ~1
 Side note 2, this book might come in handy https://www.goodreads.com/book/show/172569.McCance_and_Widdowson_s_The_Composition_of_Foods
 
 | density_ingredient     | count | Notes                                                                                                          |
@@ -161,7 +161,7 @@ Side note 2, this book might come in handy https://www.goodreads.com/book/show/1
 | basmati rice           | 91    | Matching issue, could be matched to long grain rice                                                            |
 | crème fraîche          | 88    | Matching issue, could be matched to cream or sour cream                                                        |
 | grated ginger          | 87    | Missing                                                                                                        |                                                                                                   |                                                                                              
-| double cream           | 81    | Wasn't transcribed, but it is in the usda dataset                                                              |
+| double cream           | 81    | Wasn't transcribed, but it is in the FAO dataset                                                              |
 | chopped dill           | 75    | Shouldn't be us customary -> normalisation issue                                                               |
 | chopped ginger         | 68    | Could be matched to "sliced ginger"?                                                                           |
 | chopped dark chocolate | 65    | Missing                                                                                                        |
@@ -231,3 +231,10 @@ and gives:
 | 600               | 	5944 | 	86.50%      |
 | 800               | 	6227 | 	90.61%      |
 | 1000              | 	6401 | 	93.15%      |
+
+
+Now what happens if we don't use the FAO dataset, and just focus on the guardian one?
+
+| Extra Ingredients | Total | 	 recipes	% |
+|-------------------|-------|--------------|
+| 
