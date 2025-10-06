@@ -11,7 +11,7 @@ from normalise_ingredients import process_llm_batch, NormalisedIngredient
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def select_next_batch(conn: Connection, batch_size=100) -> list[dict]:
-  query = dedent(f"""
+  query = dedent("""
     select ingredient.ingredient_id, name, suffix, prefix
     from ingredient
     where lower(trim(ingredient.unit)) in ('g', 'kg')
