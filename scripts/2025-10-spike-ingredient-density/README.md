@@ -154,7 +154,7 @@ Side note 2, this book might come in handy https://www.goodreads.com/book/show/1
 | ground almond          | 194   | same as "almond meal" ?                                                                                        |
 | chopped parsley        | 193   | Shouldn't be us customary -> normalisation issue                                                               |
 | chopped coriander      | 175   | Shouldn't be us customary -> normalisation issue                                                               |
-| light brown sugar      | 111   | Mathing issue, should match to "Brown sugar (dark or light, packed)"                                           |
+| light brown sugar      | 111   | Matching issue, should match to "Brown sugar (dark or light, packed)"                                          |
 | greek yoghurt          | 111   | Normalisation issue? could be matched to yoghurt                                                               |
 | flaked almond          | 108   | Matching issue, could be sliced almond or slivered almond                                                      |
 | grated cheddar         | 105   | Matching issue, could be matched to grated cheese                                                              |
