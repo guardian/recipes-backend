@@ -34,6 +34,72 @@ function makeCacheControl(
 	].join('; ');
 }
 
+export async function putObjectWithRetry(
+	req: PutObjectCommand,
+	attempt?: number,
+): Promise<void> {
+	const realAttempt = attempt ?? 1;
+
+	try {
+		await s3Client.send(req);
+	} catch (err) {
+		if (err instanceof S3ServiceException) {
+			console.warn(
+				`Unable to write to S3 on attempt ${realAttempt}: `,
+				err,
+				req,
+			);
+			if (
+				MaximumRetries &&
+				!isNaN(MaximumRetries) &&
+				realAttempt < MaximumRetries
+			) {
+				await awaitableDelay();
+				return putObjectWithRetry(req, realAttempt + 1);
+			} else {
+				throw new Error('Could not write to S3');
+			}
+		} else {
+			throw err;
+		}
+	}
+}
+
+async function publishRecipeVersion(
+	staticBucketName: string,
+	fastlyApiKey: string,
+	contentPrefix: string,
+	checksum: string,
+	jsonBlob: string,
+): Promise<void> {
+	const Key = `content/${checksum}`;
+
+	const req = new PutObjectCommand({
+		Bucket: staticBucketName,
+		Key,
+		Body: jsonBlob,
+		ContentType: 'application/json',
+		CacheControl: DefaultCacheControlParams,
+	});
+
+	try {
+		await putObjectWithRetry(req);
+
+		await sendFastlyPurgeRequestWithRetries({
+			contentPath: Key,
+			apiKey: fastlyApiKey,
+			contentPrefix,
+			purgeType: 'hard',
+		});
+	} catch (err) {
+		if (err instanceof FastlyError) {
+			console.warn(`Unable to flush Fastly cache: `, err);
+		} else {
+			throw err;
+		}
+	}
+}
+
 /**
  * Publishes the given recipe data into the output bucket.
  *
@@ -48,65 +114,35 @@ export async function publishRecipeContent({
 	staticBucketName,
 	fastlyApiKey,
 	contentPrefix,
-	attempt,
+	shouldPublishV2,
 }: {
 	recipe: RecipeReference;
 	staticBucketName: string;
 	fastlyApiKey: string;
 	contentPrefix: string;
-	attempt?: number;
+	shouldPublishV2: boolean;
 }): Promise<void> {
-	const realAttempt = attempt ?? 1;
-	if (!recipe.recipeV3Blob.checksum) {
+	if (!recipe.recipeV3Blob.checksum || !recipe.recipeV2Blob.checksum) {
 		throw new Error(
-			'publishRecipeContent: Cannot output recipe data without a checksum',
+			`publishRecipeContent: Cannot output recipe data without a checksum for ${recipe.recipeUID}`,
 		);
 	}
 
-	const Key = `content/${recipe.recipeV3Blob.checksum}`;
-
-	const req = new PutObjectCommand({
-		Bucket: staticBucketName,
-		Key,
-		Body: recipe.recipeV3Blob.jsonBlob,
-		ContentType: 'application/json',
-		//ChecksumSHA256: recipe.checksum,  //This is commented out because the format is wrong. Left here because we want to fix it but not hold up PR approval.
-		CacheControl: DefaultCacheControlParams,
-	});
-
-	try {
-		await s3Client.send(req);
-		//TODO - check if "hard" or "soft" purging is the right option here
-		await sendFastlyPurgeRequestWithRetries({
-			contentPath: Key,
-			apiKey: fastlyApiKey,
+	await publishRecipeVersion(
+		staticBucketName,
+		fastlyApiKey,
+		contentPrefix,
+		recipe.recipeV3Blob.checksum,
+		recipe.recipeV3Blob.jsonBlob,
+	);
+	if (shouldPublishV2) {
+		await publishRecipeVersion(
+			staticBucketName,
+			fastlyApiKey,
 			contentPrefix,
-			purgeType: 'hard',
-		});
-	} catch (err) {
-		if (err instanceof S3ServiceException) {
-			console.warn(`Unable to write to S3 on attempt ${realAttempt}: `, err);
-			if (
-				MaximumRetries &&
-				!isNaN(MaximumRetries) &&
-				realAttempt < MaximumRetries
-			) {
-				await awaitableDelay();
-				return publishRecipeContent({
-					recipe,
-					staticBucketName: staticBucketName,
-					fastlyApiKey,
-					contentPrefix,
-					attempt: realAttempt + 1,
-				});
-			} else {
-				throw new Error('Could not write to S3, see logs for details.');
-			}
-		} else if (err instanceof FastlyError) {
-			console.warn(`Unable to flush Fastly cache: `, err);
-		} else {
-			throw err;
-		}
+			recipe.recipeV2Blob.checksum,
+			recipe.recipeV2Blob.jsonBlob,
+		);
 	}
 }
 
@@ -199,33 +235,42 @@ async function getExistingEtag(
  */
 export async function writeIndexData({
 	indexData,
-	Key,
+	key,
 	staticBucketName,
 	contentPrefix,
 	fastlyApiKey,
+	filterOnVersion,
 }: {
 	indexData: RecipeIndex;
-	Key: string;
+	key: string;
 	staticBucketName: string;
 	contentPrefix: string;
 	fastlyApiKey: string;
+	filterOnVersion: number;
 }) {
+	console.log(`Filtering data on version ${filterOnVersion}`);
+	const filteredIndexData = {
+		...indexData,
+		recipes: indexData.recipes.filter(
+			(r) => (r.version ?? 2) === filterOnVersion,
+		),
+	};
 	console.log('Marshalling data...');
-	const formattedData = JSON.stringify(indexData);
+	const formattedData = JSON.stringify(filteredIndexData);
 
-	console.log(`Done. Writing to s3://${staticBucketName}/${Key}...`);
+	console.log(`Done. Writing to s3://${staticBucketName}/${key}...`);
 	const req = new PutObjectCommand({
 		Bucket: staticBucketName,
-		Key,
+		Key: key,
 		Body: formattedData,
 		ContentType: 'application/json',
-		CacheControl: makeCacheControl(3600), //cache for up to 60mins
+		CacheControl: makeCacheControl(300), //cache for up to 5 minutes
 	});
 
 	await s3Client.send(req);
 	console.log('Done. Purging CDN...');
 	await sendFastlyPurgeRequest({
-		contentPath: Key,
+		contentPath: key,
 		apiKey: fastlyApiKey,
 		contentPrefix,
 	});

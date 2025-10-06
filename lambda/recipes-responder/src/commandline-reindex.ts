@@ -5,6 +5,7 @@ import {
 	recipeByUID,
 	retrieveIndexData,
 	V2_INDEX_JSON,
+	V3_INDEX_JSON,
 	writeIndexData,
 } from '@recipes-api/lib/recipes-data';
 import {
@@ -39,8 +40,9 @@ async function getQueryUri(
 			: 'https://content.code.dev-guardianapis.com';
 
 	if (maybeRecipeUid) {
-		const indexEntry = await recipeByUID(maybeRecipeUid);
-		if (indexEntry) {
+		const indexEntries = await recipeByUID(maybeRecipeUid);
+		if (indexEntries.length > 0) {
+			const indexEntry = indexEntries[0]; // take first one, same CAPI id
 			console.log(
 				`Recipe ${maybeRecipeUid} belongs to CAPI article ${indexEntry.capiArticleId}`,
 			);
@@ -89,6 +91,7 @@ async function reindex(
 					fastlyApiKey,
 					contentPrefix,
 					outgoingEventBus,
+					shouldPublishV2: true,
 				});
 			} else {
 				throw new Error(
@@ -251,13 +254,23 @@ async function main() {
 	console.log('------------------------------------------------------');
 	console.log('Rebuilding index...');
 	const indexData = await retrieveIndexData();
-	console.log('(including all recipes...)');
+	console.log('(including all v2 recipes...)');
 	await writeIndexData({
 		indexData,
-		Key: V2_INDEX_JSON,
+		key: V2_INDEX_JSON,
 		staticBucketName,
 		contentPrefix,
 		fastlyApiKey,
+		filterOnVersion: 2,
+	});
+	console.log('(including all v3 recipes...)');
+	await writeIndexData({
+		indexData,
+		key: V3_INDEX_JSON,
+		staticBucketName,
+		contentPrefix,
+		fastlyApiKey,
+		filterOnVersion: 3,
 	});
 	console.log('(excluding sponsored recipes...)');
 	const indexWithoutSponsored: RecipeIndex = {
@@ -266,10 +279,11 @@ async function main() {
 	};
 	await writeIndexData({
 		indexData: indexWithoutSponsored,
-		Key: INDEX_JSON,
+		key: INDEX_JSON,
 		staticBucketName,
 		contentPrefix,
 		fastlyApiKey,
+		filterOnVersion: 2,
 	});
 	console.log('Finished rebuilding index');
 

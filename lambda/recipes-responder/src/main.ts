@@ -7,10 +7,12 @@ import { deserializeEvent } from '@recipes-api/lib/capi';
 import {
 	ContentDeleteEventDetail,
 	ContentUpdateEventDetail,
+	getShouldPublishV2,
 	INDEX_JSON,
 	ReindexEventDetail,
 	retrieveIndexData,
 	V2_INDEX_JSON,
+	V3_INDEX_JSON,
 	writeIndexData,
 } from '@recipes-api/lib/recipes-data';
 import type {
@@ -41,12 +43,14 @@ export async function processRecord({
 	fastlyApiKey,
 	contentPrefix,
 	outgoingEventBus,
+	shouldPublishV2,
 }: {
 	eventDetail: CrierEventDetail;
 	staticBucketName: string;
 	fastlyApiKey: string;
 	contentPrefix: string;
 	outgoingEventBus: string;
+	shouldPublishV2: boolean;
 }): Promise<number> {
 	if (eventDetail.channels && !eventDetail.channels.includes('feast')) {
 		console.error(
@@ -93,6 +97,7 @@ export async function processRecord({
 							fastlyApiKey,
 							contentPrefix,
 							outgoingEventBus,
+							shouldPublishV2,
 						});
 					}
 					case 'retrievableContent': {
@@ -106,6 +111,7 @@ export async function processRecord({
 							fastlyApiKey,
 							contentPrefix,
 							outgoingEventBus,
+							shouldPublishV2,
 						});
 					}
 					case 'deletedContent': {
@@ -134,6 +140,7 @@ const processReindexEvent = async ({
 	fastlyApiKey,
 	contentPrefix,
 	outgoingEventBus,
+	shouldPublishV2,
 }: {
 	eventDetail: ReindexEventDetail;
 	capiBaseUrl: string;
@@ -141,6 +148,7 @@ const processReindexEvent = async ({
 	fastlyApiKey: string;
 	contentPrefix: string;
 	outgoingEventBus: string;
+	shouldPublishV2: boolean;
 }) => {
 	let totalCount = 0;
 
@@ -158,6 +166,7 @@ const processReindexEvent = async ({
 			fastlyApiKey,
 			contentPrefix,
 			outgoingEventBus,
+			shouldPublishV2,
 		});
 	}
 
@@ -175,6 +184,7 @@ export const handler: Handler<
 	const fastlyApiKey = getFastlyApiKey();
 	const outgoingEventBus = getOutgoingEventBus();
 	const capiBaseUrl = getCapiBaseUrl();
+	const shouldPublishV2: boolean = getShouldPublishV2();
 
 	const updatesTotal = await (async () => {
 		switch (event['detail-type']) {
@@ -186,6 +196,7 @@ export const handler: Handler<
 					fastlyApiKey,
 					contentPrefix,
 					outgoingEventBus,
+					shouldPublishV2,
 				});
 			}
 			case ReindexEventDetail: {
@@ -196,6 +207,7 @@ export const handler: Handler<
 					fastlyApiKey,
 					contentPrefix,
 					outgoingEventBus,
+					shouldPublishV2,
 				});
 			}
 			default: {
@@ -220,17 +232,27 @@ export const handler: Handler<
 
 		await writeIndexData({
 			indexData: indexDataForUnSponsoredRecipes,
-			Key: INDEX_JSON,
+			key: INDEX_JSON,
 			contentPrefix,
 			staticBucketName,
 			fastlyApiKey,
+			filterOnVersion: 2,
 		});
 		await writeIndexData({
 			indexData: indexDataForAllRecipes,
-			Key: V2_INDEX_JSON,
+			key: V2_INDEX_JSON,
 			staticBucketName,
 			contentPrefix,
 			fastlyApiKey,
+			filterOnVersion: 2,
+		});
+		await writeIndexData({
+			indexData: indexDataForAllRecipes,
+			key: V3_INDEX_JSON,
+			staticBucketName,
+			contentPrefix,
+			fastlyApiKey,
+			filterOnVersion: 3,
 		});
 		console.log('Finished rebuilding index');
 	} else {

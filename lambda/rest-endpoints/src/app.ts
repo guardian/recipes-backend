@@ -46,14 +46,16 @@ router.get(
 		}
 
 		recipeByUID(req.params.recipeUID)
-			.then((result) => {
-				if (result) {
+			.then((results) => {
+				results.sort((a, b) => (a.version ?? 0) - (b.version ?? 0));
+				if (results.length > 0) {
+					const latestVersion = results[results.length - 1];
 					resp
 						.setHeader(
 							'Cache-Control',
 							'max-age=300, public, stale-while-revalidate=60',
 						)
-						.redirect(`/content/${result.checksum}`);
+						.redirect(`/content/${latestVersion.checksum}`);
 					return;
 				} else {
 					resp.status(404).json({

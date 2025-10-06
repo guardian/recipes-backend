@@ -11,7 +11,9 @@ import {
 	extractAllRecipesFromArticle,
 	insertNewRecipe,
 	publishRecipeContent,
+	recipeByUID,
 	recipesToTakeDown,
+	removeRecipeContent,
 	removeRecipeVersion,
 	sendTelemetryEvent,
 } from '@recipes-api/lib/recipes-data';
@@ -25,12 +27,14 @@ async function publishRecipe({
 	staticBucketName,
 	fastlyApiKey,
 	contentPrefix,
+	shouldPublishV2,
 }: {
 	canonicalArticleId: string;
 	recipe: RecipeReference;
 	staticBucketName: string;
 	fastlyApiKey: string;
 	contentPrefix: string;
+	shouldPublishV2: boolean;
 }): Promise<void> {
 	try {
 		await sendTelemetryEvent(
@@ -49,14 +53,51 @@ async function publishRecipe({
 		staticBucketName: staticBucketName,
 		fastlyApiKey,
 		contentPrefix,
+		shouldPublishV2,
 	});
+
+	const existingDbRecipes = await recipeByUID(recipe.recipeUID);
+
+	let v2Hash = recipe.recipeV2Blob.checksum;
+	if (!shouldPublishV2) {
+		// when we don't publish v2, we want to ensure we're not updating the index v2
+		const v2Recipe = existingDbRecipes.find((r) => r.version == 2);
+		console.log(
+			`shouldPublishV2: false. Replacing v2 hash with existing DB value: ${v2Recipe?.checksum ?? 'none'}`,
+		);
+		v2Hash = v2Recipe?.version == 2 ? v2Recipe.checksum : v2Hash;
+	}
+
 	console.log(`INFO [${canonicalArticleId}] - updating index table...`);
-	await insertNewRecipe(canonicalArticleId, {
+	await insertNewRecipe({
 		recipeUID: recipe.recipeUID,
-		checksum: recipe.recipeV3Blob.checksum,
+		recipeVersion: v2Hash,
+		versions: {
+			v2: v2Hash,
+			v3: recipe.recipeV3Blob.checksum,
+		},
 		capiArticleId: canonicalArticleId,
 		sponsorshipCount: recipe.sponsorshipCount,
+		lastUpdated: new Date(),
 	});
+
+	const existingChecksums = existingDbRecipes.map((r) => r.checksum);
+	const newChecksums = [recipe.recipeV3Blob.checksum, v2Hash];
+	const checkSumsToDelete = existingChecksums.filter(
+		(c) => !newChecksums.includes(c),
+	);
+	await Promise.all(
+		checkSumsToDelete.map(
+			async (checksum) =>
+				await removeRecipeContent({
+					recipeSHA: checksum,
+					staticBucketName,
+					fastlyApiKey,
+					contentPrefix,
+					purgeType: 'soft',
+				}),
+		),
+	);
 }
 
 function toRecipeReference(
@@ -89,12 +130,14 @@ export async function handleContentUpdate({
 	fastlyApiKey,
 	contentPrefix,
 	outgoingEventBus,
+	shouldPublishV2,
 }: {
 	content: Content;
 	staticBucketName: string;
 	fastlyApiKey: string;
 	contentPrefix: string;
 	outgoingEventBus: string;
+	shouldPublishV2: boolean;
 }): Promise<number> {
 	try {
 		if (content.type != ContentType.ARTICLE) return 0; //no point processing live-blogs etc.
@@ -112,15 +155,17 @@ export async function handleContentUpdate({
 		);
 		if (allRecipes.length == 0 && entriesToRemove.length == 0) return 0; //no point hanging around and noising up the logs
 		await Promise.all(
-			entriesToRemove.map((recep) =>
-				removeRecipeVersion({
-					canonicalArticleId: content.id,
-					recipe: recep,
-					staticBucketName,
-					fastlyApiKey,
-					contentPrefix,
-				}),
-			),
+			entriesToRemove
+				.filter((recep) => shouldPublishV2 || (recep.version ?? 2) > 2) // only take down v2 if we're publishing v2
+				.map((recep) =>
+					removeRecipeVersion({
+						canonicalArticleId: content.id,
+						recipe: recep,
+						staticBucketName,
+						fastlyApiKey,
+						contentPrefix,
+					}),
+				),
 		);
 		console.log(
 			`INFO [${content.id}] - ${entriesToRemove.length} removed/superceded recipes have been removed from the store`,
@@ -137,6 +182,7 @@ export async function handleContentUpdate({
 					staticBucketName,
 					fastlyApiKey,
 					contentPrefix,
+					shouldPublishV2,
 				}),
 			),
 		);

@@ -58,6 +58,7 @@ describe('handleContentUpdateByCapiUrl', () => {
 			fastlyApiKey,
 			contentPrefix,
 			outgoingEventBus,
+			shouldPublishV2: true,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(callCAPI.mock.calls.length).toEqual(1);
@@ -91,6 +92,7 @@ describe('handleContentUpdateByCapiUrl', () => {
 			fastlyApiKey,
 			contentPrefix,
 			outgoingEventBus,
+			shouldPublishV2: true,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(callCAPI.mock.calls.length).toEqual(0);
@@ -112,6 +114,7 @@ describe('handleContentUpdateByCapiUrl', () => {
 				fastlyApiKey,
 				contentPrefix,
 				outgoingEventBus,
+				shouldPublishV2: true,
 			}),
 		).rejects.toEqual(
 			new Error(
@@ -137,6 +140,7 @@ describe('handleContentUpdateByCapiUrl', () => {
 			fastlyApiKey,
 			contentPrefix,
 			outgoingEventBus,
+			shouldPublishV2: true,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(callCAPI.mock.calls.length).toEqual(1);
