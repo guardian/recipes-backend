@@ -29,16 +29,28 @@ describe('announce_new_recipe', () => {
 	it('should send a combined stack of messages for updates and takedowns, not double-announcing updates', async () => {
 		const updates: RecipeReference[] = [
 			{
-				checksum: 'recep-1-cs',
 				recipeUID: 'recep-1-uid',
-				jsonBlob: 'recep-1-content',
 				sponsorshipCount: 0,
+				recipeV2Blob: {
+					jsonBlob: 'recep-1-content',
+					checksum: 'recep-1-cs',
+				},
+				recipeV3Blob: {
+					jsonBlob: 'recep-1-content',
+					checksum: 'recep-1-cs',
+				},
 			},
 			{
-				checksum: 'recep-2-cs-updated',
 				recipeUID: 'recep-2-uid',
-				jsonBlob: 'recep-2-content',
 				sponsorshipCount: 0,
+				recipeV2Blob: {
+					jsonBlob: 'recep-2-content',
+					checksum: 'recep-2-cs-updated',
+				},
+				recipeV3Blob: {
+					jsonBlob: 'recep-2-content',
+					checksum: 'recep-2-cs-updated',
+				},
 			},
 		];
 		const removals: RecipeIndexEntry[] = [

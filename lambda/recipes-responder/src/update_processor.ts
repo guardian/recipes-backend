@@ -1,9 +1,13 @@
 import type { Content } from '@guardian/content-api-models/v1/content';
 import { ContentType } from '@guardian/content-api-models/v1/contentType';
-import type { RecipeReference } from '@recipes-api/lib/recipes-data';
+import type {
+	CAPIRecipeReference,
+	RecipeReference,
+} from '@recipes-api/lib/recipes-data';
 import {
 	announceNewRecipe,
 	calculateChecksum,
+	convertToRecipeV2,
 	extractAllRecipesFromArticle,
 	insertNewRecipe,
 	publishRecipeContent,
@@ -32,13 +36,13 @@ async function publishRecipe({
 		await sendTelemetryEvent(
 			'PublishedData',
 			recipe.recipeUID,
-			recipe.jsonBlob,
+			recipe.recipeV3Blob.jsonBlob,
 		);
 	} catch (err) {
 		console.error(`[${canonicalArticleId}] - unable to send telemetry: `, err);
 	}
 	console.log(
-		`INFO [${canonicalArticleId}] - pushing ${recipe.recipeUID} @ ${recipe.checksum} to S3...`,
+		`INFO [${canonicalArticleId}] - pushing ${recipe.recipeUID} @ ${recipe.recipeV3Blob.checksum} to S3...`,
 	);
 	await publishRecipeContent({
 		recipe,
@@ -49,10 +53,28 @@ async function publishRecipe({
 	console.log(`INFO [${canonicalArticleId}] - updating index table...`);
 	await insertNewRecipe(canonicalArticleId, {
 		recipeUID: recipe.recipeUID,
-		checksum: recipe.checksum,
+		checksum: recipe.recipeV3Blob.checksum,
 		capiArticleId: canonicalArticleId,
 		sponsorshipCount: recipe.sponsorshipCount,
 	});
+}
+
+function toRecipeReference(
+	capiRecipeReference: CAPIRecipeReference,
+): RecipeReference {
+	const recipeV2Blob: string = convertToRecipeV2(capiRecipeReference.jsonBlob);
+	return {
+		recipeUID: capiRecipeReference.recipeUID,
+		sponsorshipCount: capiRecipeReference.sponsorshipCount,
+		recipeV2Blob: {
+			jsonBlob: recipeV2Blob,
+			checksum: calculateChecksum(recipeV2Blob),
+		},
+		recipeV3Blob: {
+			jsonBlob: capiRecipeReference.jsonBlob,
+			checksum: calculateChecksum(capiRecipeReference.jsonBlob),
+		},
+	};
 }
 
 /**
@@ -78,7 +100,7 @@ export async function handleContentUpdate({
 		if (content.type != ContentType.ARTICLE) return 0; //no point processing live-blogs etc.
 
 		const recipesFound = await extractAllRecipesFromArticle(content);
-		const allRecipes: RecipeReference[] = recipesFound.map(calculateChecksum);
+		const allRecipes: RecipeReference[] = recipesFound.map(toRecipeReference);
 		console.log(`INFO [${content.id}] - has ${allRecipes.length} recipes`);
 
 		const entriesToRemove = await recipesToTakeDown(
@@ -133,9 +155,7 @@ export async function handleContentUpdate({
 		return allRecipes.length + entriesToRemove.length;
 	} catch (err) {
 		//log out what actually caused the breakage
-		console.error('Failed article was: ', JSON.stringify(content));
-		console.error('------------');
-		console.error(err);
+		console.error('Failed article was: ', JSON.stringify(content), err);
 		throw err;
 	}
 }

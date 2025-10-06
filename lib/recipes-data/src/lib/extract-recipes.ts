@@ -6,11 +6,7 @@ import { ContentType } from '@guardian/content-api-models/v1/contentType';
 import { ElementType } from '@guardian/content-api-models/v1/elementType';
 import type { Sponsorship } from '@guardian/content-api-models/v1/sponsorship';
 import { registerMetric } from '@recipes-api/cwmetrics';
-import type {
-	Contributor,
-	RecipeDates,
-	RecipeReferenceWithoutChecksum,
-} from './models';
+import type { CAPIRecipeReference, Contributor, RecipeDates } from './models';
 import {
 	addRecipeDatesTransform,
 	addSponsorsTransform,
@@ -27,7 +23,7 @@ import { capiDateTimeToDate } from './utils';
 
 export async function extractAllRecipesFromArticle(
 	content: Content,
-): Promise<RecipeReferenceWithoutChecksum[]> {
+): Promise<CAPIRecipeReference[]> {
 	if (content.type == ContentType.ARTICLE && content.blocks) {
 		const sponsorship = content.tags.flatMap((t) => t.activeSponsorships ?? []);
 		const articleBlocks: Blocks = content.blocks;
@@ -47,9 +43,9 @@ export async function extractAllRecipesFromArticle(
 		await registerMetric('FailedRecipes', failureCount);
 		const successfulCount = recipes.length - failureCount;
 		await registerMetric('SuccessfulRecipes', successfulCount);
-		return recipes.filter((recp) => !!recp) as RecipeReferenceWithoutChecksum[];
+		return recipes.filter((recp) => !!recp) as CAPIRecipeReference[];
 	} else {
-		return Array<RecipeReferenceWithoutChecksum>();
+		return Array<CAPIRecipeReference>();
 	}
 }
 
@@ -57,7 +53,7 @@ export function extractRecipeData(
 	content: Content,
 	block: Block,
 	sponsorship: Sponsorship[],
-): Array<RecipeReferenceWithoutChecksum | null> {
+): Array<CAPIRecipeReference | null> {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- to fix error when elements are undefined , example if main block does not have any elements.
 	if (!block?.elements) {
 		return [];
@@ -132,7 +128,7 @@ function parseJsonBlob(
 	recipeJson: string,
 	sponsorship: Sponsorship[],
 	recipeDates: RecipeDates,
-): RecipeReferenceWithoutChecksum | null {
+): CAPIRecipeReference | null {
 	try {
 		const recipeData = JSON.parse(recipeJson) as Record<string, unknown> & {
 			contributors: Array<string | Contributor>;
@@ -160,7 +156,7 @@ function parseJsonBlob(
 			);
 			return null;
 		} else {
-			return <RecipeReferenceWithoutChecksum>{
+			return <CAPIRecipeReference>{
 				recipeUID: determineRecipeUID(recipeData.id, canonicalId),
 				jsonBlob: rerendedJson,
 				sponsorshipCount: sponsorship.length,

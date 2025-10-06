@@ -26,6 +26,7 @@ jest.mock('./facia-notifications', () => ({
 	notifyFaciaTool: jest.fn(),
 }));
 
+const secondOfJan2024 = new Date('2024-01-02');
 const importCurationDataMock = deployCurationData as jest.Mock;
 const notifyFaciaToolMock = notifyFaciaTool as jest.Mock;
 
@@ -57,9 +58,7 @@ describe('main', () => {
 			validMessageContent.edition,
 		);
 		expect(importCurationDataMock.mock.calls[0][2]).toEqual('all-recipes');
-		expect(importCurationDataMock.mock.calls[0][3]).toEqual(
-			new Date(2024, 0, 2),
-		);
+		expect(importCurationDataMock.mock.calls[0][3]).toEqual(secondOfJan2024);
 
 		expect(importCurationDataMock.mock.calls[1][0]).toEqual(
 			JSON.stringify(validMessageContent.fronts['meat-free']),
@@ -68,27 +67,21 @@ describe('main', () => {
 			validMessageContent.edition,
 		);
 		expect(importCurationDataMock.mock.calls[1][2]).toEqual('meat-free');
-		expect(importCurationDataMock.mock.calls[1][3]).toEqual(
-			new Date(2024, 0, 2),
-		);
+		expect(importCurationDataMock.mock.calls[1][3]).toEqual(secondOfJan2024);
 
 		expect(importCurationDataMock.mock.calls[2][0]).toEqual(
 			JSON.stringify(validMessageContent.fronts['all-recipes']),
 		);
 		expect(importCurationDataMock.mock.calls[2][1]).toEqual('us');
 		expect(importCurationDataMock.mock.calls[2][2]).toEqual('all-recipes');
-		expect(importCurationDataMock.mock.calls[2][3]).toEqual(
-			new Date(2024, 0, 2),
-		);
+		expect(importCurationDataMock.mock.calls[2][3]).toEqual(secondOfJan2024);
 
 		expect(importCurationDataMock.mock.calls[3][0]).toEqual(
 			JSON.stringify(validMessageContent.fronts['meat-free']),
 		);
 		expect(importCurationDataMock.mock.calls[3][1]).toEqual('us');
 		expect(importCurationDataMock.mock.calls[3][2]).toEqual('meat-free');
-		expect(importCurationDataMock.mock.calls[3][3]).toEqual(
-			new Date(2024, 0, 2),
-		);
+		expect(importCurationDataMock.mock.calls[3][3]).toEqual(secondOfJan2024);
 
 		const notifyFaciaToolMock = notifyFaciaTool as jest.Mock;
 		expect(notifyFaciaToolMock.mock.calls[0][0]).toMatchObject({
@@ -130,9 +123,7 @@ describe('main', () => {
 			validMessageContentWithUsOnly.edition,
 		);
 		expect(importCurationDataMock.mock.calls[0][2]).toEqual('all-recipes');
-		expect(importCurationDataMock.mock.calls[0][3]).toEqual(
-			new Date(2024, 0, 2),
-		);
+		expect(importCurationDataMock.mock.calls[0][3]).toEqual(secondOfJan2024);
 
 		expect(importCurationDataMock.mock.calls[1][0]).toEqual(
 			JSON.stringify(validMessageContentWithUsOnly.fronts['meat-free']),
@@ -141,9 +132,7 @@ describe('main', () => {
 			validMessageContentWithUsOnly.edition,
 		);
 		expect(importCurationDataMock.mock.calls[1][2]).toEqual('meat-free');
-		expect(importCurationDataMock.mock.calls[1][3]).toEqual(
-			new Date(2024, 0, 2),
-		);
+		expect(importCurationDataMock.mock.calls[1][3]).toEqual(secondOfJan2024);
 
 		expect(importCurationDataMock.mock.calls[2][0]).toEqual(
 			JSON.stringify([
@@ -155,18 +144,14 @@ describe('main', () => {
 		);
 		expect(importCurationDataMock.mock.calls[2][1]).toEqual('us');
 		expect(importCurationDataMock.mock.calls[2][2]).toEqual('all-recipes');
-		expect(importCurationDataMock.mock.calls[2][3]).toEqual(
-			new Date(2024, 0, 2),
-		);
+		expect(importCurationDataMock.mock.calls[2][3]).toEqual(secondOfJan2024);
 
 		expect(importCurationDataMock.mock.calls[3][0]).toEqual(
 			JSON.stringify(validMessageContentWithUsOnly.fronts['meat-free']),
 		);
 		expect(importCurationDataMock.mock.calls[3][1]).toEqual('us');
 		expect(importCurationDataMock.mock.calls[3][2]).toEqual('meat-free');
-		expect(importCurationDataMock.mock.calls[3][3]).toEqual(
-			new Date(2024, 0, 2),
-		);
+		expect(importCurationDataMock.mock.calls[3][3]).toEqual(secondOfJan2024);
 
 		const notifyFaciaToolMock = notifyFaciaTool as jest.Mock;
 		expect(notifyFaciaToolMock.mock.calls[0][0]).toMatchObject({

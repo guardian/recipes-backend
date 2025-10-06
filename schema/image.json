@@ -30,7 +30,7 @@
       "description": "Type or category of the image"
     },
     "caption": {
-      "type": "string",
+      "type": ["string", "null"],
       "description": "Caption or description of the image"
     },
     "mediaApiUrl": {

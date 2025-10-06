@@ -24,9 +24,9 @@ export async function announceNewRecipe(
 		Resources: [], //Affected AWS resources
 		DetailType: 'recipe-update', //What happened
 		Detail: JSON.stringify({
-			blob: recep.jsonBlob,
+			blob: recep.recipeV3Blob.jsonBlob,
 			uid: recep.recipeUID,
-			checksum: recep.checksum,
+			checksum: recep.recipeV3Blob.checksum,
 		}),
 		EventBusName: OutgoingEventBus,
 	}));

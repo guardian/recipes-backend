@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/guardian/recipes-backend/refs/heads/main/schema/string-template.json",
+  "title": "StringTemplate",
+  "description": "A special type of string that may contain template variables represented by JSON objects",
+  "type": "string"
+}

@@ -6,11 +6,17 @@
   "type": "object",
   "properties": {
     "min": {
-      "type": "number",
+      "type": [
+        "number",
+        "null"
+      ],
       "description": "The minimum value of the range"
     },
     "max": {
-      "type": "number",
+      "type": [
+        "number",
+        "null"
+      ],
       "description": "The maximum value of the range"
     }
   },

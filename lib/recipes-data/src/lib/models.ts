@@ -53,17 +53,28 @@ interface RecipeIndex {
  * RecipeReferenceWithoutChecksum is complementary to RecipeIndexEntry, where we have a UID and json blob but
  * no checksum yet. This is obtained from an incoming article.
  */
-interface RecipeReferenceWithoutChecksum {
+interface CAPIRecipeReference {
 	recipeUID: string;
 	jsonBlob: string;
 	sponsorshipCount: number;
 }
 
 /**
+ * RecipeBlob is a small structure containing the json content of a recipe and its checksum
+ */
+interface RecipeBlob {
+	jsonBlob: string;
+	checksum: string;
+}
+
+/**
  * RecipeReference has all three main constituents for a recipe - the immutable ID, the version ID and the json content
  */
-interface RecipeReference extends RecipeReferenceWithoutChecksum {
-	checksum: string;
+interface RecipeReference {
+	recipeUID: string;
+	sponsorshipCount: number;
+	recipeV2Blob: RecipeBlob;
+	recipeV3Blob: RecipeBlob;
 }
 
 /**
@@ -148,19 +159,6 @@ export function RecipeIndexEntryFromDynamo(
 	};
 }
 
-/**
- * Helper function to generate a full recipe reference structure from and index entry.
- * In order to do this, you need to supply the json content of the recipe.
- * @param entry RecipeIndexEntry to upgrade
- * @param jsonBlob the json content to add to it
- */
-export function recipeReferenceFromIndexEntry(
-	entry: RecipeIndexEntry,
-	jsonBlob: string,
-): RecipeReference {
-	return { ...entry, jsonBlob };
-}
-
 export type RecipeImage = {
 	url: string;
 	templateUrl?: string; // Contains #{width} so that device can request image at needed size
@@ -181,5 +179,5 @@ export type {
 	RecipeDatabaseEntry,
 	RecipeIndex,
 	RecipeReference,
-	RecipeReferenceWithoutChecksum,
+	CAPIRecipeReference,
 };

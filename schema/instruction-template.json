@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/guardian/recipes-backend/refs/heads/main/schema/instruction.json",
-  "title": "Instruction",
+  "$id": "https://raw.githubusercontent.com/guardian/recipes-backend/refs/heads/main/schema/instruction-template.json",
+  "title": "InstructionTemplate",
   "description": "A single cooking instruction step with optional images",
   "type": "object",
   "properties": {
@@ -9,8 +9,8 @@
       "type": "number",
       "description": "The sequential number of this instruction step"
     },
-    "description": {
-      "type": "string",
+    "descriptionTemplate": {
+      "$ref": "string-template.json",
       "description": "Detailed description of the cooking step"
     },
     "images": {
