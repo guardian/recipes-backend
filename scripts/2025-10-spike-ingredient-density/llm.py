@@ -15,7 +15,7 @@ class LLMClient:
     self._brt = session.client("bedrock-runtime")
     self._model_name = model_name
 
-  def call_llm(self, prompt: str, temperature: float = 0) -> str:
+  def call_llm(self, prompt: str, tool: dict, temperature: float = 0) -> dict:
     native_request = {
       "anthropic_version": "bedrock-2023-05-31",
       "max_tokens": 64000,
@@ -30,7 +30,8 @@ class LLMClient:
             }
           ]
         }
-      ]
+      ],
+      "tools": [tool]
     }
 
     # Convert the native request to JSON.
@@ -46,6 +47,6 @@ class LLMClient:
 
     # Decode the response body.
     model_response = json.loads(response["body"].read())
-    text_response = model_response["content"][0]["text"]
+    obj_response = model_response["content"][0]["input"]
 
-    return text_response
+    return obj_response

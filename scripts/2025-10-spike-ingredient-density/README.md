@@ -236,5 +236,19 @@ and gives:
 Now what happens if we don't use the FAO dataset, and just focus on the guardian one?
 
 | Extra Ingredients | Total | 	 recipes	% |
-|-------------------|-------|--------------|
-| 
+|-------------------|-------|-------------|
+| 0                 | 2169  | 31.56%      |
+| 25                | 3348  | 48.72%      |
+| 50                | 3739  | 54.41%      |
+| 75                | 4030  | 58.64%      |
+| 100               | 4248  | 61.82%      |
+| 150               | 4570  | 66.50%      |
+| 200               | 4831  | 70.30%      |
+| 250               | 5029  | 73.18%      |
+| 500               | 5718  | 83.21%      |
+| 1000              | 6355  | 92.48%      |
+
+
+### 2025-10-06
+
+Clean-up, prepare PR and migrate Prompt to outputing structured json

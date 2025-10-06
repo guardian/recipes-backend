@@ -5,7 +5,7 @@ from textwrap import dedent
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from llm import LLMClient
-from normalise_ingredients import process_llm_batch
+from normalise_ingredients import process_llm_batch, NormalisedIngredient
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -43,7 +43,7 @@ def process_multiple_batches(conn: Connection, llm_client: LLMClient, batch_size
   logging.info(f"Split into {len(batches)} batches for parallel LLM processing")
 
   # Process batches in parallel
-  all_results = []
+  all_results: list[NormalisedIngredient] = []
   with ThreadPoolExecutor(max_workers=parallel_batches) as executor:
     # Submit all LLM tasks
     future_to_batch = {
@@ -72,9 +72,9 @@ def process_multiple_batches(conn: Connection, llm_client: LLMClient, batch_size
           us_customary = :us_customary
       where ingredient_id = :ingredient_id
     """, {
-      'density_ingredient': normalised['normalised_name'],
-      'ingredient_id': normalised['ingredient_id'],
-      'us_customary': int(normalised['us_customary']),
+      'density_ingredient': normalised.normalised_name,
+      'ingredient_id': normalised.ingredient_id,
+      'us_customary': int(normalised.us_customary),
     })
 
   conn.commit()

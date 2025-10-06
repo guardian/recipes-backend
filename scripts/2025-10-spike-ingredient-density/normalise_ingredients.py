@@ -1,6 +1,7 @@
 import json
 import logging
 from textwrap import dedent
+from pydantic import BaseModel
 
 from llm import LLMClient
 
@@ -64,7 +65,7 @@ def build_prompt(ingredients: list[dict]) -> str:
 
     ## Format
     You'll receive a batch of ingredients, each with an id, a name, a prefix and a suffix.
-    You'll respond with a JSON array of objects, each with the following fields:
+    You'll respond by calling the tool `normalise_ingredient_batch` with a JSON array of objects, each with the following fields:
       - ingredient_id: the id of the ingredient
       - normalised_name: the normalised name of the ingredient
       - us_customary: true if the ingredient is typically expressed in cups / tbsp in the US, false otherwise
@@ -75,14 +76,30 @@ def build_prompt(ingredients: list[dict]) -> str:
   prompt += f"\nHere are the ingredients:\n{rendered_ingredient}\n"
   return prompt
 
-def process_llm_batch(ingredients: list[dict], llm_client: LLMClient) -> list[dict]:
+class NormalisedIngredient(BaseModel):
+  ingredient_id: int
+  normalised_name: str
+  us_customary: bool
+
+class NormalisedIngredientBatch(BaseModel):
+  batch: list[NormalisedIngredient]
+
+schema = NormalisedIngredientBatch.model_json_schema()
+
+tool = {
+  "name": "normalise_ingredient_batch",
+  "description": "Record the normalised form of a batch of ingredients",
+  "input_schema": schema
+}
+
+def process_llm_batch(ingredients: list[dict], llm_client: LLMClient) -> list[NormalisedIngredient]:
   """Process a batch of ingredients through LLM and return normalized results"""
   if not ingredients:
     return []
 
   prompt = build_prompt(ingredients)
-  result = llm_client.call_llm(prompt)
-  logging.debug(f"LLM response for batch of {len(ingredients)}: {result}")
-  result = result.replace("```json", "").replace("```", "")
+  result = llm_client.call_llm(prompt, tool=tool)
+  marshalled_batch = NormalisedIngredientBatch.model_validate(result)
+  logging.debug(f"LLM response for batch of {len(ingredients)}: {marshalled_batch}")
 
-  return json.loads(result)
+  return marshalled_batch.batch

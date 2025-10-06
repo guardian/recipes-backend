@@ -2,7 +2,7 @@ import csv
 import sqlite3
 
 from llm import LLMClient
-from normalise_ingredients import process_llm_batch
+from normalise_ingredients import process_llm_batch, NormalisedIngredient
 
 datasets= {
   'guardian': {
@@ -36,20 +36,20 @@ def main(dataset: str):
     densities = [{'id': i, 'key': item[INGREDIENT], 'density': item.get(DENSITY) or item.get(SPECIFIC_GRAVITY) } for i, item in enumerate(reader)]
 
   to_normalise = [{'ingredient_id': item['id'], 'name': item['key']} for item in densities]
-  result = []
+  result: list[NormalisedIngredient] = []
 
   for i in range(0, len(to_normalise), 100):
       batch = to_normalise[i:i+100]
-      print(f"procession batch of {len(batch)} items")
+      print(f"processing batch of {len(batch)} items")
       result.extend(process_llm_batch(batch, llm_client))
       print(f"{len(batch)} processed")
 
-  id_to_normalised = {item['ingredient_id']: item for item in result}
+  id_to_normalised = {item.ingredient_id: item for item in result}
   for item in densities:
     normalised = id_to_normalised.get(item['id'])
     if normalised:
-      item['normalised_name'] = normalised['normalised_name']
-      item['us_customary'] = normalised['us_customary']
+      item['normalised_name'] = normalised.normalised_name
+      item['us_customary'] = normalised.us_customary
       item['source'] = source
     else:
       raise Exception(f'Could not normalise ingredient {item["key"]}')
