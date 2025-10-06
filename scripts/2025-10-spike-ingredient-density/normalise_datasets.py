@@ -4,7 +4,7 @@ import sqlite3
 from llm import LLMClient
 from normalise_ingredients import process_llm_batch, NormalisedIngredient
 
-datasets= {
+datasets = {
   'guardian': {
     'file': './datasets/guardian.csv',
     'density': 'kg/L',
