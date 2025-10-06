@@ -3,6 +3,7 @@
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "lib/feast-models/src",
 	"projectType": "library",
+  "dependencies": ["schema"],
 	"targets": {
     "codegen": {
       "executor": "nx:run-commands",
