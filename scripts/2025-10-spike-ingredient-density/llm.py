@@ -51,7 +51,7 @@ class LLMClient:
     for content in model_response["content"]:
       if content["type"] == "tool_use":
         obj_response = content["input"]
-      if content["type"] == "text":
+      elif content["type"] == "text":
         print(f"LLM TEXT: {content['text']}")
 
     if obj_response is None:
