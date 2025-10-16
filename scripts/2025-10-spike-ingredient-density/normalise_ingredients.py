@@ -52,6 +52,14 @@ def build_prompt(ingredients: list[dict]) -> str:
       - creme fraiche -> sour cream
       - soured cream -> sour cream
 
+    ## raw ingredient
+      - sour cream => cream
+      - egg yolk => egg
+      - sumac onion => onion
+      - 1 garlic clove => garlic
+      - 1 garlic bulb thinly sliced => garlic
+      - grated carrot => carrot
+
     ## US Customary or not
     You'll also need to decide whether the ingredient is typically expressed in cups or tbsp in the US.
     The general rule to apply is: if it's a dry ingredient that can be scooped into a cup or tablespoon, then yes.
@@ -69,6 +77,7 @@ def build_prompt(ingredients: list[dict]) -> str:
       - ingredient_id: the id of the ingredient
       - normalised_name: the normalised name of the ingredient
       - us_customary: true if the ingredient is typically expressed in cups / tbsp in the US, false otherwise
+      - raw_ingredient: the essence of the ingredient. "egg", "flour", "carrot", regardless of preparation state.
   """)
 
   # dump the ingredient as a json array
@@ -80,6 +89,7 @@ class NormalisedIngredient(BaseModel):
   ingredient_id: int
   normalised_name: str
   us_customary: bool
+  raw_ingredient: str
 
 class NormalisedIngredientBatch(BaseModel):
   batch: list[NormalisedIngredient]

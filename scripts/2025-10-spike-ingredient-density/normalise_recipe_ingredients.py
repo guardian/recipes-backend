@@ -69,12 +69,14 @@ def process_multiple_batches(conn: Connection, llm_client: LLMClient, batch_size
     conn.execute("""
       update ingredient
       set density_ingredient = :density_ingredient,
-          us_customary = :us_customary
+          us_customary = :us_customary,
+          raw_ingredient = :raw_ingredient
       where ingredient_id = :ingredient_id
     """, {
       'density_ingredient': normalised.normalised_name,
       'ingredient_id': normalised.ingredient_id,
       'us_customary': int(normalised.us_customary),
+      'raw_ingredient': normalised.raw_ingredient,
     })
 
   conn.commit()

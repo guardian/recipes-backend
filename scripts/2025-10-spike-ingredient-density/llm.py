@@ -47,6 +47,14 @@ class LLMClient:
 
     # Decode the response body.
     model_response = json.loads(response["body"].read())
-    obj_response = model_response["content"][0]["input"]
+    obj_response = None
+    for content in model_response["content"]:
+      if content["type"] == "tool_use":
+        obj_response = content["input"]
+      elif content["type"] == "text":
+        print(f"LLM TEXT: {content['text']}")
+
+    if obj_response is None:
+      raise ValueError("No tool_use response from LLM")
 
     return obj_response

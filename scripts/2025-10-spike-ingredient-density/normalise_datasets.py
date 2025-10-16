@@ -11,6 +11,12 @@ datasets = {
     'specific_gravity': 'specific_gravity',
     'ingredient': 'ingredient'
   },
+  'guardian-2': {
+    'file': './datasets/guardian-2.csv',
+    'density': 'density',
+    'specific_gravity': 'specific_gravity',
+    'ingredient': 'ingredient'
+  },
   'fao': {
     'file': './datasets/fao.csv',
     'density': 'Density in g/ml (including mass and bulk density)',
