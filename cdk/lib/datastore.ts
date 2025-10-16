@@ -31,7 +31,9 @@ export class DataStore extends Construct {
 				name: 'recipeUID',
 				type: AttributeType.STRING,
 			},
-			pointInTimeRecovery: true,
+			pointInTimeRecoverySpecification: {
+				pointInTimeRecoveryEnabled: true,
+			},
 			encryption: TableEncryption.AWS_MANAGED,
 		});
 
