@@ -3,7 +3,9 @@ import { formatISO } from 'date-fns';
 import { renderFile as ejs } from 'ejs';
 import express, { Router } from 'express';
 import type { Request } from 'express';
+import type { RecipeV3 } from '@recipes-api/lib/feast-models';
 import { recipeByUID } from '@recipes-api/lib/recipes-data';
+import { checkTemplate } from './check-template';
 import { generateHybridFront } from './curation';
 import { countryCodeFromCDN } from './geo_cdn';
 import { recursivelyGetIdList } from './helpers';
@@ -142,4 +144,15 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 		});
 });
 
+router.post(
+	'/api/check-template',
+	(req: Request<object, object, RecipeV3>, resp) => {
+		const recipe: RecipeV3 = req.body;
+		const result = checkTemplate(recipe);
+		return resp.status(200).json(result);
+	},
+);
+
+// eslint-disable-next-line import/no-named-as-default-member -- required part of Express setup
+app.use(express.json());
 app.use('/', router);
