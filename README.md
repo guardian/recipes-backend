@@ -20,6 +20,10 @@ You need to have a large number of environment variables set for the tools to wo
 4. Once you have the file, run `source environ-CODE` to set up the environment variables you need to target the CODE environment.
 5. You can now run the tools outlined below.
 
+## Running the API locally
+
+`npx nx serve lambda-rest-endpoints`
+
 ## Testing
 
 Run tests in every project with `npm run test`.
