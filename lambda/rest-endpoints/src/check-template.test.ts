@@ -1,5 +1,4 @@
 import { com } from '@guardian/feast-multiplatform-library';
-import { isEqual } from 'lodash-es';
 import type { RecipeV3 } from '@recipes-api/lib/feast-models';
 import { checkTemplate } from './check-template';
 
@@ -13,10 +12,6 @@ jest.mock('@guardian/feast-multiplatform-library', () => ({
 			},
 		},
 	},
-}));
-
-jest.mock('lodash-es', () => ({
-	isEqual: jest.fn(),
 }));
 
 const mockRecipeData = {
@@ -85,8 +80,6 @@ describe('checkTemplate', () => {
 			JSON.stringify(mockRecipeData),
 		);
 
-		(isEqual as jest.Mock).mockReturnValue(true);
-
 		const result = checkTemplate(mockRecipeData);
 
 		expect(result.match).toBe(true);
@@ -115,17 +108,15 @@ describe('checkTemplate', () => {
 			JSON.stringify(mockScaledRecipe),
 		);
 
-		(isEqual as jest.Mock).mockReturnValue(false);
-
 		const result = checkTemplate(mockRecipeData);
 
 		expect(result.match).toBe(false);
 		expect(result.expected).toEqual({
-			ingredients: ['200g flour', '100ml water'],
+			ingredients: ['200 g flour', '100 ml water'],
 			instructions: ['Mix ingredients', 'Bake for 30 minutes'],
 		});
 		expect(result.received).toEqual({
-			ingredients: ['200g flour', '150ml water'],
+			ingredients: ['200 g flour', '150 ml water'],
 			instructions: ['Mix ingredients', 'Bake for 45 minutes'],
 		});
 	});
@@ -161,7 +152,228 @@ describe('checkTemplate', () => {
 			JSON.stringify(mockScaledRecipe),
 		);
 
-		(isEqual as jest.Mock).mockReturnValue(true);
+		const result = checkTemplate(mockRecipe);
+
+		expect(result.match).toBe(true);
+		expect(result.expected).toBeUndefined();
+		expect(result.received).toBeUndefined();
+	});
+
+	it('should normalise apostrophes and match', () => {
+		const mockRecipe: RecipeV3 = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [{ text: "2 tbsp chef's spice mix", name: 'spice' }],
+				},
+			],
+			instructions: [{ description: "Let's cook!" }],
+		} as RecipeV3;
+
+		const mockScaledRecipe = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [{ text: '2 tbsp chef’s spice mix', name: 'spice' }],
+				},
+			],
+			instructions: [{ description: 'Let’s cook!' }],
+		};
+
+		(com.gu.recipe.js.scaleRecipe as jest.Mock).mockReturnValue(
+			JSON.stringify(mockScaledRecipe),
+		);
+
+		const result = checkTemplate(mockRecipe);
+
+		expect(result.match).toBe(true);
+		expect(result.expected).toBeUndefined();
+		expect(result.received).toBeUndefined();
+	});
+
+	it('should normalise non-breaking spaces and match', () => {
+		const mockRecipe: RecipeV3 = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [
+						{ text: '100g\u00A0flour', name: 'flour' },
+						{ text: '50ml\u00A0milk', name: 'milk' },
+					],
+				},
+			],
+			instructions: [{ description: 'Mix\u00A0well' }],
+		} as RecipeV3;
+
+		const mockScaledRecipe = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [
+						{ text: '100g flour', name: 'flour' },
+						{ text: '50ml milk', name: 'milk' },
+					],
+				},
+			],
+			instructions: [{ description: 'Mix well' }],
+		};
+
+		(com.gu.recipe.js.scaleRecipe as jest.Mock).mockReturnValue(
+			JSON.stringify(mockScaledRecipe),
+		);
+
+		const result = checkTemplate(mockRecipe);
+
+		expect(result.match).toBe(true);
+		expect(result.expected).toBeUndefined();
+		expect(result.received).toBeUndefined();
+	});
+
+	it('should normalise multiple spaces and match', () => {
+		const mockRecipe: RecipeV3 = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [{ text: '100g  plain  flour', name: 'flour' }],
+				},
+			],
+			instructions: [{ description: 'Mix  all  together' }],
+		} as RecipeV3;
+
+		const mockScaledRecipe = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [{ text: '100g plain flour', name: 'flour' }],
+				},
+			],
+			instructions: [{ description: 'Mix all together' }],
+		};
+
+		(com.gu.recipe.js.scaleRecipe as jest.Mock).mockReturnValue(
+			JSON.stringify(mockScaledRecipe),
+		);
+
+		const result = checkTemplate(mockRecipe);
+
+		expect(result.match).toBe(true);
+		expect(result.expected).toBeUndefined();
+		expect(result.received).toBeUndefined();
+	});
+
+	it('should normalise units without spaces and match', () => {
+		const mockRecipe: RecipeV3 = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [
+						{ text: '200g flour', name: 'flour' },
+						{ text: '150ml water', name: 'water' },
+					],
+				},
+			],
+			instructions: [{ description: 'Cook at 5cm depth' }],
+		} as RecipeV3;
+
+		const mockScaledRecipe = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [
+						{ text: '200 g flour', name: 'flour' },
+						{ text: '150 ml water', name: 'water' },
+					],
+				},
+			],
+			instructions: [{ description: 'Cook at 5 cm depth' }],
+		};
+
+		(com.gu.recipe.js.scaleRecipe as jest.Mock).mockReturnValue(
+			JSON.stringify(mockScaledRecipe),
+		);
+
+		const result = checkTemplate(mockRecipe);
+
+		expect(result.match).toBe(true);
+		expect(result.expected).toBeUndefined();
+		expect(result.received).toBeUndefined();
+	});
+
+	it('should normalise multiple unit types and match', () => {
+		const mockRecipe: RecipeV3 = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [
+						{ text: '1kg potatoes', name: 'potatoes' },
+						{ text: '2cups rice', name: 'rice' },
+					],
+				},
+			],
+			instructions: [{ description: 'Add 3tbsp oil and 1tsp salt' }],
+		} as RecipeV3;
+
+		const mockScaledRecipe = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [
+						{ text: '1 kg potatoes', name: 'potatoes' },
+						{ text: '2 cups rice', name: 'rice' },
+					],
+				},
+			],
+			instructions: [{ description: 'Add 3 tbsp oil and 1 tsp salt' }],
+		};
+
+		(com.gu.recipe.js.scaleRecipe as jest.Mock).mockReturnValue(
+			JSON.stringify(mockScaledRecipe),
+		);
+
+		const result = checkTemplate(mockRecipe);
+
+		expect(result.match).toBe(true);
+		expect(result.expected).toBeUndefined();
+		expect(result.received).toBeUndefined();
+	});
+
+	it('should normalise combined differences and match', () => {
+		const mockRecipe: RecipeV3 = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [
+						{ text: "500g chef's\u00A0flour", name: 'flour' },
+						{ text: '250ml  milk', name: 'milk' },
+					],
+				},
+			],
+			instructions: [
+				{
+					description:
+						'Heat oven to 200C/400F/gas mark 6 and\u00A0cook for  45mins',
+				},
+			],
+		} as RecipeV3;
+
+		const mockScaledRecipe = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [
+						{ text: '500 g chef’s flour', name: 'flour' },
+						{ text: '250 ml milk', name: 'milk' },
+					],
+				},
+			],
+			instructions: [
+				{ description: 'Heat oven to 200C/400F/gas 6 and cook for 45mins' },
+			],
+		};
+
+		(com.gu.recipe.js.scaleRecipe as jest.Mock).mockReturnValue(
+			JSON.stringify(mockScaledRecipe),
+		);
 
 		const result = checkTemplate(mockRecipe);
 
