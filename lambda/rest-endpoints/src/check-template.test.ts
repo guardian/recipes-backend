@@ -381,4 +381,44 @@ describe('checkTemplate', () => {
 		expect(result.expected).toBeUndefined();
 		expect(result.received).toBeUndefined();
 	});
+
+	it('should normalise fractions with missing spaces and match', () => {
+		const mockRecipe: RecipeV3 = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [
+						{ text: '1½ tsp salt', name: 'salt' },
+						{ text: '2¼ cups flour', name: 'flour' },
+						{ text: '½ garlic clove', name: 'garlic' },
+					],
+				},
+			],
+			instructions: [{ description: 'Add 1¾ tbsp of oil' }],
+		} as RecipeV3;
+
+		const mockScaledRecipe = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [
+						{ text: '1 ½ tsp salt', name: 'salt' },
+						{ text: '2 ¼ cups flour', name: 'flour' },
+						{ text: '½ garlic clove', name: 'garlic' },
+					],
+				},
+			],
+			instructions: [{ description: 'Add 1 ¾ tbsp of oil' }],
+		};
+
+		(com.gu.recipe.js.scaleRecipe as jest.Mock).mockReturnValue(
+			JSON.stringify(mockScaledRecipe),
+		);
+
+		const result = checkTemplate(mockRecipe);
+
+		expect(result.match).toBe(true);
+		expect(result.expected).toBeUndefined();
+		expect(result.received).toBeUndefined();
+	});
 });
