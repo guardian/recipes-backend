@@ -36,14 +36,80 @@ def find_recipe_elements(article: dict, recipe_id: str) -> dict:
             if json_value["id"] == recipe_id:
               return json_value
   raise Exception(f"No recipe element found for recipe ID {recipe_id}")
+
+
+def templatise_recipe(recipe: dict) -> dict:
+  url = 'http://localhost:8000/api/v1/templatise'
+  cookies = {'gutoolsAuth-assym': os.getenv('STRUCTURISER_TOKEN')}
+  headers = {'content-type': 'application/json'}
+  response = requests.post(url, data=json.dumps(recipe), headers=headers, cookies=cookies)
+  if response.status_code == 422:
+    print(f"Validation error: {response.text}")
+    print(json.dumps(recipe, indent=2))
+  response.raise_for_status()
+  return response.json()
+
+
+def format_ingredient_text(ingredient: dict) -> str:
+  parts = []
+  if 'amount' in ingredient and ingredient['amount'] is not None:
+    amount = ingredient['amount']
+    if 'min' in amount and amount['min'] is not None:
+      parts.append(str(amount['min']))
+      if 'max' in amount and amount['max'] is not None and amount['max'] != amount['min']:
+        parts.append(f"-{amount['max']}")
+    if 'unit' in amount and amount['unit'] is not None:
+      parts.append(amount['unit'])
+  if 'prefix' in ingredient and ingredient['prefix'] is not None:
+    parts.append(ingredient['prefix'])
+  if 'name' in ingredient and ingredient['name'] is not None:
+    parts.append(ingredient['name'])
+  if 'suffix' in ingredient and ingredient['suffix'] is not None:
+    parts.append(ingredient['suffix'])
+  return ' '.join(parts)
+
+def update_model_to_pass_validation(recipe: dict) -> dict:
+  # Set bookCredit and difficultyLevel to null
+  recipe['bookCredit'] = None
+  recipe['difficultyLevel'] = None
+
+  recipe['contributors'] = [contributor["tagId"] for contributor in recipe['contributors']]
+
+  # Set featuredImage.imageType to "Photograph"
+  if 'featuredImage' in recipe:
+    recipe['featuredImage']['imageType'] = 'Photograph'
+
+  # Filter ingredients: set amount to null if amount.min is null
+  if 'ingredients' in recipe:
+    for ingredient_group in recipe['ingredients']:
+      if 'ingredientsList' in ingredient_group:
+        for ingredient in ingredient_group['ingredientsList']:
+          if 'amount' in ingredient and ingredient['amount'] is not None:
+            if 'min' not in ingredient['amount'] or ingredient['amount']['min'] is None:
+              ingredient['amount'] = None
+          if 'text' not in ingredient:
+            ingredient['text'] = format_ingredient_text(ingredient)
+
+  # Force numbering instruction entries
+  if 'instructions' in recipe:
+    numbered_instructions = []
+    for idx, instruction in enumerate(recipe['instructions']):
+      instruction['stepNumber'] = idx + 1
+      numbered_instructions.append(instruction)
+    recipe['instructions'] = numbered_instructions
+
+  return recipe
+
 def main():
   recipes = fetch_index()
   for recipe in recipes[:10]:
-    print(recipe['recipeUID'])
+    print(f"Processing {recipe['recipeUID']}")
     capi_id = recipe['capiArticleId']
     response = fetch_CAPI_article(capi_id)
-    recipe = find_recipe_elements(response["response"], recipe['recipeUID'])
-    print(recipe)
+    capi_recipe = find_recipe_elements(response["response"], recipe['recipeUID'])
+    massaged_recipe = update_model_to_pass_validation(capi_recipe)
+    template = templatise_recipe(massaged_recipe)
+    print(f"Recipe {recipe['recipeUID']} is valid: {template["valid"]}")
 
 
 if __name__ == "__main__":
