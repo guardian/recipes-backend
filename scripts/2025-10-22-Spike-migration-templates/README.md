@@ -17,3 +17,4 @@ We'll then review invalid recipe templates and decide whether we fix the checkin
 
 ### 2025-10-22
 - initialise repo and readme
+- write code that load the index json, load the recipe from CAPI, then find the recipe data within the article
