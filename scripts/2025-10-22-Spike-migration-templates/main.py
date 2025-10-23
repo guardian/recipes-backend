@@ -128,7 +128,7 @@ def main():
       print(f"Skipping already processed recipe {recipe['recipeUID']} with checksum {recipe['checksum']}")
       continue
 
-    print(f"Processing {recipe['recipeUID']}")
+    print(f"Processing {recipe['recipeUID']} with checksum {recipe['checksum']}")
     capi_id = recipe['capiArticleId']
     response = fetch_CAPI_article(capi_id)
     capi_recipe = find_recipe_elements(response["response"], recipe['recipeUID'])
