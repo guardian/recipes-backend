@@ -17,10 +17,14 @@ def fetch_index() -> list[dict]:
   return recipes
 
 
-def fetch_CAPI_article(capi_id: str) -> dict:
-  url = f'https://content.guardianapis.com/channel/feast/item/{capi_id}?api-key={CAPI_KEY}&show-fields=all&show-blocks=all'
+def fetch_CAPI_article(capi_id: str) -> dict | None:
+  # url = f'https://content.guardianapis.com/channel/feast/item/{capi_id}?api-key={CAPI_KEY}&show-fields=all&show-blocks=all'
+  url = f'https://content.guardianapis.com/{capi_id}?api-key={CAPI_KEY}&show-fields=all&show-blocks=all'
   print(f"Fetching CAPI article: {url}")
   response = requests.get(url)
+  if response.status_code == 404:
+    print(f"Article {capi_id} not found in CAPI")
+    return None
   response.raise_for_status()
   return response.json()
 
@@ -47,6 +51,10 @@ def templatise_recipe(recipe: dict) -> dict:
   if response.status_code == 422:
     print(f"Validation error: {response.text}")
     print(json.dumps(recipe, indent=2))
+  if response.status_code == 503:
+    print("Service unavailable, sleeping for 10 seconds and retrying...")
+    sleep(10)
+    return templatise_recipe(recipe)
   response.raise_for_status()
   return response.json()
 
@@ -131,6 +139,9 @@ def main():
     print(f"Processing {recipe['recipeUID']} with checksum {recipe['checksum']}")
     capi_id = recipe['capiArticleId']
     response = fetch_CAPI_article(capi_id)
+    if not response:
+      print(f"Skipping recipe {recipe['recipeUID']} as CAPI article {capi_id} not found")
+      continue
     capi_recipe = find_recipe_elements(response["response"], recipe['recipeUID'])
     massaged_recipe = update_model_to_pass_validation(capi_recipe)
     template = templatise_recipe(massaged_recipe)
