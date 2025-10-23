@@ -1,3 +1,4 @@
+import difflib
 import json
 import os
 from time import sleep
@@ -58,8 +59,8 @@ def format_ingredient_text(ingredient: dict) -> str:
       parts.append(str(amount['min']))
       if 'max' in amount and amount['max'] is not None and amount['max'] != amount['min']:
         parts.append(f"-{amount['max']}")
-    if 'unit' in amount and amount['unit'] is not None:
-      parts.append(amount['unit'])
+  if 'unit' in ingredient and ingredient['unit'] is not None:
+    parts.append(ingredient['unit'])
   if 'prefix' in ingredient and ingredient['prefix'] is not None:
     parts.append(ingredient['prefix'])
   if 'name' in ingredient and ingredient['name'] is not None:
@@ -73,7 +74,7 @@ def update_model_to_pass_validation(recipe: dict) -> dict:
   recipe['bookCredit'] = None
   recipe['difficultyLevel'] = None
 
-  recipe['contributors'] = [contributor["tagId"] for contributor in recipe['contributors']]
+  recipe['contributors'] = [contributor.get("tagId") or contributor.get("text") for contributor in recipe['contributors']]
 
   # Set featuredImage.imageType to "Photograph"
   if 'featuredImage' in recipe:
@@ -100,16 +101,57 @@ def update_model_to_pass_validation(recipe: dict) -> dict:
 
   return recipe
 
+def load_already_processed_checksums() -> set[str]:
+  processed_checksums = set()
+  try:
+    with open('processed_checksums.txt', 'r') as f:
+      for line in f:
+        processed_checksums.add(line.strip())
+  except FileNotFoundError:
+    pass
+  return processed_checksums
+
+def append_processed_checksum(checksum: str):
+  with open('processed_checksums.txt', 'a') as f:
+    f.write(f"{checksum}\n")
+    f.flush()
+
 def main():
+
+  processed_checksums = load_already_processed_checksums()
+
   recipes = fetch_index()
-  for recipe in recipes[:10]:
+  for recipe in recipes[:20]:
+    print("\n\n-------------------------")
+
+    if recipe['checksum'] in processed_checksums:
+      print(f"Skipping already processed recipe {recipe['recipeUID']} with checksum {recipe['checksum']}")
+      continue
+
     print(f"Processing {recipe['recipeUID']}")
     capi_id = recipe['capiArticleId']
     response = fetch_CAPI_article(capi_id)
     capi_recipe = find_recipe_elements(response["response"], recipe['recipeUID'])
     massaged_recipe = update_model_to_pass_validation(capi_recipe)
     template = templatise_recipe(massaged_recipe)
-    print(f"Recipe {recipe['recipeUID']} is valid: {template["valid"]}")
+    print(f"Recipe {recipe['recipeUID']}, hash {recipe['checksum']} is valid: {template["valid"]}")
+
+    if not template["valid"]:
+      print(f"https://recipes.guardianapis.com/content/{recipe['checksum']}")
+      print(json.dumps(template, indent=2))
+      expected = json.dumps(template['expected'], indent=2)
+      received = json.dumps(template['received'], indent=2)
+
+      # diff the two
+      diff = difflib.unified_diff(
+        expected.splitlines(keepends=True),
+        received.splitlines(keepends=True),
+        fromfile='expected',
+        tofile='received'
+      )
+      print(''.join(diff))
+    else:
+      append_processed_checksum(recipe['checksum'])
 
 
 if __name__ == "__main__":
