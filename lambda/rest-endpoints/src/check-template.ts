@@ -8,10 +8,13 @@ function normaliseInstructionOrIngredient(instruction: string): string {
 	return instruction
 		.replace(/\/gas mark/g, '/gas') // we render template as `250F/gas 4`, but some of our recipes have `250F/gas mark 4`
 		.replace(/'/g, '’') // funnily enough, sonnet doesn't have a token for fancy apostrophe
+		.replace(/[']/g, '’') // funnily enough, sonnet doesn't have a token for fancy apostrophe
+		.replace(/[“”]/g, '"') // similarly, normalise double quotes as it confuses the model
 		.replace(/\u00A0/g, ' ') // replace non-breaking spaces with regular spaces
 		.replace(/(\d)([\u00BC-\u00BE\u2150-\u215E])/g, '$1 $2') // ensure space between whole number and fraction (e.g., 1½ -> 1 ½)
 		.replace(/ +/g, ' ') // replace any double space
 		.replace(/(\d+)(kg|g|cup|cups|tbsp|tsp|ml|L|cm|mm)\b/gi, '$1 $2') // ensure there's a space between number and unit
+		.replace(/\blitres\b/gi, 'l') // often written in plain text
 		.replace(
 			/(\d+)\s*(cm|mm|inch|inches)?\s*x\s*(\d+)\s*(cm|mm|inch|inches)?/gi,
 			(
@@ -29,7 +32,8 @@ function normaliseInstructionOrIngredient(instruction: string): string {
 					return match;
 				}
 			},
-		);
+		)
+		.trim();
 }
 
 export function checkTemplate(recipe: RecipeV3): {
