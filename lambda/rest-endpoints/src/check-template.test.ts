@@ -421,4 +421,43 @@ describe('checkTemplate', () => {
 		expect(result.expected).toBeUndefined();
 		expect(result.received).toBeUndefined();
 	});
+
+	it('should normalise dish dimension if a unit is missing', () => {
+		const mockRecipe: RecipeV3 = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [],
+				},
+			],
+			instructions: [
+				{ description: 'Spread evenly in a 30 x 20 cm oven dish.' },
+				// this one gets matched, but not normalised as it's missing units altogether
+				{ description: 'Multiply 2 x 3 to see if you can count' },
+			],
+		} as RecipeV3;
+
+		const mockScaledRecipe = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [],
+				},
+			],
+			instructions: [
+				{ description: 'Spread evenly in a 30 cm x 20 cm oven dish.' },
+				{ description: 'Multiply 2 x 3 to see if you can count' },
+			],
+		};
+
+		(com.gu.recipe.js.scaleRecipe as jest.Mock).mockReturnValue(
+			JSON.stringify(mockScaledRecipe),
+		);
+
+		const result = checkTemplate(mockRecipe);
+
+		expect(result.match).toBe(true);
+		expect(result.expected).toBeUndefined();
+		expect(result.received).toBeUndefined();
+	});
 });
