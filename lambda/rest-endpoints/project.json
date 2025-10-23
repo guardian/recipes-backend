@@ -51,21 +51,32 @@
 				}
 			}
 		},
-		"serve": {
-			"executor": "@nx/js:node",
-			"defaultConfiguration": "development",
-			"options": {
-				"buildTarget": "lambda-rest-endpoints:build"
-			},
-			"configurations": {
-				"development": {
-					"buildTarget": "lambda-rest-endpoints:build:development"
-				},
-				"production": {
-					"buildTarget": "lambda-rest-endpoints:build:production"
-				}
-			}
-		},
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "lambda-rest-endpoints:transpile-serve"
+      }
+    },
+    "transpile-serve": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "platform": "node",
+        "external": ["@aws-sdk/*"],
+        "outputPath": "dist/lambda/rest-endpoints-serve",
+        "format": ["cjs"],
+        "bundle": true,
+        "thirdParty": true,
+        "main": "lambda/rest-endpoints/src/serve-local.ts",
+        "tsConfig": "lambda/rest-endpoints/tsconfig.app.json",
+        "generatePackageJson": false,
+        "esbuildOptions": {
+          "sourcemap": true,
+          "outExtension": { ".js": ".js" }
+        }
+      }
+    },
 		"lint": {
 			"executor": "@nx/eslint:lint",
 			"outputs": ["{options.outputFile}"],
