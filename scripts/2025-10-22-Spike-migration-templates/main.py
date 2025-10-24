@@ -191,6 +191,18 @@ def main():
       )
       print(''.join(diff))
     else:
+      if 'expected' in template and template['expected'] is not None:
+        expected = json.dumps(template['expected'], indent=2)
+        received = json.dumps(template['received'], indent=2)
+
+        # diff the two
+        diff = difflib.unified_diff(
+          expected.splitlines(keepends=True),
+          received.splitlines(keepends=True),
+          fromfile='expected',
+          tofile='received'
+        )
+        print(''.join(diff))
       append_processed_checksum(recipe['checksum'])
 
 

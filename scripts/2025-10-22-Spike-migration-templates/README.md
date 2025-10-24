@@ -153,4 +153,4 @@ Some oven temperature difference. The templating format I created assumed we alw
 - TODO:
   - [x] normalise dashes
   - [x] improve prompt regarding units by allowing only a subset of units explicitly
-  - [ ] experiment with agentic loop.
+  - [x] experiment with agentic loop.
