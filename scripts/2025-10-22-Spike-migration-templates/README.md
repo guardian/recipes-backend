@@ -78,3 +78,58 @@ Here the difference comes from the fact the LLM correctly capture scalable value
 ```
 Here there's a dash `\u00ad` `–` that the LLM seems incapable of outputing (possibly ignored entirely in the input token). They're here by editorial choice, so I'm not sure yet what to do about them.
 I sure could remove them during the comparison, but that would mean they would also disappear completely from the recipe. Maybe the migration should have a pile of recipe to manually review?
+
+- Let's try 40 recipes. More unexpected diffs.
+```diff
+--- expected
++++ received
+@@ -1,14 +1,14 @@
+ {
+   "ingredients": [
+-    "heritage tomatoes 400 g, ideally a mix of shapes, sizes and colours",
+-    "red onions 100 g",
+-    "cucumber 100 g",
+-    "carob rusks 50 g (find at speciality delis and online",
++    "400 g heritage tomatoes, ideally a mix of shapes, sizes and colours",
++    "100 g red onions",
++    "100 g cucumber",
++    "50 g carob rusks (find at speciality delis and online",
+     "dried oregano",
+     "salt and pepper",
+-    "good quality extra virgin olive oil 100 ml",
+-    "red wine vinegar 30 ml",
+-    "dijon mustard 10 g"
++    "good quality 100 ml extra virgin olive oil",
++    "30 ml red wine vinegar",
++    "10 g dijon mustard"
+   ],
+   "instructions": [
+     "Wash the tomatoes, dry and cut into big chunks",
+```
+Here the LLM took some editorial freedom and decided to move the quantity to the front of the ingredient. That's a no-go.
+
+```diff
+-    "Roll out the pastry to about 2-3 mm thick. Using six 10 cm individual tart tins as a guide, cut out six circles an inch wider than the tins; reroll the pastry offcuts when you need to. Press each round of pastry firmly into a tart tin, trim off any excess, and chill in the fridge for 20 minutes.",
++    "Roll out the pastry to about 2-3 mm-thick. Using six 10 cm individual tart tins as a guide, cut out six circles an inch wider than the tins; reroll the pastry offcuts when you need to. Press each round of pastry firmly into a tart tin, trim off any excess, and chill in the fridge for 20 minutes."
+```
+Another punctuation issue, weirdly enough, this time it's the LLM that adds the hyphen.
+```diff
+-    "free-range chicken breasts 4 small, cut into large chunks",
++    "free-range chicken breasts 4, small, cut into large chunks",
+```
+Another case of the LLM adding punctuation that wasn't there before, but this time maybe justified?
+
+```diff
+-    "Preheat the oven to 180C fan/gas 6.",
++    "Preheat the oven to 180C/gas 6.",
+```
+Some oven temperature difference. The templating format I created assumed we always have at least a non fan temperature. Here the LLM made the decision of setting that temperature to 180, so the fan temperature disappears.
+
+
+- I'm starting to wonder if the conversion to recipe template should be an iterative process / agentic flow, where I give tools to the LLM. I have a hunch that although there are recipe where it can't one-shot it, a couple iterations would solve the issue.
+  - We could have a tool to diff, a tool to update a template, and a tool to accept a small difference (like the oven temperature not being formatted, or a value bing expressed in words instead of digits...)
+- I've found a case of a recipe that wasn't structured at all, just a bunch of ingredients that actually are instructions. The LLM did a pretty good job at structuring it, but of course the diff flags everything as an error. I wonder how many cases we have like this... https://www.theguardian.com/food/2023/apr/04/nigel-slater-midweek-dinner-gnocchi-with-leeks-cream-and-custard
+- Lots of diff are due to the oven. My initial assumption that we'll always have at least a non-fan temperature is wrong. This need fixing.
+- Fixed the oven temperature issue.
+- out of 40 recipes 28 are extact matches. 12 diffs:
+  - 

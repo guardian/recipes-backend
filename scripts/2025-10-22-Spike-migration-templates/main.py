@@ -107,6 +107,22 @@ def update_model_to_pass_validation(recipe: dict) -> dict:
       numbered_instructions.append(instruction)
     recipe['instructions'] = numbered_instructions
 
+  if 'serves' in recipe and recipe['serves']:
+    for serves in recipe['serves']:
+      if 'text' not in serves:
+        text = "serves "
+        if 'min' in recipe['serves'] and recipe['serves']['min'] is not None:
+          text += str(recipe['serves']['min'])
+        if 'max' in recipe['serves'] and recipe['serves']['max'] is not None:
+          text += f"-{recipe['serves']['max']}"
+        if 'unit' in recipe['serves'] and recipe['serves']['unit'] is not None:
+          text += f" {recipe['serves']['unit']}"
+        serves['text'] = text
+
+  if 'timings' in recipe:
+    # only keep the timings that have text
+    recipe['timings'] = [ timing for timing in recipe['timings'] if 'text' in timing ]
+
   return recipe
 
 def load_already_processed_checksums() -> set[str]:
@@ -119,6 +135,15 @@ def load_already_processed_checksums() -> set[str]:
     pass
   return processed_checksums
 
+def load_skipped_checksums() -> set[str]:
+  skipped_checksums = set()
+  try:
+    with open('skipped_checksums.txt', 'r') as f:
+      for line in f:
+        skipped_checksums.add(line.split('#')[0].strip()) # remove comments
+  except FileNotFoundError:
+    pass
+  return skipped_checksums
 def append_processed_checksum(checksum: str):
   with open('processed_checksums.txt', 'a') as f:
     f.write(f"{checksum}\n")
@@ -127,9 +152,11 @@ def append_processed_checksum(checksum: str):
 def main():
 
   processed_checksums = load_already_processed_checksums()
+  skipped_checksums = load_skipped_checksums()
+  processed_checksums.update(skipped_checksums)
 
   recipes = fetch_index()
-  for recipe in recipes[:20]:
+  for recipe in recipes[:40]:
     print("\n\n-------------------------")
 
     if recipe['checksum'] in processed_checksums:
