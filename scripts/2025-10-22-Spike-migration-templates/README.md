@@ -131,5 +131,26 @@ Some oven temperature difference. The templating format I created assumed we alw
 - I've found a case of a recipe that wasn't structured at all, just a bunch of ingredients that actually are instructions. The LLM did a pretty good job at structuring it, but of course the diff flags everything as an error. I wonder how many cases we have like this... https://www.theguardian.com/food/2023/apr/04/nigel-slater-midweek-dinner-gnocchi-with-leeks-cream-and-custard
 - Lots of diff are due to the oven. My initial assumption that we'll always have at least a non-fan temperature is wrong. This need fixing.
 - Fixed the oven temperature issue.
-- out of 40 recipes 28 are extact matches. 12 diffs:
-  - 
+- out of 40 recipes 27 are extact matches. 13 diffs:
+  - Some of which require fixing the recipe
+    - 1 error in the original recipe that the LLM fixed
+    - 1 recipe isn't properly structured
+  - Some of which require improving the templating logic
+    - 1 difference because it templatised the wrong thing
+    - 1 difference because it used words that aren't units as units.
+  - Some of which require adapting the comparison logic
+    - 3 diff due to a quantity expressed as digits vs words in the original
+    - 3 difference of punctation
+    - 3 difference because the LLM moved the quantity to the front of the ingredient
+
+# 2025-10-24
+- asking what do we want with regards to the order of quantity vs ingredient name. We might want to enforce quantity / unit / ingredient, which means the final approval of the template will have to be done by an LLM
+- this also plays into the idea of having an agentic loop rather than a one shot prompt
+- I'll try to explore having the same prompt, and if the diff comes back with differences, add it to the context of the conversation, this time with rules:
+  - It's okay to have "2 tbsp" instead of "two tablespoons"
+  - It's okay to move the ingredient quantity to the front of the ingredient
+  - It's okay to have a minor punctuation difference such as hyphens or dashes
+- TODO:
+  - [ ] normalise dashes
+  - [ ] improve prompt regarding units by allowing only a subset of units explicitly
+  - [ ] experiment with agentic loop.
