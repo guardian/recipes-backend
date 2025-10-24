@@ -152,5 +152,5 @@ Some oven temperature difference. The templating format I created assumed we alw
   - It's okay to have a minor punctuation difference such as hyphens or dashes
 - TODO:
   - [x] normalise dashes
-  - [ ] improve prompt regarding units by allowing only a subset of units explicitly
+  - [x] improve prompt regarding units by allowing only a subset of units explicitly
   - [ ] experiment with agentic loop.
