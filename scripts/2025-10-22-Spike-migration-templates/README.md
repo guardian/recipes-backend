@@ -154,3 +154,11 @@ Some oven temperature difference. The templating format I created assumed we alw
   - [x] normalise dashes
   - [x] improve prompt regarding units by allowing only a subset of units explicitly
   - [x] experiment with agentic loop.
+- Experimented with a hard coded second try (as opposed to a proper agentic loop). Results are primising. Out of 50 recipes, 50 recipes are passing validation
+  - This is almost too good to be true. I'll have to review the diffs to ensure nothing is being missed.
+
+# 2025-11-03
+- TODO:
+  - [ ] Re-run the script with the 50 recipes and review the diffs
+  - [ ] Prepare to merge some of the work, I have a lot of pending changes
+  - [ ] Decide whether the templatisation is done upstream or downstream of CAPI

@@ -158,7 +158,7 @@ def main():
   processed_checksums.update(skipped_checksums)
 
   recipes = fetch_index()
-  for recipe in recipes[:40]:
+  for recipe in recipes[:50]:
     print("\n\n-------------------------")
 
     if recipe['checksum'] in processed_checksums:
