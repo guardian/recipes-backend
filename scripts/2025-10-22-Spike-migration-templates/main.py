@@ -140,7 +140,9 @@ def load_skipped_checksums() -> set[str]:
   try:
     with open('skipped_checksums.txt', 'r') as f:
       for line in f:
-        skipped_checksums.add(line.split('#')[0].strip()) # remove comments
+        value = line.split('#')[0].strip()
+        if value:
+          skipped_checksums.add(line.split('#')[0].strip()) # remove comments
   except FileNotFoundError:
     pass
   return skipped_checksums
