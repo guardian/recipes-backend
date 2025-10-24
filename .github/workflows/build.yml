@@ -38,6 +38,7 @@ jobs:
       - uses: aws-actions/amazon-ecr-login@v2
         id: ecr-login
         with:
+          region: eu-west-1
           mask-password: 'true'
         continue-on-error: true
       - name: Build and push
