@@ -175,6 +175,8 @@ def main():
     massaged_recipe = update_model_to_pass_validation(capi_recipe)
     template = templatise_recipe(massaged_recipe)
     print(f"Recipe {recipe['recipeUID']}, hash {recipe['checksum']} is valid: {template["valid"]}")
+    if template["reviewReason"]:
+      print(f"Recipe {recipe['recipeUID']} needs human review. Reason: {template['reviewReason']}")
 
     if not template["valid"]:
       print(f"https://recipes.guardianapis.com/content/{recipe['checksum']}")

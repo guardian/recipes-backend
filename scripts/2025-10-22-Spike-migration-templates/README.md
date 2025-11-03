@@ -159,6 +159,13 @@ Some oven temperature difference. The templating format I created assumed we alw
 
 # 2025-11-03
 - TODO:
-  - [ ] Re-run the script with the 50 recipes and review the diffs
+  - [x] Re-run the script with the 50 recipes and review the diffs
   - [ ] Prepare to merge some of the work, I have a lot of pending changes
-  - [ ] Decide whether the templatisation is done upstream or downstream of CAPI
+  - [x] Decide whether the templatisation is done upstream or downstream of CAPI => I think it needs to be done in Composer, so a human can edit the LLM output.
+- Reviewed the code, it was indeed too good to be true, there was a hardcoded "True" in the diff checking logic. Fixed that.
+- I've now improved the prompt to ensure the LLM flags recipes that need human review.
+- I think I need to introduce a loop with a limit on the number of iterations. I'm already seeing cases where I have:
+  - First shot: the template is mostly good, but has some issues
+  - Second shot: the LLM fix the issues, but the diff still flags differences. However, these differences are acceptable.
+- This could be fixed with a third shot where the LLM confirms the diff is acceptable this time around.
+- After putting the LLM calls in a loop, I get 4 invalid recipe templates out of 50, all of which genuinely need human review as the source recipe is wrong.
