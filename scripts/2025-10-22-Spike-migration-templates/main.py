@@ -160,7 +160,7 @@ def main():
   processed_checksums.update(skipped_checksums)
 
   recipes = fetch_index()
-  for recipe in recipes[:100]:
+  for recipe in recipes[:200]:
     print("\n\n-------------------------")
 
     if recipe['checksum'] in processed_checksums:
@@ -176,7 +176,7 @@ def main():
     capi_recipe = find_recipe_elements(response["response"], recipe['recipeUID'])
     massaged_recipe = update_model_to_pass_validation(capi_recipe)
     template = templatise_recipe(massaged_recipe)
-    print(f"Recipe {recipe['recipeUID']}, hash {recipe['checksum']} is valid: {template["valid"]}")
+    print(f"Recipe {recipe['recipeUID']}, hash {recipe['checksum']} was processed (${template['cost']:.9f}). Valid: {template["valid"]}")
     if template["reviewReason"]:
       print(f"Recipe {recipe['recipeUID']} needs human review. Reason: {template['reviewReason']}")
 
