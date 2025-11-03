@@ -169,3 +169,4 @@ Some oven temperature difference. The templating format I created assumed we alw
   - Second shot: the LLM fix the issues, but the diff still flags differences. However, these differences are acceptable.
 - This could be fixed with a third shot where the LLM confirms the diff is acceptable this time around.
 - After putting the LLM calls in a loop, I get 4 invalid recipe templates out of 50, all of which genuinely need human review as the source recipe is wrong.
+- Pushing it to 100 recipes, only 6 total recipes are invalid, all of which need human review. This getting pretty solid.

@@ -118,6 +118,8 @@ def update_model_to_pass_validation(recipe: dict) -> dict:
         if 'unit' in recipe['serves'] and recipe['serves']['unit'] is not None:
           text += f" {recipe['serves']['unit']}"
         serves['text'] = text
+      if 'unit' not in serves:
+        serves['unit'] = "people"
 
   if 'timings' in recipe:
     # only keep the timings that have text
@@ -158,7 +160,7 @@ def main():
   processed_checksums.update(skipped_checksums)
 
   recipes = fetch_index()
-  for recipe in recipes[:50]:
+  for recipe in recipes[:100]:
     print("\n\n-------------------------")
 
     if recipe['checksum'] in processed_checksums:
