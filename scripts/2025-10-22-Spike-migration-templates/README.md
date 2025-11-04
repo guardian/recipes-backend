@@ -170,3 +170,7 @@ Some oven temperature difference. The templating format I created assumed we alw
 - This could be fixed with a third shot where the LLM confirms the diff is acceptable this time around.
 - After putting the LLM calls in a loop, I get 4 invalid recipe templates out of 50, all of which genuinely need human review as the source recipe is wrong.
 - Pushing it to 100 recipes, only 6 total recipes are invalid, all of which need human review. This getting pretty solid.
+
+# 2025-11-04
+- Added cost calculation to the script. We're at about $0.05 per recipe, total cost of migration is around $300 for 7k recipes. This probably needs to be doubled or tripled as I doubt we'll one-shot the migration.
+- Found a bug where the LLM wasn't returning the same number of ingredient as the input. You cheeky thing. We just need to avoid crashing as the LLM-in-a-loop will see it in the diff and fix it.

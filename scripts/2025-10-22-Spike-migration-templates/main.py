@@ -159,6 +159,9 @@ def main():
   skipped_checksums = load_skipped_checksums()
   processed_checksums.update(skipped_checksums)
 
+  total_cost = 0.0
+  total_recipes = 0
+
   recipes = fetch_index()
   for recipe in recipes[:200]:
     print("\n\n-------------------------")
@@ -176,7 +179,7 @@ def main():
     capi_recipe = find_recipe_elements(response["response"], recipe['recipeUID'])
     massaged_recipe = update_model_to_pass_validation(capi_recipe)
     template = templatise_recipe(massaged_recipe)
-    print(f"Recipe {recipe['recipeUID']}, hash {recipe['checksum']} was processed (${template['cost']:.9f}). Valid: {template["valid"]}")
+    print(f"Recipe {recipe['recipeUID']}, hash {recipe['checksum']} was processed (${template['cost']:.3f}). Valid: {template["valid"]}")
     if template["reviewReason"]:
       print(f"Recipe {recipe['recipeUID']} needs human review. Reason: {template['reviewReason']}")
 
@@ -208,6 +211,13 @@ def main():
         )
         print(''.join(diff))
       append_processed_checksum(recipe['checksum'])
+
+      total_cost += template['cost'] if template['cost'] else 0.0
+      total_recipes += 1
+
+      print(f"Average cost so far for {total_recipes} recipes: ${total_cost/total_recipes:.3f}, Total cost: ${total_cost:.3f}")
+
+  print(f"Total cost for {total_recipes} recipes: ${total_cost:.9f}")
 
 
 if __name__ == "__main__":
