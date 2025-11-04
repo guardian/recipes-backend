@@ -28,6 +28,8 @@ function normaliseFractions(
 		'¼': 0.25,
 		'½': 0.5,
 		'¾': 0.75,
+		'⅓': 0.33,
+		'⅔': 0.67,
 		'⅛': 0.125,
 	};
 	try {
@@ -52,7 +54,7 @@ function normaliseInstructionOrIngredient(instruction: string): string {
 		.replace(/[“”]/g, '"') // similarly, normalise double quotes as it confuses the model
 		.replace(/[–­]/g, '-') // similarly, normalise double quotes as it confuses the model
 		.replace(/\u00A0/g, ' ') // replace non-breaking spaces with regular spaces
-		.replace(/(\d)? ?([\u00BC-\u00BE\u2150-\u215E])/g, normaliseFractions) // go from `1 ½` to `1.5`, so we compare consistently
+		.replace(/(\d ?)?([\u00BC-\u00BE\u2150-\u215E])/g, normaliseFractions) // go from `1 ½` to `1.5`, so we compare consistently
 		.replace(/ +/g, ' ') // replace any double space
 		.replace(/(\d+)(kg|g|cup|cups|tbsp|tsp|ml|L|cm|mm)\b/gi, '$1 $2') // ensure there's a space between number and unit
 		.replace(/\blitres\b/gi, 'l') // often written in plain text
