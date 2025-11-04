@@ -19,6 +19,7 @@ import { DataStore } from './datastore';
 import { DynamicFronts } from './dynamic-fronts';
 import { ExternalParameters } from './external_parameters';
 import { FaciaConnection } from './facia-connection';
+import { PersonalisedFronts } from './personalised-fronts';
 import { PrintableRecipeGenerator } from './printable-recipe-generator';
 import { RecipesReindex } from './recipes-reindex';
 import { RestEndpoints } from './rest-endpoints';
@@ -388,6 +389,11 @@ export class RecipesBackend extends GuStack {
 		});
 
 		new DynamicFronts(this, 'DynamicFronts', {
+			destBucket: serving.staticBucket,
+			externalParameters,
+		});
+
+		new PersonalisedFronts(this, 'PersonalisedFronts', {
 			destBucket: serving.staticBucket,
 			externalParameters,
 		});
