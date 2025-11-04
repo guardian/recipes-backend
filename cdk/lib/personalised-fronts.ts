@@ -80,11 +80,15 @@ export class PersonalisedFronts extends Construct {
 			role: lambdaRole,
 		});
 
-		const dataTechAcctParam = new GuParameter(scope, 'PersonalisedFrontsSrcAcct', {
-			fromSSM: true,
-			default: `/INFRA/recipes-backend/personalised-fronts-fetcher/data-tech-account-id`,
-			type: 'String',
-		});
+		const dataTechAcctParam = new GuParameter(
+			scope,
+			'PersonalisedFrontsSrcAcct',
+			{
+				fromSSM: true,
+				default: `/INFRA/recipes-backend/personalised-fronts-fetcher/data-tech-account-id`,
+				type: 'String',
+			},
+		);
 
 		const xar = new Role(this, 'XAR', {
 			inlinePolicies: {

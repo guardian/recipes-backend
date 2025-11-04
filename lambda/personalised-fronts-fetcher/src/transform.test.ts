@@ -45,22 +45,22 @@ describe('convertBQReport', () => {
 	});
 
 	 */
-  it('should convert incoming data rows to FeastAppContainer', () => {
-    const fakeRows: IncomingDataRow[] = [
-      {
-        identityId: 'user-12345',
-        top_accessed_recipes: [
-          '5face40040dd47f690b9d65dfd6e2021',
-          'gu-recipe-1244fcf6-601f-4972-8579-1bac76d3f886',
-        ],
-      },
-    ];
+	it('should convert incoming data rows to FeastAppContainer', () => {
+		const fakeRows: IncomingDataRow[] = [
+			{
+				identityId: 'user-12345',
+				top_accessed_recipes: [
+					'5face40040dd47f690b9d65dfd6e2021',
+					'gu-recipe-1244fcf6-601f-4972-8579-1bac76d3f886',
+				],
+			},
+		];
 
-    const result = convertBQReport(fakeRows);
-    expect(result.title).toEqual('Your recent recipes');
-    expect((result.items as Recipe[]).map((_) => _.recipe.id)).toEqual([
-      '5face40040dd47f690b9d65dfd6e2021',
-      'gu-recipe-1244fcf6-601f-4972-8579-1bac76d3f886',
-    ]);
-  });
+		const result = convertBQReport(fakeRows);
+		expect(result.title).toEqual('Your recent recipes');
+		expect((result.items as Recipe[]).map((_) => _.recipe.id)).toEqual([
+			'5face40040dd47f690b9d65dfd6e2021',
+			'gu-recipe-1244fcf6-601f-4972-8579-1bac76d3f886',
+		]);
+	});
 });

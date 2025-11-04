@@ -15,9 +15,11 @@ describe('breakDownUrl', () => {
 		);
 	});
 	 */
-  it('should work for url', () => {
-    const result = breakDownUrl('gs://gu-feast-personalised/some-date/some-user-id-*.json');
-    expect(result.gcpBucket).toEqual('gu-feast-personalised');
-    expect(result.prefix).toEqual('some-date/some-user-id-');
-  })
+	it('should work for url', () => {
+		const result = breakDownUrl(
+			'gs://gu-feast-personalised/some-date/some-user-id-*.json',
+		);
+		expect(result.gcpBucket).toEqual('gu-feast-personalised');
+		expect(result.prefix).toEqual('some-date/some-user-id-');
+	});
 });

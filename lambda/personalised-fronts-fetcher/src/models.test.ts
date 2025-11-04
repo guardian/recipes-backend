@@ -22,13 +22,13 @@ describe('IncomingDataRaw', () => {
 	});
 
 	 */
-  it('should reject invalid IDs', () => {
-    const test = {
-      identityId: 'user-12345',
-      top_accessed_recipes: ['invalid-recipe-id', 'another-bad-id!'],
-    };
+	it('should reject invalid IDs', () => {
+		const test = {
+			identityId: 'user-12345',
+			top_accessed_recipes: ['invalid-recipe-id', 'another-bad-id!'],
+		};
 
-    const parsed = IncomingDataRow.safeParse(test);
-    expect(parsed.success).toBeFalsy();
-  });
+		const parsed = IncomingDataRow.safeParse(test);
+		expect(parsed.success).toBeFalsy();
+	});
 });

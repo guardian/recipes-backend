@@ -39,8 +39,10 @@ export const handler = async (eventRaw: unknown) => {
 	}
 
 	const event = InvokeEvent.parse(eventRaw); //Let It Crash (TM)
-  const identityId = event.identityId ?? 'unknown_identity';
-  if (!!event.gcs_blob) {//if (!!event.country_key && !!event.gcs_blob) {
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- we want this to be unknown_identity if not provided
+	const identityId = event.identityId ?? 'unknown_identity';
+	if (event.gcs_blob) {
+		//if (!!event.country_key && !!event.gcs_blob) {
 		const pathToScan = breakDownUrl(event.gcs_blob);
 		const files = await findMatchingFiles(storage, pathToScan);
 		console.log(`Got ${files.length} files`);
@@ -49,12 +51,7 @@ export const handler = async (eventRaw: unknown) => {
 		const allRows = results.flat();
 
 		const container = convertBQReport(allRows);
-		await writeDynamicData(
-			outputBucketName,
-			new Date(),
-      identityId,
-			container,
-		);
+		await writeDynamicData(outputBucketName, new Date(), identityId, container);
 		console.log(`Completed`);
 	} else {
 		console.error(

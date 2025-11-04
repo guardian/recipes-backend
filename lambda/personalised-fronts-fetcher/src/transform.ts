@@ -31,13 +31,13 @@ export function convertBQReport(
 	//territory: string,//need to check on this
 	incoming: IncomingDataRow[],
 ): FeastAppContainer {
-  const items = incoming.flatMap((r) =>
-    r.top_accessed_recipes.map((recipeId) => ({
-      recipe: {
-        id: recipeId,
-      },
-    })),
-  );
+	const items = incoming.flatMap((r) =>
+		r.top_accessed_recipes.map((recipeId) => ({
+			recipe: {
+				id: recipeId,
+			},
+		})),
+	);
 
 	const id = uuid();
 
