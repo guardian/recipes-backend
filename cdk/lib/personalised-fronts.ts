@@ -123,9 +123,9 @@ export class PersonalisedFronts extends Construct {
 			statistic: 'Average',
 			period: Duration.hours(1),
 		});
-		const failedDynamicContainerAlarm = new Alarm(
+		const failedPersonalisedContainerAlarm = new Alarm(
 			this,
-			'FailedDynamicContainerAlarm',
+			'FailedPersonalisedContainerAlarm',
 			{
 				metric: failedPersonalisedContainerMetric,
 				threshold: 1,
@@ -138,7 +138,7 @@ export class PersonalisedFronts extends Construct {
 			},
 		);
 
-		failedDynamicContainerAlarm.addAlarmAction(
+		failedPersonalisedContainerAlarm.addAlarmAction(
 			new SnsAction(nonUrgentAlarmTopic),
 		);
 	}
