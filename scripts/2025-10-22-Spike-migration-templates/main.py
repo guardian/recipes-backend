@@ -1,6 +1,10 @@
+import csv
+from argparse import ArgumentParser
+from datetime import datetime
 import difflib
 import json
 import os
+from dataclasses import dataclass
 from time import sleep
 from dotenv import load_dotenv
 
@@ -127,37 +131,54 @@ def update_model_to_pass_validation(recipe: dict) -> dict:
 
   return recipe
 
-def load_already_processed_checksums() -> set[str]:
+def load_already_processed_checksums(csv_file: str) -> set[str]:
   processed_checksums = set()
   try:
-    with open('processed_checksums.txt', 'r') as f:
-      for line in f:
-        processed_checksums.add(line.strip())
+    with open(csv_file) as csv_file:
+      reader = csv.DictReader(csv_file)
+      for row in reader:
+        processed_checksums.add(row['hash'])
   except FileNotFoundError:
     pass
   return processed_checksums
 
-def load_skipped_checksums() -> set[str]:
-  skipped_checksums = set()
-  try:
-    with open('skipped_checksums.txt', 'r') as f:
-      for line in f:
-        value = line.split('#')[0].strip()
-        if value:
-          skipped_checksums.add(line.split('#')[0].strip()) # remove comments
-  except FileNotFoundError:
-    pass
-  return skipped_checksums
-def append_processed_checksum(checksum: str):
-  with open('processed_checksums.txt', 'a') as f:
-    f.write(f"{checksum}\n")
-    f.flush()
+@dataclass(frozen=True)
+class ProcessingResult:
+  id: str
+  hash: str
+  valid: bool
+  cost: float
+  reviewReason: str | None
+  diff: str | None
+  expected: dict | None
+  received: dict | None
 
-def main():
+def append_result_to_csv(result: ProcessingResult, file: str):
+  file_exists = os.path.isfile(file)
+  with open(file, 'a', newline='') as csvfile:
+    fieldnames = ['id', 'hash', 'valid', 'cost', 'reviewReason', 'diff', 'expected', 'received']
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    if not file_exists:
+      writer.writeheader()
+    writer.writerow({
+      'id': result.id,
+      'hash': result.hash,
+      'valid': result.valid,
+      'cost': f"{result.cost:.3f}",
+      'reviewReason': result.reviewReason or '',
+      'diff': result.diff or '',
+      'expected': json.dumps(result.expected) if result.expected else '',
+      'received': json.dumps(result.received) if result.received else '',
+    })
+    csvfile.flush()
 
-  processed_checksums = load_already_processed_checksums()
-  skipped_checksums = load_skipped_checksums()
-  processed_checksums.update(skipped_checksums)
+def main(csv_file_name: str | None) -> None:
+
+  if not csv_file_name:
+    timestamp = datetime.now().strftime('%Y-%m-%dT%H-%M-%S')
+    csv_file_name = f"processing-results-{timestamp}.csv"
+
+  processed_checksums = load_already_processed_checksums(csv_file_name)
 
   total_cost = 0.0
   total_recipes = 0
@@ -210,15 +231,36 @@ def main():
           tofile='received'
         )
         print(''.join(diff))
-      append_processed_checksum(recipe['checksum'])
 
-      total_cost += template['cost'] if template['cost'] else 0.0
-      total_recipes += 1
+    total_cost += template['cost'] if template['cost'] else 0.0
+    total_recipes += 1
 
-      print(f"Average cost so far for {total_recipes} recipes: ${total_cost/total_recipes:.3f}, Total cost: ${total_cost:.3f}")
+    print(f"Average cost so far for {total_recipes} recipes: ${total_cost/total_recipes:.3f}, Total cost: ${total_cost:.3f}")
+
+    result = ProcessingResult(
+      id=recipe['recipeUID'],
+      hash=recipe['checksum'],
+      valid=template['valid'],
+      cost=template['cost'],
+      reviewReason=template['reviewReason'],
+      diff=''.join(difflib.unified_diff(
+        json.dumps(template['expected'], indent=2).splitlines(keepends=True) if template.get('expected') else [],
+        json.dumps(template['received'], indent=2).splitlines(keepends=True) if template.get('received') else [],
+        fromfile='expected',
+        tofile='received'
+      )) if template.get('expected') and template.get('received') else None,
+      expected=template.get('expected'),
+      received=template.get('received'),
+    )
+    append_result_to_csv(result, csv_file_name)
+
 
   print(f"Total cost for {total_recipes} recipes: ${total_cost:.9f}")
 
 
 if __name__ == "__main__":
-  main()
+  arg_parser = ArgumentParser(description='Process recipe templates and log results.')
+  arg_parser.add_argument('-c', '--csv-file-name', type=str, default=None, help='CSV file name to log results')
+  args = arg_parser.parse_args()
+
+  main(args.csv_file_name)

@@ -174,3 +174,4 @@ Some oven temperature difference. The templating format I created assumed we alw
 # 2025-11-04
 - Added cost calculation to the script. We're at about $0.05 per recipe, total cost of migration is around $300 for 7k recipes. This probably needs to be doubled or tripled as I doubt we'll one-shot the migration.
 - Found a bug where the LLM wasn't returning the same number of ingredient as the input. You cheeky thing. We just need to avoid crashing as the LLM-in-a-loop will see it in the diff and fix it.
+- write the results in a CSV, so it's easier to review larger scales.
