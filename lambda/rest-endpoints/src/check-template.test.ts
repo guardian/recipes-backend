@@ -395,7 +395,10 @@ describe('checkTemplate', () => {
 					],
 				},
 			],
-			instructions: [{ description: 'Add 1¾ tbsp of oil' }],
+			instructions: [
+				{ description: 'Add 1¾ tbsp of oil' },
+				{ description: 'Add ½ tbsp of oil' },
+			],
 		} as RecipeV3;
 
 		const mockScaledRecipe = {
@@ -410,7 +413,10 @@ describe('checkTemplate', () => {
 					],
 				},
 			],
-			instructions: [{ description: 'Add 1 ¾ tbsp of oil' }],
+			instructions: [
+				{ description: 'Add 1 ¾ tbsp of oil' },
+				{ description: 'Add 0.5 tbsp of oil' },
+			],
 		};
 
 		(com.gu.recipe.js.scaleRecipe as jest.Mock).mockReturnValue(
