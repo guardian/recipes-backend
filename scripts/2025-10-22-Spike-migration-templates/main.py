@@ -24,7 +24,7 @@ def fetch_index() -> list[dict]:
 def fetch_CAPI_article(capi_id: str) -> dict | None:
   # url = f'https://content.guardianapis.com/channel/feast/item/{capi_id}?api-key={CAPI_KEY}&show-fields=all&show-blocks=all'
   url = f'https://content.guardianapis.com/{capi_id}?api-key={CAPI_KEY}&show-fields=all&show-blocks=all'
-  print(f"Fetching CAPI article: {url}")
+  print(f"Fetching CAPI article: {capi_id}")
   response = requests.get(url)
   if response.status_code == 404:
     print(f"Article {capi_id} not found in CAPI")
