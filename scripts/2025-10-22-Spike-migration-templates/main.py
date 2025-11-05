@@ -188,9 +188,10 @@ def main(csv_file_name: str | None) -> None:
 
   total_cost = 0.0
   total_recipes = 0
+  start_time = datetime.now()
 
   recipes = fetch_index()
-  for recipe in recipes[:200]:
+  for recipe in recipes[:300]:
     print("\n\n-------------------------")
 
     if recipe['checksum'] in processed_checksums:
@@ -244,7 +245,7 @@ def main(csv_file_name: str | None) -> None:
     total_cost += template['cost'] if template['cost'] else 0.0
     total_recipes += 1
 
-    print(f"Average cost so far for {total_recipes} recipes: ${total_cost/total_recipes:.3f}, Total cost: ${total_cost:.3f}")
+    print(f"Average cost so far for {total_recipes} recipes: ${total_cost/total_recipes:.3f}, Total cost: ${total_cost:.3f}, Average time per recipe: {(datetime.now() - start_time).total_seconds()/total_recipes:.3f} seconds")
 
     result = ProcessingResult(
       id=recipe['recipeUID'],
@@ -263,8 +264,8 @@ def main(csv_file_name: str | None) -> None:
     )
     append_result_to_csv(result, csv_file_name)
 
-
-  print(f"Total cost for {total_recipes} recipes: ${total_cost:.9f}")
+  total_time = (datetime.now() - start_time).total_seconds()
+  print(f"Total cost for {total_recipes} recipes: ${total_cost:.9f}, Average cost: ${total_cost/total_recipes:.9f}, Average time per recipe: {total_time/total_recipes:.3f} seconds, Total time: {total_time:.3f} seconds")
 
 
 if __name__ == "__main__":

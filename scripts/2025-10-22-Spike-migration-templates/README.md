@@ -191,3 +191,12 @@ Some oven temperature difference. The templating format I created assumed we alw
   - the diff shows 0.66 vs 0.67, so I've adapted the verification prompt to accept these.
 - I'm now storing the recipe templates as JSON files, to make it easier to review
 - 100% success on the first 200 recipes, which means I have covered all the edge cases so far, and the previous recipes that were flagged for human review were all due to the `text` field not matching the structured data.
+- Cost has risen to $0.06 per recipe, so under $450 for 7k recipes.
+- Adding another 100 recipes, never seen before
+- Adding measurement of average time taken to process a recipe. Around 15s per recipe, so 30 hours of sequential processing.
+
+Migration TODO:
+- [ ] Ensure a single exception doesn't throw off the migration. Log exceptions and continue, but ensure 401 blocks the migration.
+- [ ] Add support for parallel processing
+- [ ] Improve logging on the data-science-recipes repo so we have the recipe ID and Hash in the logs
+- [ ] Understand how to write the recipe template back to CAPI (through composer)
