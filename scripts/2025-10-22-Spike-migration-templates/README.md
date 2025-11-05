@@ -191,9 +191,14 @@ Some oven temperature difference. The templating format I created assumed we alw
   - the diff shows 0.66 vs 0.67, so I've adapted the verification prompt to accept these.
 - I'm now storing the recipe templates as JSON files, to make it easier to review
 - 100% success on the first 200 recipes, which means I have covered all the edge cases so far, and the previous recipes that were flagged for human review were all due to the `text` field not matching the structured data.
-- Cost has risen to $0.06 per recipe, so under $450 for 7k recipes.
+- Cost has risen to $0.06 per recipe, so under $450 for 7k recipes. This is mainly due to the increased number of iterations, as well as longer prompts.
 - Adding another 100 recipes, never seen before
+  - 3 recipes flagged for human review, all the others passed validation:
+    - One because the ingredient unit is `lightly heaped tbsp` => ok to flag
+    - One because the oven temperature within the same recipe aren't consistently formatted and it the LLM can't get exact character match. Ok to flag, but if common I'll improve the verification prompt
+    - One because the source ingredient is `{"name": "fresh thyme", "amount": null, "unit": "sprigs", "optional": false, "prefix": "A few sprigs", "suffix": null}` => ok to flag, the unit is wrong here
 - Adding measurement of average time taken to process a recipe. Around 15s per recipe, so 30 hours of sequential processing.
+- Preparing PRs
 
 Migration TODO:
 - [ ] Ensure a single exception doesn't throw off the migration. Log exceptions and continue, but ensure 401 blocks the migration.
