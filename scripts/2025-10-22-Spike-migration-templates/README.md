@@ -175,3 +175,12 @@ Some oven temperature difference. The templating format I created assumed we alw
 - Added cost calculation to the script. We're at about $0.05 per recipe, total cost of migration is around $300 for 7k recipes. This probably needs to be doubled or tripled as I doubt we'll one-shot the migration.
 - Found a bug where the LLM wasn't returning the same number of ingredient as the input. You cheeky thing. We just need to avoid crashing as the LLM-in-a-loop will see it in the diff and fix it.
 - write the results in a CSV, so it's easier to review larger scales.
+- Running the migration on 200 recipes, new error cases are popping up:
+  - an empty ingredient list is throwing the LLM off => need to filter these out upstream
+  - need to add support for 1/3 and 2/3
+  - Need to preserver leading spaces before fractions, the regexp was too greedy
+  - Interestingly I found a case where the LLM needed 3 tries + 1 last check, so I've increased the iteration count to 4
+  - I found a surprisingly high amount of ingredient where the `text` field doesn't match at all the data in the ingredients themselves (amount, unit etc). On one hand that field could be useful to fix any error introduced by the structuriser, on the other hand, when a human has corrected the recipe manually, because that field doesn't appear in the UI, it remained filled with whatever data was there before, making the LLM flag the recipe as being completely out of sync.
+
+# 2025-11-05
+- Need to test structurising the ingredients by reconstructing the text field rather than using what we have, and see if we have fewer recipes to fix.
