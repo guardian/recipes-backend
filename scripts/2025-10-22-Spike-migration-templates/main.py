@@ -64,22 +64,25 @@ def templatise_recipe(recipe: dict) -> dict:
 
 
 def format_ingredient_text(ingredient: dict) -> str:
-  parts = []
+  parts = ['<strong>']
   if 'amount' in ingredient and ingredient['amount'] is not None:
     amount = ingredient['amount']
+    amount_str = ''
     if 'min' in amount and amount['min'] is not None:
-      parts.append(str(amount['min']))
+      amount_str += str(amount['min'])
       if 'max' in amount and amount['max'] is not None and amount['max'] != amount['min']:
-        parts.append(f"-{amount['max']}")
+        amount_str += f"-{amount['max']}"
+      parts.append(amount_str + ' ')
   if 'unit' in ingredient and ingredient['unit'] is not None:
-    parts.append(ingredient['unit'])
+    parts.append(ingredient['unit'].strip() + ' ')
   if 'prefix' in ingredient and ingredient['prefix'] is not None:
-    parts.append(ingredient['prefix'])
+    parts.append(ingredient['prefix'].strip() + ' ')
   if 'name' in ingredient and ingredient['name'] is not None:
-    parts.append(ingredient['name'])
+    parts.append(ingredient['name'].strip())
+  parts.append('</strong>')
   if 'suffix' in ingredient and ingredient['suffix'] is not None:
-    parts.append(ingredient['suffix'])
-  return ' '.join(parts)
+    parts.append(' ' + ingredient['suffix'].strip())
+  return ''.join(parts).strip()
 
 def update_model_to_pass_validation(recipe: dict) -> dict:
   # Set bookCredit and difficultyLevel to null
@@ -92,6 +95,10 @@ def update_model_to_pass_validation(recipe: dict) -> dict:
   if 'featuredImage' in recipe:
     recipe['featuredImage']['imageType'] = 'Photograph'
 
+  # Filter empty ingredient groups
+  if 'ingredients' in recipe:
+    recipe['ingredients'] = [group for group in recipe['ingredients'] if 'ingredientsList' in group and group['ingredientsList']]
+
   # Filter ingredients: set amount to null if amount.min is null
   if 'ingredients' in recipe:
     for ingredient_group in recipe['ingredients']:
@@ -100,8 +107,7 @@ def update_model_to_pass_validation(recipe: dict) -> dict:
           if 'amount' in ingredient and ingredient['amount'] is not None:
             if 'min' not in ingredient['amount'] or ingredient['amount']['min'] is None:
               ingredient['amount'] = None
-          if 'text' not in ingredient:
-            ingredient['text'] = format_ingredient_text(ingredient)
+          ingredient['text'] = format_ingredient_text(ingredient)
 
   # Force numbering instruction entries
   if 'instructions' in recipe:
@@ -176,7 +182,7 @@ def main(csv_file_name: str | None) -> None:
 
   if not csv_file_name:
     timestamp = datetime.now().strftime('%Y-%m-%dT%H-%M-%S')
-    csv_file_name = f"processing-results-{timestamp}.csv"
+    csv_file_name = f"output/processing-results-{timestamp}.csv"
 
   processed_checksums = load_already_processed_checksums(csv_file_name)
 
@@ -200,6 +206,9 @@ def main(csv_file_name: str | None) -> None:
     capi_recipe = find_recipe_elements(response["response"], recipe['recipeUID'])
     massaged_recipe = update_model_to_pass_validation(capi_recipe)
     template = templatise_recipe(massaged_recipe)
+    with open(f"output/recipes/{recipe['recipeUID']}.json", 'w') as f:
+      json.dump(template['recipe'], f, indent=2)
+
     print(f"Recipe {recipe['recipeUID']}, hash {recipe['checksum']} was processed (${template['cost']:.3f}). Valid: {template["valid"]}")
     if template["reviewReason"]:
       print(f"Recipe {recipe['recipeUID']} needs human review. Reason: {template['reviewReason']}")

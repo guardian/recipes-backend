@@ -183,4 +183,11 @@ Some oven temperature difference. The templating format I created assumed we alw
   - I found a surprisingly high amount of ingredient where the `text` field doesn't match at all the data in the ingredients themselves (amount, unit etc). On one hand that field could be useful to fix any error introduced by the structuriser, on the other hand, when a human has corrected the recipe manually, because that field doesn't appear in the UI, it remained filled with whatever data was there before, making the LLM flag the recipe as being completely out of sync.
 
 # 2025-11-05
-- Need to test structurising the ingredients by reconstructing the text field rather than using what we have, and see if we have fewer recipes to fix.
+- Need to test structurising the ingredients by reconstructing the text field from the ingredient data rather than using what we have, and see if we have fewer recipes to fix. This is because the `text` field is not editable by our editorial team, and never shown to the user.
+- While I'm at it, I've added the <strong> tag which should work on both iOS and Android natively.
+- Re-running the migration for 200 recipes, crossing my fingers.
+  - Some errors, now I've added the <strong> tag, the LLM is sometimes outputting invalid JSON. Another example of prompt instability in front of complexity
+  - It turns out simply returning the parsing error to the LLM is enough to have it fix the issue on the next iteration. So I've once more increased the number of max iteration to 5
+  - the diff shows 0.66 vs 0.67, so I've adapted the verification prompt to accept these.
+- I'm now storing the recipe templates as JSON files, to make it easier to review
+- 100% success on the first 200 recipes, which means I have covered all the edge cases so far, and the previous recipes that were flagged for human review were all due to the `text` field not matching the structured data.
