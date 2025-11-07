@@ -52,7 +52,7 @@ function normaliseInstructionOrIngredient(instruction: string): string {
 		.replace(/'/g, '’') // funnily enough, sonnet doesn't have a token for fancy apostrophe
 		.replace(/[']/g, '’') // funnily enough, sonnet doesn't have a token for fancy apostrophe
 		.replace(/[“”]/g, '"') // similarly, normalise double quotes as it confuses the model
-		.replace(/[–­]/g, '-') // similarly, normalise double quotes as it confuses the model
+		.replace(/[–­]/g, '-') // same for dashes
 		.replace(/\u00A0/g, ' ') // replace non-breaking spaces with regular spaces
 		.replace(/(\d ?)?([\u00BC-\u00BE\u2150-\u215E])/g, normaliseFractions) // go from `1 ½` to `1.5`, so we compare consistently
 		.replace(/ +/g, ' ') // replace any double space
