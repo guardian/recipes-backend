@@ -1,0 +1,6 @@
+.idea
+.venv
+.env
+processed_checksums.txt
+skipped_checksums.txt
+output
