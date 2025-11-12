@@ -381,4 +381,91 @@ describe('checkTemplate', () => {
 		expect(result.expected).toBeUndefined();
 		expect(result.received).toBeUndefined();
 	});
+
+	it('should normalise fractions with missing spaces and match', () => {
+		const mockRecipe: RecipeV3 = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [
+						{ text: '1½ tsp salt', name: 'salt' },
+						{ text: '2¼ cups flour', name: 'flour' },
+						{ text: '½ garlic clove', name: 'garlic' },
+						{ text: '½ garlic clove', name: 'garlic' },
+					],
+				},
+			],
+			instructions: [
+				{ description: 'Add 1¾ tbsp of oil' },
+				{ description: 'Add ½ tbsp of oil' },
+			],
+		} as RecipeV3;
+
+		const mockScaledRecipe = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [
+						{ text: '1 ½ tsp salt', name: 'salt' },
+						{ text: '2 ¼ cups flour', name: 'flour' },
+						{ text: '½ garlic clove', name: 'garlic' },
+						{ text: '0.5 garlic clove', name: 'garlic' },
+					],
+				},
+			],
+			instructions: [
+				{ description: 'Add 1 ¾ tbsp of oil' },
+				{ description: 'Add 0.5 tbsp of oil' },
+			],
+		};
+
+		(com.gu.recipe.js.scaleRecipe as jest.Mock).mockReturnValue(
+			JSON.stringify(mockScaledRecipe),
+		);
+
+		const result = checkTemplate(mockRecipe);
+
+		expect(result.match).toBe(true);
+		expect(result.expected).toBeUndefined();
+		expect(result.received).toBeUndefined();
+	});
+
+	it('should normalise dish dimension if a unit is missing', () => {
+		const mockRecipe: RecipeV3 = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [],
+				},
+			],
+			instructions: [
+				{ description: 'Spread evenly in a 30 x 20 cm oven dish.' },
+				// this one gets matched, but not normalised as it's missing units altogether
+				{ description: 'Multiply 2 x 3 to see if you can count' },
+			],
+		} as RecipeV3;
+
+		const mockScaledRecipe = {
+			...mockRecipeData,
+			ingredients: [
+				{
+					ingredientsList: [],
+				},
+			],
+			instructions: [
+				{ description: 'Spread evenly in a 30 cm x 20 cm oven dish.' },
+				{ description: 'Multiply 2 x 3 to see if you can count' },
+			],
+		};
+
+		(com.gu.recipe.js.scaleRecipe as jest.Mock).mockReturnValue(
+			JSON.stringify(mockScaledRecipe),
+		);
+
+		const result = checkTemplate(mockRecipe);
+
+		expect(result.match).toBe(true);
+		expect(result.expected).toBeUndefined();
+		expect(result.received).toBeUndefined();
+	});
 });
