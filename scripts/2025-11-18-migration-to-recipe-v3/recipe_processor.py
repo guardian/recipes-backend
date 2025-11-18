@@ -8,6 +8,7 @@ from time import sleep
 
 from config import Config
 from services import RecipeReference
+from tui_logger import get_tui
 import uuid
 import requests
 
@@ -25,11 +26,12 @@ class Report:
 
 
 def fetch_CAPI_article(capi_id: str, config: Config) -> dict | None:
+  tui = get_tui()
   url = f'https://content.guardianapis.com/{capi_id}?api-key={config.capi_key}&show-fields=all&show-blocks=all'
-  print(f"Fetching CAPI article: {capi_id}")
+  tui.info(f"Fetching CAPI article: {capi_id}")
   response = requests.get(url)
   if response.status_code == 404:
-    print(f"Article {capi_id} not found in CAPI")
+    tui.warning(f"Article {capi_id} not found in CAPI")
     return None
   response.raise_for_status()
   return response.json()
@@ -112,6 +114,7 @@ def update_model_to_pass_validation(recipe: dict) -> dict:
   return new_recipe
 
 def templatise_recipe(recipe: dict, config: Config) -> dict:
+  tui = get_tui()
   headers = {
     'content-type': 'application/json',
     'accept': 'application/json',
@@ -119,10 +122,10 @@ def templatise_recipe(recipe: dict, config: Config) -> dict:
   }
   response = requests.post(config.templatiser_url, data=json.dumps(recipe), headers=headers)
   if response.status_code == 422:
-    print(f"Validation error: {response.text}")
-    print(json.dumps(recipe, indent=2))
+    tui.error(f"Validation error: {response.text}")
+    tui.error(json.dumps(recipe, indent=2))
   if response.status_code == 503:
-    print("Service unavailable, sleeping for 10 seconds and retrying...")
+    tui.warning("Service unavailable, sleeping for 10 seconds and retrying...")
     sleep(10)
     return templatise_recipe(recipe, config)
   response.raise_for_status()
@@ -155,7 +158,8 @@ def process_recipe(
   recipe_input: RecipeReference,
   output_folder: str,
 ) -> Report:
-  print(f"Processing recipe_id={recipe_input.recipe_id}...")
+  tui = get_tui()
+  tui.info(f"Processing recipe_id={recipe_input.recipe_id}...")
   capi_fetch_response = fetch_CAPI_article(recipe_input.capi_id, config)
   capi_recipe = find_recipe_elements(capi_fetch_response["response"], recipe_input.recipe_id)
   massaged_recipe = update_model_to_pass_validation(capi_recipe)
@@ -186,4 +190,5 @@ def process_recipe(
     last_updated_at=find_recipe_last_updated_at(capi_fetch_response["response"], recipe_input.recipe_id),
   )
   result_queue.put(report)
+  tui.success(f"Completed recipe_id={recipe_input.recipe_id} with status={status}")
   return report

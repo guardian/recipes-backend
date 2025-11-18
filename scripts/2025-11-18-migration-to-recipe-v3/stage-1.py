@@ -10,10 +10,12 @@ from threading import Thread
 from config import load_config
 from recipe_processor import Report, process_recipe
 from services import fetch_index
+from tui_logger import get_tui
 
 
 def writer_thread(result_queue: Queue[Report | None], filename):
   """Dedicated thread for writing to CSV"""
+  tui = get_tui()
   with open(filename, 'w', newline='') as f:
     fieldnames = [field.name for field in dataclasses.fields(Report)]
     writer = DictWriter(f, fieldnames=fieldnames)
@@ -25,13 +27,15 @@ def writer_thread(result_queue: Queue[Report | None], filename):
       if row is None:  # Sentinel to stop
         result_queue.task_done()
         break
-      print(f"Writing report for recipe_id={row.recipe_id}")
+      tui.info(f"Writing report for recipe_id={row.recipe_id}")
       writer.writerow(dataclasses.asdict(row))
       f.flush()  # Ensure immediate write
       result_queue.task_done()
 
 
 def main(parallelism: int, state_folder: str = None):
+  tui = get_tui()
+
   if state_folder is None:
     timestamp = datetime.now().strftime('%Y%m%dT%H%M%S')
     state_folder = f"./data/migration-{timestamp}"
@@ -41,14 +45,16 @@ def main(parallelism: int, state_folder: str = None):
 
   config = load_config()
 
-  print("This is stage 1 of the migration to recipe v3.")
   result_queue: Queue[Report | None] = Queue()
 
   writer = Thread(target=writer_thread, args=(result_queue, f"{state_folder}/results.csv"))
   writer.start()
 
   recipes = fetch_index()
-  print(f"Found {len(recipes)} recipes to process")
+  tui.info(f"Found {len(recipes)} recipes to process")
+
+  # Start the TUI
+  tui.start(total=len(recipes))
 
   with ThreadPoolExecutor(max_workers=parallelism) as executor:
     futures = [executor.submit(process_recipe, result_queue, config, recipe_input, recipes_folder) for recipe_input in recipes]
@@ -57,16 +63,23 @@ def main(parallelism: int, state_folder: str = None):
       try:
         result = future.result()
         completed += 1
-        print(f"Completed {completed}/{len(recipes)} recipes")
+        tui.update_progress(completed)
+        # Add cost if it's a valid number
+        try:
+          cost_value = float(result.cost)
+          tui.add_cost(cost_value)
+        except (ValueError, TypeError):
+          tui.warning(f"Invalid cost value: {result.cost}")
       except Exception as e:
-        print(f"Error processing recipe: {e}")
+        tui.error(f"Error processing recipe: {e}")
         import traceback
-        traceback.print_exc()
+        tui.error(traceback.format_exc())
 
-  # Stop writer thread
+  # Stop TUI and writer thread
+  tui.stop()
   result_queue.put(None)
   writer.join()
-  print("All done.")
+  tui.info("All done.")
 
 
 if __name__ == "__main__":
