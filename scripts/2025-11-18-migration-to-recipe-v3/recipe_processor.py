@@ -1,24 +1,189 @@
+import copy
+import json
+import os
 from dataclasses import dataclass
-from datetime import datetime
+from difflib import unified_diff
 from queue import Queue
+from time import sleep
 
+from config import Config
 from services import RecipeReference
-
+import uuid
+import requests
 
 @dataclass(frozen=True)
 class Report:
   recipe_id: str
   filename: str
-  diff: str
+  status: str
+  reason: str | None
+  diff: str | None
+  expected: str | None
+  received: str | None
+  cost: str
   last_updated_at: str
 
-def process_recipe(result_queue: Queue[Report | None], recipe_input: RecipeReference) -> Report:
+
+def fetch_CAPI_article(capi_id: str, config: Config) -> dict | None:
+  url = f'https://content.guardianapis.com/{capi_id}?api-key={config.capi_key}&show-fields=all&show-blocks=all'
+  print(f"Fetching CAPI article: {capi_id}")
+  response = requests.get(url)
+  if response.status_code == 404:
+    print(f"Article {capi_id} not found in CAPI")
+    return None
+  response.raise_for_status()
+  return response.json()
+
+def find_recipe_elements(article: dict, recipe_id: str) -> dict:
+  blocks: dict = article["content"]["blocks"]
+  if "body" in blocks:
+    body_blocks = blocks["body"]
+    for block in body_blocks:
+      if "elements" in block:
+        for element in block["elements"]:
+          if "type" in element and element["type"] == "recipe":
+            json_value = json.loads(element["recipeTypeData"]["recipeJson"])
+            if json_value["id"] == recipe_id:
+              return json_value
+  raise Exception(f"No recipe element found for recipe ID {recipe_id}")
+
+def find_recipe_last_updated_at(article: dict, article_id: str) -> str:
+  if "content" in article and "fields" in article["content"] and "lastModified" in article["content"]["fields"]:
+    return article["content"]["fields"]["lastModified"]
+  else:
+    raise Exception(f"No recipe lastModified date found for recipe ID {article_id}")
+
+def format_ingredient_text(ingredient: dict) -> str:
+  parts: list[str] = []
+  if 'amount' in ingredient and ingredient['amount'] is not None:
+    amount = ingredient['amount']
+    amount_str = ''
+    if 'min' in amount and amount['min'] is not None:
+      amount_str += str(amount['min'])
+      if 'max' in amount and amount['max'] is not None and amount['max'] != amount['min']:
+        amount_str += f"-{amount['max']}"
+      parts.append(amount_str + ' ')
+    if 'unit' in ingredient and ingredient['unit'] is not None:
+      parts.append(ingredient['unit'].strip() + ' ')
+  if 'prefix' in ingredient and ingredient['prefix'] is not None:
+    parts.append(ingredient['prefix'].strip() + ' ')
+  if 'name' in ingredient and ingredient['name'] is not None:
+    parts.append(ingredient['name'].strip())
+  if 'suffix' in ingredient and ingredient['suffix'] is not None:
+    parts.append(', ' + ingredient['suffix'].strip())
+  return ''.join(parts).strip()
+
+
+def update_model_to_pass_validation(recipe: dict) -> dict:
+  new_recipe = copy.deepcopy(recipe)
+
+  # These fields aren't touched by the templatizer, we won't keep the value returned by the templatizer
+  new_recipe['contributors'] = []
+  new_recipe['featuredImage'] = None
+  new_recipe['serves'] = []
+  new_recipe['timings'] = []
+
+
+  # Filter empty ingredient groups
+  if 'ingredients' in new_recipe:
+    new_recipe['ingredients'] = [group for group in new_recipe['ingredients'] if 'ingredientsList' in group and group['ingredientsList']]
+
+  # Filter ingredients: set amount to null if amount.min is null
+  if 'ingredients' in new_recipe:
+    for ingredient_group in new_recipe['ingredients']:
+      if 'ingredientsList' in ingredient_group:
+        for ingredient in ingredient_group['ingredientsList']:
+          if 'amount' in ingredient and ingredient['amount'] is not None:
+            if 'min' not in ingredient['amount'] or ingredient['amount']['min'] is None:
+              ingredient['amount'] = None
+          ingredient['text'] = format_ingredient_text(ingredient)
+          if not 'ingredientId' in ingredient or ingredient['ingredientId'] is None:
+            ingredient['ingredientId'] = str(uuid.uuid4())
+
+  # Force numbering instruction entries
+  if 'instructions' in new_recipe:
+    numbered_instructions = []
+    for idx, instruction in enumerate(new_recipe['instructions']):
+      instruction['stepNumber'] = idx + 1
+      numbered_instructions.append(instruction)
+    new_recipe['instructions'] = numbered_instructions
+
+
+  return new_recipe
+
+def templatise_recipe(recipe: dict, config: Config) -> dict:
+  headers = {
+    'content-type': 'application/json',
+    'accept': 'application/json',
+    'authorization': f'Bearer {config.templatiser_token}'
+  }
+  response = requests.post(config.templatiser_url, data=json.dumps(recipe), headers=headers)
+  if response.status_code == 422:
+    print(f"Validation error: {response.text}")
+    print(json.dumps(recipe, indent=2))
+  if response.status_code == 503:
+    print("Service unavailable, sleeping for 10 seconds and retrying...")
+    sleep(10)
+    return templatise_recipe(recipe, config)
+  response.raise_for_status()
+  return response.json()
+
+def reassemble_recipe(recipe: dict, templatised: dict) -> dict:
+  new_recipe = copy.deepcopy(recipe)
+  new_recipe['ingredients'] = templatised['ingredients']
+  new_recipe['instructions'] = templatised['instructions']
+  return new_recipe
+
+def compute_diff(template_result: dict) -> str | None:
+  if 'expected' in template_result and template_result['expected'] is not None:
+    expected = json.dumps(template_result['expected'], indent=2)
+    received = json.dumps(template_result['received'], indent=2)
+
+    # diff the two
+    diff = unified_diff(
+      expected.splitlines(keepends=True),
+      received.splitlines(keepends=True),
+      fromfile='expected',
+      tofile='received'
+    )
+    return ''.join(diff)
+  return None
+
+def process_recipe(
+  result_queue: Queue[Report | None],
+  config: Config,
+  recipe_input: RecipeReference,
+  output_folder: str,
+) -> Report:
   print(f"Processing recipe_id={recipe_input.recipe_id}...")
+  capi_fetch_response = fetch_CAPI_article(recipe_input.capi_id, config)
+  capi_recipe = find_recipe_elements(capi_fetch_response["response"], recipe_input.recipe_id)
+  massaged_recipe = update_model_to_pass_validation(capi_recipe)
+  template_result = templatise_recipe(massaged_recipe, config)
+  result = reassemble_recipe(capi_recipe, template_result['recipe'])
+
+  # write the json file
+  filename = os.path.join(output_folder, f"{recipe_input.recipe_id}.json")
+  with open(filename, 'w') as f:
+    json.dump(result, f, indent=2)
+
+  if template_result['reviewReason'] is not None:
+    status = "review_needed"
+  elif template_result['expected'] is not None:
+    status = "accepted_by_llm"
+  else:
+    status = "success"
+
   report = Report(
     recipe_id=recipe_input.recipe_id,
-    filename=f"{recipe_input.recipe_id}.json",
-    diff="N/A",
-    last_updated_at=datetime.now().isoformat()
+    filename=filename,
+    status=status,
+    reason=template_result['reviewReason'],
+    diff=compute_diff(template_result),
+    expected=template_result['expected'],
+    received=template_result['received'],
+    cost=template_result['cost'],
+    last_updated_at=find_recipe_last_updated_at(capi_fetch_response["response"], recipe_input.recipe_id),
   )
   result_queue.put(report)
   return report

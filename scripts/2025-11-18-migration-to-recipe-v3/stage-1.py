@@ -7,20 +7,23 @@ from argparse import ArgumentParser
 import os
 from threading import Thread
 
+from config import load_config
 from recipe_processor import Report, process_recipe
 from services import fetch_index
 
 
 def writer_thread(result_queue: Queue[Report | None], filename):
   """Dedicated thread for writing to CSV"""
-  with open(filename, 'a') as f:
+  with open(filename, 'w', newline='') as f:
     fieldnames = [field.name for field in dataclasses.fields(Report)]
     writer = DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
+    f.flush()  # Ensure header is written immediately
 
     while True:
       row = result_queue.get()
       if row is None:  # Sentinel to stop
+        result_queue.task_done()
         break
       print(f"Writing report for recipe_id={row.recipe_id}")
       writer.writerow(dataclasses.asdict(row))
@@ -32,8 +35,11 @@ def main(parallelism: int, state_folder: str = None):
   if state_folder is None:
     timestamp = datetime.now().strftime('%Y%m%dT%H%M%S')
     state_folder = f"./data/migration-{timestamp}"
-    recipes_folder = os.path.join(state_folder, "recipes")
-    os.makedirs(recipes_folder, exist_ok=True)
+
+  recipes_folder = os.path.join(state_folder, "recipes")
+  os.makedirs(recipes_folder, exist_ok=True)
+
+  config = load_config()
 
   print("This is stage 1 of the migration to recipe v3.")
   result_queue: Queue[Report | None] = Queue()
@@ -42,11 +48,20 @@ def main(parallelism: int, state_folder: str = None):
   writer.start()
 
   recipes = fetch_index()
+  print(f"Found {len(recipes)} recipes to process")
 
   with ThreadPoolExecutor(max_workers=parallelism) as executor:
-    futures = [executor.submit(process_recipe, result_queue, recipe_input) for recipe_input in recipes]
+    futures = [executor.submit(process_recipe, result_queue, config, recipe_input, recipes_folder) for recipe_input in recipes]
+    completed = 0
     for future in as_completed(futures):
-      future.result()
+      try:
+        result = future.result()
+        completed += 1
+        print(f"Completed {completed}/{len(recipes)} recipes")
+      except Exception as e:
+        print(f"Error processing recipe: {e}")
+        import traceback
+        traceback.print_exc()
 
   # Stop writer thread
   result_queue.put(None)
