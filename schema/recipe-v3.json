@@ -90,13 +90,6 @@
         "$ref": "instruction.json"
       }
     },
-    "instructionsTemplate": {
-      "type": "array",
-      "description": "Step-by-step cooking instructions using string templates",
-      "items": {
-        "$ref": "instruction-template.json"
-      }
-    },
     "contributors": {
       "type": "array",
       "description": "List of people who contributed to the recipe",
@@ -116,13 +109,6 @@
       "description": "Ingredients organized by sections",
       "items": {
         "$ref": "ingredients-list.json"
-      }
-    },
-    "ingredientsTemplate": {
-      "type": "array",
-      "description": "Ingredients organized by sections using string templates",
-      "items": {
-        "$ref": "ingredients-template-list.json"
       }
     },
     "celebrationIds": {
