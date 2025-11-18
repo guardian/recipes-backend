@@ -2,38 +2,18 @@ import dataclasses
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from csv import DictWriter
 from queue import Queue
-from dataclasses import dataclass
 from datetime import datetime
 from argparse import ArgumentParser
 import os
 from threading import Thread
 
-import requests
+from recipe_processor import Report, process_recipe
+from services import fetch_index
 
 
-@dataclass(frozen=True)
-class RecipeInput:
-  recipe_id: str
-  capi_id: str
-
-@dataclass(frozen=True)
-class Report:
-  recipe_id: str
-  filename: str
-  diff: str
-  last_updated_at: str
-
-
-def fetch_index() -> list[RecipeInput]:
-  response = requests.get('https://recipes.guardianapis.com/v2/index.json')
-  response.raise_for_status()
-  recipes = response.json()["recipes"]
-  recipes = [RecipeInput(recipe_id=recipe["recipeUID"], capi_id=recipe["capiArticleId"]) for recipe in recipes]
-  return recipes
-
-def writer_thread(result_queue: Queue[Report], filename):
+def writer_thread(result_queue: Queue[Report | None], filename):
   """Dedicated thread for writing to CSV"""
-  with open(filename, 'w') as f:
+  with open(filename, 'a') as f:
     fieldnames = [field.name for field in dataclasses.fields(Report)]
     writer = DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
@@ -47,17 +27,6 @@ def writer_thread(result_queue: Queue[Report], filename):
       f.flush()  # Ensure immediate write
       result_queue.task_done()
 
-def process_recipe(result_queue: Queue[Report], recipe_input: RecipeInput) -> Report:
-  print(f"Processing recipe_id={recipe_input.recipe_id}...")
-  report = Report(
-    recipe_id=recipe_input.recipe_id,
-    filename=f"{recipe_input.recipe_id}.json",
-    diff="N/A",
-    last_updated_at=datetime.now().isoformat()
-  )
-  result_queue.put(report)
-  return report
-
 
 def main(parallelism: int, state_folder: str = None):
   if state_folder is None:
@@ -67,7 +36,7 @@ def main(parallelism: int, state_folder: str = None):
     os.makedirs(recipes_folder, exist_ok=True)
 
   print("This is stage 1 of the migration to recipe v3.")
-  result_queue: Queue[Report] = Queue()
+  result_queue: Queue[Report | None] = Queue()
 
   writer = Thread(target=writer_thread, args=(result_queue, f"{state_folder}/results.csv"))
   writer.start()
@@ -83,6 +52,7 @@ def main(parallelism: int, state_folder: str = None):
   result_queue.put(None)
   writer.join()
   print("All done.")
+
 
 if __name__ == "__main__":
   arg_parser = ArgumentParser(description='Stage 1 of the migration to recipe v3')
