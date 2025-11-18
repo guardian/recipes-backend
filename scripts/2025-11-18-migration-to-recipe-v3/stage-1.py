@@ -1,7 +1,93 @@
-def main(parallelism: int = 1, state_folder: str = None):
-  print("This is stage 1 of the migration to recipe v3.")
+import dataclasses
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from csv import DictWriter
+from queue import Queue
+from dataclasses import dataclass
+from datetime import datetime
+from argparse import ArgumentParser
+import os
+from threading import Thread
 
+import requests
+
+
+@dataclass(frozen=True)
+class RecipeInput:
+  recipe_id: str
+  capi_id: str
+
+@dataclass(frozen=True)
+class Report:
+  recipe_id: str
+  filename: str
+  diff: str
+  last_updated_at: str
+
+
+def fetch_index() -> list[RecipeInput]:
+  response = requests.get('https://recipes.guardianapis.com/v2/index.json')
+  response.raise_for_status()
+  recipes = response.json()["recipes"]
+  recipes = [RecipeInput(recipe_id=recipe["recipeUID"], capi_id=recipe["capiArticleId"]) for recipe in recipes]
+  return recipes
+
+def writer_thread(result_queue: Queue[Report], filename):
+  """Dedicated thread for writing to CSV"""
+  with open(filename, 'w') as f:
+    fieldnames = [field.name for field in dataclasses.fields(Report)]
+    writer = DictWriter(f, fieldnames=fieldnames)
+    writer.writeheader()
+
+    while True:
+      row = result_queue.get()
+      if row is None:  # Sentinel to stop
+        break
+      print(f"Writing report for recipe_id={row.recipe_id}")
+      writer.writerow(dataclasses.asdict(row))
+      f.flush()  # Ensure immediate write
+      result_queue.task_done()
+
+def process_recipe(result_queue: Queue[Report], recipe_input: RecipeInput) -> Report:
+  print(f"Processing recipe_id={recipe_input.recipe_id}...")
+  report = Report(
+    recipe_id=recipe_input.recipe_id,
+    filename=f"{recipe_input.recipe_id}.json",
+    diff="N/A",
+    last_updated_at=datetime.now().isoformat()
+  )
+  result_queue.put(report)
+  return report
+
+
+def main(parallelism: int, state_folder: str = None):
+  if state_folder is None:
+    timestamp = datetime.now().strftime('%Y%m%dT%H%M%S')
+    state_folder = f"./data/migration-{timestamp}"
+    recipes_folder = os.path.join(state_folder, "recipes")
+    os.makedirs(recipes_folder, exist_ok=True)
+
+  print("This is stage 1 of the migration to recipe v3.")
+  result_queue: Queue[Report] = Queue()
+
+  writer = Thread(target=writer_thread, args=(result_queue, f"{state_folder}/results.csv"))
+  writer.start()
+
+  recipes = fetch_index()
+
+  with ThreadPoolExecutor(max_workers=parallelism) as executor:
+    futures = [executor.submit(process_recipe, result_queue, recipe_input) for recipe_input in recipes]
+    for future in as_completed(futures):
+      future.result()
+
+  # Stop writer thread
+  result_queue.put(None)
+  writer.join()
+  print("All done.")
 
 if __name__ == "__main__":
+  arg_parser = ArgumentParser(description='Stage 1 of the migration to recipe v3')
+  arg_parser.add_argument('-p', '--parallelism', type=int, default=1, help='Number of parallel tasks to use')
+  arg_parser.add_argument('-s', '--state-folder', type=str, default=None, help='Path to the state folder')
 
-  main()
+  args = arg_parser.parse_args()
+  main(parallelism=args.parallelism, state_folder=args.state_folder)
