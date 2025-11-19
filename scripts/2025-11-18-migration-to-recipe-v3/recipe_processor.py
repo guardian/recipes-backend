@@ -99,8 +99,8 @@ def update_model_to_pass_validation(recipe: dict) -> dict:
             if 'min' not in ingredient['amount'] or ingredient['amount']['min'] is None:
               ingredient['amount'] = None
           ingredient['text'] = format_ingredient_text(ingredient)
-          if not 'ingredientId' in ingredient or ingredient['ingredientId'] is None:
-            ingredient['ingredientId'] = str(uuid.uuid4())
+          if not 'ingredientID' in ingredient or ingredient['ingredientID'] is None:
+            ingredient['ingredientID'] = str(uuid.uuid4())
 
   # Force numbering instruction entries
   if 'instructions' in new_recipe:
@@ -133,6 +133,7 @@ def templatise_recipe(recipe: dict, config: Config) -> dict:
 
 def reassemble_recipe(recipe: dict, templatised: dict) -> dict:
   new_recipe = copy.deepcopy(recipe)
+
   new_recipe['ingredients'] = templatised['ingredients']
   new_recipe['instructions'] = templatised['instructions']
   return new_recipe
