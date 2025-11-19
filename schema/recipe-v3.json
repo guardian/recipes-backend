@@ -124,6 +124,16 @@
         ]
       }
     },
+    "commerceCtas": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "Call-to-action items for commerce links",
+      "items": {
+        "$ref": "commerce-cta.json"
+      }
+    },
     "cuisineIds": {
       "type": [
         "array",
