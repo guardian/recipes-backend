@@ -3,6 +3,7 @@ import json
 import os
 from dataclasses import dataclass
 from difflib import unified_diff
+from enum import Enum
 from queue import Queue
 from time import sleep
 
@@ -12,11 +13,19 @@ from tui_logger import get_tui
 import uuid
 import requests
 
+class ReportStatus(Enum):
+  SUCCESS = "success"
+  ACCEPTED_BY_LLM = "accepted_by_llm"
+  REVIEW_NEEDED = "review_needed"
+  ERROR = "error"
+
 @dataclass(frozen=True)
 class Report:
   recipe_id: str
+  capi_id: str
+  composer_id: str | None
   filename: str
-  status: str
+  status: ReportStatus
   reason: str | None
   diff: str | None
   expected: str | None
@@ -162,6 +171,24 @@ def process_recipe(
   tui = get_tui()
   tui.info(f"Processing recipe_id={recipe_input.recipe_id}...")
   capi_fetch_response = fetch_CAPI_article(recipe_input.capi_id, config)
+  if capi_fetch_response is None:
+    report = Report(
+      recipe_id=recipe_input.recipe_id,
+      capi_id=recipe_input.capi_id,
+      composer_id=None,
+      filename="",
+      status=ReportStatus.ERROR,
+      reason="CAPI article not found",
+      diff=None,
+      expected=None,
+      received=None,
+      cost="0",
+      last_updated_at="",
+    )
+    result_queue.put(report)
+    tui.error(f"CAPI article not found for recipe_id={recipe_input.recipe_id}")
+    return report
+  composer_id = capi_fetch_response["response"]["content"]["fields"].get("internalComposerCode") if capi_fetch_response is not None else None
   capi_recipe = find_recipe_elements(capi_fetch_response["response"], recipe_input.recipe_id)
   massaged_recipe = update_model_to_pass_validation(capi_recipe)
   template_result = templatise_recipe(massaged_recipe, config)
@@ -173,14 +200,16 @@ def process_recipe(
     json.dump(result, f, indent=2)
 
   if template_result['reviewReason'] is not None:
-    status = "review_needed"
+    status = ReportStatus.REVIEW_NEEDED
   elif template_result['expected'] is not None:
-    status = "accepted_by_llm"
+    status = ReportStatus.ACCEPTED_BY_LLM
   else:
-    status = "success"
+    status = ReportStatus.SUCCESS
 
   report = Report(
     recipe_id=recipe_input.recipe_id,
+    capi_id=recipe_input.capi_id,
+    composer_id=composer_id,
     filename=filename,
     status=status,
     reason=template_result['reviewReason'],
@@ -193,3 +222,30 @@ def process_recipe(
   result_queue.put(report)
   tui.success(f"Completed recipe_id={recipe_input.recipe_id} with status={status}")
   return report
+
+def process_recipe_with_error_handling(
+  result_queue: Queue[Report | None],
+  config: Config,
+  recipe_input: RecipeReference,
+  output_folder: str,
+) -> Report:
+  tui = get_tui()
+  try:
+    return process_recipe(result_queue, config, recipe_input, output_folder)
+  except Exception as e:
+    tui.error(f"Error processing recipe_id={recipe_input.recipe_id}: {e}")
+    import traceback
+    tui.error(traceback.format_exc())
+    report = Report(
+      recipe_id=recipe_input.recipe_id,
+      filename="",
+      status=ReportStatus.ERROR,
+      reason=str(e),
+      diff=None,
+      expected=None,
+      received=None,
+      cost="0",
+      last_updated_at="",
+    )
+    result_queue.put(report)
+    return report

@@ -9,7 +9,7 @@ from threading import Thread
 
 from config import load_config
 from csv_state import load_csv_state, stage_1_csv_filename
-from recipe_processor import Report, process_recipe
+from recipe_processor import Report, process_recipe_with_error_handling
 from services import fetch_index
 from tui_logger import get_tui
 
@@ -72,7 +72,7 @@ def main(parallelism: int, state_folder: str = None):
   tui.update_progress(completed)
 
   with ThreadPoolExecutor(max_workers=parallelism) as executor:
-    futures = [executor.submit(process_recipe, result_queue, config, recipe_input, recipes_folder) for recipe_input in recipes]
+    futures = [executor.submit(process_recipe_with_error_handling, result_queue, config, recipe_input, recipes_folder) for recipe_input in recipes]
     for future in as_completed(futures):
       try:
         result = future.result()

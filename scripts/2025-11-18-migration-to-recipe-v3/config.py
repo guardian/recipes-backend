@@ -7,6 +7,7 @@ class Config:
   capi_key: str
   templatiser_url: str
   templatiser_token: str
+  integration_url: str
 
 
 def load_config() -> Config:
@@ -17,5 +18,6 @@ def load_config() -> Config:
     return Config(
       capi_key=data['capi_key'],
       templatiser_url=data['templatiser_url'],
-      templatiser_token=data['templatiser_token']
+      templatiser_token=data['templatiser_token'],
+      integration_url=data['integration_url'],
     )
