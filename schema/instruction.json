@@ -13,6 +13,10 @@
       "type": "string",
       "description": "Detailed description of the cooking step"
     },
+    "descriptionTemplate": {
+      "$ref": "string-template.json",
+      "description": "The template representation of the instruction"
+    },
     "images": {
       "anyOf": [
         {

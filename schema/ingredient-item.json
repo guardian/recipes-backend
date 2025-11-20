@@ -53,6 +53,10 @@
     "text": {
       "type": "string",
       "description": "Full text representation of the ingredient"
+    },
+    "template": {
+      "$ref": "string-template.json",
+      "description": "The template representation of the ingredient"
     }
   },
   "required": [

@@ -26,7 +26,7 @@
     "@codegenie/serverless-express": "^4.14.0",
     "@google-cloud/storage": "^7.15.2",
     "@guardian/content-api-models": "^17.8.0",
-    "@guardian/feast-multiplatform-library": "^3.0.1",
+    "@guardian/feast-multiplatform-library": "^5.0.0",
     "aws-lambda": "^1.0.7",
     "axios": "^1.12.2",
     "body-parser": "^1.20.2",
