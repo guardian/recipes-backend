@@ -4,6 +4,9 @@ from csv import DictReader, DictWriter
 from dataclasses import dataclass
 from enum import Enum
 
+from services import RecipeReference
+
+
 class Stage1ReportStatus(Enum):
   SUCCESS = "success"
   ACCEPTED_BY_LLM = "accepted_by_llm"
@@ -22,7 +25,23 @@ class Stage1Report:
   expected: str | None
   received: str | None
   cost: str
-  last_updated_at: str
+  revision: int
+
+  @staticmethod
+  def error(recipe_id: str, capi_id: str, reason: str) -> 'Stage1Report':
+    return Stage1Report(
+      recipe_id=recipe_id,
+      capi_id=capi_id,
+      composer_id=None,
+      filename="",
+      status=Stage1ReportStatus.ERROR,
+      reason=reason,
+      diff=None,
+      expected=None,
+      received=None,
+      cost="0",
+      revision=0,
+    )
 
 
 def stage_1_csv_filename(state_folder: str) -> str:

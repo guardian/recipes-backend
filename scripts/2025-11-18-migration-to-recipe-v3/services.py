@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 import requests
 
@@ -8,6 +9,11 @@ from config import Config
 class RecipeReference:
   recipe_id: str
   capi_id: str
+
+@dataclass(frozen=True)
+class ArticleRecipeReferences:
+  capi_id: str
+  recipe_ids: list[str]
 
 def fetch_index() -> list[RecipeReference]:
   response = requests.get('https://recipes.guardianapis.com/v2/index.json')
@@ -23,6 +29,47 @@ def fetch_CAPI_article(capi_id: str, config: Config) -> dict | None:
     return None
   response.raise_for_status()
   return response.json()
+
+@dataclass(frozen=True)
+class ArticleRecipes:
+  composer_id: str
+  revision: int
+  recipes: list[dict]
+
+@dataclass(frozen=True)
+class FlexibleError:
+  composer_id: str
+  error_message: str
+
+def fetch_flexible_article(composer_id: str, config: Config) -> ArticleRecipes | FlexibleError | None:
+  print(f"Fetching recipes for composer ID {composer_id}")
+
+  headers = {
+    "accept": "application/json",
+  }
+
+  response = requests.post(
+    url=f"{config.integration_url}/set-recipe-elements/{composer_id}",
+    headers=headers,
+    verify=config.ca_bundle_path,
+  )
+
+  if response.status_code == 200:
+    body = response.json()
+    recipes_raw_json = [block for block in body["live"]["blocks"] if block["elementType"] == "recipe"]
+    recipes = [json.loads(block["fields"]["recipeJson"]) for block in recipes_raw_json]
+
+    return ArticleRecipes(
+      composer_id=composer_id,
+      revision=int(body["live"]["contentChangeDetails"]["revision"]),
+      recipes=recipes
+    )
+  else:
+    return FlexibleError(
+      composer_id=composer_id,
+      error_message=f"Failed to fetch flexible article: {response.status_code} {response.text}"
+    )
+
 
 def find_recipe_last_updated_at(article: dict, article_id: str) -> str:
   if "content" in article and "fields" in article["content"] and "lastModified" in article["content"]["fields"]:

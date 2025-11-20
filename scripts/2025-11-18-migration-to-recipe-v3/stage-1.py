@@ -10,7 +10,7 @@ from threading import Thread
 from config import load_config
 from csv_state import load_stage1_csv_state, stage_1_csv_filename, Stage1Report
 from recipe_processor import process_recipe_with_error_handling
-from services import fetch_index
+from services import fetch_index, ArticleRecipeReferences
 from tui_logger import get_tui
 
 
@@ -62,26 +62,37 @@ def main(parallelism: int, state_folder: str = None):
   total_recipes = len(recipes)
   tui.info(f"Found {len(recipes)} recipes to process")
 
-  # Filter out already processed recipes
-  recipes = [r for r in recipes if r.recipe_id not in processed_recipe_ids]
-  tui.info(f"{len(recipes)} recipes remaining after filtering processed ones")
-  completed = total_recipes - len(recipes)
+  completed = 0
+
+  # group the recipes per capi_id, filter out already processed ones
+  recipes_by_capi_id: dict[str, list[str]] = {}
+  for recipe in recipes:
+    if recipe.capi_id not in recipes_by_capi_id:
+      recipes_by_capi_id[recipe.capi_id] = []
+    if recipe.recipe_id not in processed_recipe_ids:
+      recipes_by_capi_id[recipe.capi_id].append(recipe.recipe_id)
+    else:
+      completed += 1
+
+  tui.info(f"Skipping {completed} already processed recipes")
 
   # Start the TUI
   tui.start(total=total_recipes)
   tui.update_progress(completed)
 
   with ThreadPoolExecutor(max_workers=parallelism) as executor:
-    futures = [executor.submit(process_recipe_with_error_handling, result_queue, config, recipe_input, recipes_folder) for recipe_input in recipes]
+    article_recipe_references_list = [ArticleRecipeReferences(capi_id, recipes) for capi_id, recipes in recipes_by_capi_id.items()]
+    futures = [executor.submit(process_recipe_with_error_handling, result_queue, config, article_recipes, recipes_folder) for article_recipes in article_recipe_references_list]
     for future in as_completed(futures):
       try:
-        result = future.result()
+        results = future.result()
         completed += 1
         tui.update_progress(completed)
         # Add cost if it's a valid number
         try:
-          cost_value = float(result.cost)
-          tui.add_cost(cost_value)
+          for result in results:
+            cost_value = float(result.cost)
+            tui.add_cost(cost_value)
         except (ValueError, TypeError):
           tui.warning(f"Invalid cost value: {result.cost}")
       except Exception as e:

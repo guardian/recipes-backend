@@ -50,9 +50,9 @@ def has_article_been_updated(report: Stage1Report, config: Config) -> bool:
     print(f"Article {report.capi_id} not found in CAPI")
     return False
   last_updated_date = find_recipe_last_updated_at(article["response"], report.capi_id)
-  if last_updated_date != report.last_updated_at:
+  if last_updated_date != report.revision:
     print(
-      f"Recipe {report.recipe_id} has been updated since Stage 1. Last updated at CAPI: {last_updated_date}, recorded: {report.last_updated_at}")
+      f"Recipe {report.recipe_id} has been updated since Stage 1. Last updated at CAPI: {last_updated_date}, recorded: {report.revision}")
     return True
   return False
 

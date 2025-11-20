@@ -7,7 +7,8 @@ from time import sleep
 
 from config import Config
 from csv_state import Stage1Report, Stage1ReportStatus
-from services import RecipeReference, fetch_CAPI_article, find_recipe_last_updated_at
+from services import RecipeReference, fetch_CAPI_article, find_recipe_last_updated_at, fetch_flexible_article, \
+  ArticleRecipeReferences, FlexibleError
 from tui_logger import get_tui
 import uuid
 import requests
@@ -124,93 +125,89 @@ def compute_diff(template_result: dict) -> str | None:
     return ''.join(diff)
   return None
 
-def process_recipe(
+def process_article(
   result_queue: Queue[Stage1Report | None],
   config: Config,
-  recipe_input: RecipeReference,
+  article_recipe_references: ArticleRecipeReferences,
   output_folder: str,
-) -> Stage1Report:
+) -> list[Stage1Report]:
   tui = get_tui()
-  tui.info(f"Processing recipe_id={recipe_input.recipe_id}...")
-  tui.info(f"Fetching CAPI article: {recipe_input.capi_id}")
-  capi_fetch_response = fetch_CAPI_article(recipe_input.capi_id, config)
+  tui.info(f"Processing CAPI article: {article_recipe_references.capi_id}")
+
+  # Fetch article in CAPI to get the composer id
+  capi_fetch_response = fetch_CAPI_article(article_recipe_references.capi_id, config)
   if capi_fetch_response is None:
-    tui.warning(f"Article {recipe_input.capi_id} not found in CAPI")
-    report = Stage1Report(
-      recipe_id=recipe_input.recipe_id,
-      capi_id=recipe_input.capi_id,
-      composer_id=None,
-      filename="",
-      status=Stage1ReportStatus.ERROR,
-      reason="CAPI article not found",
-      diff=None,
-      expected=None,
-      received=None,
-      cost="0",
-      last_updated_at="",
-    )
-    result_queue.put(report)
-    return report
+    tui.warning(f"Article {article_recipe_references.capi_id} not found in CAPI")
+    reports = [Stage1Report.error(recipe_id, article_recipe_references.capi_id, "CAPI article not found") for recipe_id in article_recipe_references.recipe_ids]
+    for report in reports:
+      result_queue.put(report)
+    return reports
+
+  # fetch the recipes from composer (flexible)
   composer_id = capi_fetch_response["response"]["content"]["fields"].get("internalComposerCode") if capi_fetch_response is not None else None
-  capi_recipe = find_recipe_elements(capi_fetch_response["response"], recipe_input.recipe_id)
-  massaged_recipe = update_model_to_pass_validation(capi_recipe)
-  template_result = templatise_recipe(massaged_recipe, config)
-  result = reassemble_recipe(capi_recipe, template_result['recipe'])
+  flexible_article = fetch_flexible_article(composer_id, config)
 
-  # write the json file
-  filename = os.path.join(output_folder, f"{recipe_input.recipe_id}.json")
-  with open(filename, 'w') as f:
-    json.dump(result, f, indent=2)
+  # check for FlexibleError
+  if isinstance(flexible_article, FlexibleError):
+    tui.error(f"Error fetching flexible article for composer ID {composer_id}: {flexible_article.error_message}")
+    reports = [Stage1Report.error(recipe_id, article_recipe_references.capi_id, flexible_article.error_message) for recipe_id in article_recipe_references.recipe_ids]
+    for report in reports:
+      result_queue.put(report)
+    return reports
 
-  if template_result['reviewReason'] is not None:
-    status = Stage1ReportStatus.REVIEW_NEEDED
-  elif template_result['expected'] is not None:
-    status = Stage1ReportStatus.ACCEPTED_BY_LLM
-  else:
-    status = Stage1ReportStatus.SUCCESS
+  reports: list[Stage1Report] = []
+  # for each recipe
+  for recipe_id in article_recipe_references.recipe_ids:
 
-  report = Stage1Report(
-    recipe_id=recipe_input.recipe_id,
-    capi_id=recipe_input.capi_id,
-    composer_id=composer_id,
-    filename=filename,
-    status=status,
-    reason=template_result['reviewReason'],
-    diff=compute_diff(template_result),
-    expected=template_result['expected'],
-    received=template_result['received'],
-    cost=template_result['cost'],
-    last_updated_at=find_recipe_last_updated_at(capi_fetch_response["response"], recipe_input.recipe_id),
-  )
-  result_queue.put(report)
-  tui.success(f"Completed recipe_id={recipe_input.recipe_id} with status={status}")
-  return report
+    capi_recipe = find_recipe_elements(flexible_article, recipe_id)
+    massaged_recipe = update_model_to_pass_validation(capi_recipe)
+    template_result = templatise_recipe(massaged_recipe, config)
+    result = reassemble_recipe(capi_recipe, template_result['recipe'])
+
+    # write the json file
+    filename = os.path.join(output_folder, f"{recipe_id}.json")
+    with open(filename, 'w') as f:
+      json.dump(result, f, indent=2)
+
+    if template_result['reviewReason'] is not None:
+      status = Stage1ReportStatus.REVIEW_NEEDED
+    elif template_result['expected'] is not None:
+      status = Stage1ReportStatus.ACCEPTED_BY_LLM
+    else:
+      status = Stage1ReportStatus.SUCCESS
+
+    report = Stage1Report(
+      recipe_id=recipe_id,
+      capi_id=article_recipe_references.capi_id,
+      composer_id=composer_id,
+      filename=filename,
+      status=status,
+      reason=template_result['reviewReason'],
+      diff=compute_diff(template_result),
+      expected=template_result['expected'],
+      received=template_result['received'],
+      cost=template_result['cost'],
+      revision=flexible_article.revision,
+    )
+    reports.append(report)
+    result_queue.put(report)
+    tui.success(f"Completed recipe_id={recipe_id} with status={status}")
+  return reports
 
 def process_recipe_with_error_handling(
   result_queue: Queue[Stage1Report | None],
   config: Config,
-  recipe_input: RecipeReference,
+  article_recipe_references: ArticleRecipeReferences,
   output_folder: str,
-) -> Stage1Report:
+) -> list[Stage1Report]:
   tui = get_tui()
   try:
-    return process_recipe(result_queue, config, recipe_input, output_folder)
+    return process_article(result_queue, config, article_recipe_references, output_folder)
   except Exception as e:
-    tui.error(f"Error processing recipe_id={recipe_input.recipe_id}: {e}")
+    tui.error(f"Error processing capi article capi_id={article_recipe_references.capi_id}: {e}")
     import traceback
     tui.error(traceback.format_exc())
-    report = Stage1Report(
-      recipe_id=recipe_input.recipe_id,
-      capi_id=recipe_input.capi_id,
-      composer_id=None,
-      filename="",
-      status=Stage1ReportStatus.ERROR,
-      reason=str(e),
-      diff=None,
-      expected=None,
-      received=None,
-      cost="0",
-      last_updated_at="",
-    )
-    result_queue.put(report)
-    return report
+    reports = [Stage1Report.error(recipe_id, article_recipe_references.capi_id, str(e)) for recipe_id in article_recipe_references.recipe_ids]
+    for report in reports:
+      result_queue.put(report)
+    return reports

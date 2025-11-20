@@ -43,3 +43,12 @@ The migration will be run on my laptop.
 - Local URL seems to be `https://import.flexible.local.dev-gutools.co.uk/recipes/import/set-recipe-elements/6915a1e3480e6e459ffd7924`
 - where we use the composer and ID (and not the CAPI ID as I initially thought)
 - Authentication is done with HMAC, need to test it. Looking at the configuration, it seems it's been removed from PROD and CODE. Will test adding it back locally.
+
+# 2025-11-20
+- Continue working on stage 2
+- Fetching the article must happen through composer rather than CAPI as it's the source of truth.
+- TODO:
+  - [ ] Fetch recipe from composer
+  - [ ] Find out where the HMAC key is stored
+  - [ ] Test SSM to create a tunnel to the integration instance
+  - [ ] Update logic to update all the recipes of an article in one go
