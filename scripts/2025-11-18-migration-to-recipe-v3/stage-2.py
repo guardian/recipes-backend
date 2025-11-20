@@ -6,7 +6,7 @@ import requests
 from config import Config, load_config
 from csv_state import load_stage1_csv_state, Stage1Report, Stage2Report, Stage2ReportStatus, Stage1ReportStatus, \
   load_stage2_csv_state, append_stage2_report
-from services import fetch_CAPI_article, find_recipe_last_updated_at
+from services import fetch_CAPI_article, find_recipe_last_updated_at, fetch_flexible_article, FlexibleError
 
 
 def update_recipe(report: Stage1Report, config: Config) -> Stage2Report:
@@ -27,7 +27,7 @@ def update_recipe(report: Stage1Report, config: Config) -> Stage2Report:
   }
 
   response = requests.post(
-    url=f"{config.integration_url}/update-recipe-element/{report.composer_id}",
+    url=f"{config.integration_write_url}update-recipe-element/{report.composer_id}",
     data=json.dumps(recipe_update),
     headers=headers,
     verify=config.ca_bundle_path,
@@ -45,14 +45,17 @@ def update_recipe(report: Stage1Report, config: Config) -> Stage2Report:
 
 
 def has_article_been_updated(report: Stage1Report, config: Config) -> bool:
-  article = fetch_CAPI_article(report.capi_id, config)
+  article = fetch_flexible_article(report.composer_id, config)
   if article is None:
     print(f"Article {report.capi_id} not found in CAPI")
     return False
-  last_updated_date = find_recipe_last_updated_at(article["response"], report.capi_id)
-  if last_updated_date != report.revision:
+  if isinstance(article, FlexibleError):
+    print(f"Error fetching flexible article for composer ID {report.composer_id}: {article.error_message}")
+    return False
+
+  if article.revision != int(report.revision):
     print(
-      f"Recipe {report.recipe_id} has been updated since Stage 1. Last updated at CAPI: {last_updated_date}, recorded: {report.revision}")
+      f"Recipe {report.recipe_id} has been updated since Stage 1. Last updated at CAPI: {article.revision}, recorded: {report.revision}")
     return True
   return False
 

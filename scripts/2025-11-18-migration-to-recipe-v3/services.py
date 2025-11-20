@@ -23,7 +23,7 @@ def fetch_index() -> list[RecipeReference]:
   return recipes
 
 def fetch_CAPI_article(capi_id: str, config: Config) -> dict | None:
-  url = f'https://content.guardianapis.com/{capi_id}?api-key={config.capi_key}&show-fields=all&show-blocks=all'
+  url = f'{config.capi_url}{capi_id}?api-key={config.capi_key}&show-fields=all&show-blocks=all'
   response = requests.get(url)
   if response.status_code == 404:
     return None
@@ -48,15 +48,22 @@ def fetch_flexible_article(composer_id: str, config: Config) -> ArticleRecipes |
     "accept": "application/json",
   }
 
-  response = requests.post(
-    url=f"{config.integration_url}/set-recipe-elements/{composer_id}",
+  print(f"{config.integration_read_url}set-recipe-elements/{composer_id}")
+
+  response = requests.get(
+    url=f"{config.integration_read_url}set-recipe-elements/{composer_id}",
     headers=headers,
     verify=config.ca_bundle_path,
   )
 
   if response.status_code == 200:
     body = response.json()
-    recipes_raw_json = [block for block in body["live"]["blocks"] if block["elementType"] == "recipe"]
+
+    recipes_raw_json = []
+    for block in body["live"]["blocks"]:
+      for element in block.get("elements", []):
+        if element["elementType"] == "recipe":
+          recipes_raw_json.append(element)
     recipes = [json.loads(block["fields"]["recipeJson"]) for block in recipes_raw_json]
 
     return ArticleRecipes(

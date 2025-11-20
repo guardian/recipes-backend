@@ -8,24 +8,18 @@ from time import sleep
 from config import Config
 from csv_state import Stage1Report, Stage1ReportStatus
 from services import RecipeReference, fetch_CAPI_article, find_recipe_last_updated_at, fetch_flexible_article, \
-  ArticleRecipeReferences, FlexibleError
+  ArticleRecipeReferences, FlexibleError, ArticleRecipes
 from tui_logger import get_tui
 import uuid
 import requests
 
 
-def find_recipe_elements(article: dict, recipe_id: str) -> dict:
-  blocks: dict = article["content"]["blocks"]
-  if "body" in blocks:
-    body_blocks = blocks["body"]
-    for block in body_blocks:
-      if "elements" in block:
-        for element in block["elements"]:
-          if "type" in element and element["type"] == "recipe":
-            json_value = json.loads(element["recipeTypeData"]["recipeJson"])
-            if json_value["id"] == recipe_id:
-              return json_value
-  raise Exception(f"No recipe element found for recipe ID {recipe_id}")
+def find_recipe_elements(article: ArticleRecipes, recipe_id: str) -> dict:
+  for recipe in article.recipes:
+    if 'id' in recipe and recipe['id'] == recipe_id:
+      return recipe
+  print(article)
+  raise ValueError(f"Recipe ID {recipe_id} not found in article with composer ID {article.composer_id}")
 
 def format_ingredient_text(ingredient: dict) -> str:
   parts: list[str] = []

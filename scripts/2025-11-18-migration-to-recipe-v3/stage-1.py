@@ -10,7 +10,7 @@ from threading import Thread
 from config import load_config
 from csv_state import load_stage1_csv_state, stage_1_csv_filename, Stage1Report
 from recipe_processor import process_recipe_with_error_handling
-from services import fetch_index, ArticleRecipeReferences
+from services import fetch_index, ArticleRecipeReferences, RecipeReference
 from tui_logger import get_tui
 
 
@@ -58,7 +58,8 @@ def main(parallelism: int, state_folder: str = None):
   writer = Thread(target=writer_thread, args=(result_queue, stage_1_csv_filename(state_folder)))
   writer.start()
 
-  recipes = fetch_index()
+  # recipes = fetch_index()
+  recipes = [RecipeReference("00773de16f95487db266a7a9698f8959", "lifeandstyle/2025/oct/13/lime-dal-with-roast-squash-and-chilli-cashews")]
   total_recipes = len(recipes)
   tui.info(f"Found {len(recipes)} recipes to process")
 
