@@ -137,7 +137,13 @@ function parseJsonBlob(
 		const transforms: RecipeTransformationFunction[] = [
 			handleFreeTextContribs,
 			replaceImageUrlsWithFastly,
-			addSponsorsTransform(sponsorship),
+			/*This is one time patch and will be removed once the Tags for MIC and sponsorship is sorted at TagManager level.
+      So this block will not let sponsor to get added if IGA sponsor tag is present in the article
+      This because we are not able to see recipes that are now not-IGA sponsored anymore without sponsor tags,
+      The sponsor tags will get added and we dont want that should act as IGA sponsored so putting this one time hack*/
+			sponsorship.some((s) => s.sponsorName === 'IGA')
+				? (recipe) => recipe
+				: addSponsorsTransform(sponsorship),
 			addRecipeDatesTransform(recipeDates),
 			replaceCanonicalArticle(canonicalId),
 			temporaryCelebrationIdsFix,
