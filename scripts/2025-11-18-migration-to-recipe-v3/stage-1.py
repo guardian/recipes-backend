@@ -8,18 +8,18 @@ import os
 from threading import Thread
 
 from config import load_config
-from csv_state import load_csv_state, stage_1_csv_filename
-from recipe_processor import Report, process_recipe_with_error_handling
+from csv_state import load_stage1_csv_state, stage_1_csv_filename, Stage1Report
+from recipe_processor import process_recipe_with_error_handling
 from services import fetch_index
 from tui_logger import get_tui
 
 
-def writer_thread(result_queue: Queue[Report | None], filename):
+def writer_thread(result_queue: Queue[Stage1Report | None], filename):
   """Dedicated thread for writing to CSV"""
   tui = get_tui()
   file_exists = os.path.exists(filename) and os.path.getsize(filename) > 0
   with open(filename, 'a', newline='') as f:
-    fieldnames = [field.name for field in dataclasses.fields(Report)]
+    fieldnames = [field.name for field in dataclasses.fields(Stage1Report)]
     writer = DictWriter(f, fieldnames=fieldnames)
     if not file_exists:
       writer.writeheader()
@@ -44,7 +44,7 @@ def main(parallelism: int, state_folder: str = None):
     timestamp = datetime.now().strftime('%Y%m%dT%H%M%S')
     state_folder = f"./data/migration-{timestamp}"
   else:
-    reports = load_csv_state(state_folder)
+    reports = load_stage1_csv_state(state_folder)
     processed_recipe_ids = {report.recipe_id for report in reports}
 
 
@@ -53,7 +53,7 @@ def main(parallelism: int, state_folder: str = None):
 
   config = load_config()
 
-  result_queue: Queue[Report | None] = Queue()
+  result_queue: Queue[Stage1Report | None] = Queue()
 
   writer = Thread(target=writer_thread, args=(result_queue, stage_1_csv_filename(state_folder)))
   writer.start()

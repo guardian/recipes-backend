@@ -8,6 +8,7 @@ class Config:
   templatiser_url: str
   templatiser_token: str
   integration_url: str
+  ca_bundle_path: str | None
 
 
 def load_config() -> Config:
@@ -20,4 +21,5 @@ def load_config() -> Config:
       templatiser_url=data['templatiser_url'],
       templatiser_token=data['templatiser_token'],
       integration_url=data['integration_url'],
+      ca_bundle_path=data.get('ca_bundle_path'),
     )

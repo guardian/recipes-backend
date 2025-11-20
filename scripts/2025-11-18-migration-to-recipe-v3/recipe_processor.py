@@ -1,49 +1,17 @@
 import copy
 import json
 import os
-from dataclasses import dataclass
 from difflib import unified_diff
-from enum import Enum
 from queue import Queue
 from time import sleep
 
 from config import Config
-from services import RecipeReference
+from csv_state import Stage1Report, Stage1ReportStatus
+from services import RecipeReference, fetch_CAPI_article, find_recipe_last_updated_at
 from tui_logger import get_tui
 import uuid
 import requests
 
-class ReportStatus(Enum):
-  SUCCESS = "success"
-  ACCEPTED_BY_LLM = "accepted_by_llm"
-  REVIEW_NEEDED = "review_needed"
-  ERROR = "error"
-
-@dataclass(frozen=True)
-class Report:
-  recipe_id: str
-  capi_id: str
-  composer_id: str | None
-  filename: str
-  status: ReportStatus
-  reason: str | None
-  diff: str | None
-  expected: str | None
-  received: str | None
-  cost: str
-  last_updated_at: str
-
-
-def fetch_CAPI_article(capi_id: str, config: Config) -> dict | None:
-  tui = get_tui()
-  url = f'https://content.guardianapis.com/{capi_id}?api-key={config.capi_key}&show-fields=all&show-blocks=all'
-  tui.info(f"Fetching CAPI article: {capi_id}")
-  response = requests.get(url)
-  if response.status_code == 404:
-    tui.warning(f"Article {capi_id} not found in CAPI")
-    return None
-  response.raise_for_status()
-  return response.json()
 
 def find_recipe_elements(article: dict, recipe_id: str) -> dict:
   blocks: dict = article["content"]["blocks"]
@@ -57,12 +25,6 @@ def find_recipe_elements(article: dict, recipe_id: str) -> dict:
             if json_value["id"] == recipe_id:
               return json_value
   raise Exception(f"No recipe element found for recipe ID {recipe_id}")
-
-def find_recipe_last_updated_at(article: dict, article_id: str) -> str:
-  if "content" in article and "fields" in article["content"] and "lastModified" in article["content"]["fields"]:
-    return article["content"]["fields"]["lastModified"]
-  else:
-    raise Exception(f"No recipe lastModified date found for recipe ID {article_id}")
 
 def format_ingredient_text(ingredient: dict) -> str:
   parts: list[str] = []
@@ -163,21 +125,23 @@ def compute_diff(template_result: dict) -> str | None:
   return None
 
 def process_recipe(
-  result_queue: Queue[Report | None],
+  result_queue: Queue[Stage1Report | None],
   config: Config,
   recipe_input: RecipeReference,
   output_folder: str,
-) -> Report:
+) -> Stage1Report:
   tui = get_tui()
   tui.info(f"Processing recipe_id={recipe_input.recipe_id}...")
+  tui.info(f"Fetching CAPI article: {recipe_input.capi_id}")
   capi_fetch_response = fetch_CAPI_article(recipe_input.capi_id, config)
   if capi_fetch_response is None:
-    report = Report(
+    tui.warning(f"Article {recipe_input.capi_id} not found in CAPI")
+    report = Stage1Report(
       recipe_id=recipe_input.recipe_id,
       capi_id=recipe_input.capi_id,
       composer_id=None,
       filename="",
-      status=ReportStatus.ERROR,
+      status=Stage1ReportStatus.ERROR,
       reason="CAPI article not found",
       diff=None,
       expected=None,
@@ -186,7 +150,6 @@ def process_recipe(
       last_updated_at="",
     )
     result_queue.put(report)
-    tui.error(f"CAPI article not found for recipe_id={recipe_input.recipe_id}")
     return report
   composer_id = capi_fetch_response["response"]["content"]["fields"].get("internalComposerCode") if capi_fetch_response is not None else None
   capi_recipe = find_recipe_elements(capi_fetch_response["response"], recipe_input.recipe_id)
@@ -200,13 +163,13 @@ def process_recipe(
     json.dump(result, f, indent=2)
 
   if template_result['reviewReason'] is not None:
-    status = ReportStatus.REVIEW_NEEDED
+    status = Stage1ReportStatus.REVIEW_NEEDED
   elif template_result['expected'] is not None:
-    status = ReportStatus.ACCEPTED_BY_LLM
+    status = Stage1ReportStatus.ACCEPTED_BY_LLM
   else:
-    status = ReportStatus.SUCCESS
+    status = Stage1ReportStatus.SUCCESS
 
-  report = Report(
+  report = Stage1Report(
     recipe_id=recipe_input.recipe_id,
     capi_id=recipe_input.capi_id,
     composer_id=composer_id,
@@ -224,11 +187,11 @@ def process_recipe(
   return report
 
 def process_recipe_with_error_handling(
-  result_queue: Queue[Report | None],
+  result_queue: Queue[Stage1Report | None],
   config: Config,
   recipe_input: RecipeReference,
   output_folder: str,
-) -> Report:
+) -> Stage1Report:
   tui = get_tui()
   try:
     return process_recipe(result_queue, config, recipe_input, output_folder)
@@ -236,10 +199,12 @@ def process_recipe_with_error_handling(
     tui.error(f"Error processing recipe_id={recipe_input.recipe_id}: {e}")
     import traceback
     tui.error(traceback.format_exc())
-    report = Report(
+    report = Stage1Report(
       recipe_id=recipe_input.recipe_id,
+      capi_id=recipe_input.capi_id,
+      composer_id=None,
       filename="",
-      status=ReportStatus.ERROR,
+      status=Stage1ReportStatus.ERROR,
       reason=str(e),
       diff=None,
       expected=None,
