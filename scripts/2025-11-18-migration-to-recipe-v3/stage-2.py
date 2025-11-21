@@ -1,4 +1,5 @@
 import json
+import logging
 from argparse import ArgumentParser
 
 import requests
@@ -9,8 +10,10 @@ from csv_state import load_stage1_csv_state, Stage1Report, Stage2Report, Stage2R
 from services import fetch_CAPI_article, find_recipe_last_updated_at, fetch_flexible_article, FlexibleError
 
 
+logger = logging.getLogger(__name__)
+
 def update_recipe(report: Stage1Report, config: Config) -> Stage2Report:
-  print(f"Updating recipe from file: {report.filename}")
+  logger.info(f"Updating recipe from file: {report.filename}")
 
   headers = {
     "content-type": "application/json",

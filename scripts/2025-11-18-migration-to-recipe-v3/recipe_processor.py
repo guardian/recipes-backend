@@ -19,7 +19,6 @@ def find_recipe_elements(article: ArticleRecipes, recipe_id: str) -> dict:
   for recipe in article.recipes:
     if 'id' in recipe and recipe['id'] == recipe_id:
       return recipe
-  print(article)
   raise ValueError(f"Recipe ID {recipe_id} not found in article with composer ID {article.composer_id}")
 
 def format_ingredient_text(ingredient: dict) -> str:
@@ -39,7 +38,7 @@ def format_ingredient_text(ingredient: dict) -> str:
   if 'name' in ingredient and ingredient['name'] is not None:
     parts.append(ingredient['name'].strip())
   if 'suffix' in ingredient and ingredient['suffix'] is not None:
-    parts.append(', ' + ingredient['suffix'].strip())
+    parts.append(', ' + ingredient['suffix'].strip().removeSuffix(','))
   return ''.join(parts).strip()
 
 

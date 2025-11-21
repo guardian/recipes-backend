@@ -1,9 +1,11 @@
 import json
+import logging
 from dataclasses import dataclass
 import requests
 
 from config import Config
 
+logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class RecipeReference:
@@ -42,13 +44,11 @@ class FlexibleError:
   error_message: str
 
 def fetch_flexible_article(composer_id: str, config: Config) -> ArticleRecipes | FlexibleError | None:
-  print(f"Fetching recipes for composer ID {composer_id}")
+  logger.info(f"Fetching recipes for composer ID {composer_id}")
 
   headers = {
     "accept": "application/json",
   }
-
-  print(f"{config.integration_read_url}set-recipe-elements/{composer_id}")
 
   response = requests.get(
     url=f"{config.integration_read_url}set-recipe-elements/{composer_id}",

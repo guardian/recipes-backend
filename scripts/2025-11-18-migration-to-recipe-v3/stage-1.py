@@ -7,6 +7,8 @@ from datetime import datetime
 from argparse import ArgumentParser
 import os
 from threading import Thread
+from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn, TimeRemainingColumn, MofNCompleteColumn
+from fancy_logging import init_logger, get_console
 
 from config import load_config
 from csv_state import load_stage1_csv_state, stage_1_csv_filename, Stage1Report
@@ -37,6 +39,7 @@ def writer_thread(result_queue: Queue[Stage1Report | None], filename):
 
 
 def main(parallelism: int, state_folder: str = None):
+  init_logger()
   processed_recipe_ids: set[str] = set()
 
   if state_folder is None:
@@ -78,23 +81,45 @@ def main(parallelism: int, state_folder: str = None):
   logger.info(f"Skipping {completed} already processed recipes")
 
   total_cost = 0.0
-  with ThreadPoolExecutor(max_workers=parallelism) as executor:
-    article_recipe_references_list = [ArticleRecipeReferences(capi_id, recipes) for capi_id, recipes in recipes_by_capi_id.items()]
-    futures = [executor.submit(process_recipe_with_error_handling, result_queue, config, article_recipes, recipes_folder) for article_recipes in article_recipe_references_list]
-    for future in as_completed(futures):
-      try:
-        results = future.result()
-        completed += 1
-        # Add cost if it's a valid number
+
+  # Create progress bar with rich
+  with Progress(
+    SpinnerColumn(),
+    TextColumn("[progress.description]{task.description}"),
+    BarColumn(),
+    MofNCompleteColumn(),
+    TaskProgressColumn(),
+    TimeRemainingColumn(),
+    TextColumn("💰 ${task.fields[cost]:.4f}"),
+    console=get_console(),  # Use shared console with logging
+    transient=False,  # Keep progress bar visible after completion
+  ) as progress:
+
+    task = progress.add_task(
+      "[cyan]Processing recipes...",
+      total=total_recipes,
+      completed=completed,
+      cost=total_cost
+    )
+
+    with ThreadPoolExecutor(max_workers=parallelism) as executor:
+      article_recipe_references_list = [ArticleRecipeReferences(capi_id, recipes) for capi_id, recipes in recipes_by_capi_id.items()]
+      futures = [executor.submit(process_recipe_with_error_handling, result_queue, config, article_recipes, recipes_folder) for article_recipes in article_recipe_references_list]
+      for future in as_completed(futures):
         try:
-          for result in results:
-            total_cost += float(result.cost)
-        except (ValueError, TypeError):
-          logger.warning(f"Invalid cost value: {result.cost}")
-      except Exception as e:
-        logger.error(f"Error processing recipe: {e}")
-        import traceback
-        logger.error(traceback.format_exc())
+          results = future.result()
+          # Add cost if it's a valid number
+          try:
+            for result in results:
+              total_cost += float(result.cost)
+              completed += 1
+              progress.update(task, advance=1, cost=total_cost)
+          except (ValueError, TypeError):
+            logger.warning(f"Invalid cost value: {result.cost}")
+        except Exception as e:
+          logger.error(f"Error processing recipe: {e}")
+          import traceback
+          logger.error(traceback.format_exc())
 
   result_queue.put(None)
   writer.join()
