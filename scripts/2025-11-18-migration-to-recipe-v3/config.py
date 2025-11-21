@@ -6,6 +6,7 @@ from pathlib import Path
 class Config:
   capi_key: str
   capi_url: str
+  index_url: str
   templatiser_url: str
   templatiser_token: str
   integration_read_url: str
@@ -21,6 +22,7 @@ def load_config() -> Config:
     return Config(
       capi_key=data['capi_key'],
       capi_url=data['capi_url'],
+      index_url=data['index_url'],
       templatiser_url=data['templatiser_url'],
       templatiser_token=data['templatiser_token'],
       integration_read_url=data['integration_read_url'],

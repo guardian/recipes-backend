@@ -15,8 +15,8 @@ class ArticleRecipeReferences:
   capi_id: str
   recipe_ids: list[str]
 
-def fetch_index() -> list[RecipeReference]:
-  response = requests.get('https://recipes.guardianapis.com/v2/index.json')
+def fetch_index(config: Config) -> list[RecipeReference]:
+  response = requests.get(config.index_url)
   response.raise_for_status()
   recipes = response.json()["recipes"]
   recipes = [RecipeReference(recipe_id=recipe["recipeUID"], capi_id=recipe["capiArticleId"]) for recipe in recipes]

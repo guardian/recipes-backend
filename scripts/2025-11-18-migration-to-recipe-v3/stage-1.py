@@ -58,9 +58,10 @@ def main(parallelism: int, state_folder: str = None):
   writer = Thread(target=writer_thread, args=(result_queue, stage_1_csv_filename(state_folder)))
   writer.start()
 
-  # recipes = fetch_index()
-  recipes = [RecipeReference("00773de16f95487db266a7a9698f8959", "lifeandstyle/2025/oct/13/lime-dal-with-roast-squash-and-chilli-cashews")]
+  recipes = fetch_index(config)
+  # recipes = [RecipeReference("ef09faeb822843aa8699deb617e96f50", "lifeandstyle/2025/oct/13/lime-dal-with-roast-squash-and-chilli-cashews")]
   total_recipes = len(recipes)
+  tui.info(f"Starting processing in {state_folder}")
   tui.info(f"Found {len(recipes)} recipes to process")
 
   completed = 0
@@ -102,10 +103,11 @@ def main(parallelism: int, state_folder: str = None):
         tui.error(traceback.format_exc())
 
   # Stop TUI and writer thread
-  tui.stop()
   result_queue.put(None)
   writer.join()
-  tui.info("All done.")
+  tui.info(f"All done. State directory was {state_folder}")
+  tui.info(f"Next step is uv run stage-2.py -s {state_folder}")
+  tui.stop()
 
 
 if __name__ == "__main__":
