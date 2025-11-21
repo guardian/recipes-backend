@@ -66,7 +66,7 @@ def main(parallelism: int, state_folder: str = None):
   logger.info(f"Starting processing in {state_folder}")
   logger.info(f"Found {len(recipes)} recipes to process")
 
-  completed = 0
+  previously_completed = 0
 
   # group the recipes per capi_id, filter out already processed ones
   recipes_by_capi_id: dict[str, list[str]] = {}
@@ -76,11 +76,13 @@ def main(parallelism: int, state_folder: str = None):
         recipes_by_capi_id[recipe.capi_id] = []
       recipes_by_capi_id[recipe.capi_id].append(recipe.recipe_id)
     else:
-      completed += 1
+      previously_completed += 1
 
-  logger.info(f"Skipping {completed} already processed recipes")
+  logger.info(f"Skipping {previously_completed} already processed recipes")
 
-  total_cost = 0.0
+  session_cost = 0.0
+  session_completed = 0
+
 
   # Create progress bar with rich
   with Progress(
@@ -90,7 +92,7 @@ def main(parallelism: int, state_folder: str = None):
     MofNCompleteColumn(),
     TaskProgressColumn(),
     TimeRemainingColumn(),
-    TextColumn("💰 ${task.fields[cost]:.4f}"),
+    TextColumn("💰 ${task.fields[cost]:.4f} (avg ${task.fields[avg_cost]:.4f}/recipe)"),
     console=get_console(),  # Use shared console with logging
     transient=False,  # Keep progress bar visible after completion
   ) as progress:
@@ -98,8 +100,9 @@ def main(parallelism: int, state_folder: str = None):
     task = progress.add_task(
       "[cyan]Processing recipes...",
       total=total_recipes,
-      completed=completed,
-      cost=total_cost
+      completed=previously_completed,
+      cost=session_cost,
+      avg_cost=0.0,
     )
 
     with ThreadPoolExecutor(max_workers=parallelism) as executor:
@@ -111,9 +114,9 @@ def main(parallelism: int, state_folder: str = None):
           # Add cost if it's a valid number
           try:
             for result in results:
-              total_cost += float(result.cost)
-              completed += 1
-              progress.update(task, advance=1, cost=total_cost)
+              session_cost += float(result.cost)
+              session_completed += 1
+              progress.update(task, completed=previously_completed + session_completed, cost=session_cost, avg_cost=(session_cost/session_completed))
           except (ValueError, TypeError):
             logger.warning(f"Invalid cost value: {result.cost}")
         except Exception as e:
