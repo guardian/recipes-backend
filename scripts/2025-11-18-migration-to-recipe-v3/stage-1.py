@@ -71,9 +71,9 @@ def main(parallelism: int, state_folder: str = None):
   # group the recipes per capi_id, filter out already processed ones
   recipes_by_capi_id: dict[str, list[str]] = {}
   for recipe in recipes:
-    if recipe.capi_id not in recipes_by_capi_id:
-      recipes_by_capi_id[recipe.capi_id] = []
     if recipe.recipe_id not in processed_recipe_ids:
+      if recipe.capi_id not in recipes_by_capi_id:
+        recipes_by_capi_id[recipe.capi_id] = []
       recipes_by_capi_id[recipe.capi_id].append(recipe.recipe_id)
     else:
       completed += 1

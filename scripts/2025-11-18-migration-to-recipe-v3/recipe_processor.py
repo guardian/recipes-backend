@@ -21,24 +21,36 @@ def find_recipe_elements(article: ArticleRecipes, recipe_id: str) -> dict:
       return recipe
   raise ValueError(f"Recipe ID {recipe_id} not found in article with composer ID {article.composer_id}")
 
+def round_if_whole(number: float) -> float | int:
+  if number.is_integer():
+    return int(number)
+  return number
+
+def contains_digit(s: str) -> bool:
+  return any(char.isdigit() for char in s)
+
 def format_ingredient_text(ingredient: dict) -> str:
   parts: list[str] = []
   if 'amount' in ingredient and ingredient['amount'] is not None:
     amount = ingredient['amount']
     amount_str = ''
     if 'min' in amount and amount['min'] is not None:
-      amount_str += str(amount['min'])
+      amount_str += str(round_if_whole(amount['min']))
       if 'max' in amount and amount['max'] is not None and amount['max'] != amount['min']:
-        amount_str += f"-{amount['max']}"
+        amount_str += f"-{round_if_whole(amount['max'])}"
       parts.append(amount_str + ' ')
     if 'unit' in ingredient and ingredient['unit'] is not None:
+      parts.append(ingredient['unit'].strip() + ' ')
+  else: # no amount
+    # in the case we have no amount but a unit, and that unit contains a digit, we include it ("2cm ginger")
+    if 'unit' in ingredient and ingredient['unit'] is not None and contains_digit(ingredient['unit']):
       parts.append(ingredient['unit'].strip() + ' ')
   if 'prefix' in ingredient and ingredient['prefix'] is not None:
     parts.append(ingredient['prefix'].strip() + ' ')
   if 'name' in ingredient and ingredient['name'] is not None:
-    parts.append(ingredient['name'].strip())
+    parts.append(ingredient['name'].strip().removesuffix(','))
   if 'suffix' in ingredient and ingredient['suffix'] is not None:
-    parts.append(', ' + ingredient['suffix'].strip().removeSuffix(','))
+    parts.append(', ' + ingredient['suffix'].strip())
   return ''.join(parts).strip()
 
 
