@@ -4,14 +4,11 @@ from csv import DictReader, DictWriter
 from dataclasses import dataclass
 from enum import Enum
 
-from services import RecipeReference
-
-
 class Stage1ReportStatus(Enum):
-  SUCCESS = "success"
-  ACCEPTED_BY_LLM = "accepted_by_llm"
-  REVIEW_NEEDED = "review_needed"
-  ERROR = "error"
+  SUCCESS = "SUCCESS"
+  ACCEPTED_BY_LLM = "ACCEPTED_BY_LLM"
+  REVIEW_NEEDED = "REVIEW_NEEDED"
+  ERROR = "ERROR"
 
 @dataclass(frozen=True)
 class Stage1Report:
@@ -52,7 +49,20 @@ def load_stage1_csv_state(state_folder: str) -> list[Stage1Report]:
   with open(stage_1_csv_filename(state_folder), newline='') as csvfile:
     reader = DictReader(csvfile)
     for row in reader:
-      reports.append(Stage1Report(**row))
+      stage1_report = Stage1Report(
+        recipe_id=row['recipe_id'],
+        capi_id=row['capi_id'],
+        composer_id=row['composer_id'] if row['composer_id'] else None,
+        filename=row['filename'],
+        status=Stage1ReportStatus(row['status'].removeprefix("Stage1ReportStatus.")),
+        reason=row['reason'] if row['reason'] else None,
+        diff=row['diff'] if row['diff'] else None,
+        expected=row['expected'] if row['expected'] else None,
+        received=row['received'] if row['received'] else None,
+        cost=row['cost'],
+        revision=int(row['revision']),
+      )
+      reports.append(stage1_report)
   return reports
 
 class Stage2ReportStatus(Enum):
