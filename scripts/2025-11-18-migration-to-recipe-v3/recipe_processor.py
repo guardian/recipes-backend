@@ -1,5 +1,6 @@
 import copy
 import json
+import logging
 import os
 from difflib import unified_diff
 from queue import Queue
@@ -9,10 +10,10 @@ from config import Config
 from csv_state import Stage1Report, Stage1ReportStatus
 from services import RecipeReference, fetch_CAPI_article, find_recipe_last_updated_at, fetch_flexible_article, \
   ArticleRecipeReferences, FlexibleError, ArticleRecipes
-from tui_logger import get_tui
 import uuid
 import requests
 
+logger = logging.getLogger(__name__)
 
 def find_recipe_elements(article: ArticleRecipes, recipe_id: str) -> dict:
   for recipe in article.recipes:
@@ -50,6 +51,8 @@ def update_model_to_pass_validation(recipe: dict) -> dict:
   new_recipe['featuredImage'] = None
   new_recipe['serves'] = []
   new_recipe['timings'] = []
+  new_recipe['isAppReady'] = new_recipe['isAppReady'] if 'isAppReady' in new_recipe else True
+  new_recipe['celebrationIds'] = new_recipe['celebrationIds'] if 'celebrationIds' in new_recipe else []
 
 
   # Filter empty ingredient groups
@@ -80,7 +83,6 @@ def update_model_to_pass_validation(recipe: dict) -> dict:
   return new_recipe
 
 def templatise_recipe(recipe: dict, config: Config) -> dict:
-  tui = get_tui()
   headers = {
     'content-type': 'application/json',
     'accept': 'application/json',
@@ -88,10 +90,10 @@ def templatise_recipe(recipe: dict, config: Config) -> dict:
   }
   response = requests.post(config.templatiser_url, data=json.dumps(recipe), headers=headers)
   if response.status_code == 422:
-    tui.error(f"Validation error: {response.text}")
-    tui.error(json.dumps(recipe, indent=2))
+    logger.error(f"Validation error: {response.text}")
+    logger.error(json.dumps(recipe, indent=2))
   if response.status_code == 503:
-    tui.warning("Service unavailable, sleeping for 10 seconds and retrying...")
+    logger.warning("Service unavailable, sleeping for 10 seconds and retrying...")
     sleep(10)
     return templatise_recipe(recipe, config)
   response.raise_for_status()
@@ -125,13 +127,12 @@ def process_article(
   article_recipe_references: ArticleRecipeReferences,
   output_folder: str,
 ) -> list[Stage1Report]:
-  tui = get_tui()
-  tui.info(f"Processing CAPI article: {article_recipe_references.capi_id}")
+  logger.info(f"Processing CAPI article: {article_recipe_references.capi_id}")
 
   # Fetch article in CAPI to get the composer id
   capi_fetch_response = fetch_CAPI_article(article_recipe_references.capi_id, config)
   if capi_fetch_response is None:
-    tui.warning(f"Article {article_recipe_references.capi_id} not found in CAPI")
+    logger.warning(f"Article {article_recipe_references.capi_id} not found in CAPI")
     reports = [Stage1Report.error(recipe_id, article_recipe_references.capi_id, "CAPI article not found") for recipe_id in article_recipe_references.recipe_ids]
     for report in reports:
       result_queue.put(report)
@@ -143,7 +144,7 @@ def process_article(
 
   # check for FlexibleError
   if isinstance(flexible_article, FlexibleError):
-    tui.error(f"Error fetching flexible article for composer ID {composer_id}: {flexible_article.error_message}")
+    logger.error(f"Error fetching flexible article for composer ID {composer_id}: {flexible_article.error_message}")
     reports = [Stage1Report.error(recipe_id, article_recipe_references.capi_id, flexible_article.error_message) for recipe_id in article_recipe_references.recipe_ids]
     for report in reports:
       result_queue.put(report)
@@ -185,7 +186,7 @@ def process_article(
     )
     reports.append(report)
     result_queue.put(report)
-    tui.success(f"Completed recipe_id={recipe_id} with status={status}")
+    logger.info(f"Completed recipe_id={recipe_id} with status={status}")
   return reports
 
 def process_recipe_with_error_handling(
@@ -194,13 +195,12 @@ def process_recipe_with_error_handling(
   article_recipe_references: ArticleRecipeReferences,
   output_folder: str,
 ) -> list[Stage1Report]:
-  tui = get_tui()
   try:
     return process_article(result_queue, config, article_recipe_references, output_folder)
   except Exception as e:
-    tui.error(f"Error processing capi article capi_id={article_recipe_references.capi_id}: {e}")
+    logger.error(f"Error processing capi article capi_id={article_recipe_references.capi_id}: {e}")
     import traceback
-    tui.error(traceback.format_exc())
+    logger.error(traceback.format_exc())
     reports = [Stage1Report.error(recipe_id, article_recipe_references.capi_id, str(e)) for recipe_id in article_recipe_references.recipe_ids]
     for report in reports:
       result_queue.put(report)

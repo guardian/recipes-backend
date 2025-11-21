@@ -1,4 +1,5 @@
 import dataclasses
+import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from csv import DictWriter
 from queue import Queue
@@ -11,12 +12,11 @@ from config import load_config
 from csv_state import load_stage1_csv_state, stage_1_csv_filename, Stage1Report
 from recipe_processor import process_recipe_with_error_handling
 from services import fetch_index, ArticleRecipeReferences, RecipeReference
-from tui_logger import get_tui
 
+logger = logging.getLogger(__name__)
 
 def writer_thread(result_queue: Queue[Stage1Report | None], filename):
   """Dedicated thread for writing to CSV"""
-  tui = get_tui()
   file_exists = os.path.exists(filename) and os.path.getsize(filename) > 0
   with open(filename, 'a', newline='') as f:
     fieldnames = [field.name for field in dataclasses.fields(Stage1Report)]
@@ -30,14 +30,13 @@ def writer_thread(result_queue: Queue[Stage1Report | None], filename):
       if row is None:  # Sentinel to stop
         result_queue.task_done()
         break
-      tui.info(f"Writing report for recipe_id={row.recipe_id}")
+      logger.info(f"Writing report for recipe_id={row.recipe_id}")
       writer.writerow(dataclasses.asdict(row))
       f.flush()  # Ensure immediate write
       result_queue.task_done()
 
 
 def main(parallelism: int, state_folder: str = None):
-  tui = get_tui()
   processed_recipe_ids: set[str] = set()
 
   if state_folder is None:
@@ -61,8 +60,8 @@ def main(parallelism: int, state_folder: str = None):
   recipes = fetch_index(config)
   # recipes = [RecipeReference("ef09faeb822843aa8699deb617e96f50", "lifeandstyle/2025/oct/13/lime-dal-with-roast-squash-and-chilli-cashews")]
   total_recipes = len(recipes)
-  tui.info(f"Starting processing in {state_folder}")
-  tui.info(f"Found {len(recipes)} recipes to process")
+  logger.info(f"Starting processing in {state_folder}")
+  logger.info(f"Found {len(recipes)} recipes to process")
 
   completed = 0
 
@@ -76,12 +75,9 @@ def main(parallelism: int, state_folder: str = None):
     else:
       completed += 1
 
-  tui.info(f"Skipping {completed} already processed recipes")
+  logger.info(f"Skipping {completed} already processed recipes")
 
-  # Start the TUI
-  tui.start(total=total_recipes)
-  tui.update_progress(completed)
-
+  total_cost = 0.0
   with ThreadPoolExecutor(max_workers=parallelism) as executor:
     article_recipe_references_list = [ArticleRecipeReferences(capi_id, recipes) for capi_id, recipes in recipes_by_capi_id.items()]
     futures = [executor.submit(process_recipe_with_error_handling, result_queue, config, article_recipes, recipes_folder) for article_recipes in article_recipe_references_list]
@@ -89,25 +85,22 @@ def main(parallelism: int, state_folder: str = None):
       try:
         results = future.result()
         completed += 1
-        tui.update_progress(completed)
         # Add cost if it's a valid number
         try:
           for result in results:
-            cost_value = float(result.cost)
-            tui.add_cost(cost_value)
+            total_cost += float(result.cost)
         except (ValueError, TypeError):
-          tui.warning(f"Invalid cost value: {result.cost}")
+          logger.warning(f"Invalid cost value: {result.cost}")
       except Exception as e:
-        tui.error(f"Error processing recipe: {e}")
+        logger.error(f"Error processing recipe: {e}")
         import traceback
-        tui.error(traceback.format_exc())
+        logger.error(traceback.format_exc())
 
-  # Stop TUI and writer thread
   result_queue.put(None)
   writer.join()
-  tui.info(f"All done. State directory was {state_folder}")
-  tui.info(f"Next step is uv run stage-2.py -s {state_folder}")
-  tui.stop()
+  logger.info(f"All done. State directory was {state_folder}")
+  logger.info(f"Next step is uv run stage-2.py -s {state_folder}")
+
 
 
 if __name__ == "__main__":
