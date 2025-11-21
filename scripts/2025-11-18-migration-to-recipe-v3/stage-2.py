@@ -128,6 +128,19 @@ def main(state_folder: str):
     )
 
     for report_group in grouped_reports.values():
+      # filter out groups where the whole group is in error
+      if all(report.status == Stage1ReportStatus.ERROR for report in report_group):
+        for report in report_group:
+          logger.warning(f"Skipping recipe {report.recipe_id} due to error during Stage 1: {report.reason}")
+          append_stage2_report(state_folder, Stage2Report.from_stage1_report(
+            report,
+            Stage2ReportStatus.ERROR,
+            f"Skipped due to Stage 1 error: {report.reason}"
+          ))
+          session_completed += 1
+          progress.update(task, completed=previously_completed + session_completed)
+        continue
+
       first_report = report_group[0]
       if has_article_been_updated(first_report, config):
         logger.info(f"Skipping article {first_report.recipe_id} due to updates in CAPI article.")
