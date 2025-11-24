@@ -265,7 +265,9 @@ describe('getPublishedDate', () => {
 		it('should not apply addSponsorsTransform if IGA sponsorship exists', () => {
 			const sponsorship = activeSponsorshipsIGA;
 			const recipe = { id: 'test-recipe' };
-			const transform = sponsorship.some((s) => s.sponsorName === 'IGA')
+			const transform = sponsorship.some((s) =>
+				s.sponsorName.toLowerCase().includes('iga'),
+			)
 				? // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- we know it's not any
 					(recipe) => recipe
 				: addSponsorsTransform(sponsorship);
@@ -285,7 +287,9 @@ describe('getPublishedDate', () => {
 				sponsors: sponsorship,
 			}));
 
-			const transform = sponsorship.some((s) => s.sponsorName === 'IGA')
+			const transform = sponsorship.some((s) =>
+				s.sponsorName.toLowerCase().includes('iga'),
+			)
 				? // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- we know it's not any
 					(recipe) => recipe
 				: mockAddSponsorsTransform;
