@@ -26,6 +26,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "GuScheduledLambda",
       "GuLambdaFunction",
       "GuParameter",
+      "GuParameter",
       "GuLambdaFunction",
       "GuParameter",
       "GuParameter",
@@ -99,6 +100,10 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     },
     "EventBus": {
       "Default": "/TEST/feast/feast-shared-infra/crier-event-bus",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "PersonalisedFrontsCrossAccountARN": {
+      "Default": "/INFRA/recipes-backend/personalised-fronts-fetcher/data-tech-account-arn",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "PersonalisedFrontsSrcAcct": {
@@ -1781,6 +1786,21 @@ def sort_filter_rules(json_obj):
               "Version": "2012-10-17",
             },
             "PolicyName": "MetricPut",
+          },
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Ref": "PersonalisedFrontsCrossAccountARN",
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "CrossAccount",
           },
         ],
         "RoleName": "personalised-fronts-fetcher-TEST",

@@ -34,7 +34,17 @@ export class PersonalisedFronts extends Construct {
 
 		const base_path = 'personalised/curation';
 
-		const lambdaRole = new Role(this, 'FetcherRole', {
+		const dataTechCrossAccountARN = new GuParameter(
+			scope,
+			'PersonalisedFrontsCrossAccountARN',
+			{
+				fromSSM: true,
+				default: `/INFRA/recipes-backend/personalised-fronts-fetcher/data-tech-account-arn`,
+				type: 'String',
+			},
+		);
+
+		const iamRole = new Role(this, 'FetcherRole', {
 			//The role name needs to be short for cross-cloud federation or you
 			//get an incomprehensible error!
 			roleName: `personalised-fronts-fetcher-${scope.stage}`,
@@ -63,6 +73,15 @@ export class PersonalisedFronts extends Construct {
 						}),
 					],
 				}),
+				CrossAccount: new PolicyDocument({
+					statements: [
+						new PolicyStatement({
+							actions: ['sts:AssumeRole'],
+							effect: Effect.ALLOW,
+							resources: [dataTechCrossAccountARN.valueAsString],
+						}),
+					],
+				}),
 			},
 		});
 
@@ -77,7 +96,7 @@ export class PersonalisedFronts extends Construct {
 				BUCKET_NAME: props.destBucket.bucketName,
 				BASE_PATH: base_path,
 			},
-			role: lambdaRole,
+			role: iamRole,
 		});
 
 		const dataTechAcctParam = new GuParameter(
