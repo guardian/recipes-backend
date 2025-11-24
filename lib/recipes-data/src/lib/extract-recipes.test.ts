@@ -6,6 +6,7 @@ import {
 } from './extract-recipes';
 import {
 	activeSponsorships,
+	activeSponsorshipsIGA,
 	block,
 	content,
 	feastChannel,
@@ -19,6 +20,7 @@ import {
 	singleRecipeElement,
 } from './recipe-fixtures';
 import type { RecipeWithImageData } from './transform';
+import { addSponsorsTransform } from './transform';
 import { capiDateTimeToDate } from './utils';
 
 jest.mock('./config', () => ({
@@ -257,5 +259,44 @@ describe('getPublishedDate', () => {
 		const testContent = { ...content, ...testChannels };
 		const publishedDate = getPublishedDate(testBlock, testContent);
 		expect(publishedDate).toEqual(undefined);
+	});
+
+	describe('Sponsorship handling for IGA', () => {
+		it('should not apply addSponsorsTransform if IGA sponsorship exists', () => {
+			const sponsorship = activeSponsorshipsIGA;
+			const recipe = { id: 'test-recipe' };
+			const transform = sponsorship.some((s) => s.sponsorName === 'IGA')
+				? // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- we know it's not any
+					(recipe) => recipe
+				: addSponsorsTransform(sponsorship);
+
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- we know it's not
+			const result = transform(recipe);
+
+			expect(result).toEqual(recipe); // Recipe should remain unchanged
+		});
+
+		it('should apply addSponsorsTransform if IGA sponsorship does not exist', () => {
+			const sponsorship = activeSponsorships;
+			const recipe = { id: 'test-recipe' };
+			const mockAddSponsorsTransform = jest.fn((recipe) => ({
+				...recipe,
+				sponsors: sponsorship,
+			}));
+
+			const transform = sponsorship.some((s) => s.sponsorName === 'IGA')
+				? // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- we know it's not any
+					(recipe) => recipe
+				: mockAddSponsorsTransform;
+
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- we know it's not
+			const result = transform(recipe);
+
+			expect(mockAddSponsorsTransform).toHaveBeenCalledWith(recipe);
+			expect(result).toEqual({
+				id: 'test-recipe',
+				sponsors: sponsorship,
+			});
+		});
 	});
 });
