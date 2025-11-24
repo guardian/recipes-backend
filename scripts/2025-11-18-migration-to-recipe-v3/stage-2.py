@@ -83,12 +83,13 @@ def handle_error_cases(report: Stage1Report) -> Stage2Report | None:
   return error_report
 
 
-def main(state_folder: str):
+def main(state_folder: str, environment: str):
   init_logger()
   stage1_reports = load_stage1_csv_state(state_folder)
   stage2_reports = load_stage2_csv_state(state_folder)
 
-  config = load_config()
+  logger.info(f"Loading config for environment: {environment}")
+  config = load_config(environment)
   processed_recipe_ids = {report.recipe_id for report in stage2_reports}
 
   total_recipes = len(stage1_reports)
@@ -175,6 +176,7 @@ def main(state_folder: str):
 if __name__ == "__main__":
   arg_parser = ArgumentParser(description='Stage 2 of the migration to recipe v3')
   arg_parser.add_argument('-s', '--state-folder', type=str, required=True, help='Path to the state folder')
+  arg_parser.add_argument('-e', '--environment', type=str, default='CODE', choices=['LOCAL', 'CODE', 'PROD'], help='The environment to use (LOCAL, CODE, PROD)')
 
   args = arg_parser.parse_args()
-  main(state_folder=args.state_folder)
+  main(state_folder=args.state_folder, environment=args.environment)

@@ -14,8 +14,8 @@ class Config:
   ca_bundle_path: str | None
 
 
-def load_config() -> Config:
-  filepath = Path.home() / '.gu' / 'feast-migration-v2-config.json'
+def load_config(environment: str) -> Config:
+  filepath = Path.home() / '.gu' / f"feast-migration-v3-config.{environment}.json"
   with open(filepath, 'r') as f:
     import json
     data = json.load(f)

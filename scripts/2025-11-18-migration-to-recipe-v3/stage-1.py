@@ -38,7 +38,7 @@ def writer_thread(result_queue: Queue[Stage1Report | None], filename):
       result_queue.task_done()
 
 
-def main(parallelism: int, state_folder: str = None):
+def main(parallelism: int, environment: str, state_folder: str = None):
   init_logger()
   processed_recipe_ids: set[str] = set()
 
@@ -53,15 +53,17 @@ def main(parallelism: int, state_folder: str = None):
   recipes_folder = os.path.join(state_folder, "recipes")
   os.makedirs(recipes_folder, exist_ok=True)
 
-  config = load_config()
+  logger.info(f"Loading config for environment: {environment}")
+  config = load_config(environment)
 
   result_queue: Queue[Stage1Report | None] = Queue()
 
   writer = Thread(target=writer_thread, args=(result_queue, stage_1_csv_filename(state_folder)))
   writer.start()
 
-  recipes = fetch_index(config)
+  # recipes = fetch_index(config)
   # recipes = [RecipeReference("ef09faeb822843aa8699deb617e96f50", "lifeandstyle/2025/oct/13/lime-dal-with-roast-squash-and-chilli-cashews")]
+  recipes = [RecipeReference("692425f1480ea4e3cdff1e4f", "test/2025/nov/24/brothy-vinegar-noodles-with-mushrooms-and-sesame")]
   total_recipes = len(recipes)
   logger.info(f"Starting processing in {state_folder}")
   logger.info(f"Found {len(recipes)} recipes to process")
@@ -135,6 +137,7 @@ if __name__ == "__main__":
   arg_parser = ArgumentParser(description='Stage 1 of the migration to recipe v3')
   arg_parser.add_argument('-p', '--parallelism', type=int, default=1, help='Number of parallel tasks to use')
   arg_parser.add_argument('-s', '--state-folder', type=str, default=None, help='Path to the state folder')
+  arg_parser.add_argument('-e', '--environment', type=str, default="CODE", choices= ["LOCAL", "CODE", "PROD"] ,help='The environment to use (LOCAL, CODE, PROD)')
 
   args = arg_parser.parse_args()
-  main(parallelism=args.parallelism, state_folder=args.state_folder)
+  main(parallelism=args.parallelism, state_folder=args.state_folder, environment=args.environment)
