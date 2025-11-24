@@ -1,4 +1,3 @@
-import type { RecipeV3 } from '@recipes-api/lib/feast-models';
 import { RecipeV3Schema } from '@recipes-api/lib/feast-models';
 
 /*
