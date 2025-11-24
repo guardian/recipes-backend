@@ -719,6 +719,30 @@ export const activeSponsorships: Sponsorship[] = [
 	},
 ];
 
+export const activeSponsorshipsIGA: Sponsorship[] = [
+	{
+		sponsorshipType: SponsorshipType.SPONSORED,
+		sponsorName: 'IGA',
+		sponsorLogo:
+			'https://static.theguardian.com/commercial/sponsor/22/Feb/2024/f459c58b-6553-486d-939a-5f23fd935f78-Guardian.orglogos-for badge.png',
+		sponsorLink: 'https://theguardian.org/',
+		aboutLink:
+			'https://www.theguardian.com/global-development/2010/sep/14/about-this-site',
+		sponsorLogoDimensions: {
+			width: 280,
+			height: 180,
+		},
+		highContrastSponsorLogo:
+			'https://static.theguardian.com/commercial/sponsor/22/Feb/2024/3d8e52dc-1d0b-4f95-8cd1-48a674e1309d-guardian.org new logo - white version (3).png',
+		highContrastSponsorLogoDimensions: {
+			width: 280,
+			height: 180,
+		},
+		validFrom: makeCapiDateTime('2023-09-21T16:18:10Z'),
+		validTo: makeCapiDateTime('2026-08-30T23:00:00Z'),
+	},
+];
+
 export const recipeDates = {
 	lastModifiedDate: {
 		dateTime: new Int64(new Date('2024-09-10T16:18:10Z').getTime()),

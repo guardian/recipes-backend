@@ -137,7 +137,12 @@ function parseJsonBlob(
 		const transforms: RecipeTransformationFunction[] = [
 			handleFreeTextContribs,
 			replaceImageUrlsWithFastly,
-			addSponsorsTransform(sponsorship),
+			/*This is one-time patch and will be removed later if permanent fix is there in other side(Tagmanager or Composer with 2 copies)
+      We dont sponsor tag to be present in the article if IGA sponsored tags are present as we are not IGA sponsored anymore
+      This is to resolve this same tag to get use in Gaurdian labs and for Feast Apps*/
+			sponsorship.some((s) => s.sponsorName === 'IGA')
+				? (recipe) => recipe
+				: addSponsorsTransform(sponsorship),
 			addRecipeDatesTransform(recipeDates),
 			replaceCanonicalArticle(canonicalId),
 			temporaryCelebrationIdsFix,
