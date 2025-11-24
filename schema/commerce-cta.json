@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/guardian/recipes-backend/refs/heads/main/schema/commerce-cta.json",
+  "title": "CommerceCta",
+  "description": "Schema for commerce call-to-action details",
+  "type": "object",
+  "properties": {
+    "sponsorName": {
+      "type": "string",
+      "description": "Name of the sponsor"
+    },
+    "territory": {
+      "type": "string",
+      "description": "Territory associated with the campaign"
+    },
+    "url": {
+      "type": "string",
+      "description": "The URL to point to"
+    }
+  },
+  "required": [
+    "sponsorName",
+    "territory",
+    "url"
+  ]
+}
+

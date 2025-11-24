@@ -1,19 +1,24 @@
-import { RecipeV2Schema, RecipeV3Schema } from '@recipes-api/lib/feast-models';
+import { RecipeV3Schema } from '@recipes-api/lib/feast-models';
 
 /*
-	eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+	eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
 	-- disabling these rules as we have no other choice than to handle 'any' types here
 */
 export function convertToRecipeV2(v3jsonBlob: string): string {
 	const parsedJson = JSON.parse(v3jsonBlob);
-	// check this is a valid recipe
+	// check the format by parsing it, but we don't keep the result as it changes the orders of the fields
 	RecipeV3Schema.parse(parsedJson);
 
-	delete parsedJson['ingredientsTemplate'];
-	delete parsedJson['instructionsTemplate'];
+	parsedJson['ingredients']?.forEach((ingredientGroup: any) => {
+		ingredientGroup['ingredientsList']?.forEach((ingredient: any) => {
+			delete ingredient['template'];
+		});
+	});
 
-	// check it conforms to v2 schema
-	RecipeV2Schema.parse(parsedJson);
+	parsedJson['instructions']?.forEach((instruction: any) => {
+		delete instruction['descriptionTemplate'];
+	});
+
 	return JSON.stringify(parsedJson);
 }
-/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
+/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */

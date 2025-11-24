@@ -1,7 +1,7 @@
 import { com } from '@guardian/feast-multiplatform-library';
 import { isEqual } from 'lodash-es';
 import type { RecipeV3 } from '@recipes-api/lib/feast-models';
-import { RecipeV2Schema } from '@recipes-api/lib/feast-models';
+import { RecipeV3Schema } from '@recipes-api/lib/feast-models';
 import scaleRecipe = com.gu.recipe.js.scaleRecipe;
 
 function normaliseContainerSizes(
@@ -71,7 +71,7 @@ export function checkTemplate(recipe: RecipeV3): {
 	received?: unknown;
 } {
 	const result = scaleRecipe(JSON.stringify(recipe), 1, 'Metric');
-	const scaledRecipe = RecipeV2Schema.parse(JSON.parse(result));
+	const scaledRecipe: RecipeV3 = RecipeV3Schema.parse(JSON.parse(result));
 	const expected = {
 		ingredients: recipe.ingredients?.flatMap((list) =>
 			list.ingredientsList
