@@ -279,6 +279,7 @@ describe('getPublishedDate', () => {
 		it('should apply addSponsorsTransform if IGA sponsorship does not exist', () => {
 			const sponsorship = activeSponsorships;
 			const recipe = { id: 'test-recipe' };
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-return -- we know it's not any
 			const mockAddSponsorsTransform = jest.fn((recipe) => ({
 				...recipe,
 				sponsors: sponsorship,
