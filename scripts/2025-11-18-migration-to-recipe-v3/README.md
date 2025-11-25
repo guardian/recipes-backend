@@ -84,3 +84,9 @@ The migration will be run on my laptop.
 
 # 2025-11-25
 - extract minimal test case into this project to make it a CLI tool
+  - Impossible to extract just the code I need into a self contained project.
+  - Resorting to adding throwable temporary code into the flexible repo (not commit nor pushed)
+  - writing a CLI that dumps recipe data from flexible into a folder
+  - updating the test case to read from that folder and try to parse each recipe
+  - if I make the unit of the `serves` property optional, then running it against production data and I can confirm 100% success, so this issue is a CODE only issue
+  - merge PR with the fixed model (100% parse success against production data)
