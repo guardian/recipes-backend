@@ -10,6 +10,7 @@ from csv_state import load_stage1_csv_state, Stage1Report, Stage2Report, Stage2R
   load_stage2_csv_state, append_stage2_report
 from services import fetch_flexible_article, FlexibleError
 from fancy_logging import init_logger, get_console
+from ssm_params import fetch_ssm_param
 
 logger = logging.getLogger(__name__)
 
@@ -90,8 +91,15 @@ def handle_error_cases(report: Stage1Report) -> Stage2Report | None:
   return error_report
 
 
-def main(state_folder: str, environment: str):
+def main(state_folder: str, environment: str, force: bool):
   init_logger()
+
+  if not force:
+    should_publish_v2 = fetch_ssm_param(f"/{environment}/feast/recipes-responder/should-publish-v2")
+    if should_publish_v2 is None or should_publish_v2 is True:
+      logger.error(f"Aborting Stage 2: should-publish-v2 flag is set to {should_publish_v2}. Set it to False then redeploy the backend.")
+      return
+
   stage1_reports = load_stage1_csv_state(state_folder)
   stage2_reports = load_stage2_csv_state(state_folder)
 
@@ -184,6 +192,7 @@ if __name__ == "__main__":
   arg_parser = ArgumentParser(description='Stage 2 of the migration to recipe v3')
   arg_parser.add_argument('-s', '--state-folder', type=str, required=True, help='Path to the state folder')
   arg_parser.add_argument('-e', '--environment', type=str, default='CODE', choices=['LOCAL', 'CODE', 'PROD'], help='The environment to use (LOCAL, CODE, PROD)')
+  arg_parser.add_argument('--force', type=bool, default=False, help='Do not check the state of the v2 flag')
 
   args = arg_parser.parse_args()
-  main(state_folder=args.state_folder, environment=args.environment)
+  main(state_folder=args.state_folder, environment=args.environment, force=args.force)
