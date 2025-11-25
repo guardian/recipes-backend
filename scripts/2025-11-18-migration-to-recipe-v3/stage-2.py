@@ -30,6 +30,13 @@ def update_recipe(report: Stage1Report, config: Config) -> Stage2Report:
     'instructions': raw_data.get("instructions", []),
   }
 
+  # log the recipe as a curl command for debugging
+  logger.debug(f"Curl equivalent:\n"
+               f"curl {config.integration_write_url}update-recipe-element/{report.composer_id} \\\n"
+               f"-H 'content-type: application/json' \\\n"
+               f"-H 'accept: application/json' \\\n"
+               f"-d '{json.dumps(recipe_update)}'")
+
   response = requests.post(
     url=f"{config.integration_write_url}update-recipe-element/{report.composer_id}",
     data=json.dumps(recipe_update),

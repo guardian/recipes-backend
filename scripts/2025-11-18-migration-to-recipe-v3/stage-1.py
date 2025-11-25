@@ -61,9 +61,9 @@ def main(parallelism: int, environment: str, state_folder: str = None):
   writer = Thread(target=writer_thread, args=(result_queue, stage_1_csv_filename(state_folder)))
   writer.start()
 
-  # recipes = fetch_index(config)
+  recipes = fetch_index(config)
   # recipes = [RecipeReference("ef09faeb822843aa8699deb617e96f50", "lifeandstyle/2025/oct/13/lime-dal-with-roast-squash-and-chilli-cashews")]
-  recipes = [RecipeReference("692425f1480ea4e3cdff1e4f", "test/2025/nov/24/brothy-vinegar-noodles-with-mushrooms-and-sesame")]
+  # recipes = [RecipeReference("3083b1a8a9554446ae59b2bf11588459", "test/2025/nov/24/brothy-vinegar-noodles-with-mushrooms-and-sesame")]
   total_recipes = len(recipes)
   logger.info(f"Starting processing in {state_folder}")
   logger.info(f"Found {len(recipes)} recipes to process")
@@ -129,7 +129,7 @@ def main(parallelism: int, environment: str, state_folder: str = None):
   result_queue.put(None)
   writer.join()
   logger.info(f"All done. State directory was {state_folder}")
-  logger.info(f"Next step is uv run stage-2.py -s {state_folder}")
+  logger.info(f"Next step is uv run stage-2.py -s {state_folder} -e {environment}")
 
 
 
