@@ -90,3 +90,18 @@ The migration will be run on my laptop.
   - updating the test case to read from that folder and try to parse each recipe
   - if I make the unit of the `serves` property optional, then running it against production data and I can confirm 100% success, so this issue is a CODE only issue
   - merge PR with the fixed model (100% parse success against production data)
+- launched the stage 1 of the migration (which is read only) on production, left it to run overnight will see the results tomorrow
+
+# 2025-11-26
+- checked the results of stage 1
+  - it took 12 hours to process 6972 recipes
+  - cost 310 USD, which is much lower than expected (was expecting around 600 USD)
+  - 208 errors, of which:
+    - 142 HTTP 504 from the templatiser. I'll retry these with a lower parallelism
+    - 38 HTTP 500 from the templatiser. Need to investigate
+    - 26 not found in CAPI, probably a desynchronisation issue between feast and CAPI
+    - 2 not found in flexible, probably the same cause
+  - 1275 diff automatically accepted by the LLM
+  - 129 human review needed as flagged by the LLM
+  - 5397 exact matches, (success)
+- deleted all the 504 from the CSV and re-triggering stage 1 with a lower parallelism: 1
