@@ -24,11 +24,20 @@ def fetch_index(config: Config) -> list[RecipeReference]:
   recipes = [RecipeReference(recipe_id=recipe["recipeUID"], capi_id=recipe["capiArticleId"]) for recipe in recipes]
   return recipes
 
+def fetch_CAPI_article_feast_channel(capi_id: str, config: Config) -> dict | None:
+  url = f'{config.capi_url}channel/feast/item/{capi_id}?api-key={config.capi_key}&show-fields=all&show-blocks=all'
+  response = requests.get(url)
+  if response.status_code == 404:
+    return None
+  response.raise_for_status()
+  return response.json()
+
+
 def fetch_CAPI_article(capi_id: str, config: Config) -> dict | None:
   url = f'{config.capi_url}{capi_id}?api-key={config.capi_key}&show-fields=all&show-blocks=all'
   response = requests.get(url)
   if response.status_code == 404:
-    return None
+    return fetch_CAPI_article_feast_channel(capi_id, config)
   response.raise_for_status()
   return response.json()
 
