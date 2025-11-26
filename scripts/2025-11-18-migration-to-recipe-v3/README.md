@@ -104,9 +104,38 @@ The migration will be run on my laptop.
   - 1275 diff automatically accepted by the LLM
   - 129 human review needed as flagged by the LLM
   - 5397 exact matches, (success)
-- 504
-  - deleted all the 504 from the CSV and re-triggering stage 1 with a lower parallelism: 1
-    - still got 46 HTTP 504 after first retry. Will retry again, failing this I'll either bypass the ALB or extend its timeout
-  - second retry: 22 HTTP 504 remaining
-  - after multiple retries some still didn't go through, and they were all recipes with large amount of text instructions. I've tempararily increased the ALB timeout to 4 minutes and they all went through
-  - This does beg the question of how to handle large recipes in the future. Is it a matter of icnreasing timeout and ask editors to be patients? or should we chunk the requests somehow?
+
+## 504
+- deleted all the 504 from the CSV and re-triggering stage 1 with a lower parallelism: 1
+  - still got 46 HTTP 504 after first retry. Will retry again, failing this I'll either bypass the ALB or extend its timeout
+- second retry: 22 HTTP 504 remaining
+- after multiple retries some still didn't go through, and they were all recipes with large amount of text instructions. I've tempararily increased the ALB timeout to 4 minutes and they all went through
+- This does beg the question of how to handle large recipes in the future. Is it a matter of icnreasing timeout and ask editors to be patients? or should we chunk the requests somehow?
+
+## 500
+- removing one row from the CSV and re-running stage 1 to understand a single error
+- replaying all the errors is enough to clear them all, most of them were invalid syntax when the LLM used a tool
+
+## 404
+- Some recipes are exclusive to Feast, and aren't available on the standard CAPI endpoint, but are available on the Feast channel through CAPI. I've added logic to retry on the channel in case of a 404
+
+## Status
+At this stage, only 3 recipes are remaining:
+- one is not found in capi. Maybe this is a takedown that didn't propagate correctly?
+- two are found in capi and flexible, but the ID in Feast doesn't match the one in flexible. Checking the recipe itself, I can confirm that indeed, there are no recipe block.
+- I'll flag these to the editorial team.
+
+## Human reviews:
+The LLM flags recipes that need human review, and provide an explanation about what needs to be reviewed as well as its best guess as to what the recipe should be.
+Most of the time the proposal is correct, but there's no other solution than reviewing them manually. 129 is very much doable.
+
+The process is the following:
+- check the CSV for the notes from the LLM, check the diff between original data and re-structured data
+- if the output is correct, move on to the next one
+- However if the output is incorrect, manually edit the json file of the recipe to fix the issue. Prefix the note by "FIXED: " to indicate it's been fixed.
+- Here's a sample of notes, because they're very pertinent:
+  - `Character encoding issue in instruction step 11: "Porkӧlt" appears to be malformed. Should likely be "Pörkölt" (the correct Hungarian spelling of this dish).`
+  - `Incorrect ingredient data structure: '1 heaped tbsp very finely chopped chives' has unit=null and prefix='heaped tbsp very finely', but 'tbsp' should be the unit field, not part of the prefix. This causes formatting issues when trying to create the template.`
+  - `Incorrect ingredient data: The ingredient text "1 litre chicken, or vegetable stock" has the ingredient name set as "chicken" when it should be "chicken stock" or "stock". The 1 litre is measuring stock, not chicken.`
+  - `Ingredient "100 sherry, dry or medium" has amount 100.0 but unit is null. The unit should be specified (likely ml) for proper recipe scaling and conversion.`
+- Reviewing all the 134 (as some of the reprocessed recipes fell into this category) took around the rest of the day. It's done now, lots of good suggestions by the llm
