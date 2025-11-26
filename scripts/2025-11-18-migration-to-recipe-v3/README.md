@@ -104,4 +104,9 @@ The migration will be run on my laptop.
   - 1275 diff automatically accepted by the LLM
   - 129 human review needed as flagged by the LLM
   - 5397 exact matches, (success)
-- deleted all the 504 from the CSV and re-triggering stage 1 with a lower parallelism: 1
+- 504
+  - deleted all the 504 from the CSV and re-triggering stage 1 with a lower parallelism: 1
+    - still got 46 HTTP 504 after first retry. Will retry again, failing this I'll either bypass the ALB or extend its timeout
+  - second retry: 22 HTTP 504 remaining
+  - after multiple retries some still didn't go through, and they were all recipes with large amount of text instructions. I've tempararily increased the ALB timeout to 4 minutes and they all went through
+  - This does beg the question of how to handle large recipes in the future. Is it a matter of icnreasing timeout and ask editors to be patients? or should we chunk the requests somehow?
