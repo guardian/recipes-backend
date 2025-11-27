@@ -177,6 +177,8 @@ def process_article(
 
     if template_result['reviewReason'] is not None:
       status = Stage1ReportStatus.REVIEW_NEEDED
+    elif template_result['valid'] is False:
+      status = Stage1ReportStatus.INCOMPLETE
     elif template_result['expected'] is not None:
       status = Stage1ReportStatus.ACCEPTED_BY_LLM
     else:

@@ -9,6 +9,7 @@ class Stage1ReportStatus(Enum):
   ACCEPTED_BY_LLM = "ACCEPTED_BY_LLM"
   REVIEW_NEEDED = "REVIEW_NEEDED"
   ERROR = "ERROR"
+  INCOMPLETE = "INCOMPLETE" # the LLM could not get it to match after 5 attempts
 
 @dataclass(frozen=True)
 class Stage1Report:

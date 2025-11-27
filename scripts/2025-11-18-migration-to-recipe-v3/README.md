@@ -139,3 +139,12 @@ The process is the following:
   - `Incorrect ingredient data: The ingredient text "1 litre chicken, or vegetable stock" has the ingredient name set as "chicken" when it should be "chicken stock" or "stock". The 1 litre is measuring stock, not chicken.`
   - `Ingredient "100 sherry, dry or medium" has amount 100.0 but unit is null. The unit should be specified (likely ml) for proper recipe scaling and conversion.`
 - Reviewing all the 134 (as some of the reprocessed recipes fell into this category) took around the rest of the day. It's done now, lots of good suggestions by the llm
+
+# 2025-11-27
+- I've noticed some encoding issues, easy to spot by looking for `\\\` in the CSV file.
+  - Need to fix the files
+  - Need to reinforce the templatiser logic, and detect if the rendered output contains `{` ot `}` which is a good telltale. Surprisingly these have been accepted by the LLM, so also need to renforce the prompt.
+- Also improved the templatiser logic to ensure we don't re-call the LLM needlessly. One edge case was the LLM reformulates the recipe but has not yet produced a valid result, lead to the LLM being called once more.
+- Found a flaw in the migration script: I'm only using the diff to ensure the template is valid (valid = no diff), but it's possible that the LLM didn't succeed in producing a valid result after 5 iterations, incapable of producing a diff
+  - This is annoying because there's no way of quantifying this without re-processing all the recipes again. Will do a sample to guesstimate it.
+- add support for processing only a given number of recipes

@@ -108,7 +108,7 @@ def main(parallelism: int, environment: str, state_folder: str = None):
     )
 
     with ThreadPoolExecutor(max_workers=parallelism) as executor:
-      article_recipe_references_list = [ArticleRecipeReferences(capi_id, recipes) for capi_id, recipes in recipes_by_capi_id.items()]
+      article_recipe_references_list = [ArticleRecipeReferences(capi_id, recipes) for capi_id, recipes in list(recipes_by_capi_id.items())]
       futures = [executor.submit(process_recipe_with_error_handling, result_queue, config, article_recipes, recipes_folder) for article_recipes in article_recipe_references_list]
       for future in as_completed(futures):
         try:
