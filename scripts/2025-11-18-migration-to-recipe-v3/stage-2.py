@@ -96,7 +96,7 @@ def main(state_folder: str, environment: str, force: bool):
 
   if not force:
     should_publish_v2 = fetch_ssm_param(f"/{environment}/feast/recipes-responder/should-publish-v2")
-    if should_publish_v2 is None or should_publish_v2 is True:
+    if should_publish_v2 is None or bool(should_publish_v2) is True:
       logger.error(f"Aborting Stage 2: should-publish-v2 flag is set to {should_publish_v2}. Set it to False then redeploy the backend.")
       return
 

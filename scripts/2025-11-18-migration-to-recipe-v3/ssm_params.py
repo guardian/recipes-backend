@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 def fetch_ssm_param(param_name: str) -> str | None:
-  session = boto3.session.Session(profile_name='feast')
+  session = boto3.session.Session(profile_name='feast', region_name='eu-west-1')
   ssm_client = session.client('ssm')
 
   try:
