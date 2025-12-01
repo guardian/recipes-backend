@@ -1,5 +1,5 @@
 import { GuParameter, type GuStack } from '@guardian/cdk/lib/constructs/core';
-import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
+// import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
 import { aws_sns, Duration } from 'aws-cdk-lib';
 import {
 	Alarm,
@@ -11,14 +11,13 @@ import { SnsAction } from 'aws-cdk-lib/aws-cloudwatch-actions';
 import {
 	AccountPrincipal,
 	Effect,
-	ManagedPolicy,
 	PolicyDocument,
 	PolicyStatement,
 	Role,
 } from 'aws-cdk-lib/aws-iam';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
+// import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { IBucket } from 'aws-cdk-lib/aws-s3';
-import { CfnOutput } from 'aws-cdk-lib/core';
+// import { CfnOutput } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import type { ExternalParameters } from './external_parameters';
 
@@ -43,16 +42,11 @@ export class PersonalisedFronts extends Construct {
 			},
 		);
 
-		const iamRole = new Role(this, 'FetcherRole', {
+		new Role(this, 'FetcherRole', {
 			//The role name needs to be short for cross-cloud federation or you
 			//get an incomprehensible error!
 			roleName: `personalised-fronts-fetcher-${scope.stage}`,
 			assumedBy: new AccountPrincipal(dataTechCrossAccountARN.valueAsString),
-			managedPolicies: [
-				ManagedPolicy.fromAwsManagedPolicyName(
-					'service-role/AWSLambdaBasicExecutionRole',
-				),
-			],
 			inlinePolicies: {
 				S3Put: new PolicyDocument({
 					statements: [
@@ -84,51 +78,51 @@ export class PersonalisedFronts extends Construct {
 			},
 		});
 
-		const fetcher = new GuLambdaFunction(scope, 'PersonalisedFrontsFetcher', {
-			fileName: 'personalised-fronts-fetcher.zip',
-			handler: 'main.handler',
-			functionName: `personalised-fetcher-${scope.stage}`,
-			runtime: Runtime.NODEJS_20_X,
-			app: 'personalised-fronts-fetcher',
-			memorySize: 256,
-			environment: {
-				BUCKET_NAME: props.destBucket.bucketName,
-				BASE_PATH: base_path,
-			},
-			role: iamRole,
-		});
+		// const fetcher = new GuLambdaFunction(scope, 'PersonalisedFrontsFetcher', {
+		// 	fileName: 'personalised-fronts-fetcher.zip',
+		// 	handler: 'main.handler',
+		// 	functionName: `personalised-fetcher-${scope.stage}`,
+		// 	runtime: Runtime.NODEJS_20_X,
+		// 	app: 'personalised-fronts-fetcher',
+		// 	memorySize: 256,
+		// 	environment: {
+		// 		BUCKET_NAME: props.destBucket.bucketName,
+		// 		BASE_PATH: base_path,
+		// 	},
+		// 	role: iamRole,
+		// });
 
-		const dataTechAcctParam = new GuParameter(
-			scope,
-			'PersonalisedFrontsSrcAcct',
-			{
-				fromSSM: true,
-				default: `/INFRA/recipes-backend/personalised-fronts-fetcher/data-tech-account-id`,
-				type: 'String',
-			},
-		);
+		// const dataTechAcctParam = new GuParameter(
+		// 	scope,
+		// 	'PersonalisedFrontsSrcAcct',
+		// 	{
+		// 		fromSSM: true,
+		// 		default: `/INFRA/recipes-backend/personalised-fronts-fetcher/data-tech-account-id`,
+		// 		type: 'String',
+		// 	},
+		// );
 
-		const xar = new Role(this, 'XAR', {
-			inlinePolicies: {
-				invokeFetcher: new PolicyDocument({
-					statements: [
-						new PolicyStatement({
-							effect: Effect.ALLOW,
-							resources: [fetcher.functionArn],
-							actions: ['lambda:InvokeFunction'],
-						}),
-					],
-				}),
-			},
-			assumedBy: new AccountPrincipal(dataTechAcctParam.valueAsString),
-		});
+		// const xar = new Role(this, 'XAR', {
+		// 	inlinePolicies: {
+		// 		invokeFetcher: new PolicyDocument({
+		// 			statements: [
+		// 				new PolicyStatement({
+		// 					effect: Effect.ALLOW,
+		// 					resources: [fetcher.functionArn],
+		// 					actions: ['lambda:InvokeFunction'],
+		// 				}),
+		// 			],
+		// 		}),
+		// 	},
+		// 	assumedBy: new AccountPrincipal(dataTechAcctParam.valueAsString),
+		// });
 
-		new CfnOutput(this, 'XARNameOutput', {
-			description:
-				'Cross-account role for Airflow to trigger the personalised fronts fetcher',
-			value: xar.roleArn,
-			key: 'PersonalisedFrontsFetcherXAR',
-		});
+		// new CfnOutput(this, 'XARNameOutput', {
+		// 	description:
+		// 		'Cross-account role for Airflow to trigger the personalised fronts fetcher',
+		// 	value: xar.roleArn,
+		// 	key: 'PersonalisedFrontsFetcherXAR',
+		// });
 
 		const nonUrgentAlarmTopic = aws_sns.Topic.fromTopicArn(
 			this,

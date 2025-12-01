@@ -27,8 +27,6 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "GuLambdaFunction",
       "GuParameter",
       "GuParameter",
-      "GuLambdaFunction",
-      "GuParameter",
       "GuParameter",
       "GuParameter",
       "GuParameter",
@@ -74,15 +72,6 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
         ],
       },
     },
-    "PersonalisedFrontsFetcherXAR": {
-      "Description": "Cross-account role for Airflow to trigger the personalised fronts fetcher",
-      "Value": {
-        "Fn::GetAtt": [
-          "PersonalisedFrontsXARA8DE0C46",
-          "Arn",
-        ],
-      },
-    },
   },
   "Parameters": {
     "ClusterArn": {
@@ -104,10 +93,6 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     },
     "PersonalisedFrontsCrossAccountARN": {
       "Default": "/INFRA/recipes-backend/personalised-fronts-fetcher/data-tech-account-arn",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "PersonalisedFrontsSrcAcct": {
-      "Default": "/INFRA/recipes-backend/personalised-fronts-fetcher/data-tech-account-id",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "RepoName": {
@@ -1654,68 +1639,6 @@ def sort_filter_rules(json_obj):
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "PersonalisedFrontsFetcherD271E44C": {
-      "DependsOn": [
-        "PersonalisedFrontsFetcherRoleDefaultPolicy88EC4FC6",
-        "PersonalisedFrontsFetcherRole43774D9F",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Ref": "DistributionBucketName",
-          },
-          "S3Key": "feast/TEST/personalised-fronts-fetcher/personalised-fronts-fetcher.zip",
-        },
-        "Environment": {
-          "Variables": {
-            "APP": "personalised-fronts-fetcher",
-            "BASE_PATH": "personalised/curation",
-            "BUCKET_NAME": {
-              "Ref": "staticstaticServing53194089",
-            },
-            "STACK": "feast",
-            "STAGE": "TEST",
-          },
-        },
-        "FunctionName": "personalised-fetcher-TEST",
-        "Handler": "main.handler",
-        "LoggingConfig": {
-          "LogFormat": "JSON",
-        },
-        "MemorySize": 256,
-        "Role": {
-          "Fn::GetAtt": [
-            "PersonalisedFrontsFetcherRole43774D9F",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs20.x",
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "personalised-fronts-fetcher",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/recipes-backend",
-          },
-          {
-            "Key": "Stack",
-            "Value": "feast",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-        "Timeout": 30,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
     "PersonalisedFrontsFetcherRole43774D9F": {
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -1745,20 +1668,6 @@ def sort_filter_rules(json_obj):
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
         "Policies": [
           {
             "PolicyDocument": {
@@ -1819,176 +1728,6 @@ def sort_filter_rules(json_obj):
           },
         ],
         "RoleName": "personalised-fronts-fetcher-TEST",
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/recipes-backend",
-          },
-          {
-            "Key": "Stack",
-            "Value": "feast",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "PersonalisedFrontsFetcherRoleDefaultPolicy88EC4FC6": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::",
-                      {
-                        "Ref": "DistributionBucketName",
-                      },
-                    ],
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::",
-                      {
-                        "Ref": "DistributionBucketName",
-                      },
-                      "/feast/TEST/personalised-fronts-fetcher/personalised-fronts-fetcher.zip",
-                    ],
-                  ],
-                },
-              ],
-            },
-            {
-              "Action": "ssm:GetParametersByPath",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/TEST/feast/personalised-fronts-fetcher",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "ssm:GetParameters",
-                "ssm:GetParameter",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/TEST/feast/personalised-fronts-fetcher/*",
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "PersonalisedFrontsFetcherRoleDefaultPolicy88EC4FC6",
-        "Roles": [
-          {
-            "Ref": "PersonalisedFrontsFetcherRole43774D9F",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "PersonalisedFrontsXARA8DE0C46": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::",
-                      {
-                        "Ref": "PersonalisedFrontsSrcAcct",
-                      },
-                      ":root",
-                    ],
-                  ],
-                },
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Policies": [
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": "lambda:InvokeFunction",
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Fn::GetAtt": [
-                      "PersonalisedFrontsFetcherD271E44C",
-                      "Arn",
-                    ],
-                  },
-                },
-              ],
-              "Version": "2012-10-17",
-            },
-            "PolicyName": "invokeFetcher",
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
