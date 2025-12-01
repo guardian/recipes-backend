@@ -72,6 +72,15 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
         ],
       },
     },
+    "PersonalisedFrontsFetcherXAR": {
+      "Description": "Cross-account role for Airflow to trigger the personalised fronts fetcher",
+      "Value": {
+        "Fn::GetAtt": [
+          "PersonalisedFrontsFetcherRole43774D9F",
+          "Arn",
+        ],
+      },
+    },
   },
   "Parameters": {
     "ClusterArn": {

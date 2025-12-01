@@ -18,6 +18,7 @@ import {
 // import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { IBucket } from 'aws-cdk-lib/aws-s3';
 // import { CfnOutput } from 'aws-cdk-lib/core';
+import { CfnOutput } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import type { ExternalParameters } from './external_parameters';
 
@@ -42,9 +43,7 @@ export class PersonalisedFronts extends Construct {
 			},
 		);
 
-		new Role(this, 'FetcherRole', {
-			//The role name needs to be short for cross-cloud federation or you
-			//get an incomprehensible error!
+		const iamRole = new Role(this, 'FetcherRole', {
 			roleName: `personalised-fronts-fetcher-${scope.stage}`,
 			assumedBy: new AccountPrincipal(dataTechCrossAccountARN.valueAsString),
 			inlinePolicies: {
@@ -117,12 +116,12 @@ export class PersonalisedFronts extends Construct {
 		// 	assumedBy: new AccountPrincipal(dataTechAcctParam.valueAsString),
 		// });
 
-		// new CfnOutput(this, 'XARNameOutput', {
-		// 	description:
-		// 		'Cross-account role for Airflow to trigger the personalised fronts fetcher',
-		// 	value: xar.roleArn,
-		// 	key: 'PersonalisedFrontsFetcherXAR',
-		// });
+		new CfnOutput(this, 'XARNameOutput', {
+			description:
+				'Cross-account role for Airflow to trigger the personalised fronts fetcher',
+			value: iamRole.roleArn,
+			key: 'PersonalisedFrontsFetcherXAR',
+		});
 
 		const nonUrgentAlarmTopic = aws_sns.Topic.fromTopicArn(
 			this,
