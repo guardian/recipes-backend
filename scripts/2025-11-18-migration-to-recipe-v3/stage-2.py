@@ -98,7 +98,7 @@ def main(state_folder: str, environment: str, force: bool, delay_ms: int):
 
   if not force:
     should_publish_v2 = fetch_ssm_param(f"/{environment}/feast/recipes-responder/should-publish-v2")
-    if should_publish_v2 is None or bool(should_publish_v2) is True:
+    if should_publish_v2 is None or should_publish_v2 == "true":
       logger.error(f"Aborting Stage 2: should-publish-v2 flag is set to {should_publish_v2}. Set it to False then redeploy the backend.")
       return
 
@@ -187,7 +187,7 @@ def main(state_folder: str, environment: str, force: bool, delay_ms: int):
         session_completed += 1
         progress.update(task, completed=previously_completed + session_completed)
         elapsed_time = (datetime.now() - start_timestamp).total_seconds()
-        sleeping_time = min(delay_ms / 1000.0 - elapsed_time, 0)
+        sleeping_time = max(delay_ms / 1000.0 - elapsed_time, 0)
         sleep(sleeping_time)
 
   logger.info(f"All done. Processed {session_completed} recipes in this session.")
