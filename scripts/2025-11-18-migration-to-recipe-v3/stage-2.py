@@ -1,6 +1,8 @@
 import json
 import logging
 from argparse import ArgumentParser
+from datetime import datetime
+from time import sleep
 
 import requests
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn, TimeRemainingColumn, MofNCompleteColumn
@@ -91,7 +93,7 @@ def handle_error_cases(report: Stage1Report) -> Stage2Report | None:
   return error_report
 
 
-def main(state_folder: str, environment: str, force: bool):
+def main(state_folder: str, environment: str, force: bool, delay_ms: int):
   init_logger()
 
   if not force:
@@ -171,6 +173,7 @@ def main(state_folder: str, environment: str, force: bool):
         continue
 
       for report in report_group:
+        start_timestamp = datetime.now()
         logger.info(f"Recipe ID: {report.recipe_id}, Status: {report.status}, Filename: {report.filename}")
         error_report = handle_error_cases(report)
         if error_report is not None:
@@ -183,6 +186,9 @@ def main(state_folder: str, environment: str, force: bool):
         append_stage2_report(state_folder, stage2_report)
         session_completed += 1
         progress.update(task, completed=previously_completed + session_completed)
+        elapsed_time = (datetime.now() - start_timestamp).total_seconds()
+        sleeping_time = min(delay_ms / 1000.0 - elapsed_time, 0)
+        sleep(sleeping_time)
 
   logger.info(f"All done. Processed {session_completed} recipes in this session.")
   logger.info(f"State directory: {state_folder}")
@@ -193,6 +199,7 @@ if __name__ == "__main__":
   arg_parser.add_argument('-s', '--state-folder', type=str, required=True, help='Path to the state folder')
   arg_parser.add_argument('-e', '--environment', type=str, default='CODE', choices=['LOCAL', 'CODE', 'PROD'], help='The environment to use (LOCAL, CODE, PROD)')
   arg_parser.add_argument('--force', type=bool, default=False, help='Do not check the state of the v2 flag')
+  arg_parser.add_argument('--delay-ms', type=int, default=3000, help='Delay between requests in ms')
 
   args = arg_parser.parse_args()
-  main(state_folder=args.state_folder, environment=args.environment, force=args.force)
+  main(state_folder=args.state_folder, environment=args.environment, force=args.force, delay_ms=args.delay_ms)
