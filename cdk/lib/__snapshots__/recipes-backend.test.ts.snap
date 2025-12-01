@@ -33,6 +33,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "GuParameter",
       "GuParameter",
       "GuParameter",
+      "GuParameter",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -102,6 +103,10 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     },
     "PersonalisedFrontsCrossAccountARN": {
       "Default": "/INFRA/recipes-backend/personalised-fronts-fetcher/data-tech-account-arn",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "PersonalisedFrontsSrcAcct": {
+      "Default": "/INFRA/recipes-backend/personalised-fronts-fetcher/data-tech-account-id",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "RepoName": {
@@ -1666,7 +1671,7 @@ def sort_filter_rules(json_obj):
                       },
                       ":iam::",
                       {
-                        "Ref": "PersonalisedFrontsCrossAccountARN",
+                        "Ref": "PersonalisedFrontsSrcAcct",
                       },
                       ":root",
                     ],

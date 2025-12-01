@@ -43,9 +43,19 @@ export class PersonalisedFronts extends Construct {
 			},
 		);
 
+		const dataTechCrossAccountID = new GuParameter(
+			scope,
+			'PersonalisedFrontsSrcAcct',
+			{
+				fromSSM: true,
+				default: `/INFRA/recipes-backend/personalised-fronts-fetcher/data-tech-account-id`,
+				type: 'String',
+			},
+		);
+
 		const iamRole = new Role(this, 'FetcherRole', {
 			roleName: `personalised-fronts-fetcher-${scope.stage}`,
-			assumedBy: new AccountPrincipal(dataTechCrossAccountARN.valueAsString),
+			assumedBy: new AccountPrincipal(dataTechCrossAccountID.valueAsString),
 			inlinePolicies: {
 				S3Put: new PolicyDocument({
 					statements: [
@@ -90,16 +100,6 @@ export class PersonalisedFronts extends Construct {
 		// 	},
 		// 	role: iamRole,
 		// });
-
-		// const dataTechAcctParam = new GuParameter(
-		// 	scope,
-		// 	'PersonalisedFrontsSrcAcct',
-		// 	{
-		// 		fromSSM: true,
-		// 		default: `/INFRA/recipes-backend/personalised-fronts-fetcher/data-tech-account-id`,
-		// 		type: 'String',
-		// 	},
-		// );
 
 		// const xar = new Role(this, 'XAR', {
 		// 	inlinePolicies: {
