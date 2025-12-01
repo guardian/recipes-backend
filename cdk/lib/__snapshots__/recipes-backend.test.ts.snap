@@ -1724,7 +1724,22 @@ def sort_filter_rules(json_obj):
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": {
-                "Service": "lambda.amazonaws.com",
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
+                      {
+                        "Ref": "PersonalisedFrontsCrossAccountARN",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
               },
             },
           ],

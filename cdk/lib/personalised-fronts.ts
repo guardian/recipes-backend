@@ -15,7 +15,6 @@ import {
 	PolicyDocument,
 	PolicyStatement,
 	Role,
-	ServicePrincipal,
 } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { IBucket } from 'aws-cdk-lib/aws-s3';
@@ -48,7 +47,7 @@ export class PersonalisedFronts extends Construct {
 			//The role name needs to be short for cross-cloud federation or you
 			//get an incomprehensible error!
 			roleName: `personalised-fronts-fetcher-${scope.stage}`,
-			assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
+			assumedBy: new AccountPrincipal(dataTechCrossAccountARN.valueAsString),
 			managedPolicies: [
 				ManagedPolicy.fromAwsManagedPolicyName(
 					'service-role/AWSLambdaBasicExecutionRole',
