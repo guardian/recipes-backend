@@ -22,7 +22,7 @@
       "description": "Source of the image"
     },
     "photographer": {
-      "type": "string",
+      "type": ["string", "null"],
       "description": "Name of the photographer"
     },
     "imageType": {

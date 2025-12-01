@@ -29,8 +29,7 @@
     }
   },
   "required": [
-    "amount",
-    "unit"
+    "amount"
   ]
 }
 
