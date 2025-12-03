@@ -148,3 +148,20 @@ The process is the following:
 - Found a flaw in the migration script: I'm only using the diff to ensure the template is valid (valid = no diff), but it's possible that the LLM didn't succeed in producing a valid result after 5 iterations, incapable of producing a diff
   - This is annoying because there's no way of quantifying this without re-processing all the recipes again. Will do a sample to guesstimate it.
 - add support for processing only a given number of recipes
+
+# 2025-12-01
+- I ran the stage 2 on a sample, then on all the recipes
+- Some of the recipes were raising errors in the feast backend. This was due to their schema not matching our definition. So two PR later (to fix the undefined servings unit and missing photographer field), the backend was fixed.
+- I then had to reprocess these recipes through stage 1 again to ensure the composer version would match the one on disk, which took the rest of the day
+
+# 2025-12-02
+- Ran stage 2 on the remaining recipes, all ok on the script side
+- Checking the index v3, I only have 4665 recipes, we're missing 2400 recipes.
+- Looking at the logs I can see `Nothing found for https://content.guardianapis.com/channel/feast/item/food/2018/aug/20/thomasina-miers-jerk-lamb-burger-with-grilled-sweetcorn-and-lime-salad`
+  - This is because the backend only fetches recipes that are available on the feast channel, but some recipes are older than the concept of channels
+  - So this means as of today and regardless of the migration, these recipes can't be updated, though they are available in the feast app as fetching through the channel must be more recent.
+  - I think the ideal fix is to update all these recipes and ensure they are available on the feast channel
+  - Failing this, for the time of the migration I might add a fallback into the fetching logic, but that kind of completely defeats the purpose of having channels
+- Parallel to all this, I've yet to have my composer PR reviewed so I can merge it.
+  - I've informed editorial to keep editing on the old UI and I'll find a way to re-migrate what's changed.
+  - Ha, just had it approved, will be merged tomorrow morning.
