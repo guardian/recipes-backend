@@ -28,9 +28,6 @@
       "description": "Human-readable text representation of the timing"
     }
   },
-  "required": [
-    "qualifier",
-    "durationInMins"
-  ]
+  "required": []
 }
 
