@@ -18,18 +18,32 @@ export async function announceNewRecipe(
 	removedList: RecipeIndexEntry[],
 	OutgoingEventBus: string,
 ) {
-	const updates = updated.map((recep) => ({
-		Time: new Date(), //Timestamp
-		Source: 'recipe-responder', //Identity of sender
-		Resources: [], //Affected AWS resources
-		DetailType: 'recipe-update', //What happened
-		Detail: JSON.stringify({
-			blob: recep.recipeV3Blob.jsonBlob,
-			uid: recep.recipeUID,
-			checksum: recep.recipeV3Blob.checksum,
-		}),
-		EventBusName: OutgoingEventBus,
-	}));
+	const updates = updated.flatMap((recep) => [
+		{
+			Time: new Date(), //Timestamp
+			Source: 'recipe-responder', //Identity of sender
+			Resources: [], //Affected AWS resources
+			DetailType: 'recipe-update', //What happened
+			Detail: JSON.stringify({
+				blob: recep.recipeV2Blob.jsonBlob,
+				uid: recep.recipeUID,
+				checksum: recep.recipeV2Blob.checksum,
+			}),
+			EventBusName: OutgoingEventBus,
+		},
+		{
+			Time: new Date(), //Timestamp
+			Source: 'recipe-responder', //Identity of sender
+			Resources: [], //Affected AWS resources
+			DetailType: 'recipe-update', //What happened
+			Detail: JSON.stringify({
+				blob: recep.recipeV3Blob.jsonBlob,
+				uid: recep.recipeUID,
+				checksum: recep.recipeV3Blob.checksum,
+			}),
+			EventBusName: OutgoingEventBus,
+		},
+	]);
 
 	const updatedUIDs = updated.map((_) => _.recipeUID);
 
