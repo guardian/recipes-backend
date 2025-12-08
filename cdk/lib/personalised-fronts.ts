@@ -1,5 +1,4 @@
 import { GuParameter, type GuStack } from '@guardian/cdk/lib/constructs/core';
-// import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
 import { aws_sns, Duration } from 'aws-cdk-lib';
 import {
 	Alarm,
@@ -15,9 +14,7 @@ import {
 	PolicyStatement,
 	Role,
 } from 'aws-cdk-lib/aws-iam';
-// import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { IBucket } from 'aws-cdk-lib/aws-s3';
-// import { CfnOutput } from 'aws-cdk-lib/core';
 import { CfnOutput } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import type { ExternalParameters } from './external_parameters';
@@ -86,35 +83,6 @@ export class PersonalisedFronts extends Construct {
 				}),
 			},
 		});
-
-		// const fetcher = new GuLambdaFunction(scope, 'PersonalisedFrontsFetcher', {
-		// 	fileName: 'personalised-fronts-fetcher.zip',
-		// 	handler: 'main.handler',
-		// 	functionName: `personalised-fetcher-${scope.stage}`,
-		// 	runtime: Runtime.NODEJS_20_X,
-		// 	app: 'personalised-fronts-fetcher',
-		// 	memorySize: 256,
-		// 	environment: {
-		// 		BUCKET_NAME: props.destBucket.bucketName,
-		// 		BASE_PATH: base_path,
-		// 	},
-		// 	role: iamRole,
-		// });
-
-		// const xar = new Role(this, 'XAR', {
-		// 	inlinePolicies: {
-		// 		invokeFetcher: new PolicyDocument({
-		// 			statements: [
-		// 				new PolicyStatement({
-		// 					effect: Effect.ALLOW,
-		// 					resources: [fetcher.functionArn],
-		// 					actions: ['lambda:InvokeFunction'],
-		// 				}),
-		// 			],
-		// 		}),
-		// 	},
-		// 	assumedBy: new AccountPrincipal(dataTechAcctParam.valueAsString),
-		// });
 
 		new CfnOutput(this, 'XARNameOutput', {
 			description:
