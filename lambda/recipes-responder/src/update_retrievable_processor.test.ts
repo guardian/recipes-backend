@@ -143,7 +143,7 @@ describe('handleContentUpdateByCapiUrl', () => {
 			shouldPublishV2: true,
 		});
 		// @ts-ignore -- Typescript doesn't know that this is a mock
-		expect(callCAPI.mock.calls.length).toEqual(1);
+		expect(callCAPI.mock.calls.length).toEqual(2);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(handleContentUpdate.mock.calls.length).toEqual(0);
 		expect(recordCount).toEqual(0);

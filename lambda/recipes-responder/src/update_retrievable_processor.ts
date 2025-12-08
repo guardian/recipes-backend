@@ -65,9 +65,14 @@ export async function handleContentUpdateByCapiUrl({
 	// if the content is not on open. We modify the path manually here to fix. Crier should return a path
 	// that is scoped to the appropriate channel if the content is not on open.
 	const normalisedCapiUrl = new URL(capiUrl);
-	const capiResponse = await retrieveContent(
+	let capiResponse = await retrieveContent(
 		`${normalisedCapiUrl.protocol}//${normalisedCapiUrl.hostname}/channel/feast/item${normalisedCapiUrl.pathname}`,
 	);
+
+	// TEMPORARY FIX, if the article is not found in the /channel/feast/ path, try the original path
+	if (capiResponse.action === PollingAction.CONTENT_MISSING) {
+		capiResponse = await retrieveContent(capiUrl);
+	}
 
 	switch (capiResponse.action) {
 		case PollingAction.CONTENT_EXISTS:
