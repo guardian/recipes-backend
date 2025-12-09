@@ -32,6 +32,8 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "GuParameter",
       "GuParameter",
       "GuParameter",
+      "GuParameter",
+      "GuParameter",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -71,6 +73,15 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
         ],
       },
     },
+    "PersonalisedFrontsFetcherXAR": {
+      "Description": "Cross-account role for Airflow to trigger the personalised fronts fetcher",
+      "Value": {
+        "Fn::GetAtt": [
+          "PersonalisedFrontsFetcherRole43774D9F",
+          "Arn",
+        ],
+      },
+    },
   },
   "Parameters": {
     "ClusterArn": {
@@ -88,6 +99,14 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
     },
     "EventBus": {
       "Default": "/TEST/feast/feast-shared-infra/crier-event-bus",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "PersonalisedFrontsCrossAccountARN": {
+      "Default": "/INFRA/recipes-backend/personalised-fronts-fetcher/data-tech-account-arn",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "PersonalisedFrontsSrcAcct": {
+      "Default": "/INFRA/recipes-backend/personalised-fronts-fetcher/data-tech-account-id",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "RepoName": {
@@ -1596,6 +1615,153 @@ def sort_filter_rules(json_obj):
         },
       },
       "Type": "AWS::ApiGateway::Resource",
+    },
+    "PersonalisedFrontsFailedPersonalisedContainerAlarmC52A32C0": {
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "externalsnonurgentalarmarnParameter3CDDBCA7",
+          },
+        ],
+        "AlarmDescription": "Raised if any failed personalised container metric is recorded in a hour",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "EvaluationPeriods": 1,
+        "MetricName": "FailedPersonalisedContainer",
+        "Namespace": "RecipeBackend",
+        "Period": 3600,
+        "Statistic": "Average",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "feast",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "PersonalisedFrontsFetcherRole43774D9F": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
+                      {
+                        "Ref": "PersonalisedFrontsSrcAcct",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "s3:PutObject",
+                    "s3:GetObject",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        {
+                          "Fn::GetAtt": [
+                            "staticstaticServing53194089",
+                            "Arn",
+                          ],
+                        },
+                        "/personalised/curation/*",
+                      ],
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "S3Put",
+          },
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "cloudwatch:PutMetricData",
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "MetricPut",
+          },
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Ref": "PersonalisedFrontsCrossAccountARN",
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "CrossAccount",
+          },
+        ],
+        "RoleName": "personalised-fronts-fetcher-TEST",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "feast",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
     },
     "PrintableRecipesIAMRole8B7C763A": {
       "Properties": {
