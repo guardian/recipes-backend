@@ -123,7 +123,13 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 		'max-age=7200, stale-while-revalidate=300, stale-if-error=14400';
 	//const curationCacheControl = 'no-store'; //while debugging!
 
-	generateHybridFront(req.params.region, req.params.variant, territoryParam, 2)
+	generateHybridFront(
+		req,
+		req.params.region,
+		req.params.variant,
+		territoryParam,
+		2,
+	)
 		.then((front) => {
 			resp
 				.status(200)
