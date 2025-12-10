@@ -60,6 +60,7 @@ export const FeastAppContainer = z.object({
 	items: z.array(ContainerItemUnion),
 	targetedRegions: z.array(z.string()).optional(),
 	excludedRegions: z.array(z.string()).optional(),
+	containerHref: z.string().optional(),
 });
 
 export type FeastAppContainer = z.infer<typeof FeastAppContainer>;
