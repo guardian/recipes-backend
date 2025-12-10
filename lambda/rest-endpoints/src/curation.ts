@@ -1,3 +1,4 @@
+import type { IncomingHttpHeaders } from 'http';
 import type { GetObjectOutput } from '@aws-sdk/client-s3';
 import {
 	GetObjectCommand,
@@ -189,7 +190,52 @@ function recipeFromContainer(item: ContainerItem): string[] {
 	}
 }
 
+async function getPersonalisedContainer(req: {
+	headers: IncomingHttpHeaders;
+}): Promise<FeastAppContainer> {
+	const personalisedContainer: FeastAppContainer =
+		!req.headers['authorization'] || !req.headers['x-user-id']
+			? {
+					id: 'personalised-recent-viewed',
+					title: 'Your recent viewed recipes',
+					body: '',
+					items: [],
+					targetedRegions: [],
+					excludedRegions: [],
+				}
+			: {
+					id: 'personalised-recent-viewed',
+					title: 'Your recent viewed recipes',
+					body: '',
+					items: await fetch(
+						'https://recipes.code.dev-guardianapis.com/persist/collection/personalised/recently-viewed',
+						{
+							headers: {
+								Authorization: req.headers['authorization'], // Forward the JWT token from the request
+								'X-User-ID': req.headers['x-user-id'] as string, // Forward the userId
+							},
+						},
+					)
+						.then(async (response): Promise<ContainerItem[]> => {
+							if (!response.ok) {
+								throw new Error(
+									`Failed to fetch items: ${response.statusText}`,
+								);
+							}
+							return (await response.json()) as ContainerItem[];
+						})
+						.catch((error): ContainerItem[] => {
+							console.error('Error fetching items:', error);
+							return []; // Return an empty array as a fallback
+						}),
+					targetedRegions: [],
+					excludedRegions: [],
+				};
+	return personalisedContainer;
+}
+
 export async function generateHybridFront(
+	req: { headers: IncomingHttpHeaders },
 	region: string,
 	variant: string,
 	territory: string | undefined,
@@ -217,15 +263,19 @@ export async function generateHybridFront(
 		curatedRecipesSet,
 		10,
 	);
+
+	const personalisedContainer = await getPersonalisedContainer(req);
+	const personalisedInsertionPoint = localisationInsertionPoint + 1;
 	if (maybeLocalisation) {
 		if (curatedFront.length < localisationInsertionPoint) {
-			curatedFront.push(maybeLocalisation);
+			curatedFront.push(maybeLocalisation, personalisedContainer);
 			return curatedFront;
 		} else {
 			return curatedFront
 				.slice(0, localisationInsertionPoint)
 				.concat(
 					maybeLocalisation,
+					personalisedContainer,
 					...curatedFront.slice(localisationInsertionPoint),
 				);
 		}
@@ -233,6 +283,16 @@ export async function generateHybridFront(
 		console.info(
 			`No localisation available for ${region} / ${variant} in ${territory}`,
 		);
-		return curatedFront;
+		if (curatedFront.length < personalisedInsertionPoint) {
+			curatedFront.push(personalisedContainer);
+			return curatedFront;
+		} else {
+			return curatedFront
+				.slice(0, personalisedInsertionPoint)
+				.concat(
+					personalisedContainer,
+					...curatedFront.slice(personalisedInsertionPoint),
+				);
+		}
 	}
 }
