@@ -79,6 +79,12 @@ describe('generateHybridFront', () => {
 			});
 
 		const result = await generateHybridFront(
+			{
+				headers: {
+					Authorization: 'Bearer fake-token',
+					'x-user-id': 'fake-user-id',
+				},
+			}, // Mock req with fake auth and user ID
 			'northern',
 			'all-recipes',
 			'fr',
@@ -89,8 +95,9 @@ describe('generateHybridFront', () => {
 		expect(result[0].title).toEqual('container 1');
 		expect(result[1].title).toEqual('container 2');
 		expect(result[2].title).toEqual('inserted container');
-		expect(result[3].title).toEqual('container 3');
-		expect(result[4].title).toEqual('container 4');
+		expect(result[3].title).toEqual('Your recent viewed recipes');
+		expect(result[4].title).toEqual('container 3');
+		expect(result[5].title).toEqual('container 4');
 	});
 
 	it('should safely handle the insertion point being beyond the end of the curated front', async () => {
@@ -126,6 +133,12 @@ describe('generateHybridFront', () => {
 			});
 
 		const result = await generateHybridFront(
+			{
+				headers: {
+					Authorization: 'Bearer fake-token',
+					'x-user-id': 'fake-user-id',
+				},
+			}, // Mock req with fake auth and user ID
 			'northern',
 			'all-recipes',
 			'fr',
@@ -173,6 +186,12 @@ describe('generateHybridFront', () => {
 			});
 
 		const result = await generateHybridFront(
+			{
+				headers: {
+					Authorization: 'Bearer fake-token',
+					'x-user-id': 'fake-user-id',
+				},
+			}, // Mock req with fake auth and user ID
 			'northern',
 			'meat-free',
 			'fr',
@@ -219,6 +238,12 @@ describe('generateHybridFront', () => {
 			});
 
 		const result = await generateHybridFront(
+			{
+				headers: {
+					Authorization: 'Bearer fake-token',
+					'x-user-id': 'fake-user-id',
+				},
+			}, // Mock req with fake auth and user ID
 			'northern',
 			'all-recipes',
 			'fr',
@@ -237,8 +262,9 @@ describe('generateHybridFront', () => {
 			{ recipe: { id: 'recipe-8' } },
 			{ recipe: { id: 'recipe-9' } },
 		]);
-		expect(result[3].title).toEqual('container 3');
-		expect(result[4].title).toEqual('container 4');
+		expect(result[3].title).toEqual('Your recent viewed recipes');
+		expect(result[4].title).toEqual('container 3');
+		expect(result[5].title).toEqual('container 4');
 	});
 
 	it("should not crash if the insert data can't be loaded", async () => {
@@ -274,6 +300,12 @@ describe('generateHybridFront', () => {
 			);
 
 		const result = await generateHybridFront(
+			{
+				headers: {
+					Authorization: 'Bearer fake-token',
+					'x-user-id': 'fake-user-id',
+				},
+			}, // Mock req with fake auth and user ID
 			'northern',
 			'meat-free',
 			'fr',
@@ -314,6 +346,12 @@ describe('generateHybridFront', () => {
 			.rejects(new Error('my hovercraft is full of eels'));
 
 		const result = await generateHybridFront(
+			{
+				headers: {
+					Authorization: 'Bearer fake-token',
+					'x-user-id': 'fake-user-id',
+				},
+			}, // Mock req with fake auth and user ID
 			'northern',
 			'meat-free',
 			'fr',
@@ -404,6 +442,12 @@ describe('generateHybridFront', () => {
 			});
 
 		const result = await generateHybridFront(
+			{
+				headers: {
+					Authorization: 'Bearer fake-token',
+					'x-user-id': 'fake-user-id',
+				},
+			}, // Mock req with fake auth and user ID
 			'northern',
 			'all-recipes',
 			'fr',
@@ -414,7 +458,8 @@ describe('generateHybridFront', () => {
 		expect(result[0].title).toEqual('container 1');
 		expect(result[1].title).toEqual('container 2');
 		expect(result[2].title).toEqual('inserted container');
-		expect(result[3].title).toEqual('container 3');
-		expect(result[4].title).toEqual('container 4');
+		expect(result[3].title).toEqual('Your recent viewed recipes');
+		expect(result[4].title).toEqual('container 3');
+		expect(result[5].title).toEqual('container 4');
 	});
 });
