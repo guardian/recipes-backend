@@ -79,12 +79,6 @@ describe('generateHybridFront', () => {
 			});
 
 		const result = await generateHybridFront(
-			{
-				headers: {
-					Authorization: 'Bearer fake-token',
-					'x-user-id': 'fake-user-id',
-				},
-			}, // Mock req with fake auth and user ID
 			'northern',
 			'all-recipes',
 			'fr',
@@ -133,12 +127,6 @@ describe('generateHybridFront', () => {
 			});
 
 		const result = await generateHybridFront(
-			{
-				headers: {
-					Authorization: 'Bearer fake-token',
-					'x-user-id': 'fake-user-id',
-				},
-			}, // Mock req with fake auth and user ID
 			'northern',
 			'all-recipes',
 			'fr',
@@ -186,12 +174,6 @@ describe('generateHybridFront', () => {
 			});
 
 		const result = await generateHybridFront(
-			{
-				headers: {
-					Authorization: 'Bearer fake-token',
-					'x-user-id': 'fake-user-id',
-				},
-			}, // Mock req with fake auth and user ID
 			'northern',
 			'meat-free',
 			'fr',
@@ -238,12 +220,6 @@ describe('generateHybridFront', () => {
 			});
 
 		const result = await generateHybridFront(
-			{
-				headers: {
-					Authorization: 'Bearer fake-token',
-					'x-user-id': 'fake-user-id',
-				},
-			}, // Mock req with fake auth and user ID
 			'northern',
 			'all-recipes',
 			'fr',
@@ -300,12 +276,6 @@ describe('generateHybridFront', () => {
 			);
 
 		const result = await generateHybridFront(
-			{
-				headers: {
-					Authorization: 'Bearer fake-token',
-					'x-user-id': 'fake-user-id',
-				},
-			}, // Mock req with fake auth and user ID
 			'northern',
 			'meat-free',
 			'fr',
@@ -346,12 +316,6 @@ describe('generateHybridFront', () => {
 			.rejects(new Error('my hovercraft is full of eels'));
 
 		const result = await generateHybridFront(
-			{
-				headers: {
-					Authorization: 'Bearer fake-token',
-					'x-user-id': 'fake-user-id',
-				},
-			}, // Mock req with fake auth and user ID
 			'northern',
 			'meat-free',
 			'fr',
@@ -442,12 +406,6 @@ describe('generateHybridFront', () => {
 			});
 
 		const result = await generateHybridFront(
-			{
-				headers: {
-					Authorization: 'Bearer fake-token',
-					'x-user-id': 'fake-user-id',
-				},
-			}, // Mock req with fake auth and user ID
 			'northern',
 			'all-recipes',
 			'fr',
