@@ -198,7 +198,7 @@ function getPersonalisedContainer(): FeastAppContainer {
 		items: [],
 		targetedRegions: [],
 		excludedRegions: [],
-		containerHref: '/api/persist/collection/personalised/recently-viewed',
+		containerHref: 'persist/collection/personalised/recently-viewed',
 	};
 }
 
