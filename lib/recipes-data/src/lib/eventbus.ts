@@ -13,6 +13,8 @@ import type { RecipeIndexEntry, RecipeReference } from './models';
 
 const ebClient = new EventBridgeClient({ region: process.env['AWS_REGION'] });
 
+const EVENT_BRIDGE_BATCH_SIZE = 10;
+
 export async function announceNewRecipe(
 	updated: RecipeReference[],
 	removedList: RecipeIndexEntry[],
@@ -65,7 +67,19 @@ export async function announceNewRecipe(
 		EventBusName: OutgoingEventBus,
 	}));
 
-	return putEntriesToBus(updates.concat(removals));
+	const allEvents = updates.concat(removals);
+
+	const allBatches: PutEventsRequestEntry[][] = [];
+	for (let i = 0; i < allEvents.length; i += EVENT_BRIDGE_BATCH_SIZE) {
+		allBatches.push(allEvents.slice(i, i + EVENT_BRIDGE_BATCH_SIZE));
+	}
+
+	let total = 0;
+	for (const batch of allBatches) {
+		total += await putEntriesToBus(batch);
+	}
+
+	return total;
 }
 
 export async function putReindexIds(
