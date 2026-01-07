@@ -1,3 +1,4 @@
+import type { IncomingHttpHeaders } from 'http';
 import type { GetObjectOutput } from '@aws-sdk/client-s3';
 import {
 	GetObjectCommand,
@@ -189,6 +190,18 @@ function recipeFromContainer(item: ContainerItem): string[] {
 	}
 }
 
+function getPersonalisedContainer(): FeastAppContainer {
+	return {
+		id: 'personalised-recently-viewed',
+		title: 'Your recently viewed recipes',
+		body: '',
+		items: [],
+		targetedRegions: [],
+		excludedRegions: [],
+		containerHref: 'persist/collection/personalised/recently-viewed',
+	};
+}
+
 export async function generateHybridFront(
 	region: string,
 	variant: string,
@@ -217,22 +230,26 @@ export async function generateHybridFront(
 		curatedRecipesSet,
 		10,
 	);
-	if (maybeLocalisation) {
-		if (curatedFront.length < localisationInsertionPoint) {
-			curatedFront.push(maybeLocalisation);
-			return curatedFront;
-		} else {
-			return curatedFront
-				.slice(0, localisationInsertionPoint)
-				.concat(
-					maybeLocalisation,
-					...curatedFront.slice(localisationInsertionPoint),
-				);
-		}
-	} else {
+
+	const personalisedContainer = getPersonalisedContainer();
+	if (!maybeLocalisation) {
 		console.info(
 			`No localisation available for ${region} / ${variant} in ${territory}`,
 		);
+	}
+	const injectedContainers = maybeLocalisation
+		? [maybeLocalisation, personalisedContainer] //Let's assume we always want personalised container after localisation container
+		: [personalisedContainer];
+
+	if (curatedFront.length < localisationInsertionPoint) {
+		curatedFront.push(...injectedContainers);
 		return curatedFront;
+	} else {
+		return curatedFront
+			.slice(0, localisationInsertionPoint)
+			.concat(
+				injectedContainers,
+				...curatedFront.slice(localisationInsertionPoint),
+			);
 	}
 }

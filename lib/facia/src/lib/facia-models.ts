@@ -51,14 +51,16 @@ export const SubCollection = z.object({
 export type SubCollection = z.infer<typeof SubCollection>;
 
 export type ContainerItem = SubCollection | Chef | Recipe;
+export const ContainerItemUnion = z.union([SubCollection, Chef, Recipe]);
 
 export const FeastAppContainer = z.object({
 	id: z.string().optional(),
 	title: z.string(),
 	body: z.string().optional(),
-	items: z.array(z.union([SubCollection, Chef, Recipe])),
+	items: z.array(ContainerItemUnion),
 	targetedRegions: z.array(z.string()).optional(),
 	excludedRegions: z.array(z.string()).optional(),
+	containerHref: z.string().optional(),
 });
 
 export type FeastAppContainer = z.infer<typeof FeastAppContainer>;
