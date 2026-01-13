@@ -123,7 +123,6 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 		'max-age=7200, stale-while-revalidate=300, stale-if-error=14400';
 	//const curationCacheControl = 'no-store'; //while debugging!
 
-	//const userId = req.headers['x-user-id'] as string | undefined;
 	const authToken = req.headers['authorization'];
 
 	generateHybridFront(
@@ -132,7 +131,6 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 		territoryParam,
 		2,
 		undefined,
-		//userId,
 		authToken,
 	)
 		.then((front) => {

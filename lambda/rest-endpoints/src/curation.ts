@@ -207,7 +207,6 @@ async function getPersonalisedContainer(
 			{
 				headers: {
 					Authorization: authToken,
-					//'X-User-ID': userId,
 				},
 			},
 		);
@@ -230,7 +229,6 @@ export async function generateHybridFront(
 	territory: string | undefined,
 	localisationInsertionPoint: number,
 	overrideDate?: Date,
-	//userId?: string | undefined,
 	authToken?: string | undefined,
 ): Promise<FeastAppContainer[]> {
 	const curatedFront = await retrieveTodaysCuration(region, variant);
