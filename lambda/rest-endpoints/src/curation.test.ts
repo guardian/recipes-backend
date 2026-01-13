@@ -84,12 +84,14 @@ describe('generateHybridFront', () => {
 			'fr',
 			2,
 			new Date(2025, 0, 2),
+			undefined,
+			undefined,
 		);
 
 		expect(result[0].title).toEqual('container 1');
 		expect(result[1].title).toEqual('container 2');
 		expect(result[2].title).toEqual('inserted container');
-		expect(result[3].title).toEqual('Your recently viewed recipes');
+		expect(result[3].title).toEqual(undefined);
 		expect(result[4].title).toEqual('container 3');
 		expect(result[5].title).toEqual('container 4');
 	});
@@ -132,6 +134,8 @@ describe('generateHybridFront', () => {
 			'fr',
 			100,
 			new Date(2025, 0, 2),
+			undefined,
+			undefined,
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -179,6 +183,8 @@ describe('generateHybridFront', () => {
 			'fr',
 			2,
 			new Date(2025, 0, 2),
+			undefined,
+			undefined,
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -225,6 +231,8 @@ describe('generateHybridFront', () => {
 			'fr',
 			2,
 			new Date(2025, 0, 2),
+			undefined,
+			undefined,
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -238,7 +246,7 @@ describe('generateHybridFront', () => {
 			{ recipe: { id: 'recipe-8' } },
 			{ recipe: { id: 'recipe-9' } },
 		]);
-		expect(result[3].title).toEqual('Your recently viewed recipes');
+		expect(result[3].title).toEqual(undefined);
 		expect(result[4].title).toEqual('container 3');
 		expect(result[5].title).toEqual('container 4');
 	});
@@ -281,6 +289,8 @@ describe('generateHybridFront', () => {
 			'fr',
 			2,
 			new Date(2025, 0, 2),
+			undefined,
+			undefined,
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -321,6 +331,8 @@ describe('generateHybridFront', () => {
 			'fr',
 			2,
 			new Date(2025, 0, 2),
+			undefined,
+			undefined,
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -411,12 +423,14 @@ describe('generateHybridFront', () => {
 			'fr',
 			2,
 			new Date(2025, 0, 5),
+			undefined,
+			undefined,
 		);
 
 		expect(result[0].title).toEqual('container 1');
 		expect(result[1].title).toEqual('container 2');
 		expect(result[2].title).toEqual('inserted container');
-		expect(result[3].title).toEqual('Your recently viewed recipes');
+		expect(result[3].title).toEqual(undefined);
 		expect(result[4].title).toEqual('container 3');
 		expect(result[5].title).toEqual('container 4');
 	});
