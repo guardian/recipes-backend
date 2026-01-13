@@ -6,6 +6,7 @@ import {
 	S3ServiceException,
 } from '@aws-sdk/client-s3';
 import type { NodeJsRuntimeStreamingBlobTypes } from '@smithy/types/dist-types/streaming-payload/streaming-blob-common-types';
+import axios from 'axios';
 import { format as formatDate, subDays } from 'date-fns';
 import type {
 	ContainerItem,
@@ -190,16 +191,38 @@ function recipeFromContainer(item: ContainerItem): string[] {
 	}
 }
 
-function getPersonalisedContainer(): FeastAppContainer {
-	return {
-		id: 'personalised-recently-viewed',
-		title: 'Your recently viewed recipes',
-		body: '',
-		items: [],
-		targetedRegions: [],
-		excludedRegions: [],
-		containerHref: 'persist/collection/personalised/recently-viewed',
-	};
+async function getPersonalisedContainer(
+	userId: string | undefined,
+	authToken: string | undefined,
+): Promise<FeastAppContainer> {
+	if (!userId || !authToken) {
+		console.warn(
+			'Missing user authentication values required for personalisation',
+		);
+		return {} as FeastAppContainer;
+	}
+
+	try {
+		const response = await axios.get(
+			`api/persist/collection/personalised/recently-viewed`,
+			{
+				headers: {
+					Authorization: authToken,
+					'X-User-ID': userId,
+				},
+			},
+		);
+
+		const personalisedData = (response.data ?? {}) as FeastAppContainer;
+		console.info(
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- logging purpose
+			`Personalised data fetched for user: ${userId}, data: ${personalisedData}`,
+		);
+		return response.data as FeastAppContainer;
+	} catch (error) {
+		console.error('Error fetching personalised container data:', error);
+		return {} as FeastAppContainer;
+	}
 }
 
 export async function generateHybridFront(
@@ -208,6 +231,8 @@ export async function generateHybridFront(
 	territory: string | undefined,
 	localisationInsertionPoint: number,
 	overrideDate?: Date,
+	userId?: string | undefined,
+	authToken?: string | undefined,
 ): Promise<FeastAppContainer[]> {
 	const curatedFront = await retrieveTodaysCuration(region, variant);
 	if (variant == 'meat-free') {
@@ -231,7 +256,10 @@ export async function generateHybridFront(
 		10,
 	);
 
-	const personalisedContainer = getPersonalisedContainer();
+	const personalisedContainer = await getPersonalisedContainer(
+		userId,
+		authToken,
+	);
 	if (!maybeLocalisation) {
 		console.info(
 			`No localisation available for ${region} / ${variant} in ${territory}`,
