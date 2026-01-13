@@ -203,7 +203,7 @@ async function getPersonalisedContainer(
 
 	try {
 		const response = await axios.get(
-			`api/persist/collection/personalised/recently-viewed`,
+			`https://recipes.code.dev-guardianapis.com/persist/collection/personalised/recently-viewed`,
 			{
 				headers: {
 					Authorization: authToken,
