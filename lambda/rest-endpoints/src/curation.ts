@@ -192,10 +192,9 @@ function recipeFromContainer(item: ContainerItem): string[] {
 }
 
 async function getPersonalisedContainer(
-	userId: string | undefined,
 	authToken: string | undefined,
 ): Promise<FeastAppContainer> {
-	if (!userId || !authToken) {
+	if (!authToken) {
 		console.warn(
 			'Missing user authentication values required for personalisation',
 		);
@@ -208,7 +207,7 @@ async function getPersonalisedContainer(
 			{
 				headers: {
 					Authorization: authToken,
-					'X-User-ID': userId,
+					//'X-User-ID': userId,
 				},
 			},
 		);
@@ -216,7 +215,7 @@ async function getPersonalisedContainer(
 		const personalisedData = (response.data ?? {}) as FeastAppContainer;
 		console.info(
 			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- logging purpose
-			`Personalised data fetched for user: ${userId}, data: ${personalisedData}`,
+			`Personalised data fetched : ${personalisedData}`,
 		);
 		return response.data as FeastAppContainer;
 	} catch (error) {
@@ -231,7 +230,7 @@ export async function generateHybridFront(
 	territory: string | undefined,
 	localisationInsertionPoint: number,
 	overrideDate?: Date,
-	userId?: string | undefined,
+	//userId?: string | undefined,
 	authToken?: string | undefined,
 ): Promise<FeastAppContainer[]> {
 	const curatedFront = await retrieveTodaysCuration(region, variant);
@@ -256,10 +255,7 @@ export async function generateHybridFront(
 		10,
 	);
 
-	const personalisedContainer = await getPersonalisedContainer(
-		userId,
-		authToken,
-	);
+	const personalisedContainer = await getPersonalisedContainer(authToken);
 	if (!maybeLocalisation) {
 		console.info(
 			`No localisation available for ${region} / ${variant} in ${territory}`,

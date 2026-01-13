@@ -85,7 +85,6 @@ describe('generateHybridFront', () => {
 			2,
 			new Date(2025, 0, 2),
 			undefined,
-			undefined,
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -135,7 +134,6 @@ describe('generateHybridFront', () => {
 			100,
 			new Date(2025, 0, 2),
 			undefined,
-			undefined,
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -184,7 +182,6 @@ describe('generateHybridFront', () => {
 			2,
 			new Date(2025, 0, 2),
 			undefined,
-			undefined,
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -231,7 +228,6 @@ describe('generateHybridFront', () => {
 			'fr',
 			2,
 			new Date(2025, 0, 2),
-			undefined,
 			undefined,
 		);
 
@@ -290,7 +286,6 @@ describe('generateHybridFront', () => {
 			2,
 			new Date(2025, 0, 2),
 			undefined,
-			undefined,
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -331,7 +326,6 @@ describe('generateHybridFront', () => {
 			'fr',
 			2,
 			new Date(2025, 0, 2),
-			undefined,
 			undefined,
 		);
 
@@ -423,7 +417,6 @@ describe('generateHybridFront', () => {
 			'fr',
 			2,
 			new Date(2025, 0, 5),
-			undefined,
 			undefined,
 		);
 
