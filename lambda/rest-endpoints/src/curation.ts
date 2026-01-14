@@ -222,7 +222,7 @@ async function getPersonalisedContainer(
 			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- logging purpose
 			`Personalised data fetched : ${personalisedData}`,
 		);
-		return response.data as FeastAppContainer;
+		return personalisedData;
 	} catch (error) {
 		console.error('Error fetching personalised container data:', error);
 		return {} as FeastAppContainer;
