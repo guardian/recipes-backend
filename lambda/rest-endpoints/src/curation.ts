@@ -243,8 +243,10 @@ export async function generateHybridFront(
 
 	if (!territory) {
 		//no territory given so we can't localise
+		console.error("no territory given so we can't localise ");
 		return curatedFront;
 	}
+
 	const maybeLocalisation = await findRecentLocalisation(
 		territory,
 		5,
@@ -253,12 +255,14 @@ export async function generateHybridFront(
 		10,
 	);
 
-	const personalisedContainer = await getPersonalisedContainer(authToken);
 	if (!maybeLocalisation) {
 		console.info(
 			`No localisation available for ${region} / ${variant} in ${territory}`,
 		);
 	}
+
+	const personalisedContainer = await getPersonalisedContainer(authToken);
+
 	const injectedContainers = maybeLocalisation
 		? [maybeLocalisation, personalisedContainer] //Let's assume we always want personalised container after localisation container
 		: [personalisedContainer];

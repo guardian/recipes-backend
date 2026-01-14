@@ -123,7 +123,9 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 		'max-age=7200, stale-while-revalidate=300, stale-if-error=14400';
 	//const curationCacheControl = 'no-store'; //while debugging!
 
+	console.log('Request headers:', req.headers); //This log is just for testing and will be removed in production
 	const authToken = req.headers['authorization'];
+	console.log('Provided authToken', authToken); //This log is just for testing and will be removed in production
 
 	generateHybridFront(
 		req.params.region,
