@@ -211,7 +211,13 @@ async function getPersonalisedContainer(
 			},
 		);
 
-		const personalisedData = (response.data ?? {}) as FeastAppContainer;
+		const personalisedData = {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment -- we know upstream data shape
+			title: response.data?.data?.title,
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment -- we know upstream data shape
+			items: response.data?.data?.items,
+		} as FeastAppContainer;
+
 		console.info(
 			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- logging purpose
 			`Personalised data fetched : ${personalisedData}`,
