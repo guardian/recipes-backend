@@ -282,7 +282,10 @@ export async function generateHybridFront(
 		injectedContainers.push(maybeLocalisation);
 	}
 
-	if (personalisedContainer.items && personalisedContainer.items.length > 1) {
+	if (
+		Array.isArray(personalisedContainer.items) &&
+		personalisedContainer.items.length > 1
+	) {
 		injectedContainers.push(personalisedContainer);
 	}
 
