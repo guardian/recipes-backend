@@ -191,6 +191,14 @@ function recipeFromContainer(item: ContainerItem): string[] {
 	}
 }
 
+interface PersonalisedResponse {
+	data: {
+		id: string;
+		title: string;
+		items: Array<{ recipe: { id: string } }>;
+	};
+}
+
 async function getPersonalisedContainer(
 	authToken: string | undefined,
 ): Promise<FeastAppContainer> {
@@ -202,7 +210,7 @@ async function getPersonalisedContainer(
 	}
 
 	try {
-		const response = await axios.get(
+		const response = await axios.get<PersonalisedResponse>(
 			`https://recipes.code.dev-guardianapis.com/persist/collection/personalised/recently-viewed`,
 			{
 				headers: {
@@ -212,10 +220,9 @@ async function getPersonalisedContainer(
 		);
 
 		const personalisedData = {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment -- we know upstream data shape
-			title: response.data?.data?.title,
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment -- we know upstream data shape
-			items: response.data?.data?.items,
+			id: response.data.data.id,
+			title: response.data.data.title,
+			items: response.data.data.items,
 		} as FeastAppContainer;
 
 		console.info(
@@ -269,9 +276,15 @@ export async function generateHybridFront(
 
 	const personalisedContainer = await getPersonalisedContainer(authToken);
 
-	const injectedContainers = maybeLocalisation
-		? [maybeLocalisation, personalisedContainer] //Let's assume we always want personalised container after localisation container
-		: [personalisedContainer];
+	const injectedContainers: FeastAppContainer[] = [];
+
+	if (maybeLocalisation) {
+		injectedContainers.push(maybeLocalisation);
+	}
+
+	if (personalisedContainer.items && personalisedContainer.items.length > 1) {
+		injectedContainers.push(personalisedContainer);
+	}
 
 	if (curatedFront.length < localisationInsertionPoint) {
 		curatedFront.push(...injectedContainers);
