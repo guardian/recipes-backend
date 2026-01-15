@@ -199,7 +199,7 @@ interface PersonalisedResponse {
 	};
 }
 
-async function getPersonalisedContainer(
+export async function getPersonalisedContainer(
 	authToken: string | undefined,
 ): Promise<FeastAppContainer> {
 	if (!authToken) {
@@ -208,10 +208,13 @@ async function getPersonalisedContainer(
 		);
 		return {} as FeastAppContainer;
 	}
-
+	const baseURL =
+		process.env['STAGE'] == 'PROD'
+			? 'https://recipes.guardianapis.com'
+			: 'https://recipes.code.dev-guardianapis.com';
 	try {
 		const response = await axios.get<PersonalisedResponse>(
-			`https://recipes.code.dev-guardianapis.com/persist/collection/personalised/recently-viewed`,
+			`${baseURL}/persist/collection/personalised/recently-viewed`,
 			{
 				headers: {
 					Authorization: authToken,
