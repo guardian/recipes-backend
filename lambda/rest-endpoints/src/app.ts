@@ -123,7 +123,6 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 	//'max-age=7200, stale-while-revalidate=300, stale-if-error=14400';
 	const curationCacheControl = 'no-store'; //while debugging!
 
-	console.log('Request headers:', req.headers); //This log is just for testing and will be removed in production
 	const authToken = req.headers['authorization'];
 	console.log('Provided authToken', authToken); //This log is just for testing and will be removed in production
 
@@ -138,7 +137,10 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 		.then((front) => {
 			resp
 				.status(200)
-				.setHeader('Cache-Control', curationCacheControl)
+				.set({
+					'Cache-Control': 'no-store, no-cache',
+					Vary: 'Authorization, Accept-Encoding',
+				})
 				.json(front);
 		})
 		.catch((err) => {
