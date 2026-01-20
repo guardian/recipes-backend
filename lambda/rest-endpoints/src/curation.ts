@@ -201,12 +201,12 @@ interface PersonalisedResponse {
 
 export async function getPersonalisedContainer(
 	authToken: string | undefined,
-): Promise<FeastAppContainer> {
+): Promise<FeastAppContainer | undefined> {
 	if (!authToken) {
 		console.warn(
 			'Missing user authentication values required for personalisation',
 		);
-		return {} as FeastAppContainer;
+		return undefined;
 	}
 	const baseURL =
 		process.env['STAGE'] == 'PROD'
@@ -235,7 +235,7 @@ export async function getPersonalisedContainer(
 		return personalisedData;
 	} catch (error) {
 		console.error('Error fetching personalised container data:', error);
-		return {} as FeastAppContainer;
+		return undefined;
 	}
 }
 
@@ -285,10 +285,7 @@ export async function generateHybridFront(
 		injectedContainers.push(maybeLocalisation);
 	}
 
-	if (
-		Array.isArray(personalisedContainer.items) &&
-		personalisedContainer.items.length > 1
-	) {
+	if (personalisedContainer != null && personalisedContainer.items.length > 1) {
 		injectedContainers.push(personalisedContainer);
 	}
 
