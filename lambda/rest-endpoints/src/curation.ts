@@ -1,4 +1,3 @@
-import type { IncomingHttpHeaders } from 'http';
 import type { GetObjectOutput } from '@aws-sdk/client-s3';
 import {
 	GetObjectCommand,
@@ -8,6 +7,7 @@ import {
 import type { NodeJsRuntimeStreamingBlobTypes } from '@smithy/types/dist-types/streaming-payload/streaming-blob-common-types';
 import axios from 'axios';
 import { format as formatDate, subDays } from 'date-fns';
+import { registerMetric } from '@recipes-api/cwmetrics';
 import type {
 	ContainerItem,
 	Recipe,
@@ -206,6 +206,11 @@ export async function getPersonalisedContainer(
 		console.warn(
 			'Missing user authentication values required for personalisation',
 		);
+		try {
+			await registerMetric('BackendContainerRequests', 0);
+		} catch (e) {
+			console.error(`Unable to register BackendContainerRequests metric: `, e);
+		}
 		return undefined;
 	}
 	const baseURL =
@@ -224,6 +229,11 @@ export async function getPersonalisedContainer(
 
 		const personalisedData = FeastAppContainer.parse(response.data.data);
 
+		try {
+			await registerMetric('BackendContainerRequests', 1);
+		} catch (e) {
+			console.error(`Unable to register BackendContainerRequests metric: `, e);
+		}
 		return personalisedData;
 	} catch (error) {
 		console.error('Error fetching personalised container data:', error);
