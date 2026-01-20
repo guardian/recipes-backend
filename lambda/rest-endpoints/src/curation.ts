@@ -222,16 +222,8 @@ export async function getPersonalisedContainer(
 			},
 		);
 
-		const personalisedData = {
-			id: response.data.data.id,
-			title: response.data.data.title,
-			items: response.data.data.items,
-		} as FeastAppContainer;
+		const personalisedData = FeastAppContainer.parse(response.data.data);
 
-		console.info(
-			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- logging purpose
-			`Personalised data fetched : ${personalisedData}`,
-		);
 		return personalisedData;
 	} catch (error) {
 		console.error('Error fetching personalised container data:', error);
@@ -244,8 +236,8 @@ export async function generateHybridFront(
 	variant: string,
 	territory: string | undefined,
 	localisationInsertionPoint: number,
+	authToken?: string,
 	overrideDate?: Date,
-	authToken?: string | undefined,
 ): Promise<FeastAppContainer[]> {
 	const curatedFront = await retrieveTodaysCuration(region, variant);
 	if (variant == 'meat-free') {
@@ -279,13 +271,17 @@ export async function generateHybridFront(
 
 	const personalisedContainer = await getPersonalisedContainer(authToken);
 
+	if (!personalisedContainer) {
+		console.info(`No Personanlised data is available for the user`);
+	}
+
 	const injectedContainers: FeastAppContainer[] = [];
 
 	if (maybeLocalisation) {
 		injectedContainers.push(maybeLocalisation);
 	}
 
-	if (personalisedContainer != null && personalisedContainer.items.length > 1) {
+	if (personalisedContainer && personalisedContainer.items.length > 1) {
 		injectedContainers.push(personalisedContainer);
 	}
 

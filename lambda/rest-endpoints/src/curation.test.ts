@@ -83,8 +83,8 @@ describe('generateHybridFront', () => {
 			'all-recipes',
 			'fr',
 			2,
-			new Date(2025, 0, 2),
 			undefined,
+			new Date(2025, 0, 2),
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -131,8 +131,8 @@ describe('generateHybridFront', () => {
 			'all-recipes',
 			'fr',
 			100,
-			new Date(2025, 0, 2),
 			undefined,
+			new Date(2025, 0, 2),
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -179,8 +179,8 @@ describe('generateHybridFront', () => {
 			'meat-free',
 			'fr',
 			2,
-			new Date(2025, 0, 2),
 			undefined,
+			new Date(2025, 0, 2),
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -226,8 +226,8 @@ describe('generateHybridFront', () => {
 			'all-recipes',
 			'fr',
 			2,
-			new Date(2025, 0, 2),
 			undefined,
+			new Date(2025, 0, 2),
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -282,8 +282,8 @@ describe('generateHybridFront', () => {
 			'meat-free',
 			'fr',
 			2,
-			new Date(2025, 0, 2),
 			undefined,
+			new Date(2025, 0, 2),
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -323,8 +323,8 @@ describe('generateHybridFront', () => {
 			'meat-free',
 			'fr',
 			2,
-			new Date(2025, 0, 2),
 			undefined,
+			new Date(2025, 0, 2),
 		);
 
 		expect(result[0].title).toEqual('container 1');
@@ -414,8 +414,8 @@ describe('generateHybridFront', () => {
 			'all-recipes',
 			'fr',
 			2,
-			new Date(2025, 0, 5),
 			undefined,
+			new Date(2025, 0, 5),
 		);
 
 		expect(result[0].title).toEqual('container 1');
