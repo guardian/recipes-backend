@@ -237,6 +237,7 @@ export async function getPersonalisedContainer(
 		return personalisedData;
 	} catch (error) {
 		console.error('Error fetching personalised container data:', error);
+		await registerMetric('FailedPersonalisedContainer', 1);
 		return undefined;
 	}
 }
