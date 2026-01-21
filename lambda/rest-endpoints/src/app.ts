@@ -119,6 +119,9 @@ router.get('/api/:region/:variant/:date/hybrid-curation.json', (req, resp) => {
 router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 	const territoryParam =
 		(req.query['ter'] as string | undefined) ?? countryCodeFromCDN(req);
+	const curationCacheControl =
+		'max-age=7200, stale-while-revalidate=300, stale-if-error=14400';
+	//const curationCacheControl = 'no-store'; //while debugging!
 
 	const authToken = req.headers['authorization'];
 	console.log('Provided authToken', authToken); //This log is just for testing and will be removed in production
@@ -135,7 +138,7 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 			resp
 				.status(200)
 				.set({
-					'Cache-Control': 'no-store, no-cache',
+					'Cache-Control': curationCacheControl,
 					Vary: 'Authorization, Accept-Encoding',
 				})
 				.json(front);
