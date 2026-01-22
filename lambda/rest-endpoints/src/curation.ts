@@ -227,6 +227,11 @@ export async function getPersonalisedContainer(
 			},
 		);
 
+		if (response.status === 204 || !response.data) {
+			console.info('No content available for personalisation for the user');
+			return undefined;
+		}
+
 		const personalisedData = FeastAppContainer.parse(response.data.data);
 
 		try {
