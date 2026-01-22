@@ -227,8 +227,9 @@ export async function getPersonalisedContainer(
 			},
 		);
 
-		if (response.status === 204 || !response.data) {
+		if (response.status === 204) {
 			console.info('No content available for personalisation for the user');
+			await registerMetric('FailedPersonalisedContainer', 1);
 			return undefined;
 		}
 
