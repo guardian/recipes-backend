@@ -124,7 +124,6 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 	//const curationCacheControl = 'no-store'; //while debugging!
 
 	const authToken = req.headers['authorization'];
-	console.log('Provided authToken', authToken); //This log is just for testing and will be removed in production
 
 	generateHybridFront(
 		req.params.region,
