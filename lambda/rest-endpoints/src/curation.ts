@@ -5,7 +5,9 @@ import {
 	S3ServiceException,
 } from '@aws-sdk/client-s3';
 import type { NodeJsRuntimeStreamingBlobTypes } from '@smithy/types/dist-types/streaming-payload/streaming-blob-common-types';
+import axios from 'axios';
 import { format as formatDate, subDays } from 'date-fns';
+import { registerMetric } from '@recipes-api/cwmetrics';
 import type {
 	ContainerItem,
 	Recipe,
@@ -189,11 +191,69 @@ function recipeFromContainer(item: ContainerItem): string[] {
 	}
 }
 
+interface PersonalisedResponse {
+	data: {
+		id: string;
+		title: string;
+		items: Array<{ recipe: { id: string } }>;
+	};
+}
+
+export async function getPersonalisedContainer(
+	authToken: string | undefined,
+): Promise<FeastAppContainer | undefined> {
+	if (!authToken) {
+		console.warn(
+			'Missing user authentication values required for personalisation',
+		);
+		try {
+			await registerMetric('BackendContainerRequests', 0);
+		} catch (e) {
+			console.error(`Unable to register BackendContainerRequests metric: `, e);
+		}
+		return undefined;
+	}
+	const baseURL =
+		process.env['STAGE'] == 'PROD'
+			? 'https://recipes.guardianapis.com'
+			: 'https://recipes.code.dev-guardianapis.com';
+	try {
+		const response = await axios.get<PersonalisedResponse>(
+			`${baseURL}/persist/collection/personalised/recently-viewed`,
+			{
+				headers: {
+					Authorization: authToken,
+				},
+			},
+		);
+
+		if (response.status === 204) {
+			console.info('No content available for personalisation for the user');
+			await registerMetric('FailedPersonalisedContainer', 1);
+			return undefined;
+		}
+
+		const personalisedData = FeastAppContainer.parse(response.data.data);
+
+		try {
+			await registerMetric('BackendContainerRequests', 1);
+		} catch (e) {
+			console.error(`Unable to register BackendContainerRequests metric: `, e);
+		}
+		return personalisedData;
+	} catch (error) {
+		console.error('Error fetching personalised container data:', error);
+		await registerMetric('FailedPersonalisedContainer', 1);
+		return undefined;
+	}
+}
+
 export async function generateHybridFront(
 	region: string,
 	variant: string,
 	territory: string | undefined,
 	localisationInsertionPoint: number,
+	authToken?: string,
 	overrideDate?: Date,
 ): Promise<FeastAppContainer[]> {
 	const curatedFront = await retrieveTodaysCuration(region, variant);
@@ -208,8 +268,10 @@ export async function generateHybridFront(
 
 	if (!territory) {
 		//no territory given so we can't localise
+		console.error("no territory given so we can't localise ");
 		return curatedFront;
 	}
+
 	const maybeLocalisation = await findRecentLocalisation(
 		territory,
 		5,
@@ -217,22 +279,38 @@ export async function generateHybridFront(
 		curatedRecipesSet,
 		10,
 	);
-	if (maybeLocalisation) {
-		if (curatedFront.length < localisationInsertionPoint) {
-			curatedFront.push(maybeLocalisation);
-			return curatedFront;
-		} else {
-			return curatedFront
-				.slice(0, localisationInsertionPoint)
-				.concat(
-					maybeLocalisation,
-					...curatedFront.slice(localisationInsertionPoint),
-				);
-		}
-	} else {
+
+	if (!maybeLocalisation) {
 		console.info(
 			`No localisation available for ${region} / ${variant} in ${territory}`,
 		);
+	}
+
+	const personalisedContainer = await getPersonalisedContainer(authToken);
+
+	if (!personalisedContainer) {
+		console.info(`No Personanlised data is available for the user`);
+	}
+
+	const injectedContainers: FeastAppContainer[] = [];
+
+	if (maybeLocalisation) {
+		injectedContainers.push(maybeLocalisation);
+	}
+
+	if (personalisedContainer && personalisedContainer.items.length > 1) {
+		injectedContainers.push(personalisedContainer);
+	}
+
+	if (curatedFront.length < localisationInsertionPoint) {
+		curatedFront.push(...injectedContainers);
 		return curatedFront;
+	} else {
+		return curatedFront
+			.slice(0, localisationInsertionPoint)
+			.concat(
+				injectedContainers,
+				...curatedFront.slice(localisationInsertionPoint),
+			);
 	}
 }

@@ -83,6 +83,7 @@ describe('generateHybridFront', () => {
 			'all-recipes',
 			'fr',
 			2,
+			undefined,
 			new Date(2025, 0, 2),
 		);
 
@@ -130,6 +131,7 @@ describe('generateHybridFront', () => {
 			'all-recipes',
 			'fr',
 			100,
+			undefined,
 			new Date(2025, 0, 2),
 		);
 
@@ -177,6 +179,7 @@ describe('generateHybridFront', () => {
 			'meat-free',
 			'fr',
 			2,
+			undefined,
 			new Date(2025, 0, 2),
 		);
 
@@ -223,6 +226,7 @@ describe('generateHybridFront', () => {
 			'all-recipes',
 			'fr',
 			2,
+			undefined,
 			new Date(2025, 0, 2),
 		);
 
@@ -278,6 +282,7 @@ describe('generateHybridFront', () => {
 			'meat-free',
 			'fr',
 			2,
+			undefined,
 			new Date(2025, 0, 2),
 		);
 
@@ -318,6 +323,7 @@ describe('generateHybridFront', () => {
 			'meat-free',
 			'fr',
 			2,
+			undefined,
 			new Date(2025, 0, 2),
 		);
 
@@ -408,6 +414,7 @@ describe('generateHybridFront', () => {
 			'all-recipes',
 			'fr',
 			2,
+			undefined,
 			new Date(2025, 0, 5),
 		);
 

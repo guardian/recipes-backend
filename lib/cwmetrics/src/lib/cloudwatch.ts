@@ -3,7 +3,9 @@ import {
 	PutMetricDataCommand,
 } from '@aws-sdk/client-cloudwatch';
 
-const cwClient = new CloudWatchClient({ region: process.env['AWS_REGION'] });
+const cwClient = new CloudWatchClient({
+	region: process.env['AWS_REGION'] ?? 'eu-west-1',
+});
 
 export type KnownMetric =
 	| 'FailedRecipes'
@@ -11,7 +13,8 @@ export type KnownMetric =
 	| 'UpdatesTotalOfArticle'
 	| 'FailedAnnouncements'
 	| 'FailedDynamicContainer'
-	| 'FailedPersonalisedContainer';
+	| 'FailedPersonalisedContainer'
+	| 'BackendContainerRequests';
 
 export async function registerMetric(metricName: KnownMetric, value: number) {
 	const req = new PutMetricDataCommand({

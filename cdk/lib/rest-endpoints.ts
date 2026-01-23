@@ -56,6 +56,11 @@ export class RestEndpoints extends Construct {
 					actions: ['s3:GetObject'],
 					resources: [`${servingBucket.bucketArn}/*`],
 				}),
+				new PolicyStatement({
+					effect: Effect.ALLOW,
+					actions: ['cloudwatch:PutMetricData'],
+					resources: ['*'],
+				}),
 			],
 		});
 

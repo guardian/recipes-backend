@@ -1069,6 +1069,11 @@ def sort_filter_rules(json_obj):
               },
             },
             {
+              "Action": "cloudwatch:PutMetricData",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
