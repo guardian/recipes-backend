@@ -52,7 +52,10 @@ export class PersonalisedFronts extends Construct {
 
 		const iamRole = new Role(this, 'FetcherRole', {
 			roleName: `personalised-fronts-fetcher-${scope.stage}`,
-			assumedBy: new AccountPrincipal(dataTechCrossAccountID.valueAsString),
+			assumedBy:
+				scope.stage.toUpperCase() === 'PROD'
+					? new AccountPrincipal(dataTechCrossAccountARN.valueAsString)
+					: new AccountPrincipal(dataTechCrossAccountID.valueAsString),
 			inlinePolicies: {
 				S3Put: new PolicyDocument({
 					statements: [
