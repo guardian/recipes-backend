@@ -30,7 +30,7 @@ export class PersonalisedFronts extends Construct {
 
 		const base_path = 'personalised/curation';
 
-		const dataTechCrossAccountARN = new GuParameter(
+		const dataTechAcctPROD = new GuParameter(
 			scope,
 			'PersonalisedFrontsCrossAccountARN',
 			{
@@ -40,7 +40,7 @@ export class PersonalisedFronts extends Construct {
 			},
 		);
 
-		const dataTechCrossAccountID = new GuParameter(
+		const dataTechAcctCODE = new GuParameter(
 			scope,
 			'PersonalisedFrontsSrcAcct',
 			{
@@ -54,8 +54,8 @@ export class PersonalisedFronts extends Construct {
 			roleName: `personalised-fronts-fetcher-${scope.stage}`,
 			assumedBy:
 				scope.stage.toUpperCase() === 'PROD'
-					? new AccountPrincipal(dataTechCrossAccountARN.valueAsString)
-					: new AccountPrincipal(dataTechCrossAccountID.valueAsString),
+					? new AccountPrincipal(dataTechAcctPROD.valueAsString)
+					: new AccountPrincipal(dataTechAcctCODE.valueAsString),
 			inlinePolicies: {
 				S3Put: new PolicyDocument({
 					statements: [
@@ -80,7 +80,10 @@ export class PersonalisedFronts extends Construct {
 						new PolicyStatement({
 							actions: ['sts:AssumeRole'],
 							effect: Effect.ALLOW,
-							resources: [dataTechCrossAccountARN.valueAsString],
+							resources:
+								scope.stage.toUpperCase() === 'PROD'
+									? [dataTechAcctPROD.valueAsString]
+									: [dataTechAcctCODE.valueAsString],
 						}),
 					],
 				}),
