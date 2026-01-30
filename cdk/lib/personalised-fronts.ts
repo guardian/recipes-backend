@@ -80,10 +80,7 @@ export class PersonalisedFronts extends Construct {
 						new PolicyStatement({
 							actions: ['sts:AssumeRole'],
 							effect: Effect.ALLOW,
-							resources:
-								scope.stage.toUpperCase() === 'PROD'
-									? [dataTechAcctPROD.valueAsString]
-									: [dataTechAcctCODE.valueAsString],
+							resources: [dataTechAcctPROD.valueAsString],
 						}),
 					],
 				}),

@@ -1737,7 +1737,7 @@ def sort_filter_rules(json_obj):
                   "Action": "sts:AssumeRole",
                   "Effect": "Allow",
                   "Resource": {
-                    "Ref": "PersonalisedFrontsSrcAcct",
+                    "Ref": "PersonalisedFrontsCrossAccountARN",
                   },
                 },
               ],
