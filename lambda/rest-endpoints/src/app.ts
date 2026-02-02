@@ -181,12 +181,22 @@ router.get('/api/:region/:variant/localisation', (req, resp) => {
 					curatedFront.flatMap((c) => c.items).flatMap(recipeFromContainer),
 				);
 
+				console.log(
+					'INFO on most popular container, curatedRecipesSet ',
+					JSON.stringify(Array.from(curatedRecipesSet)),
+				);
+
 				const maybeLocalisation = findRecentLocalisation(
 					territoryParam,
 					5,
 					new Date(),
 					curatedRecipesSet,
 					10,
+				);
+
+				console.log(
+					'INFO on most popular container, maybeLocalisation ',
+					JSON.stringify(maybeLocalisation),
 				);
 
 				resp
