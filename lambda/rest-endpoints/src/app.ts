@@ -182,6 +182,21 @@ router.get('/api/:region/:variant/localisation', (req, resp) => {
 				);
 
 				console.log(
+					'INFO on most popular container, curatedFront:',
+					JSON.stringify(curatedFront),
+				);
+				console.log(
+					'INFO on most popular container, Items after first flatMap:',
+					JSON.stringify(curatedFront.flatMap((c) => c.items)),
+				);
+				console.log(
+					'INFO on most popular container, Recipes after second flatMap:',
+					JSON.stringify(
+						curatedFront.flatMap((c) => c.items).flatMap(recipeFromContainer),
+					),
+				);
+
+				console.log(
 					'INFO on most popular container, curatedRecipesSet ',
 					JSON.stringify(Array.from(curatedRecipesSet)),
 				);
