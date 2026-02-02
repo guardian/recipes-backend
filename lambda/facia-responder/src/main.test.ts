@@ -9,32 +9,26 @@ import {
 	validMessageUsOnly,
 } from './fixtures/sns';
 import { handler } from './main';
-
 jest.mock('@recipes-api/lib/recipes-data', () => ({
 	deployCurationData: jest.fn(),
 	getStaticBucketName: () => 'static-bucket-name',
 	getFastlyApiKey: () => 'fastly-api-key',
 	getContentPrefix: () => 'cdn.content.location',
 }));
-
 jest.mock('./config', () => ({
 	getFaciaPublicationStatusTopicArn: () => 'config-param',
 	getFaciaPublicationStatusRoleArn: () => 'config-param',
 }));
-
 jest.mock('./facia-notifications', () => ({
 	notifyFaciaTool: jest.fn(),
 }));
-
 const secondOfJan2024 = new Date('2024-01-02');
 const importCurationDataMock = deployCurationData as jest.Mock;
 const notifyFaciaToolMock = notifyFaciaTool as jest.Mock;
-
 describe('main', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
 	});
-
 	it('should publish the content it was given', async () => {
 		const rec = {
 			Records: [
@@ -46,10 +40,8 @@ describe('main', () => {
 				},
 			],
 		};
-
 		// @ts-ignore
 		await handler(rec, null, null);
-
 		expect(importCurationDataMock.mock.calls.length).toEqual(4);
 		expect(importCurationDataMock.mock.calls[0][0]).toEqual(
 			JSON.stringify(validMessageContent.fronts['all-recipes']),
@@ -59,7 +51,6 @@ describe('main', () => {
 		);
 		expect(importCurationDataMock.mock.calls[0][2]).toEqual('all-recipes');
 		expect(importCurationDataMock.mock.calls[0][3]).toEqual(secondOfJan2024);
-
 		expect(importCurationDataMock.mock.calls[1][0]).toEqual(
 			JSON.stringify(validMessageContent.fronts['meat-free']),
 		);
@@ -68,21 +59,18 @@ describe('main', () => {
 		);
 		expect(importCurationDataMock.mock.calls[1][2]).toEqual('meat-free');
 		expect(importCurationDataMock.mock.calls[1][3]).toEqual(secondOfJan2024);
-
 		expect(importCurationDataMock.mock.calls[2][0]).toEqual(
 			JSON.stringify(validMessageContent.fronts['all-recipes']),
 		);
 		expect(importCurationDataMock.mock.calls[2][1]).toEqual('us');
 		expect(importCurationDataMock.mock.calls[2][2]).toEqual('all-recipes');
 		expect(importCurationDataMock.mock.calls[2][3]).toEqual(secondOfJan2024);
-
 		expect(importCurationDataMock.mock.calls[3][0]).toEqual(
 			JSON.stringify(validMessageContent.fronts['meat-free']),
 		);
 		expect(importCurationDataMock.mock.calls[3][1]).toEqual('us');
 		expect(importCurationDataMock.mock.calls[3][2]).toEqual('meat-free');
 		expect(importCurationDataMock.mock.calls[3][3]).toEqual(secondOfJan2024);
-
 		const notifyFaciaToolMock = notifyFaciaTool as jest.Mock;
 		expect(notifyFaciaToolMock.mock.calls[0][0]).toMatchObject({
 			edition: 'feast-northern-hemisphere',
@@ -93,10 +81,8 @@ describe('main', () => {
 			version: 'v1',
 		});
 	});
-
 	it('should separate US only and rest-of-world fronts', async () => {
 		console.log(JSON.stringify(validMessageContentWithUsOnly));
-
 		const rec = {
 			Records: [
 				{
@@ -107,10 +93,8 @@ describe('main', () => {
 				},
 			],
 		};
-
 		// @ts-ignore
 		await handler(rec, null, null);
-
 		expect(importCurationDataMock.mock.calls.length).toEqual(4);
 		expect(importCurationDataMock.mock.calls[0][0]).toEqual(
 			//these are the non-US fronts in the fixture data
@@ -124,7 +108,6 @@ describe('main', () => {
 		);
 		expect(importCurationDataMock.mock.calls[0][2]).toEqual('all-recipes');
 		expect(importCurationDataMock.mock.calls[0][3]).toEqual(secondOfJan2024);
-
 		expect(importCurationDataMock.mock.calls[1][0]).toEqual(
 			JSON.stringify(validMessageContentWithUsOnly.fronts['meat-free']),
 		);
@@ -133,7 +116,6 @@ describe('main', () => {
 		);
 		expect(importCurationDataMock.mock.calls[1][2]).toEqual('meat-free');
 		expect(importCurationDataMock.mock.calls[1][3]).toEqual(secondOfJan2024);
-
 		expect(importCurationDataMock.mock.calls[2][0]).toEqual(
 			JSON.stringify([
 				//this one has no explicit include or exclude so should go to both
@@ -145,14 +127,12 @@ describe('main', () => {
 		expect(importCurationDataMock.mock.calls[2][1]).toEqual('us');
 		expect(importCurationDataMock.mock.calls[2][2]).toEqual('all-recipes');
 		expect(importCurationDataMock.mock.calls[2][3]).toEqual(secondOfJan2024);
-
 		expect(importCurationDataMock.mock.calls[3][0]).toEqual(
 			JSON.stringify(validMessageContentWithUsOnly.fronts['meat-free']),
 		);
 		expect(importCurationDataMock.mock.calls[3][1]).toEqual('us');
 		expect(importCurationDataMock.mock.calls[3][2]).toEqual('meat-free');
 		expect(importCurationDataMock.mock.calls[3][3]).toEqual(secondOfJan2024);
-
 		const notifyFaciaToolMock = notifyFaciaTool as jest.Mock;
 		expect(notifyFaciaToolMock.mock.calls[0][0]).toMatchObject({
 			edition: 'feast-northern-hemisphere',
@@ -163,7 +143,6 @@ describe('main', () => {
 			version: 'v1',
 		});
 	});
-
 	it('should not accept valid envelope json, failing with an error', async () => {
 		const rec = {
 			Records: [
@@ -175,7 +154,6 @@ describe('main', () => {
 				},
 			],
 		};
-
 		const expectedError = new Error(
 			`Error parsing message envelope: ${JSON.stringify({
 				issues: [
@@ -189,11 +167,9 @@ describe('main', () => {
 				name: 'ZodError',
 			})}`,
 		);
-
 		// @ts-ignore
 		await expect(() => handler(rec, null, null)).rejects.toEqual(expectedError);
 	});
-
 	it('should not accept valid fronts json, failing and reporting the error to the Fronts publication queue', async () => {
 		const rec = {
 			Records: [
@@ -205,12 +181,9 @@ describe('main', () => {
 				},
 			],
 		};
-
 		// @ts-ignore
 		await handler(rec, null, null);
-
 		expect(importCurationDataMock.mock.calls.length).toEqual(0);
-
 		expect(notifyFaciaToolMock.mock.calls[0][0]).toMatchObject({
 			edition: 'feast-northern-hemisphere',
 			issueDate: '2024-01-02',
@@ -230,7 +203,6 @@ describe('main', () => {
 			version: 'v1',
 		});
 	});
-
 	it('should not accept invalid json', async () => {
 		const rec = {
 			Records: [
@@ -242,14 +214,12 @@ describe('main', () => {
 				},
 			],
 		};
-
 		const expectedError = new SyntaxError(
 			'Unexpected token \'b\', "blahblahbl"... is not valid JSON',
 		);
 		// @ts-ignore
 		await expect(() => handler(rec, null, null)).rejects.toEqual(expectedError);
 	});
-
 	it('should notify when the deploy fails', async () => {
 		const rec = {
 			Records: [
@@ -261,13 +231,10 @@ describe('main', () => {
 				},
 			],
 		};
-
 		const expectedError = new Error('Error deploying content');
 		importCurationDataMock.mockRejectedValueOnce(expectedError);
-
 		// @ts-ignore
 		await handler(rec, null, null);
-
 		expect(notifyFaciaToolMock.mock.calls[0][0]).toMatchObject({
 			edition: 'feast-northern-hemisphere',
 			issueDate: '2024-01-02',

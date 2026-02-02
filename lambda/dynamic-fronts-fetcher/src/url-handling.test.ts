@@ -1,5 +1,4 @@
 import { breakDownUrl } from './url-handling';
-
 describe('breakDownUrl', () => {
 	it('should extract the parts from a real passed url', () => {
 		const result = breakDownUrl(
@@ -8,9 +7,8 @@ describe('breakDownUrl', () => {
 		expect(result.gcpBucket).toEqual('gu-feast-dynamic');
 		expect(result.prefix).toEqual('2025-03-19/db153/DE-');
 	});
-
 	it('should reject an incorrect url', () => {
-		expect(() => breakDownUrl('https://path/to/something')).toThrowError(
+		expect(() => breakDownUrl('https://path/to/something')).toThrow(
 			new Error('Unable to parse google storage url https://path/to/something'),
 		);
 	});

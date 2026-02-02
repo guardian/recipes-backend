@@ -1,7 +1,6 @@
 import type { Recipe } from '@recipes-api/lib/facia';
 import type { IncomingDataRow } from './models';
 import { convertBQReport } from './transform';
-
 describe('convertBQReport', () => {
 	const fakeRows: IncomingDataRow[] = [
 		{ recipe_id: '123345', uniques: '32' },
@@ -13,7 +12,6 @@ describe('convertBQReport', () => {
 		{ recipe_id: 'asdc`zhj', uniques: '3' },
 		{ recipe_id: 'jkghfjgfs', uniques: '-1' },
 	];
-
 	it('should take the country code and rows and return a printable container', () => {
 		const result = convertBQReport('GB', fakeRows);
 		expect(result.body).toBeUndefined();
@@ -24,7 +22,6 @@ describe('convertBQReport', () => {
 			fakeRows.map((_) => _.recipe_id),
 		);
 	});
-
 	it('should take the country code and rows and return a printable container', () => {
 		const result = convertBQReport('FR', fakeRows);
 		expect(result.body).toBeUndefined();
@@ -35,7 +32,6 @@ describe('convertBQReport', () => {
 			fakeRows.map((_) => _.recipe_id),
 		);
 	});
-
 	it('should not crash if the code is not recognised', () => {
 		const result = convertBQReport('AXF', fakeRows);
 		expect(result.body).toBeUndefined();
