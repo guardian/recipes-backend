@@ -189,7 +189,12 @@ router.get('/api/:region/:variant/localisation', (req, resp) => {
 					10,
 				);
 
-				resp.status(200).json(maybeLocalisation);
+				resp
+					.status(200)
+					.set({
+						'Cache-Control': 'no-store, no-cache',
+					})
+					.json(maybeLocalisation);
 			})
 			.catch((err) => {
 				console.error("Error retrieving today's curation:", err);
