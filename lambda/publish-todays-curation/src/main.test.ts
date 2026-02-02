@@ -4,13 +4,10 @@ import { Today } from './config';
 import type { CurationPath } from './curation';
 import { activateCuration, validateAllCuration } from './curation';
 import { handler } from './main';
-
 mockClient(S3Client);
-
 jest.mock('./config', () => ({
 	Today: new Date(2024, 1, 3, 11, 26, 19),
 }));
-
 jest.mock('./curation', () => {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- recommended way to partial-mock
 	const original = jest.requireActual('./curation');
@@ -22,24 +19,19 @@ jest.mock('./curation', () => {
 		validateAllCuration: jest.fn(),
 	};
 });
-
 jest.mock('@recipes-api/lib/recipes-data', () => ({
 	sendFastlyPurgeRequestWithRetries: jest.fn(),
 }));
-
 const staticBucketName = 'static-bucket';
-
 jest.mock('lib/recipes-data/src/lib/config', () => ({
 	getContentPrefix: () => 'cdn.content',
 	getFastlyApiKey: () => 'fastly-api-key',
 	getStaticBucketName: () => staticBucketName,
 }));
-
 describe('main.handler', () => {
 	beforeEach(() => {
 		jest.resetAllMocks();
 	});
-
 	it("should launch all present curations for today's date, if they are available", async () => {
 		const availableFronts: CurationPath[] = [
 			{
@@ -64,12 +56,10 @@ describe('main.handler', () => {
 				day: 3,
 			},
 		];
-
 		(validateAllCuration as jest.Mock).mockReturnValue(
 			Promise.resolve<CurationPath[]>(availableFronts),
 		);
 		(activateCuration as jest.Mock).mockReturnValue(Promise.resolve());
-
 		await handler({});
 		const validateCalls = (validateAllCuration as jest.Mock).mock.calls;
 		expect(validateCalls.length).toEqual(1);
@@ -81,7 +71,6 @@ describe('main.handler', () => {
 		expect(activateCalls[1][0]).toEqual(availableFronts[1]);
 		expect(activateCalls[2][0]).toEqual(availableFronts[2]);
 	});
-
 	it("should relaunch a specific curation page if it's been updated in the S3 bucket", async () => {
 		const sampleS3Msg = {
 			Records: [
@@ -122,10 +111,8 @@ describe('main.handler', () => {
 				},
 			],
 		};
-
 		(activateCuration as jest.Mock).mockReturnValue(Promise.resolve());
 		await handler(sampleS3Msg);
-
 		expect((validateAllCuration as jest.Mock).mock.calls.length).toEqual(0);
 		const activateCalls = (activateCuration as jest.Mock).mock.calls;
 		expect(activateCalls.length).toEqual(1);
@@ -137,7 +124,6 @@ describe('main.handler', () => {
 			day: 3,
 		});
 	});
-
 	it('should ignore Delete messages', async () => {
 		const sampleS3Msg = {
 			Records: [
@@ -178,15 +164,12 @@ describe('main.handler', () => {
 				},
 			],
 		};
-
 		(activateCuration as jest.Mock).mockReturnValue(Promise.resolve());
 		await handler(sampleS3Msg);
-
 		expect((validateAllCuration as jest.Mock).mock.calls.length).toEqual(0);
 		const activateCalls = (activateCuration as jest.Mock).mock.calls;
 		expect(activateCalls.length).toEqual(0);
 	});
-
 	it('should ignore unknown paths', async () => {
 		const sampleS3Msg = {
 			Records: [
@@ -227,10 +210,8 @@ describe('main.handler', () => {
 				},
 			],
 		};
-
 		(activateCuration as jest.Mock).mockReturnValue(Promise.resolve());
 		await handler(sampleS3Msg);
-
 		expect((validateAllCuration as jest.Mock).mock.calls.length).toEqual(0);
 		const activateCalls = (activateCuration as jest.Mock).mock.calls;
 		expect(activateCalls.length).toEqual(0);
