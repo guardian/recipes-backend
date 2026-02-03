@@ -44,6 +44,7 @@ export async function retrieveContent(file: File): Promise<IncomingDataRow[]> {
 			try {
 				if (IsEmpty.test(str)) return undefined;
 				return JSON.parse(str) as unknown;
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars -- want to catch(err)
 			} catch (err) {
 				console.warn(
 					`Unparseable content at line ${ctr} of ${file.bucket.name}:${file.name} - '${str}'`,

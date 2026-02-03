@@ -169,7 +169,7 @@ function parseJsonBlob(
 		}
 	} catch (err) {
 		console.error(
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions -- err.toString() is untyped but OK
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access -- err.toString() is untyped but OK
 			`Recipe from ${canonicalId} was not parsable: ${err.toString()}`,
 		);
 		console.error(`Content was ${recipeJson}`);

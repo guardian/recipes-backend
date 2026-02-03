@@ -19,12 +19,9 @@ import {
 jest.mock('./config', () => ({
 	indexTableName: 'TestTable',
 }));
-
 const mockDynamoClient = mockClient(DynamoDBClient);
-
 function makeRecptBatch(length: number): RecipeDatabaseKey[] {
 	const results: RecipeDatabaseKey[] = [];
-
 	for (let i = 0; i < length; i++) {
 		results.push({
 			capiArticleId: `path/to/article${i}`,
@@ -33,18 +30,15 @@ function makeRecptBatch(length: number): RecipeDatabaseKey[] {
 	}
 	return results;
 }
-
 describe('dynamodb', () => {
 	beforeEach(() => {
 		mockDynamoClient.reset();
 		jest.resetAllMocks();
 		jest.spyOn(global, 'fetch').mockImplementation(jest.fn());
 	});
-
 	describe('dynamodb.removeRecipe', () => {
 		it('should make a Dynamo request to remove the relevant record', async () => {
 			mockDynamoClient.on(DeleteItemCommand).resolves({});
-
 			await removeRecipe('path/to/some/article-id', 'xxxyyyzzz');
 			expect(mockDynamoClient.commandCalls(DeleteItemCommand).length).toEqual(
 				1,
@@ -58,13 +52,11 @@ describe('dynamodb', () => {
 			expect(req.input.TableName).toEqual('TestTable');
 		});
 	});
-
 	describe('dynamodb.bulkRemoveRecipe', () => {
 		it('should handle a small (<25) batch of articles', async () => {
 			mockDynamoClient.on(BatchWriteItemCommand).resolves({
 				UnprocessedItems: { TestTable: [] },
 			});
-
 			await bulkRemoveRecipe(makeRecptBatch(6));
 			expect(
 				mockDynamoClient.commandCalls(BatchWriteItemCommand).length,
@@ -82,17 +74,14 @@ describe('dynamodb', () => {
 				});
 			}
 		});
-
 		it('should paginate a large (>25) batch of articles', async () => {
 			mockDynamoClient.on(BatchWriteItemCommand).resolves({
 				UnprocessedItems: { TestTable: [] },
 			});
-
 			await bulkRemoveRecipe(makeRecptBatch(93));
 			expect(
 				mockDynamoClient.commandCalls(BatchWriteItemCommand).length,
 			).toEqual(4);
-
 			//for brevity, we're just checking the last page of calls
 			const call = mockDynamoClient.commandCalls(BatchWriteItemCommand)[3];
 			const req = call.firstArg as BatchWriteItemCommand;
@@ -107,7 +96,6 @@ describe('dynamodb', () => {
 				});
 			}
 		});
-
 		it('should loop to ensure that unprocessed items get retried', async () => {
 			const items = makeRecptBatch(8);
 			mockDynamoClient
@@ -135,14 +123,11 @@ describe('dynamodb', () => {
 					},
 				})
 				.resolves({});
-
 			await bulkRemoveRecipe(items);
-
 			//We expect two write calls, one with all 8 of the items and the second with the two that were skipped
 			expect(
 				mockDynamoClient.commandCalls(BatchWriteItemCommand).length,
 			).toEqual(2);
-
 			const firstCall = mockDynamoClient.commandCalls(BatchWriteItemCommand)[0];
 			const firstReq = firstCall.firstArg as BatchWriteItemCommand;
 			const firstItems = firstReq.input.RequestItems?.TestTable ?? [];
@@ -155,7 +140,6 @@ describe('dynamodb', () => {
 					},
 				});
 			}
-
 			const secondCall = mockDynamoClient.commandCalls(
 				BatchWriteItemCommand,
 			)[1];
@@ -176,7 +160,6 @@ describe('dynamodb', () => {
 			});
 		});
 	});
-
 	describe('dynamodb.removeAllRecipeIndexEntriesForArticle', () => {
 		it('should query the table to find items relating to the given article, then remove all of them and return the old references', async () => {
 			const fakeRecords: RecipeDatabaseEntry[] = [
@@ -229,7 +212,6 @@ describe('dynamodb', () => {
 				Items: fakeRecords.map(recipeDatabaseEntryToDynamo),
 			});
 			mockDynamoClient.on(BatchWriteItemCommand).resolves({});
-
 			const result =
 				await removeAllRecipeIndexEntriesForArticle('path/to/article');
 			expect(result).toEqual(
@@ -239,14 +221,12 @@ describe('dynamodb', () => {
 			expect(
 				mockDynamoClient.commandCalls(BatchWriteItemCommand).length,
 			).toEqual(1);
-
 			const q = mockDynamoClient.commandCalls(QueryCommand)[0]
 				.firstArg as QueryCommand;
 			expect(q.input.KeyConditionExpression).toEqual('capiArticleId=:artId');
 			expect(q.input.ExpressionAttributeValues).toEqual({
 				':artId': { S: 'path/to/article' },
 			});
-
 			const d = mockDynamoClient.commandCalls(BatchWriteItemCommand)[0]
 				.firstArg as BatchWriteItemCommand;
 			expect(
@@ -262,14 +242,12 @@ describe('dynamodb', () => {
 				});
 			}
 		});
-
 		it('should not break if there is nothing to do', async () => {
 			const fakeRecords: RecipeDatabaseEntry[] = [];
 			mockDynamoClient.on(QueryCommand).resolves({
 				Items: fakeRecords.map(recipeDatabaseEntryToDynamo),
 			});
 			mockDynamoClient.on(BatchWriteItemCommand).resolves({});
-
 			const result =
 				await removeAllRecipeIndexEntriesForArticle('path/to/article');
 			expect(result).toEqual(
@@ -279,7 +257,6 @@ describe('dynamodb', () => {
 			expect(
 				mockDynamoClient.commandCalls(BatchWriteItemCommand).length,
 			).toEqual(0);
-
 			const q = mockDynamoClient.commandCalls(QueryCommand)[0]
 				.firstArg as QueryCommand;
 			expect(q.input.KeyConditionExpression).toEqual('capiArticleId=:artId');

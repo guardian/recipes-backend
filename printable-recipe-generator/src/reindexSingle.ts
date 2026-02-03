@@ -16,7 +16,7 @@ const recipeBaseUrl =
 		: 'https://recipes.code.dev-guardianapis.com';
 const indexUrl = `${recipeBaseUrl}/v2/index.json`;
 const contentUrl = `${recipeBaseUrl}/content`;
-const BATCH_SIZE = 10; //limitation of Put Item to Event Bridge
+//const BATCH_SIZE = 10; //limitation of Put Item to Event Bridge
 
 const eb = new EventBridgeClient({ region: REGION });
 
@@ -73,19 +73,19 @@ async function loadRecipeJson(
 	}
 }
 
-async function pdfAlreadyExists(
-	recipeItem: RecipeIndexSchema,
-): Promise<boolean> {
-	const url = `${contentUrl}/${recipeItem.checksum}.pdf`;
-	const response = await fetch(url, { method: 'HEAD' });
-	if (response.status === 200) {
-		return true;
-	} else if (response.status === 404) {
-		return false;
-	} else {
-		throw new Error(`Unexpected response to HEAD ${url}: ${response.status}`);
-	}
-}
+// async function pdfAlreadyExists(
+// 	recipeItem: RecipeIndexSchema,
+// ): Promise<boolean> {
+// 	const url = `${contentUrl}/${recipeItem.checksum}.pdf`;
+// 	const response = await fetch(url, { method: 'HEAD' });
+// 	if (response.status === 200) {
+// 		return true;
+// 	} else if (response.status === 404) {
+// 		return false;
+// 	} else {
+// 		throw new Error(`Unexpected response to HEAD ${url}: ${response.status}`);
+// 	}
+// }
 
 async function sendToEventBridge(recipes: RecipeSchema[]): Promise<void> {
 	const entries: PutEventsRequestEntry[] = recipes.map((r) => ({
@@ -111,18 +111,6 @@ async function sendToEventBridge(recipes: RecipeSchema[]): Promise<void> {
 			);
 		}
 	}
-}
-
-async function filterOnlyNeeded(
-	recipes: RecipeIndexSchema[],
-): Promise<RecipeIndexSchema[]> {
-	const results = await Promise.all(
-		recipes.map(async (r) => {
-			const exists = await pdfAlreadyExists(r);
-			return exists ? null : r;
-		}),
-	);
-	return results.filter((r): r is RecipeIndexSchema => r !== null);
 }
 
 void (async (): Promise<void> => {

@@ -20,7 +20,6 @@ describe('recipeIndexEntriesFromDynamo', () => {
 				N: '1',
 			},
 		};
-
 		const results = recipeIndexEntriesFromDynamo(rec);
 		expect(results.length).toEqual(1);
 		const result = results[0];
@@ -54,7 +53,6 @@ describe('recipeIndexEntriesFromDynamo', () => {
 				N: '1',
 			},
 		};
-
 		const results = recipeIndexEntriesFromDynamo(rec);
 		expect(results.length).toEqual(2);
 		const firstResult = results[0];
@@ -67,7 +65,6 @@ describe('recipeIndexEntriesFromDynamo', () => {
 		);
 		expect(firstResult.checksum).toEqual('version2Hash');
 		expect(firstResult.version).toEqual(2);
-
 		const secondResult = results[1];
 		expect(secondResult.sponsorshipCount).toEqual(1);
 		expect(secondResult.capiArticleId).toEqual(

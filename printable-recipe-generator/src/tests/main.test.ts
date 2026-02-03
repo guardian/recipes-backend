@@ -3,7 +3,6 @@ import path from 'path';
 import * as ejs from 'ejs';
 import { fontsBase64, svgs } from '../assets/assetloader';
 import recipe from '../data/sampleRecipe.json';
-
 //load Contributors
 interface ChefData {
 	webTitle: string;
@@ -13,7 +12,6 @@ interface ChefData {
 	bylineImageUrl?: string;
 	bylineLargeImageUrl?: string;
 }
-
 const chefs: Record<string, ChefData> = {
 	'profile/yotamottolenghi': {
 		webTitle: 'Yotam Ottolenghi',
@@ -54,7 +52,6 @@ describe('Sample recipe ', () => {
 		});
 		expect(html).toMatchSnapshot();
 	});
-
 	it('should match snapshot even when chefs are undefined', () => {
 		const templatePath = path.join(__dirname, '../assets/recipe.ejs');
 		const template = fs.readFileSync(templatePath, 'utf-8');
@@ -67,7 +64,6 @@ describe('Sample recipe ', () => {
 		});
 		expect(html).toMatchSnapshot();
 	});
-
 	it('should match snapshot even when chefs list is null', () => {
 		const templatePath = path.join(__dirname, '../assets/recipe.ejs');
 		const template = fs.readFileSync(templatePath, 'utf-8');
@@ -80,7 +76,6 @@ describe('Sample recipe ', () => {
 		});
 		expect(html).toMatchSnapshot();
 	});
-
 	it('should match snapshot even when chefs list is empty', () => {
 		const templatePath = path.join(__dirname, '../assets/recipe.ejs');
 		const template = fs.readFileSync(templatePath, 'utf-8');
@@ -93,7 +88,6 @@ describe('Sample recipe ', () => {
 		});
 		expect(html).toMatchSnapshot();
 	});
-
 	it('should match snapshot even when chefs list contains more then 1 chef', () => {
 		const templatePath = path.join(__dirname, '../assets/recipe.ejs');
 		const template = fs.readFileSync(templatePath, 'utf-8');
@@ -108,7 +102,6 @@ describe('Sample recipe ', () => {
 		expect(html).toContain('Nigel Slater');
 		expect(html).toMatchSnapshot();
 	});
-
 	it('should match snapshot when QR code is present', () => {
 		const templatePath = path.join(__dirname, '../assets/recipe.ejs');
 		const template = fs.readFileSync(templatePath, 'utf-8');
@@ -123,7 +116,6 @@ describe('Sample recipe ', () => {
 		});
 		expect(html).toMatchSnapshot();
 	});
-
 	it('should match snapshot when QR code is not present', () => {
 		const templatePath = path.join(__dirname, '../assets/recipe.ejs');
 		const template = fs.readFileSync(templatePath, 'utf-8');

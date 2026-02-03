@@ -69,6 +69,7 @@ export async function handleContentUpdateByCapiUrl({
 		`${normalisedCapiUrl.protocol}//${normalisedCapiUrl.hostname}/channel/feast/item${normalisedCapiUrl.pathname}`,
 	);
 
+	/* eslint-disable @typescript-eslint/no-unsafe-enum-comparison -- this is a typescript/eslint bug/incompatibility */
 	switch (capiResponse.action) {
 		case PollingAction.CONTENT_EXISTS:
 			//Great, we have it - but should check if this has now been superceded
@@ -108,4 +109,5 @@ export async function handleContentUpdateByCapiUrl({
 				`Could not handle retrievable update from CAPI: PollingAction code was ${capiResponse.action.toString()}. Allowing the lambda runtime to retry or DLQ.`,
 			);
 	}
+	/* eslint-enable @typescript-eslint/no-unsafe-enum-comparison -- this is a typescript/eslint bug/incompatibility */
 }

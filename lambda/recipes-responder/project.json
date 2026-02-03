@@ -3,6 +3,7 @@
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "lambda/recipes-responder/src",
 	"projectType": "application",
+	"tags": [],
 	"targets": {
 		"commandline-reindex": {
 			"executor": "nx:run-commands",
@@ -96,6 +97,5 @@
 				}
 			}
 		}
-	},
-	"tags": []
+	}
 }

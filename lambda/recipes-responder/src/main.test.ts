@@ -21,20 +21,16 @@ import { handleContentUpdateByCapiUrl } from './update_retrievable_processor';
 jest.mock('@recipes-api/lib/capi', () => ({
 	deserializeEvent: jest.fn(),
 }));
-
 jest.mock('./takedown_processor', () => ({
 	handleTakedown: jest.fn(),
 	handleDeletedContent: jest.fn(),
 }));
-
 jest.mock('./update_processor', () => ({
 	handleContentUpdate: jest.fn(),
 }));
-
 jest.mock('./update_retrievable_processor', () => ({
 	handleContentUpdateByCapiUrl: jest.fn(),
 }));
-
 jest.mock('lib/recipes-data/src/lib/config', () => ({
 	getContentPrefix: () => 'cdn.content',
 	getFastlyApiKey: () => 'fastly-api-key',
@@ -43,17 +39,14 @@ jest.mock('lib/recipes-data/src/lib/config', () => ({
 	getCapiBaseUrl: () => 'https://content.guardianapis.com',
 	getShouldPublishV2: () => true,
 }));
-
 jest.mock('@recipes-api/cwmetrics', () => ({
 	registerMetric: jest.fn(),
 }));
-
 describe('main.processRecord', () => {
 	beforeEach(() => {
 		jest.resetAllMocks();
 		jest.spyOn(global, 'fetch').mockImplementation(jest.fn());
 	});
-
 	//@ts-ignore
 	const testReq: KinesisStreamRecord = {
 		//@ts-ignore
@@ -61,7 +54,6 @@ describe('main.processRecord', () => {
 			data: 'base64-would-be-here',
 		},
 	};
-
 	const testContent: Content = {
 		apiUrl: '',
 		id: '',
@@ -72,10 +64,8 @@ describe('main.processRecord', () => {
 		webTitle: '',
 		webUrl: '',
 	};
-
 	it('should pass a DELETE event to handleTakedown', async () => {
 		const nowtime = new Date();
-
 		const testEvent: Event = {
 			//@ts-ignore
 			dateTime: nowtime.valueOf(),
@@ -87,7 +77,6 @@ describe('main.processRecord', () => {
 				kind: 'content',
 			},
 		};
-
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
@@ -103,10 +92,8 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		expect(handleDeletedContent.mock.calls.length).toEqual(0);
 	});
-
 	it('should pass an UPDATE event to handleUpdate', async () => {
 		const nowtime = new Date();
-
 		const testEvent: Event = {
 			//@ts-ignore
 			dateTime: nowtime.valueOf(),
@@ -118,7 +105,6 @@ describe('main.processRecord', () => {
 				kind: 'content',
 			},
 		};
-
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
@@ -134,10 +120,8 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		expect(handleDeletedContent.mock.calls.length).toEqual(0);
 	});
-
 	it('should pass an RETRIEVABLE_UPDATE event to handleRetrievableUpdate', async () => {
 		const nowtime = new Date();
-
 		const testEvent: Event = {
 			//@ts-ignore
 			dateTime: nowtime.valueOf(),
@@ -152,7 +136,6 @@ describe('main.processRecord', () => {
 				kind: 'retrievableContent',
 			},
 		};
-
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
@@ -170,10 +153,8 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		expect(handleDeletedContent.mock.calls.length).toEqual(0);
 	});
-
 	it('should pass an UPDATE event with DeletedContent payload to handleDeletedContent', async () => {
 		const nowtime = new Date();
-
 		const testEvent: Event = {
 			//@ts-ignore
 			dateTime: nowtime.valueOf(),
@@ -196,7 +177,6 @@ describe('main.processRecord', () => {
 				kind: 'deletedContent',
 			},
 		};
-
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
@@ -223,10 +203,8 @@ describe('main.processRecord', () => {
 			],
 		});
 	});
-
 	it('should pass a DELETE event to handleTakedown', async () => {
 		const nowtime = new Date();
-
 		const testEvent: Event = {
 			//@ts-ignore
 			dateTime: nowtime.valueOf(),
@@ -238,7 +216,6 @@ describe('main.processRecord', () => {
 				kind: 'content',
 			},
 		};
-
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
@@ -254,10 +231,8 @@ describe('main.processRecord', () => {
 		//@ts-ignore
 		expect(handleDeletedContent.mock.calls.length).toEqual(0);
 	});
-
 	it('should ignore an UPDATE event for an atom', async () => {
 		const nowtime = new Date();
-
 		const testEvent: Event = {
 			//@ts-ignore
 			dateTime: nowtime.valueOf(),
@@ -269,7 +244,6 @@ describe('main.processRecord', () => {
 				kind: 'content',
 			},
 		};
-
 		//@ts-ignore
 		deserializeEvent.mockReturnValue(testEvent);
 		//@ts-ignore
@@ -285,7 +259,6 @@ describe('main.processRecord', () => {
 		expect(handleDeletedContent.mock.calls.length).toEqual(0);
 	});
 });
-
 describe('main.handler', () => {
 	it('should call registerMetric', async () => {
 		const testReq: CrierEventDetail = {
@@ -293,7 +266,6 @@ describe('main.handler', () => {
 			channels: ['open', 'feast', 'editions', 'newsletters'],
 			event: 'GFR1ay1uZXdzL2FydGljbGUvMjAyNC9qdWwv… (73324 chars)',
 		};
-
 		const eventMock: EventBridgeEvent<'content-update', CrierEventDetail> = {
 			account: '234786246782',
 			detail: testReq,
@@ -305,7 +277,6 @@ describe('main.handler', () => {
 			time: '2024-07-10T13:10:44Z',
 			version: '0',
 		};
-
 		const contextMock = {
 			awsRequestId: '',
 			callbackWaitsForEmptyEventLoop: false,
@@ -322,7 +293,6 @@ describe('main.handler', () => {
 			fail: jest.fn(),
 			succeed: jest.fn(),
 		};
-
 		const callbackMock: Callback<KinesisStreamBatchResponse | void> = (
 			error,
 			result,
@@ -334,9 +304,8 @@ describe('main.handler', () => {
 				console.log('Result:', result);
 			}
 		};
-
 		await handler(eventMock, contextMock, callbackMock);
 		expect(registerMetric).toHaveBeenCalled();
-		expect(registerMetric).toBeCalledTimes(1);
+		expect(registerMetric).toHaveBeenCalledTimes(1);
 	});
 });
