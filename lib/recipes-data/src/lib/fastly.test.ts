@@ -1,4 +1,5 @@
 import { FastlyError, sendFastlyPurgeRequest } from './fastly';
+
 const contentPrefix = 'cdn.content.location';
 describe('sendFastlyPurgeRequest', () => {
 	beforeEach(() => {

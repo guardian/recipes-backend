@@ -39,6 +39,7 @@ router.get(
 	(req: Request<RecipeIdParams>, resp) => {
 		try {
 			validateComposerParams(req.params);
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars -- we need a parameter here
 		} catch (e) {
 			console.log('Provided params ', req.params, ' did not validate');
 			resp

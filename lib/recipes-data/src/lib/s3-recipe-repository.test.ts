@@ -14,6 +14,7 @@ import {
 	writeIndexData,
 } from './s3-recipe-repository';
 import { awaitableDelay } from './utils';
+
 const s3Mock = mockClient(S3Client);
 const staticBucketName = 'contentbucket';
 const fastlyApiKey = 'fastly-api-key';

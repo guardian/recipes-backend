@@ -4,6 +4,7 @@ import { ContentType } from '@guardian/content-api-models/v1/contentType';
 import { callCAPI } from '@recipes-api/lib/capi';
 import { handleContentUpdate } from './update_processor';
 import { handleContentUpdateByCapiUrl } from './update_retrievable_processor';
+
 jest.mock('@recipes-api/lib/capi', () => ({
 	callCAPI: jest.fn(),
 }));

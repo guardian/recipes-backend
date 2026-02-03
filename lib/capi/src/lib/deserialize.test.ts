@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import { EventType } from '@guardian/content-api-models/crier/event/v1/eventType';
 import { ItemType } from '@guardian/content-api-models/crier/event/v1/itemType';
 import { deserializeEvent } from './deserialize';
+
 describe('deserializeEvent', () => {
 	it('should deserialize a test data blob', () => {
 		const b64data = fs.readFileSync('failing-event.b64');

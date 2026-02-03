@@ -17,6 +17,7 @@ import { handler, processRecord } from './main';
 import { handleDeletedContent, handleTakedown } from './takedown_processor';
 import { handleContentUpdate } from './update_processor';
 import { handleContentUpdateByCapiUrl } from './update_retrievable_processor';
+
 jest.mock('@recipes-api/lib/capi', () => ({
 	deserializeEvent: jest.fn(),
 }));

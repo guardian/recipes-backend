@@ -19,6 +19,7 @@ import {
 } from '@recipes-api/lib/recipes-data';
 import { handleContentUpdate } from './update_processor';
 import Mock = jest.Mock;
+
 const staticBucketName = 'static-bucket';
 const fastlyApiKey = 'fastly-api-key';
 const contentPrefix = 'cdn.content.location';

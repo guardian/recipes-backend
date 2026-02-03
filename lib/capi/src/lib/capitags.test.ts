@@ -1,4 +1,5 @@
 import { buildUriList, URL_MAX } from './capitags';
+
 describe('buildUriList', () => {
 	it('should just return a shorter list', () => {
 		const list = [

@@ -22,6 +22,7 @@ import {
 import type { RecipeWithImageData } from './transform';
 import { addSponsorsTransform } from './transform';
 import { capiDateTimeToDate } from './utils';
+
 jest.mock('./config', () => ({
 	FeaturedImageWidth: 700,
 	PreviewImageWidth: 300,

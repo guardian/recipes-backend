@@ -7,6 +7,7 @@ import { registerMetric } from '@recipes-api/cwmetrics';
 import { announceNewRecipe } from './eventbus';
 import type { RecipeIndexEntry, RecipeReference } from './models';
 import Mock = jest.Mock;
+
 const mockEbClient = mockClient(EventBridgeClient);
 jest.mock('./config', () => ({
 	OutgoingEventBus: 'test-event-bus',

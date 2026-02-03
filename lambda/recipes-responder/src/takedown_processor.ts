@@ -36,9 +36,10 @@ export async function handleTakedown({
 export async function handleDeletedContent(
 	evt: DeletedContent,
 ): Promise<number> {
+	const paths = evt.aliasPaths?.map((p) => p.path);
 	console.log(
 		`DEBUG received deleted-content-update for ${
-			evt.aliasPaths?.join('/') ?? '(no paths)'
+			paths?.join('/') ?? '(no paths)'
 		}`,
 	);
 	return Promise.resolve(0);
