@@ -33,6 +33,10 @@ class DensityEntry {
 		this.normalised_name = row[2];
 		this.density = Number.parseFloat(row[3]);
 		this.source = '';
+		if (isNaN(this.density))
+			throw new Error(
+				'row was not in the right format, density was not a number',
+			);
 	}
 }
 
@@ -42,7 +46,7 @@ export function parseDensityCSV(csvText: string, continueOnIncomplete = false) {
 		trim: true,
 	});
 
-	const entries = records.map((row, idx) => {
+	let entries = records.map((row, idx) => {
 		try {
 			return new DensityEntry(row);
 		} catch (e) {
@@ -54,6 +58,9 @@ export function parseDensityCSV(csvText: string, continueOnIncomplete = false) {
 			return undefined;
 		}
 	});
+	if (entries[0] === undefined) {
+		entries = entries.slice(1);
+	}
 
 	if (entries.length == 0) {
 		throw new Error(`There was no data to import`);
