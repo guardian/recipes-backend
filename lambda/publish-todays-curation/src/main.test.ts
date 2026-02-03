@@ -4,6 +4,7 @@ import { Today } from './config';
 import type { CurationPath } from './curation';
 import { activateCuration, validateAllCuration } from './curation';
 import { handler } from './main';
+
 mockClient(S3Client);
 jest.mock('./config', () => ({
 	Today: new Date(2024, 1, 3, 11, 26, 19),

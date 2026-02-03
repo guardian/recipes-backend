@@ -1,6 +1,7 @@
 import type { Recipe } from '@recipes-api/lib/facia';
 import type { IncomingDataRow } from './models';
 import { convertBQReport } from './transform';
+
 describe('convertBQReport', () => {
 	const fakeRows: IncomingDataRow[] = [
 		{ recipe_id: '123345', uniques: '32' },

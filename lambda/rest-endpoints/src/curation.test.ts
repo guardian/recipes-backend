@@ -4,6 +4,7 @@ import { S3Client, S3ServiceException } from '@aws-sdk/client-s3';
 import { mockClient } from 'aws-sdk-client-mock';
 import type { FeastAppContainer } from '@recipes-api/lib/facia';
 import { generateHybridFront } from './curation';
+
 const s3Mock = mockClient(S3Client);
 // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- this is a mock, it's ok
 jest.mock('@recipes-api/lib/recipes-data', () => ({

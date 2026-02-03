@@ -1,4 +1,5 @@
 import { breakDownUrl } from './url-handling';
+
 describe('breakDownUrl', () => {
 	it('should extract the parts from a real passed url', () => {
 		const result = breakDownUrl(

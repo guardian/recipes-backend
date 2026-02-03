@@ -1,5 +1,6 @@
 import format from 'date-fns/format';
 import { generatePublicationMessage } from './util';
+
 describe('generatePublicationMessage', () => {
 	it('should generate a different message if the issueDate is today', () => {
 		const nowTime = new Date();

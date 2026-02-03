@@ -19,6 +19,7 @@ import {
 	validateAllCuration,
 	validateCurationData,
 } from './curation';
+
 const s3Mock = mockClient(S3Client);
 jest.mock('@recipes-api/lib/recipes-data', () => ({
 	sendFastlyPurgeRequestWithRetries: jest.fn(),
