@@ -1,16 +1,16 @@
 import bodyParser from 'body-parser';
 import { formatISO } from 'date-fns';
 import { renderFile as ejs } from 'ejs';
-import express, { Router } from 'express';
+import express, { Router, text } from 'express';
 import type { Request } from 'express';
 import type { RecipeV3 } from '@recipes-api/lib/feast-models';
 import { recipeByUID } from '@recipes-api/lib/recipes-data';
+import { checkAuthorization } from './apikey';
 import { checkTemplate } from './check-template';
 import { generateHybridFront } from './curation';
+import { parseDensityCSV, transformDensityData } from './density';
 import { countryCodeFromCDN } from './geo_cdn';
 import { recursivelyGetIdList } from './helpers';
-import { checkAuthorization } from './apikey';
-import { parseDensityCSV, transformDensityData } from './density';
 
 export const app = express();
 app.set('view engine', 'ejs');
@@ -20,7 +20,7 @@ app.engine('.ejs', ejs);
 const router = Router();
 router.use(
 	bodyParser.json({
-		limit: '1mb',
+		limit: '10mb',
 	}),
 );
 
@@ -178,50 +178,54 @@ router.post(
 	},
 );
 
-router.post('/api/ingredient-densities/update', (req, resp) => {
-	checkAuthorization(req.headers.authorization)
-		.then((canProceed) => {
-			if (!canProceed) {
-				console.warn(
-					`invalid access request to /api/ingredient-densities/update.  Auth token was ${req.headers.authorization ?? 'not present'}`,
+router.post(
+	'/api/ingredient-densities/update',
+	text({ type: 'text/csv' }),
+	(req, resp) => {
+		checkAuthorization(req.headers.authorization)
+			.then((canProceed) => {
+				if (!canProceed) {
+					console.warn(
+						`invalid access request to /api/ingredient-densities/update.  Auth token was ${req.headers.authorization ?? 'not present'}`,
+					);
+					resp.status(403).json({
+						status: 'forbidden',
+						detail: 'you are not permitted to access this endpoint',
+					});
+					return;
+				}
+
+				if (req.headers['content-type'] !== 'text/csv') {
+					resp.status(415).json({
+						status: 'unrecognised format',
+						detail: 'expected CSV data.  Consult docs for details',
+					});
+					return;
+				}
+
+				try {
+					const densityData = parseDensityCSV(req.body as string);
+					const content = transformDensityData(densityData);
+					resp.status(200).json(content); //Temporary; check output be sending back to client
+					return;
+				} catch (err) {
+					resp.status(400).json({
+						status: 'error',
+						detail: String(err),
+					});
+				}
+			})
+			.catch((err) => {
+				console.error(
+					`Unable to authorise: ${err instanceof Error ? (err.stack?.toString() ?? '') : String(err)}`,
 				);
 				resp.status(403).json({
 					status: 'forbidden',
 					detail: 'you are not permitted to access this endpoint',
 				});
-				return;
-			}
-
-			if (req.headers['content-type'] !== 'text/csv') {
-				resp.status(415).json({
-					status: 'unrecognised format',
-					detail: 'expected CSV data.  Consult docs for details',
-				});
-				return;
-			}
-
-			try {
-				const densityData = parseDensityCSV(req.body as string);
-				const content = transformDensityData(densityData);
-				resp.status(200).json(content); //Temporary; check output be sending back to client
-				return;
-			} catch (err) {
-				resp.status(500).json({
-					status: 'error',
-					detail: String(err),
-				});
-			}
-		})
-		.catch((err) => {
-			console.error(
-				`Unable to authorise: ${err instanceof Error ? (err.stack?.toString() ?? '') : String(err)}`,
-			);
-			resp.status(403).json({
-				status: 'forbidden',
-				detail: 'you are not permitted to access this endpoint',
 			});
-		});
-});
+	},
+);
 
 // eslint-disable-next-line import/no-named-as-default-member -- required part of Express setup
 app.use(express.json());
