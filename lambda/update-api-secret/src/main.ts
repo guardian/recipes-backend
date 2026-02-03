@@ -14,7 +14,8 @@ export const handler = async () => {
 	const response = await ssmClient.send(new PutParameterCommand({
 		Name,
 		Value: newKey,
-		Type: "SecureString"
+		Type: "SecureString",
+		Overwrite: true,
 	}));
 
 	console.log(`Updated api-push key, version is now ${response.Version}`);
