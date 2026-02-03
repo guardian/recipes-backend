@@ -1,5 +1,5 @@
 import { parse } from 'csv-parse/sync';
-import { DensityJson } from '@recipes-api/lib/feast-models';
+import type { DensityJson } from '@recipes-api/lib/feast-models';
 
 class DensityEntry {
 	id: number;
@@ -36,10 +36,7 @@ class DensityEntry {
 	}
 }
 
-export function parseDensityCSV(
-	csvText: string,
-	continueOnIncomplete = false,
-) {
+export function parseDensityCSV(csvText: string, continueOnIncomplete = false) {
 	const records: string[][] = parse(csvText, {
 		relax_column_count: true,
 		trim: true,
