@@ -3,6 +3,7 @@ import type { Callback, Context } from 'aws-lambda';
 import { mockClient } from 'aws-sdk-client-mock';
 import indexJSON from './fixtures/index.json';
 import { writeBatchToReindexQueueHandler } from './index';
+
 const RecipeIndexSnapshotBucket = 'example-reindex-bucket';
 const OutgoingEventBus = 'outgoing-event-bus';
 const ReindexBatchSize = 10;

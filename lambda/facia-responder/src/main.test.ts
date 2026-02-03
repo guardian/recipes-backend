@@ -9,6 +9,7 @@ import {
 	validMessageUsOnly,
 } from './fixtures/sns';
 import { handler } from './main';
+
 jest.mock('@recipes-api/lib/recipes-data', () => ({
 	deployCurationData: jest.fn(),
 	getStaticBucketName: () => 'static-bucket-name',

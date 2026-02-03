@@ -1,4 +1,5 @@
 import { IncomingDataRow } from './models';
+
 describe('IncomingDataRaw', () => {
 	it('should validate newer style IDs', () => {
 		const test = {

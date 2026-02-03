@@ -1,6 +1,7 @@
 import { com } from '@guardian/feast-multiplatform-library';
 import type { RecipeV3 } from '@recipes-api/lib/feast-models';
 import { checkTemplate } from './check-template';
+
 jest.mock('@guardian/feast-multiplatform-library', () => ({
 	com: {
 		gu: {

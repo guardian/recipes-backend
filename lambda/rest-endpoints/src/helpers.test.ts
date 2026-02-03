@@ -6,6 +6,7 @@ import {
 	recursivelyGetIdList,
 	validateDateParam,
 } from './helpers';
+
 jest.mock('./config');
 jest.mock('@recipes-api/lib/recipes-data');
 describe('app.getBodyContentAsJson', () => {
