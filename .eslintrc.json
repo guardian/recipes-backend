@@ -30,6 +30,7 @@
 				"@guardian/eslint-config-typescript"
 			],
 			"rules": {
+        "@typescript-eslint/no-duplicate-enum-values": "off",
 				"prettier/prettier": "error"
 			}
 		},

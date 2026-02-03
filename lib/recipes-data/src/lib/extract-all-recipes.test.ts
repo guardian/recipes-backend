@@ -5,6 +5,7 @@ import { ElementType } from '@guardian/content-api-models/v1/elementType';
 import { registerMetric } from '@recipes-api/cwmetrics';
 import { extractAllRecipesFromArticle } from './extract-recipes';
 import { makeCapiDateTime } from './utils';
+
 jest.mock('@recipes-api/cwmetrics', () => ({
 	registerMetric: jest.fn(),
 }));

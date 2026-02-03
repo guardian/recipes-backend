@@ -27,6 +27,8 @@ global.console.log = (...args: unknown[]) =>
 global.console.error = (...args: unknown[]) =>
 	oldError('\x1b[31m ', ...args, '\x1b[0m');
 // Silence the debug logger.  If you want debug logs back, just uncomment `oldDebug` and remove `undefined`.
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- it's needed
 global.console.debug = (...args: unknown[]) => undefined; //oldDebug("\x1b[30m ", ...args, "\x1b[0m")
 
 async function getQueryUri(
@@ -76,6 +78,7 @@ async function reindex(
 ): Promise<void> {
 	const pollingResult = await retrieveContent(queryUri);
 	switch (pollingResult.action) {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- this is a typescript/eslint bug/incompatibility
 		case PollingAction.CONTENT_EXISTS:
 			console.log(
 				`Found article with title '${

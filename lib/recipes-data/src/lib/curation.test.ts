@@ -4,6 +4,7 @@ import { mockClient } from 'aws-sdk-client-mock';
 import { deployCurationData } from './curation';
 import { sendFastlyPurgeRequestWithRetries } from './fastly';
 import MockedFn = jest.MockedFn;
+
 const s3Mock = mockClient(S3Client);
 jest.mock('./config', () => ({
 	AwsRegion: 'eu-west-1',

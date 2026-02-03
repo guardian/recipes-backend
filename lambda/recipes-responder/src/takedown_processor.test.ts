@@ -7,6 +7,7 @@ import {
 	removeAllRecipesForArticle,
 } from '@recipes-api/lib/recipes-data';
 import { handleTakedown } from './takedown_processor';
+
 jest.mock('@recipes-api/lib/recipes-data', () => ({
 	awaitableDelay: jest.fn(),
 	removeAllRecipesForArticle: jest.fn(),

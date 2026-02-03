@@ -1,5 +1,6 @@
 import type { AttributeValue } from '@aws-sdk/client-dynamodb';
 import { recipeIndexEntriesFromDynamo } from './models';
+
 describe('recipeIndexEntriesFromDynamo', () => {
 	it('should correctly parse a legacy record with sponorship data', () => {
 		const rec: Record<string, AttributeValue> = {

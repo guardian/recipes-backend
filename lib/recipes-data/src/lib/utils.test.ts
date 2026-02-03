@@ -6,6 +6,7 @@ import {
 	capiDateTimeToDate,
 	extractCropDataFromGuimUrl,
 } from './utils';
+
 describe('calculateChecksum', () => {
 	it('should checksum the content into base64', () => {
 		const input: CAPIRecipeReference = {

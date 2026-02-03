@@ -6,6 +6,7 @@ import {
 	replaceImageUrlsWithFastly,
 	temporaryCelebrationIdsFix,
 } from './transform';
+
 jest.mock('./config', () => ({
 	FeaturedImageWidth: 700,
 	PreviewImageWidth: 300,
@@ -58,20 +59,24 @@ describe('Recipe transforms', () => {
 				featuredImage: originalFeaturedImage,
 				previewImage: originalPreviewImage,
 			} = originalRecipe;
-			const { featuredImage, previewImage, ..._ } = newRecipe;
+			const { featuredImage, previewImage } = newRecipe;
 			// We should have transformed the relevant URLs
 			expect(featuredImage.url).toBe(expectedFeaturedUrl);
 			expect(featuredImage.templateUrl).toBe(expectedFeaturedTemplateUrl);
 			expect(previewImage?.url).toBe(expectedPreviewUrl);
 			expect(previewImage?.templateUrl).toBe(expectedPreviewTemplateUrl);
 			const {
-				url: __,
-				templateUrl: ___,
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructure
+				url,
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructure
+				templateUrl,
 				...remainingFeaturedImage
 			} = featuredImage;
 			const {
-				url: ____,
-				templateUrl: _____,
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructure
+				url: urlP,
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructure
+				templateUrl: templateP,
 				...remainingPreviewImage
 			} = previewImage ?? {};
 			// Everything else should be the same
@@ -103,7 +108,8 @@ describe('Recipe transforms', () => {
 			);
 		});
 		it('should assume a default width if the originalWidth field is not present on the image', () => {
-			const { width: _, ...featuredImage } = recipes[0].featuredImage;
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructure
+			const { width, ...featuredImage } = recipes[0].featuredImage;
 			const recipeWithFeaturedImageWithoutCropId = {
 				...recipes[0],
 				featuredImage,
@@ -121,7 +127,8 @@ describe('Recipe transforms', () => {
 			);
 		});
 		it('should derive media ids from image URL, succeeding if the mediaId is not present', () => {
-			const { mediaId: _, ...featuredImage } = recipes[0].featuredImage;
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructure
+			const { mediaId, ...featuredImage } = recipes[0].featuredImage;
 			const recipeWithFeaturedImageWithoutCropId = {
 				...recipes[0],
 				featuredImage,
@@ -159,7 +166,8 @@ describe('Recipe transforms', () => {
 			);
 		});
 		it("should backfill the preview image if there isn't one", () => {
-			const { previewImage: _, ...recipeWithoutPreview } = recipes[0];
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructure
+			const { previewImage, ...recipeWithoutPreview } = recipes[0];
 			const transformedRecipeReference =
 				replaceImageUrlsWithFastly(recipeWithoutPreview);
 			assertImageUrls(
@@ -172,7 +180,8 @@ describe('Recipe transforms', () => {
 			);
 		});
 		it('should attempt to extract a crop from the original URL if the preview image is missing a cropId', () => {
-			const { cropId: _, ...previewImage } = recipes[0].previewImage!;
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructure
+			const { cropId, ...previewImage } = recipes[0].previewImage!;
 			const recipeWithPreviewImageWithoutCropId = {
 				...recipes[0],
 				previewImage,
@@ -190,7 +199,8 @@ describe('Recipe transforms', () => {
 			);
 		});
 		it('should not attempt to extract a crop from the original URL if the featured image URL is not a guim URL', () => {
-			const { cropId: _, ...previewImage } = recipes[0].previewImage!;
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructure
+			const { cropId, ...previewImage } = recipes[0].previewImage!;
 			const recipeWithPreviewImageWithoutCropId = {
 				...recipes[0],
 				previewImage: {

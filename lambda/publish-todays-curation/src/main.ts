@@ -60,7 +60,10 @@ async function handleS3Event(
 		}
 	});
 
-	await Promise.all(toWaitFor.filter((maybePromise) => !!maybePromise));
+	const promises = toWaitFor.filter((maybePromise) => !!maybePromise) as Array<
+		Promise<void>
+	>;
+	await Promise.all(promises);
 }
 
 /**
@@ -94,7 +97,7 @@ async function handleTimerEvent(
 	}
 }
 
-export async function handler(event: S3Event | unknown) {
+export async function handler(event: unknown) {
 	const staticBucketName = getStaticBucketName();
 	const contentPrefix = getContentPrefix();
 	const fastlyApiKey = getFastlyApiKey();

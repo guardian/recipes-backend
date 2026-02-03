@@ -14,6 +14,7 @@ import {
 	removeRecipeVersion,
 } from './takedown';
 import { sendTelemetryEvent } from './telemetry';
+
 mockClient(DynamoDBClient);
 jest.mock('./config', () => ({
 	FeaturedImageWidth: 700,

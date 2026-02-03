@@ -15,6 +15,7 @@ import {
 	recipeDatabaseEntryToDynamo,
 	recipeDatabaseEntryToIndexEntries,
 } from './models';
+
 jest.mock('./config', () => ({
 	indexTableName: 'TestTable',
 }));

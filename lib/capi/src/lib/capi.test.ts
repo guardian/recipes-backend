@@ -1,5 +1,6 @@
 import { callCAPI, PollingAction } from './capi';
 import { deserializeItemResponse } from './deserialize';
+
 jest.mock('./deserialize', () => ({
 	deserializeItemResponse: jest.fn(),
 }));
