@@ -1,4 +1,4 @@
-import { GuApiLambda } from '@guardian/cdk';
+import { GuApiLambda, GuScheduledLambda } from '@guardian/cdk';
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { Duration } from 'aws-cdk-lib';
 import { EndpointType } from 'aws-cdk-lib/aws-apigateway';
@@ -7,6 +7,7 @@ import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { IBucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import type { DataStore } from './datastore';
+import { Schedule } from 'aws-cdk-lib/aws-events';
 
 interface RestEndpointsProps {
 	servingBucket: IBucket;
@@ -71,6 +72,34 @@ export class RestEndpoints extends Construct {
 				{
 					stage: apiConstruct.api.deploymentStage,
 					api: apiConstruct.api,
+				},
+			],
+		});
+
+		new GuScheduledLambda(scope, 'api-key-updater', {
+			runtime: Runtime.NODEJS_20_X,
+			timeout: Duration.seconds(5),
+			fileName: 'update-api-secret.zip',
+			architecture: Architecture.ARM_64,
+			monitoringConfiguration: { noMonitoring: true },
+			handler: 'main.handler',
+			app: 'update-api-secret',
+			initialPolicy: [
+				new PolicyStatement({
+					effect: Effect.ALLOW,
+					actions: ['ssm:PutParameter'],
+					resources: [
+						`arn:aws:ssm:eu-west-1:${scope.account}:parameter/${scope.stage}/feast/recipes-backend/api-push-key`,
+					],
+				}),
+			],
+			rules: [
+				{
+					schedule: Schedule.cron({
+						hour: '0',
+						minute: '0',
+						day: '*',
+					}),
 				},
 			],
 		});
