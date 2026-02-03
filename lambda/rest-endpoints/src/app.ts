@@ -8,7 +8,13 @@ import { recipeByUID } from '@recipes-api/lib/recipes-data';
 import { checkAuthorization } from './apikey';
 import { checkTemplate } from './check-template';
 import { generateHybridFront } from './curation';
-import { parseDensityCSV, transformDensityData } from './density';
+import {
+	activateDensityData,
+	listDensityDataRevisions,
+	parseDensityCSV,
+	publishDensityData,
+	transformDensityData,
+} from './density';
 import { countryCodeFromCDN } from './geo_cdn';
 import { recursivelyGetIdList } from './helpers';
 
@@ -178,6 +184,43 @@ router.post(
 	},
 );
 
+router.get('/api/ingredient-densities/revisions', (req, resp) => {
+	checkAuthorization(req.headers.authorization)
+		.then((canProceed) => {
+			if (!canProceed) {
+				console.warn(
+					`invalid access request to /api/ingredient-densities/revisions.  Auth token was ${req.headers.authorization ?? 'not present'}`,
+				);
+				resp.status(403).json({
+					status: 'forbidden',
+					detail: 'you are not permitted to access this endpoint',
+				});
+				return;
+			}
+			const limit = req.query.limit ? parseInt(req.query.limit as string) : 100;
+			const token = req.query.token as string | undefined;
+			listDensityDataRevisions(limit, token)
+				.then((results) => {
+					resp.status(200).json(results);
+				})
+				.catch((err) => {
+					resp.status(400).json({
+						status: 'error',
+						detail: String(err),
+					});
+				});
+		})
+		.catch((err) => {
+			console.error(
+				`Unable to authorise: ${err instanceof Error ? (err.stack?.toString() ?? '') : String(err)}`,
+			);
+			resp.status(403).json({
+				status: 'forbidden',
+				detail: 'you are not permitted to access this endpoint',
+			});
+		});
+});
+
 router.post(
 	'/api/ingredient-densities/update',
 	text({ type: 'text/csv' }),
@@ -206,8 +249,23 @@ router.post(
 				try {
 					const densityData = parseDensityCSV(req.body as string);
 					const content = transformDensityData(densityData);
-					resp.status(200).json(content); //Temporary; check output be sending back to client
-					return;
+					publishDensityData(content)
+						.then(() =>
+							activateDensityData(content)
+								.then(() => resp.status(200).json(content))
+								.catch((err) =>
+									resp.status(500).json({
+										status: 'error',
+										detail: String(err),
+									}),
+								),
+						)
+						.catch((err) =>
+							resp.status(500).json({
+								status: 'error',
+								detail: String(err),
+							}),
+						);
 				} catch (err) {
 					resp.status(400).json({
 						status: 'error',
