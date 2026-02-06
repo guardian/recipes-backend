@@ -54,6 +54,16 @@ export class DataStore extends Construct {
 			indexName: this.lastUpdatedIndexName,
 		});
 
+		table.addGlobalSecondaryIndex({
+			partitionKey: {
+				name: 'recipeUID',
+				type: AttributeType.STRING,
+			},
+			projectionType: ProjectionType.INCLUDE,
+			indexName: 'idxRecipeUID',
+			nonKeyAttributes: ['recipeVersion'],
+		});
+
 		this.recipeUIDIndexName = 'idxRecipeUIDVersions';
 
 		table.addGlobalSecondaryIndex({
