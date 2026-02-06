@@ -47,7 +47,9 @@ router.get(
 			return;
 		}
 
-		recipeByUID(req.params.recipeUID)
+		const versionNum = req.query['v'] ? parseInt(req.query['v'] as string) : 3;
+
+		recipeByUID(req.params.recipeUID, isNaN(versionNum) ? 3 : versionNum)
 			.then((results) => {
 				results.sort((a, b) => (a.version ?? 0) - (b.version ?? 0));
 				if (results.length > 0) {
