@@ -201,7 +201,10 @@ router.get('/api/ingredient-densities/revisions', (req, resp) => {
 			const token = req.query.token as string | undefined;
 			listDensityDataRevisions(limit, token)
 				.then((results) => {
-					resp.status(200).json(results);
+					resp
+						.status(200)
+						.set({ 'Cache-Control': 'no-cache, no-store' })
+						.json(results);
 				})
 				.catch((err) => {
 					resp.status(400).json({
@@ -252,7 +255,12 @@ router.post(
 					publishDensityData(content)
 						.then(() =>
 							activateDensityData(content)
-								.then(() => resp.status(200).json(content))
+								.then(() =>
+									resp
+										.status(200)
+
+										.json(content),
+								)
 								.catch((err) =>
 									resp.status(500).json({
 										status: 'error',
