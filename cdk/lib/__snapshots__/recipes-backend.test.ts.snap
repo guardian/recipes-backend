@@ -4928,6 +4928,22 @@ def sort_filter_rules(json_obj):
               "ProjectionType": "INCLUDE",
             },
           },
+          {
+            "IndexName": "idxRecipeUIDVersions",
+            "KeySchema": [
+              {
+                "AttributeName": "recipeUID",
+                "KeyType": "HASH",
+              },
+            ],
+            "Projection": {
+              "NonKeyAttributes": [
+                "recipeVersion",
+                "versions",
+              ],
+              "ProjectionType": "INCLUDE",
+            },
+          },
         ],
         "KeySchema": [
           {
