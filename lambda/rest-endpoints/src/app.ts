@@ -89,8 +89,10 @@ router.get('/api/content/by-uid', (req, resp) => {
 		return;
 	}
 
+	const versionNum = req.query['v'] ? parseInt(req.query['v'] as string) : 3;
+
 	const idList = idListParam.split(',');
-	recursivelyGetIdList(idList, [])
+	recursivelyGetIdList(idList, [], versionNum)
 		.then((results) => {
 			resp
 				.status(200)

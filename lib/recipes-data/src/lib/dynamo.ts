@@ -89,6 +89,7 @@ export async function recipesforArticle(
 export async function recipeByUID(
 	recipeUID: string,
 	maybeVersion?: number,
+	strictVersion?: boolean,
 ): Promise<RecipeIndexEntry[]> {
 	const req = new QueryCommand({
 		TableName,
@@ -96,16 +97,18 @@ export async function recipeByUID(
 		ExpressionAttributeValues: {
 			':uid': { S: recipeUID },
 		},
-		IndexName: 'idxRecipeUID',
+		IndexName: 'idxRecipeUIDVersions',
 	});
 
+	if (strictVersion == undefined) {
+		strictVersion = true;
+	}
 	const response = await client.send(req);
 	if (response.Items && response.Items.length > 0) {
-		console.log(response.Items);
 		const items = response.Items.flatMap(recipeIndexEntriesFromDynamo);
-		console.log(items);
-		if (maybeVersion) {
-			return items.filter((i) => i.version == maybeVersion);
+		const filtered = items.filter((i) => i.version == maybeVersion);
+		if (maybeVersion && (filtered.length > 0 || strictVersion)) {
+			return filtered;
 		} else {
 			return items;
 		}
@@ -121,7 +124,7 @@ export async function multipleRecipesByUid(
 	console.debug(`Lookup request for ${uidList.length} ids`);
 
 	const results = await Promise.all(
-		uidList.map((uid) => recipeByUID(uid, maybeVersion)),
+		uidList.map((uid) => recipeByUID(uid, maybeVersion, false)),
 	);
 	return results.flatMap((a) => a);
 }
