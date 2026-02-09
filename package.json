@@ -9,6 +9,7 @@
     "build": "nx run-many --target=build --skip-nx-cache",
     "test": "nx run-many --target=test",
     "lint": "nx run-many --target=lint",
+    "lint:fix": "nx run-many --target=lint --all --fix",
     "serve": "nx run lambda-rest-endpoints:serve",
     "manual-takedown": "nx run tools-manual-takedown:run",
     "commandline-reindex": "nx run lambda-recipes-responder:commandline-reindex -- ",
