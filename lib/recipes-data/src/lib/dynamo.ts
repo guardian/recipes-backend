@@ -120,11 +120,12 @@ export async function recipeByUID(
 export async function multipleRecipesByUid(
 	uidList: string[],
 	maybeVersion?: number,
+	strictVersion?: boolean,
 ): Promise<RecipeIndexEntry[]> {
 	console.debug(`Lookup request for ${uidList.length} ids`);
 
 	const results = await Promise.all(
-		uidList.map((uid) => recipeByUID(uid, maybeVersion, false)),
+		uidList.map((uid) => recipeByUID(uid, maybeVersion, strictVersion)),
 	);
 	return results.flatMap((a) => a);
 }

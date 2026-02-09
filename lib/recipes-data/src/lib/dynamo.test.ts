@@ -500,6 +500,7 @@ describe('dynamodb', () => {
 			const result = await multipleRecipesByUid(
 				['recep1', 'recep2', 'recep3', 'recep4'],
 				3,
+				false,
 			);
 			expect(result[0]).toEqual({
 				capiArticleId: 'path/to/article',

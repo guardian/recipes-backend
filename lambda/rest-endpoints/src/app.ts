@@ -48,8 +48,13 @@ router.get(
 		}
 
 		const versionNum = req.query['v'] ? parseInt(req.query['v'] as string) : 3;
+		const strictVersion = !!req.query['v'];
 
-		recipeByUID(req.params.recipeUID, isNaN(versionNum) ? 3 : versionNum)
+		recipeByUID(
+			req.params.recipeUID,
+			isNaN(versionNum) ? 3 : versionNum,
+			strictVersion,
+		)
 			.then((results) => {
 				results.sort((a, b) => (a.version ?? 0) - (b.version ?? 0));
 				if (results.length > 0) {
@@ -90,9 +95,10 @@ router.get('/api/content/by-uid', (req, resp) => {
 	}
 
 	const versionNum = req.query['v'] ? parseInt(req.query['v'] as string) : 3;
+	const strictVersion = !!req.query['v'];
 
 	const idList = idListParam.split(',');
-	recursivelyGetIdList(idList, [], versionNum)
+	recursivelyGetIdList(idList, [], versionNum, strictVersion)
 		.then((results) => {
 			resp
 				.status(200)

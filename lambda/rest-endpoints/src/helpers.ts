@@ -42,6 +42,7 @@ export async function recursivelyGetIdList(
 	uidList: string[],
 	prevResults: RecipeIndexEntry[],
 	versionId: number,
+	strictVersion?: boolean,
 	attempt?: number,
 ): Promise<RecipeIndexEntry[]> {
 	const batchSize = 50; //ok so this is finger-in-the-air
@@ -49,7 +50,11 @@ export async function recursivelyGetIdList(
 
 	const toLookUp = uidList.slice(0, batchSize);
 	try {
-		const results = await multipleRecipesByUid(toLookUp, versionId);
+		const results = await multipleRecipesByUid(
+			toLookUp,
+			versionId,
+			strictVersion,
+		);
 		if (toLookUp.length == uidList.length) {
 			//we got everything
 			return prevResults.concat(results);
@@ -58,6 +63,7 @@ export async function recursivelyGetIdList(
 				uidList.slice(batchSize),
 				prevResults.concat(results),
 				0,
+				strictVersion,
 				0,
 			);
 		}
@@ -76,7 +82,13 @@ export async function recursivelyGetIdList(
 				`Attempt ${nextAttempt} - caught ProvisionedThroughputException`,
 			);
 			await asyncTimeout(100 + 20 ** nextAttempt);
-			return recursivelyGetIdList(uidList, prevResults, versionId, nextAttempt);
+			return recursivelyGetIdList(
+				uidList,
+				prevResults,
+				versionId,
+				strictVersion,
+				nextAttempt,
+			);
 		} else {
 			throw err;
 		}
