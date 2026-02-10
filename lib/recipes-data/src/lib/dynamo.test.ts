@@ -292,6 +292,43 @@ describe('dynamodb', () => {
 	});
 
 	describe('dynamodb.recipeByUID', () => {
+		it('should return everything if not asked for any version', async () => {
+			const fakeRecords: RecipeDatabaseEntry[] = [
+				{
+					capiArticleId: 'path/to/article',
+					recipeUID: 'recep1',
+					recipeVersion: 'recep1v2',
+					versions: {
+						v2: 'recep1v2',
+						v3: 'recep1v3',
+					},
+					sponsorshipCount: 0,
+					lastUpdated: new Date(),
+				},
+			];
+			mockDynamoClient.on(QueryCommand).resolves({
+				Items: fakeRecords.map(recipeDatabaseEntryToDynamo),
+			});
+
+			const result = await recipeByUID('recep1');
+			expect(result).toEqual([
+				{
+					capiArticleId: 'path/to/article',
+					checksum: 'recep1v2',
+					recipeUID: 'recep1',
+					version: 2,
+					sponsorshipCount: 0,
+				},
+				{
+					capiArticleId: 'path/to/article',
+					checksum: 'recep1v3',
+					recipeUID: 'recep1',
+					version: 3,
+					sponsorshipCount: 0,
+				},
+			]);
+		});
+
 		it('should return only v2 if asked for strictly v2', async () => {
 			const fakeRecords: RecipeDatabaseEntry[] = [
 				{
@@ -485,9 +522,6 @@ describe('dynamodb', () => {
 			]
 				.map(recipeDatabaseEntryToDynamo)
 				.map((e) => ({ Items: [e] }));
-			// mockDynamoClient.on(QueryCommand).resolves({
-			// 	Items: fakeRecords.map(recipeDatabaseEntryToDynamo),
-			// });
 
 			mockDynamoClient
 				.on(QueryCommand)
