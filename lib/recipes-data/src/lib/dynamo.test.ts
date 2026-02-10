@@ -7,6 +7,8 @@ import {
 import { mockClient } from 'aws-sdk-client-mock';
 import {
 	bulkRemoveRecipe,
+	multipleRecipesByUid,
+	recipeByUID,
 	removeAllRecipeIndexEntriesForArticle,
 	removeRecipe,
 } from './dynamo';
@@ -286,6 +288,287 @@ describe('dynamodb', () => {
 			expect(q.input.ExpressionAttributeValues).toEqual({
 				':artId': { S: 'path/to/article' },
 			});
+		});
+	});
+
+	describe('dynamodb.recipeByUID', () => {
+		it('should return everything if not asked for any version', async () => {
+			const fakeRecords: RecipeDatabaseEntry[] = [
+				{
+					capiArticleId: 'path/to/article',
+					recipeUID: 'recep1',
+					recipeVersion: 'recep1v2',
+					versions: {
+						v2: 'recep1v2',
+						v3: 'recep1v3',
+					},
+					sponsorshipCount: 0,
+					lastUpdated: new Date(),
+				},
+			];
+			mockDynamoClient.on(QueryCommand).resolves({
+				Items: fakeRecords.map(recipeDatabaseEntryToDynamo),
+			});
+
+			const result = await recipeByUID('recep1');
+			expect(result).toEqual([
+				{
+					capiArticleId: 'path/to/article',
+					checksum: 'recep1v2',
+					recipeUID: 'recep1',
+					version: 2,
+					sponsorshipCount: 0,
+				},
+				{
+					capiArticleId: 'path/to/article',
+					checksum: 'recep1v3',
+					recipeUID: 'recep1',
+					version: 3,
+					sponsorshipCount: 0,
+				},
+			]);
+		});
+
+		it('should return only v2 if asked for strictly v2', async () => {
+			const fakeRecords: RecipeDatabaseEntry[] = [
+				{
+					capiArticleId: 'path/to/article',
+					recipeUID: 'recep1',
+					recipeVersion: 'recep1v2',
+					versions: {
+						v2: 'recep1v2',
+						v3: 'recep1v3',
+					},
+					sponsorshipCount: 0,
+					lastUpdated: new Date(),
+				},
+			];
+			mockDynamoClient.on(QueryCommand).resolves({
+				Items: fakeRecords.map(recipeDatabaseEntryToDynamo),
+			});
+
+			const result = await recipeByUID('recep1', 2, true);
+			expect(result).toEqual([
+				{
+					capiArticleId: 'path/to/article',
+					checksum: 'recep1v2',
+					recipeUID: 'recep1',
+					version: 2,
+					sponsorshipCount: 0,
+				},
+			]);
+		});
+
+		it('should return only v3 if asked for strictly v3', async () => {
+			const fakeRecords: RecipeDatabaseEntry[] = [
+				{
+					capiArticleId: 'path/to/article',
+					recipeUID: 'recep1',
+					recipeVersion: 'recep1v2',
+					versions: {
+						v2: 'recep1v2',
+						v3: 'recep1v3',
+					},
+					sponsorshipCount: 0,
+					lastUpdated: new Date(),
+				},
+			];
+			mockDynamoClient.on(QueryCommand).resolves({
+				Items: fakeRecords.map(recipeDatabaseEntryToDynamo),
+			});
+
+			const result = await recipeByUID('recep1', 3, true);
+			expect(result).toEqual([
+				{
+					capiArticleId: 'path/to/article',
+					checksum: 'recep1v3',
+					recipeUID: 'recep1',
+					version: 3,
+					sponsorshipCount: 0,
+				},
+			]);
+		});
+
+		it('should return only v2 if asked for strictly v2 and only v2', async () => {
+			const fakeRecords: RecipeDatabaseEntry[] = [
+				{
+					capiArticleId: 'path/to/article',
+					recipeUID: 'recep1',
+					recipeVersion: 'recep1v2',
+					versions: {
+						v2: 'recep1v2',
+						v3: null,
+					},
+					sponsorshipCount: 0,
+					lastUpdated: new Date(),
+				},
+			];
+			mockDynamoClient.on(QueryCommand).resolves({
+				Items: fakeRecords.map(recipeDatabaseEntryToDynamo),
+			});
+
+			const result = await recipeByUID('recep1', 2, true);
+			expect(result).toEqual([
+				{
+					capiArticleId: 'path/to/article',
+					checksum: 'recep1v2',
+					recipeUID: 'recep1',
+					version: 2,
+					sponsorshipCount: 0,
+				},
+			]);
+		});
+
+		it('should return empty list if asked for strictly v3 and only v2', async () => {
+			const fakeRecords: RecipeDatabaseEntry[] = [
+				{
+					capiArticleId: 'path/to/article',
+					recipeUID: 'recep1',
+					recipeVersion: 'recep1v2',
+					versions: {
+						v2: 'recep1v2',
+						v3: null,
+					},
+					sponsorshipCount: 0,
+					lastUpdated: new Date(),
+				},
+			];
+			mockDynamoClient.on(QueryCommand).resolves({
+				Items: fakeRecords.map(recipeDatabaseEntryToDynamo),
+			});
+
+			const result = await recipeByUID('recep1', 3, true);
+			expect(result).toEqual([]);
+		});
+
+		it('should return v2 if asked for non-strict v3 and only v2', async () => {
+			const fakeRecords: RecipeDatabaseEntry[] = [
+				{
+					capiArticleId: 'path/to/article',
+					recipeUID: 'recep1',
+					recipeVersion: 'recep1v2',
+					versions: {
+						v2: 'recep1v2',
+						v3: null,
+					},
+					sponsorshipCount: 0,
+					lastUpdated: new Date(),
+				},
+			];
+			mockDynamoClient.on(QueryCommand).resolves({
+				Items: fakeRecords.map(recipeDatabaseEntryToDynamo),
+			});
+
+			const result = await recipeByUID('recep1', 3, false);
+			expect(result).toEqual([
+				{
+					capiArticleId: 'path/to/article',
+					checksum: 'recep1v2',
+					recipeUID: 'recep1',
+					version: 2,
+					sponsorshipCount: 0,
+				},
+			]);
+		});
+	});
+
+	describe('dynamodb.multipleRecipesByUID', () => {
+		it('should return v3 by default but fall back to v2 if v3 is not available', async () => {
+			const fakeRecords = [
+				{
+					capiArticleId: 'path/to/article',
+					recipeUID: 'recep1',
+					recipeVersion: 'recep1v2',
+					versions: {
+						v2: 'recep1v2',
+						v3: 'recep1v3',
+					},
+					sponsorshipCount: 0,
+					lastUpdated: new Date(),
+				},
+				{
+					capiArticleId: 'path/to/article',
+					recipeUID: 'recep2',
+					recipeVersion: 'recep2v2',
+					versions: {
+						v2: 'recep2v2',
+						v3: null,
+					},
+					sponsorshipCount: 0,
+					lastUpdated: new Date(),
+				},
+				{
+					capiArticleId: 'path/to/article',
+					recipeUID: 'recep3',
+					recipeVersion: 'recep3v2',
+					versions: {
+						v2: 'recep3v2',
+						v3: 'recep3v3',
+					},
+					sponsorshipCount: 0,
+					lastUpdated: new Date(),
+				},
+				{
+					capiArticleId: 'path/to/article',
+					recipeUID: 'recep4',
+					recipeVersion: 'recep4v2',
+					versions: {
+						v2: 'recep4v2',
+						v3: null,
+					},
+					sponsorshipCount: 0,
+					lastUpdated: new Date(),
+				},
+			]
+				.map(recipeDatabaseEntryToDynamo)
+				.map((e) => ({ Items: [e] }));
+
+			mockDynamoClient
+				.on(QueryCommand)
+				.resolvesOnce(fakeRecords[0])
+				.resolvesOnce(fakeRecords[1])
+				.resolvesOnce(fakeRecords[2])
+				.resolvesOnce(fakeRecords[3])
+				.rejects(new Error('Too many requests'));
+
+			const result = await multipleRecipesByUid(
+				['recep1', 'recep2', 'recep3', 'recep4'],
+				3,
+				false,
+			);
+			expect(result[0]).toEqual({
+				capiArticleId: 'path/to/article',
+				checksum: 'recep1v3',
+				recipeUID: 'recep1',
+				version: 3,
+				sponsorshipCount: 0,
+			});
+
+			expect(result[1]).toEqual({
+				capiArticleId: 'path/to/article',
+				checksum: 'recep2v2',
+				recipeUID: 'recep2',
+				version: 2,
+				sponsorshipCount: 0,
+			});
+
+			expect(result[2]).toEqual({
+				capiArticleId: 'path/to/article',
+				checksum: 'recep3v3',
+				recipeUID: 'recep3',
+				version: 3,
+				sponsorshipCount: 0,
+			});
+
+			expect(result[3]).toEqual({
+				capiArticleId: 'path/to/article',
+				checksum: 'recep4v2',
+				recipeUID: 'recep4',
+				version: 2,
+				sponsorshipCount: 0,
+			});
+
+			expect(result.length).toEqual(4);
 		});
 	});
 });

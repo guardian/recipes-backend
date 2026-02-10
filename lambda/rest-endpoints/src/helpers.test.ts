@@ -77,7 +77,7 @@ describe('app.recursivelyGetIdList', () => {
 			uidList.push(uuid());
 		}
 
-		const results = await recursivelyGetIdList(uidList, []);
+		const results = await recursivelyGetIdList(uidList, [], 2);
 		expect(results.length).toEqual(120);
 		expect(results.map((e) => e.recipeUID)).toEqual(uidList);
 		//we expect there to have been 3 parallel batches
@@ -111,7 +111,7 @@ describe('app.recursivelyGetIdList', () => {
 			uidList.push(uuid());
 		}
 
-		const results = await recursivelyGetIdList(uidList, []);
+		const results = await recursivelyGetIdList(uidList, [], 2);
 		expect(results.length).toEqual(120);
 		expect(results.map((e) => e.recipeUID)).toEqual(uidList);
 		//we expect there to have been 3 parallel batches

@@ -88,6 +88,8 @@ export async function recipesforArticle(
 
 export async function recipeByUID(
 	recipeUID: string,
+	maybeVersion?: number,
+	strictVersion?: boolean,
 ): Promise<RecipeIndexEntry[]> {
 	const req = new QueryCommand({
 		TableName,
@@ -95,21 +97,36 @@ export async function recipeByUID(
 		ExpressionAttributeValues: {
 			':uid': { S: recipeUID },
 		},
-		IndexName: 'idxRecipeUID',
+		IndexName: 'idxRecipeUIDVersions',
 	});
 
+	if (strictVersion == undefined) {
+		strictVersion = true;
+	}
 	const response = await client.send(req);
-	return response.Items && response.Items.length > 0
-		? recipeIndexEntriesFromDynamo(response.Items[0])
-		: [];
+	if (response.Items && response.Items.length > 0) {
+		const items = response.Items.flatMap(recipeIndexEntriesFromDynamo);
+		const filtered = items.filter((i) => i.version == maybeVersion);
+		if (maybeVersion && (filtered.length > 0 || strictVersion)) {
+			return filtered;
+		} else {
+			return items;
+		}
+	} else {
+		return [];
+	}
 }
 
 export async function multipleRecipesByUid(
 	uidList: string[],
+	maybeVersion?: number,
+	strictVersion?: boolean,
 ): Promise<RecipeIndexEntry[]> {
 	console.debug(`Lookup request for ${uidList.length} ids`);
 
-	const results = await Promise.all(uidList.map(recipeByUID));
+	const results = await Promise.all(
+		uidList.map((uid) => recipeByUID(uid, maybeVersion, strictVersion)),
+	);
 	return results.flatMap((a) => a);
 }
 
