@@ -10,7 +10,6 @@ import { checkTemplate } from './check-template';
 import { generateHybridFront } from './curation';
 import {
 	activateDensityData,
-	getExistingDensityData,
 	listDensityDataRevisions,
 	parseDensityCSV,
 	publishDensityData,
@@ -295,12 +294,62 @@ router.post(
 	},
 );
 
+router.post(
+	'/api/ingredient-densities/validate',
+	text({ type: 'text/csv' }),
+	(req, resp) => {
+		checkAuthorization(req.headers.authorization)
+			.then((canProceed) => {
+				if (!canProceed) {
+					console.warn(
+						`invalid access request to /api/ingredient-densities/validate.  Auth token was ${req.headers.authorization ?? 'not present'}`,
+					);
+					resp.status(403).json({
+						status: 'forbidden',
+						detail: 'you are not permitted to access this endpoint',
+					});
+					return;
+				}
+
+				if (req.headers['content-type'] !== 'text/csv') {
+					resp.status(415).json({
+						status: 'unrecognised format',
+						detail: 'expected CSV data.  Consult docs for details',
+					});
+					return;
+				}
+
+				try {
+					const densityData = parseDensityCSV(req.body as string);
+					resp.status(200).json({
+						status: 'success',
+						detail: `Found ${densityData.length} density entries in this data`,
+					});
+				} catch (err) {
+					resp.status(400).json({
+						status: 'invalid_data',
+						detail: String(err),
+					});
+				}
+			})
+			.catch((err) => {
+				console.error(
+					`Unable to authorise: ${err instanceof Error ? (err.stack?.toString() ?? '') : String(err)}`,
+				);
+				resp.status(403).json({
+					status: 'forbidden',
+					detail: 'you are not permitted to access this endpoint',
+				});
+			});
+	},
+);
+
 router.post('/api/ingredient-densities/rollback', (req, resp) => {
 	checkAuthorization(req.headers.authorization)
 		.then((canProceed) => {
 			if (!canProceed) {
 				console.warn(
-					`invalid access request to /api/ingredient-densities/update.  Auth token was ${req.headers.authorization ?? 'not present'}`,
+					`invalid access request to /api/ingredient-densities/rollback.  Auth token was ${req.headers.authorization ?? 'not present'}`,
 				);
 				resp.status(403).json({
 					status: 'forbidden',
