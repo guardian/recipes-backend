@@ -30,7 +30,7 @@
 		"@guardian/content-api-models": "^17.8.0",
 		"@guardian/feast-multiplatform-library": "^5.0.0",
 		"aws-lambda": "^1.0.7",
-		"axios": "^1.12.2",
+		"axios": "^1.13.5",
 		"body-parser": "^1.20.4",
 		"date-fns": "^2.30.0",
 		"express": "4.22.1",
