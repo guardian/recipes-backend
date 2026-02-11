@@ -204,10 +204,9 @@ export async function rollBackDensityData(prepared_at: Date) {
 			purgeType: 'hard',
 		});
 	} catch (err) {
-		console.warn(
-			`Can't roll back to density data from ${prepared_at.toISOString()} because the content is not valid. Error was: ${String(err)}`,
-		);
-		throw new Error(`The density data from that date is not valid`);
+		const str = `Can't roll back to density data from ${prepared_at.toISOString()} because the content is not valid. Error was: ${String(err)}`;
+		console.error(str);
+		throw new Error(str);
 	}
 }
 

@@ -1,5 +1,5 @@
 import bodyParser from 'body-parser';
-import { formatISO } from 'date-fns';
+import { formatISO, isValid, parseISO } from 'date-fns';
 import { renderFile as ejs } from 'ejs';
 import express, { Router, text } from 'express';
 import type { Request } from 'express';
@@ -10,9 +10,11 @@ import { checkTemplate } from './check-template';
 import { generateHybridFront } from './curation';
 import {
 	activateDensityData,
+	getExistingDensityData,
 	listDensityDataRevisions,
 	parseDensityCSV,
 	publishDensityData,
+	rollBackDensityData,
 	transformDensityData,
 } from './density';
 import { countryCodeFromCDN } from './geo_cdn';
@@ -292,6 +294,54 @@ router.post(
 			});
 	},
 );
+
+router.post('/api/ingredient-densities/rollback', (req, resp) => {
+	checkAuthorization(req.headers.authorization)
+		.then((canProceed) => {
+			if (!canProceed) {
+				console.warn(
+					`invalid access request to /api/ingredient-densities/update.  Auth token was ${req.headers.authorization ?? 'not present'}`,
+				);
+				resp.status(403).json({
+					status: 'forbidden',
+					detail: 'you are not permitted to access this endpoint',
+				});
+				return;
+			}
+
+			const targetDate = req.query['date']
+				? parseISO(req.query['date'] as string)
+				: undefined;
+			if (!targetDate || !isValid(targetDate)) {
+				resp.status(400).json({
+					status: 'error',
+					detail:
+						'use date= to specify date to activate.  The parameter must be a valid ISO datetime string',
+				});
+				return;
+			}
+
+			rollBackDensityData(targetDate)
+				.then(() =>
+					resp.status(200).json({
+						status: 'ok',
+						detail: `density data is now at ${targetDate.toISOString()}`,
+					}),
+				)
+				.catch((err) =>
+					resp.status(500).json({ status: 'error', detail: String(err) }),
+				);
+		})
+		.catch((err) => {
+			console.error(
+				`Unable to authorise: ${err instanceof Error ? (err.stack?.toString() ?? '') : String(err)}`,
+			);
+			resp.status(403).json({
+				status: 'forbidden',
+				detail: 'you are not permitted to access this endpoint',
+			});
+		});
+});
 
 // eslint-disable-next-line import/no-named-as-default-member -- required part of Express setup
 app.use(express.json());
