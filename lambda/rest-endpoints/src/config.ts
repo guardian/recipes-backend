@@ -2,6 +2,7 @@ import * as process from 'process';
 
 export const StaticBucketName = mandatoryParam('STATIC_BUCKET');
 export const FastlyApiKey = mandatoryParam('FASTLY_API_KEY');
+export const Stage = mandatoryParam('STAGE');
 
 function mandatoryParam(paramName: string): string {
 	if (process.env[paramName]) {
