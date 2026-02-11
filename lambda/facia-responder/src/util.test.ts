@@ -10,7 +10,6 @@ describe('generatePublicationMessage', () => {
 			'This issue has been published and should be live in the app imminently',
 		);
 	});
-
 	it('should include the issue date if the issueDate is not today', () => {
 		const result = generatePublicationMessage(
 			'2023-02-10',
@@ -18,7 +17,6 @@ describe('generatePublicationMessage', () => {
 		);
 		expect(result).toContain('Fri, 10th Feb 2023');
 	});
-
 	it('should warn if the issue date is in the past', () => {
 		const result = generatePublicationMessage(
 			'2023-02-10',

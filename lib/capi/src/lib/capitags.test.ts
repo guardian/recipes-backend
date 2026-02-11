@@ -18,13 +18,11 @@ describe('buildUriList', () => {
 			'https://content.guardianapis.com/tags?ids=profile%2Fperson-one%2Cprofile%2Fpersontwo%2Cprofile%2Fpersonthree-and-a-half&api-key=some-key&page-size=50',
 		]);
 	});
-
 	it('should split a longer list into multiple uris', () => {
 		const list: string[] = [];
 		for (let i = 0; i < 2048; i++) {
 			list[i] = i.toString();
 		}
-
 		const result = buildUriList(
 			list,
 			'https://content.guardianapis.com',
@@ -32,9 +30,7 @@ describe('buildUriList', () => {
 			[],
 			[],
 		);
-
 		expect(result.length).toBeGreaterThan(1);
-
 		//Now parse the IDs back out and check that we got the same numbers that went in
 		let sentList: string[] = [];
 		const xtractor = /ids=([^&]+)/;
@@ -52,9 +48,7 @@ describe('buildUriList', () => {
 				);
 			}
 		}
-
 		expect(sentList.length).toEqual(list.length);
-
 		for (const url of result) {
 			expect(url.length).toBeLessThan(URL_MAX);
 		}

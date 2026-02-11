@@ -18,6 +18,7 @@ export function createGetMandatoryNumberParameter(name: string) {
 		const param = getMandatoryParam();
 		try {
 			return parseInt(param);
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars -- we need a parameter here
 		} catch (e) {
 			throw new Error(
 				`Could not parse param ${name} with value ${param} as integer`,

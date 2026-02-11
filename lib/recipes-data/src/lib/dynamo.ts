@@ -100,9 +100,8 @@ export async function recipeByUID(
 		IndexName: 'idxRecipeUIDVersions',
 	});
 
-	if (strictVersion == undefined) {
-		strictVersion = true;
-	}
+	strictVersion ??= true;
+
 	const response = await client.send(req);
 	if (response.Items && response.Items.length > 0) {
 		const items = response.Items.flatMap(recipeIndexEntriesFromDynamo);

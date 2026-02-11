@@ -18,7 +18,6 @@ describe('calculateChecksum', () => {
 		expect(result).toEqual('6rIHocBjte3q9jPnLtzQhtFsDabFUKQGVk3VMuorRB8');
 	});
 });
-
 describe('extractCropIdFromGuimUrl', () => {
 	const assertCropId = (
 		url: string,
@@ -33,7 +32,6 @@ describe('extractCropIdFromGuimUrl', () => {
 			width,
 			extension,
 		});
-
 	const cropDataToAssert = [
 		[
 			'https://media.guim.co.uk/902a2c387ba62c49ad7553c2712eb650e73eb5b2/258_0_7328_4400/2000.jpg',
@@ -134,13 +132,11 @@ describe('extractCropIdFromGuimUrl', () => {
 			'png',
 		],
 	] as const;
-
 	cropDataToAssert.forEach(([url, mediaId, cropId, width, extension]) => {
 		it(`should find a crop id for ${url}`, () => {
 			assertCropId(url, mediaId, cropId, width, extension);
 		});
 	});
-
 	it('should not give a crop id for a non-image URL with the same number of path segments', () => {
 		expect(
 			extractCropDataFromGuimUrl(
@@ -148,17 +144,14 @@ describe('extractCropIdFromGuimUrl', () => {
 			),
 		).toBe(undefined);
 	});
-
 	it('should not give a crop id for a non-image URL', () => {
 		expect(extractCropDataFromGuimUrl('https://google.com')).toBe(undefined);
 	});
 });
-
 describe('capiDateTimeToDate', () => {
 	it('should return undefined if the input is undefined', () => {
 		expect(capiDateTimeToDate(undefined)).toBe(undefined);
 	});
-
 	it('should return the date if the input is defined', () => {
 		const date = new Date();
 		const capiDateTime: CapiDateTime = {

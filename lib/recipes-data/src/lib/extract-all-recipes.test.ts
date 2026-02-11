@@ -9,11 +9,8 @@ import { makeCapiDateTime } from './utils';
 jest.mock('@recipes-api/cwmetrics', () => ({
 	registerMetric: jest.fn(),
 }));
-
 jest.mock('./config', () => ({}));
-
 jest.mock('./config', () => ({}));
-
 describe('extractAllRecipesFromAnArticle', () => {
 	it('should work if main and body block contains one recipe each', async () => {
 		const articleContent: Content = {
@@ -214,7 +211,6 @@ describe('extractAllRecipesFromAnArticle', () => {
 			},
 			isHosted: false,
 		};
-
 		const recipesFound = await extractAllRecipesFromArticle(articleContent);
 		expect(recipesFound.length).toEqual(2);
 		expect(recipesFound[0]?.recipeUID).toEqual(
@@ -224,9 +220,8 @@ describe('extractAllRecipesFromAnArticle', () => {
 			'9782ef45121589b29656a0e4ee9f8525c0be62e6',
 		);
 		expect(registerMetric).toHaveBeenCalled();
-		expect(registerMetric).toBeCalledTimes(2);
+		expect(registerMetric).toHaveBeenCalledTimes(2);
 	});
-
 	it('should work if main and body blocks contains multiple recipes', async () => {
 		const articleContent: Content = {
 			tags: [],
@@ -426,7 +421,6 @@ describe('extractAllRecipesFromAnArticle', () => {
 			},
 			isHosted: false,
 		};
-
 		const recipesFound = await extractAllRecipesFromArticle(articleContent);
 		expect(recipesFound.length).toEqual(4);
 		expect(recipesFound[0]?.recipeUID).toEqual(
@@ -442,7 +436,6 @@ describe('extractAllRecipesFromAnArticle', () => {
 			'4-9782ef45121589b29656a0e4ee9f8525c0be62e6',
 		);
 	});
-
 	it('should return empty array when main and body blocks contains no recipe', async () => {
 		const articleContent: Content = {
 			tags: [],
@@ -589,11 +582,9 @@ describe('extractAllRecipesFromAnArticle', () => {
 			},
 			isHosted: false,
 		};
-
 		const recipesFound = await extractAllRecipesFromArticle(articleContent);
 		expect(recipesFound.length).toEqual(0);
 	});
-
 	it('should return empty array if main and body blocks contains invalid recipe (no ID)', async () => {
 		const articleContent: Content = {
 			tags: [],
@@ -740,11 +731,9 @@ describe('extractAllRecipesFromAnArticle', () => {
 			},
 			isHosted: false,
 		};
-
 		const recipesFound = await extractAllRecipesFromArticle(articleContent);
 		expect(recipesFound.length).toEqual(0);
 	});
-
 	it('should work if both main and body block contains invalid recipes (no ID)', async () => {
 		const articleContent: Content = {
 			tags: [],
@@ -944,11 +933,9 @@ describe('extractAllRecipesFromAnArticle', () => {
 			},
 			isHosted: false,
 		};
-
 		const recipesFound = await extractAllRecipesFromArticle(articleContent);
 		expect(recipesFound).toEqual([]);
 	});
-
 	it('should return only 1 recipe if main contains single valid and body block contains single invalid recipe (no ID)', async () => {
 		const articleContent: Content = {
 			tags: [],
@@ -1148,7 +1135,6 @@ describe('extractAllRecipesFromAnArticle', () => {
 			},
 			isHosted: false,
 		};
-
 		const recipesFound = await extractAllRecipesFromArticle(articleContent);
 		expect(recipesFound.length).toEqual(1);
 		expect(recipesFound[0]?.recipeUID).toEqual(

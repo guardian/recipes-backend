@@ -24,7 +24,6 @@ const staticBucketName = 'static-bucket';
 const fastlyApiKey = 'fastly-api-key';
 const contentPrefix = 'cdn.content.location';
 const outgoingEventBus = 'outgoing-event-bus';
-
 jest.mock('@recipes-api/lib/recipes-data', () => ({
 	calculateChecksum: jest.fn(),
 	convertToRecipeV2: jest.fn(),
@@ -38,7 +37,6 @@ jest.mock('@recipes-api/lib/recipes-data', () => ({
 	announceNewRecipe: jest.fn(),
 	recipeByUID: jest.fn(),
 }));
-
 const fakeContent: Content = {
 	apiUrl: 'api://path/to/content',
 	id: 'path/to/content',
@@ -49,20 +47,17 @@ const fakeContent: Content = {
 	webTitle: 'Test Article',
 	webUrl: 'web://path/to/content',
 };
-
 describe('update_processor.handleContentUpdate', () => {
 	beforeEach(() => {
 		jest.resetAllMocks();
 		jest.spyOn(global, 'fetch').mockImplementation(jest.fn());
 	});
-
 	it('should extract recipes from the content, publish those and take-down any that were no longer needed', async () => {
 		const refsInArticle: CAPIRecipeReference[] = [
 			{ recipeUID: 'uid-recep-1', jsonBlob: '', sponsorshipCount: 0 },
 			{ recipeUID: 'uid-recep-2', jsonBlob: '', sponsorshipCount: 0 },
 			{ recipeUID: 'uid-recep-3', jsonBlob: '', sponsorshipCount: 0 },
 		];
-
 		const refsToRemove: RecipeIndexEntry[] = [
 			{
 				recipeUID: 'uid-recep-2',
@@ -77,18 +72,14 @@ describe('update_processor.handleContentUpdate', () => {
 				sponsorshipCount: 0,
 			},
 		];
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		recipeByUID.mockReturnValue(Promise.resolve([]));
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		extractAllRecipesFromArticle.mockReturnValue(
 			Promise.resolve(refsInArticle),
 		);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		recipesToTakeDown.mockReturnValue(refsToRemove);
-
 		calculateChecksum
 			// @ts-ignore -- Typescript doesn't know that this is a mock
 			.mockReturnValueOnce('abcd1')
@@ -102,10 +93,8 @@ describe('update_processor.handleContentUpdate', () => {
 			.mockReturnValueOnce('xyzp')
 			// @ts-ignore -- Typescript doesn't know that this is a mock
 			.mockReturnValueOnce('xyzp');
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		convertToRecipeV2.mockReturnValue('');
-
 		await handleContentUpdate({
 			content: fakeContent,
 			staticBucketName,
@@ -114,12 +103,10 @@ describe('update_processor.handleContentUpdate', () => {
 			outgoingEventBus,
 			shouldPublishV2: true,
 		});
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(extractAllRecipesFromArticle.mock.calls.length).toEqual(1);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(calculateChecksum.mock.calls.length).toEqual(6);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(insertNewRecipe.mock.calls.length).toEqual(3);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
@@ -161,7 +148,6 @@ describe('update_processor.handleContentUpdate', () => {
 				},
 			}),
 		);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(publishRecipeContent.mock.calls.length).toEqual(3);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
@@ -185,7 +171,6 @@ describe('update_processor.handleContentUpdate', () => {
 			recipeV2Blob: { jsonBlob: '', checksum: 'xyzp' },
 			sponsorshipCount: 0,
 		});
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipeVersion.mock.calls.length).toEqual(2);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
@@ -210,23 +195,19 @@ describe('update_processor.handleContentUpdate', () => {
 			capiArticleId: 'path/to/article',
 			sponsorshipCount: 0,
 		});
-
 		expect((sendTelemetryEvent as Mock).mock.calls.length).toEqual(3);
 		expect((sendTelemetryEvent as Mock).mock.calls[0][0]).toEqual(
 			'PublishedData',
 		);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(announceNewRecipe.mock.calls.length).toEqual(1);
 	});
-
 	it('should ignore a piece of content that is not an article', async () => {
 		const refsInArticle: CAPIRecipeReference[] = [
 			{ recipeUID: 'uid-recep-1', jsonBlob: '', sponsorshipCount: 0 },
 			{ recipeUID: 'uid-recep-2', jsonBlob: '', sponsorshipCount: 0 },
 			{ recipeUID: 'uid-recep-3', jsonBlob: '', sponsorshipCount: 0 },
 		];
-
 		const refsToRemove: RecipeIndexEntry[] = [
 			{
 				recipeUID: 'uid-recep-2',
@@ -241,14 +222,12 @@ describe('update_processor.handleContentUpdate', () => {
 				sponsorshipCount: 0,
 			},
 		];
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		extractAllRecipesFromArticle.mockReturnValue(
 			Promise.resolve(refsInArticle),
 		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		recipesToTakeDown.mockReturnValue(refsToRemove);
-
 		calculateChecksum
 			// @ts-ignore -- Typescript doesn't know that this is a mock
 			.mockReturnValueOnce({
@@ -271,7 +250,6 @@ describe('update_processor.handleContentUpdate', () => {
 				checksum: 'xyzp',
 				sponsorshipCount: 0,
 			});
-
 		await handleContentUpdate({
 			content: { ...fakeContent, type: ContentType.GALLERY },
 			staticBucketName,
@@ -280,39 +258,29 @@ describe('update_processor.handleContentUpdate', () => {
 			outgoingEventBus,
 			shouldPublishV2: true,
 		});
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(extractAllRecipesFromArticle.mock.calls.length).toEqual(0);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(calculateChecksum.mock.calls.length).toEqual(0);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(insertNewRecipe.mock.calls.length).toEqual(0);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(publishRecipeContent.mock.calls.length).toEqual(0);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipeVersion.mock.calls.length).toEqual(0);
-
 		expect((sendTelemetryEvent as Mock).mock.calls.length).toEqual(0);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(announceNewRecipe.mock.calls.length).toEqual(0);
 	});
-
 	it('should be fine if there is no recipe content', async () => {
 		const refsInArticle: CAPIRecipeReference[] = [];
-
 		const refsToRemove: RecipeIndexEntry[] = [];
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		extractAllRecipesFromArticle.mockReturnValue(
 			Promise.resolve(refsInArticle),
 		);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		recipesToTakeDown.mockReturnValue(refsToRemove);
-
 		await handleContentUpdate({
 			content: fakeContent,
 			staticBucketName,
@@ -321,34 +289,26 @@ describe('update_processor.handleContentUpdate', () => {
 			outgoingEventBus,
 			shouldPublishV2: true,
 		});
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(extractAllRecipesFromArticle.mock.calls.length).toEqual(1);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(calculateChecksum.mock.calls.length).toEqual(0);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(insertNewRecipe.mock.calls.length).toEqual(0);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(publishRecipeContent.mock.calls.length).toEqual(0);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipeVersion.mock.calls.length).toEqual(0);
-
 		expect((sendTelemetryEvent as Mock).mock.calls.length).toEqual(0);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(announceNewRecipe.mock.calls.length).toEqual(0);
 	});
-
 	it('should publish as normal if the telemetry fails', async () => {
 		const refsInArticle: CAPIRecipeReference[] = [
 			{ recipeUID: 'uid-recep-1', jsonBlob: '', sponsorshipCount: 0 },
 			{ recipeUID: 'uid-recep-2', jsonBlob: '', sponsorshipCount: 0 },
 			{ recipeUID: 'uid-recep-3', jsonBlob: '', sponsorshipCount: 0 },
 		];
-
 		const refsToRemove: RecipeIndexEntry[] = [
 			{
 				recipeUID: 'uid-recep-2',
@@ -363,24 +323,19 @@ describe('update_processor.handleContentUpdate', () => {
 				sponsorshipCount: 0,
 			},
 		];
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		recipeByUID.mockReturnValue(Promise.resolve([]));
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		removeRecipeContent.mockReturnValue(Promise.resolve());
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		extractAllRecipesFromArticle.mockReturnValue(
 			Promise.resolve(refsInArticle),
 		);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		recipesToTakeDown.mockReturnValue(refsToRemove);
-
 		(sendTelemetryEvent as Mock).mockRejectedValue(
 			new Error('something went splat'),
 		);
-
 		calculateChecksum
 			// @ts-ignore -- Typescript doesn't know that this is a mock
 			.mockReturnValueOnce('abcd1')
@@ -396,7 +351,6 @@ describe('update_processor.handleContentUpdate', () => {
 			.mockReturnValueOnce('xyzp');
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		convertToRecipeV2.mockReturnValue('');
-
 		await handleContentUpdate({
 			content: fakeContent,
 			staticBucketName,
@@ -405,12 +359,10 @@ describe('update_processor.handleContentUpdate', () => {
 			outgoingEventBus,
 			shouldPublishV2: true,
 		});
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(extractAllRecipesFromArticle.mock.calls.length).toEqual(1);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(calculateChecksum.mock.calls.length).toEqual(6);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(insertNewRecipe.mock.calls.length).toEqual(3);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
@@ -452,7 +404,6 @@ describe('update_processor.handleContentUpdate', () => {
 				},
 			}),
 		);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(publishRecipeContent.mock.calls.length).toEqual(3);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
@@ -476,7 +427,6 @@ describe('update_processor.handleContentUpdate', () => {
 			recipeV2Blob: { jsonBlob: '', checksum: 'xyzp' },
 			sponsorshipCount: 0,
 		});
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipeVersion.mock.calls.length).toEqual(2);
 		// @ts-ignore -- Typescript doesn't know that this is a mock
@@ -501,16 +451,13 @@ describe('update_processor.handleContentUpdate', () => {
 			capiArticleId: 'path/to/article',
 			sponsorshipCount: 0,
 		});
-
 		expect((sendTelemetryEvent as Mock).mock.calls.length).toEqual(3);
 		expect((sendTelemetryEvent as Mock).mock.calls[0][0]).toEqual(
 			'PublishedData',
 		);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(announceNewRecipe.mock.calls.length).toEqual(1);
 	});
-
 	it('should use existing v2 hash when shouldPublishV2 is false', async () => {
 		const refsInArticle: CAPIRecipeReference[] = [
 			{
@@ -519,7 +466,6 @@ describe('update_processor.handleContentUpdate', () => {
 				sponsorshipCount: 0,
 			},
 		];
-
 		const existingDbRecipes = [
 			{
 				recipeUID: 'uid-recep-1',
@@ -536,27 +482,21 @@ describe('update_processor.handleContentUpdate', () => {
 				sponsorshipCount: 0,
 			},
 		];
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		recipeByUID.mockReturnValue(Promise.resolve(existingDbRecipes));
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		extractAllRecipesFromArticle.mockReturnValue(
 			Promise.resolve(refsInArticle),
 		);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		recipesToTakeDown.mockReturnValue([]);
-
 		calculateChecksum
 			// @ts-ignore -- Typescript doesn't know that this is a mock
 			.mockReturnValueOnce('new-v2-hash') // for v2 blob
 			// @ts-ignore -- Typescript doesn't know that this is a mock
 			.mockReturnValueOnce('new-v3-hash'); // for v3 blob
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		convertToRecipeV2.mockReturnValue('converted-v2-data');
-
 		await handleContentUpdate({
 			content: fakeContent,
 			staticBucketName,
@@ -565,7 +505,6 @@ describe('update_processor.handleContentUpdate', () => {
 			outgoingEventBus,
 			shouldPublishV2: false,
 		});
-
 		// Should insert recipe with existing v2 hash but new v3 hash
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(insertNewRecipe.mock.calls.length).toEqual(1);
@@ -573,16 +512,15 @@ describe('update_processor.handleContentUpdate', () => {
 		expect(insertNewRecipe.mock.calls[0][0]).toEqual(
 			expect.objectContaining({
 				recipeUID: 'uid-recep-1',
-				recipeVersion: 'existing-v2-hash', // Should use existing v2 hash
+				recipeVersion: 'existing-v2-hash',
 				capiArticleId: 'path/to/content',
 				sponsorshipCount: 0,
 				versions: {
-					v2: 'existing-v2-hash', // Should preserve existing v2 hash
+					v2: 'existing-v2-hash',
 					v3: 'new-v3-hash', // Should use new v3 hash
 				},
 			}),
 		);
-
 		// @ts-ignore -- Typescript doesn't know that this is a mock
 		expect(removeRecipeContent.mock.calls.length).toEqual(1);
 		// @ts-ignore -- Typescript doesn't know that this is a mock

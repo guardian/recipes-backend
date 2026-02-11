@@ -3,6 +3,7 @@
 	"$schema": "../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "cdk/src",
 	"projectType": "application",
+	"tags": [],
 	"targets": {
 		"synth": {
 			"executor": "nx:run-commands",
@@ -67,6 +68,5 @@
 				}
 			}
 		}
-	},
-	"tags": []
+	}
 }

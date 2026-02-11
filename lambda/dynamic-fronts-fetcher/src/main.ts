@@ -3,7 +3,6 @@ import type { Storage } from '@google-cloud/storage';
 import { registerMetric } from '@recipes-api/cwmetrics';
 import { loadConfig } from './config';
 import { getStorageClient } from './gcloud';
-import type { IncomingDataRow } from './models';
 import { InvokeEvent } from './models';
 import { writeDynamicData } from './s3';
 import { convertBQReport } from './transform';

@@ -21,19 +21,15 @@ import {
 } from './curation';
 
 const s3Mock = mockClient(S3Client);
-
 jest.mock('@recipes-api/lib/recipes-data', () => ({
 	sendFastlyPurgeRequestWithRetries: jest.fn(),
 }));
-
 const contentPrefix = 'cdn.content.location';
 const staticBucketName = 'static-bucket';
 const fastlyApiKey = 'fastly-api-key';
-
 jest.mock('./config', () => ({
 	Today: new Date(2024, 1, 3, 8, 9, 10),
 }));
-
 describe('curation.checkCurationPath', () => {
 	it('should extract data from a proper path', () => {
 		const result = checkCurationPath(
@@ -45,13 +41,11 @@ describe('curation.checkCurationPath', () => {
 		expect(result?.month).toEqual(1);
 		expect(result?.day).toEqual(2);
 	});
-
 	it('should return null for an unrecognised path', () => {
 		const result = checkCurationPath('content/jkhdfsdsfFfiodfsds');
 		expect(result).toBeNull();
 	});
 });
-
 describe('curation.generatePathFromCuration', () => {
 	it('should generate CurationPath from the provided data', () => {
 		expect(
@@ -65,7 +59,6 @@ describe('curation.generatePathFromCuration', () => {
 		).toEqual('region-one/all-recipes/2024-03-02/curation.json');
 	});
 });
-
 describe('curation.generatePath', () => {
 	it('should generate the curation path for the given date', () => {
 		expect(
@@ -73,7 +66,6 @@ describe('curation.generatePath', () => {
 		).toEqual('region-one/all-recipes/2024-03-02/curation.json');
 	});
 });
-
 describe('curation.doesCurationPathMatch', () => {
 	it('should return truthy if the given date matches the CurationPath', () => {
 		expect(
@@ -83,7 +75,6 @@ describe('curation.doesCurationPathMatch', () => {
 			),
 		).toBeTruthy();
 	});
-
 	it('curation.should return falsy if the given date does not match the CurationPath', () => {
 		expect(
 			doesCurationPathMatch(
@@ -93,7 +84,6 @@ describe('curation.doesCurationPathMatch', () => {
 		);
 	});
 });
-
 describe('curation.newCurationPath', () => {
 	it('should return a CurationPath for the given data', () => {
 		expect(
@@ -107,15 +97,12 @@ describe('curation.newCurationPath', () => {
 		});
 	});
 });
-
 describe('curation.validateCurationData', () => {
 	beforeEach(() => {
 		s3Mock.reset();
 	});
-
 	it('should return a CurationPath object if the file exists', async () => {
 		s3Mock.on(HeadObjectCommand).resolves({});
-
 		const response = await validateCurationData(
 			'some-region',
 			'some-variant',
@@ -129,19 +116,16 @@ describe('curation.validateCurationData', () => {
 		expect(arg.input.Key).toEqual(
 			'some-region/some-variant/2024-03-03/curation.json',
 		);
-
 		expect(response?.front).toEqual('some-variant');
 		expect(response?.edition).toEqual('some-region');
 		expect(response?.year).toEqual(2024);
 		expect(response?.month).toEqual(3);
 		expect(response?.day).toEqual(3);
 	});
-
 	it('should return null if the file does not exist', async () => {
 		s3Mock
 			.on(HeadObjectCommand)
 			.rejects(new NotFound({ $metadata: {}, message: '' }));
-
 		const response = await validateCurationData(
 			'some-region',
 			'some-variant',
@@ -149,7 +133,6 @@ describe('curation.validateCurationData', () => {
 			staticBucketName,
 		);
 		expect(response).toBeNull();
-
 		expect(s3Mock.commandCalls(HeadObjectCommand).length).toEqual(1);
 		const c = s3Mock.commandCalls(HeadObjectCommand)[0];
 		const arg = c.firstArg as HeadObjectCommand;
@@ -158,7 +141,6 @@ describe('curation.validateCurationData', () => {
 			'some-region/some-variant/2024-03-03/curation.json',
 		);
 	});
-
 	it('should pass on any other error as an exception', async () => {
 		s3Mock.on(HeadObjectCommand).rejects(
 			new S3ServiceException({
@@ -168,7 +150,6 @@ describe('curation.validateCurationData', () => {
 				message: 'Test exception',
 			}),
 		);
-
 		await expect(
 			validateCurationData(
 				'some-region',
@@ -179,13 +160,11 @@ describe('curation.validateCurationData', () => {
 		).rejects.toBeInstanceOf(S3ServiceException);
 	});
 });
-
 describe('curation.validateAllCuration', () => {
 	beforeEach(() => {
 		s3Mock.reset();
 		jest.resetAllMocks();
 	});
-
 	it('should return a list of the curation files which do exist', async () => {
 		s3Mock
 			.on(HeadObjectCommand)
@@ -193,9 +172,7 @@ describe('curation.validateAllCuration', () => {
 			.rejectsOnce(new NotFound({ $metadata: {}, message: '' }))
 			.resolvesOnce({})
 			.rejects(new NotFound({ $metadata: {}, message: '' }));
-
 		const result = await validateAllCuration(Today, false, staticBucketName);
-
 		expect(s3Mock.commandCalls(HeadObjectCommand).length).toEqual(6);
 		for (let i = 0; i < 6; i++) {
 			const req = s3Mock.commandCalls(HeadObjectCommand)[i].firstArg
@@ -230,7 +207,6 @@ describe('curation.validateAllCuration', () => {
 					break;
 			}
 		}
-
 		expect(result.length).toEqual(2);
 		expect(result[0]).toEqual({
 			edition: 'northern',
@@ -248,12 +224,10 @@ describe('curation.validateAllCuration', () => {
 		});
 	});
 });
-
 describe('curation.activateCuration', () => {
 	beforeEach(() => {
 		s3Mock.reset();
 	});
-
 	it('should copy the given date to the default curation path', async () => {
 		s3Mock
 			.on(CopyObjectCommand)
@@ -270,7 +244,6 @@ describe('curation.activateCuration', () => {
 			staticBucketName,
 			fastlyApiKey,
 		);
-
 		expect(s3Mock.commandCalls(CopyObjectCommand).length).toEqual(1);
 		const input = (
 			s3Mock.commandCalls(CopyObjectCommand)[0].firstArg as CopyObjectCommand
@@ -280,7 +253,6 @@ describe('curation.activateCuration', () => {
 			`${staticBucketName}/some-region/some-variant/2023-08-09/curation.json`,
 		);
 		expect(input.Key).toEqual('some-region/some-variant/curation.json');
-
 		const fastlyPurgeMocked = (sendFastlyPurgeRequestWithRetries as jest.Mock)
 			.mock.calls;
 		expect(fastlyPurgeMocked.length).toEqual(1);

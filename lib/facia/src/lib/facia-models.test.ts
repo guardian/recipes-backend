@@ -6,11 +6,9 @@ import { FeastAppCurationPayload, FeastCuration } from './facia-models';
 describe('facia-models', () => {
 	function loadFixture(name: string) {
 		const filepath = path.join(__dirname, name);
-
 		const buffer = fs.readFileSync(filepath);
 		return JSON.parse(buffer.toString('utf-8')) as unknown;
 	}
-
 	it('should be able to validate real data from Facia', () => {
 		const rawContent = {
 			id: 'D9AEEA41-F8DB-4FC8-A0DA-275571EA7331',
@@ -48,10 +46,8 @@ describe('facia-models', () => {
 				],
 			},
 		};
-
 		const typedData = FeastCuration.parse(rawContent);
 		expect(typedData.fronts['all-recipes'].length).toEqual(1);
-
 		expect(typedData.fronts['all-recipes'][0].body).toEqual('');
 		expect(typedData.fronts['all-recipes'][0].id).toEqual(
 			'd353e2de-1a65-45de-85ca-d229bc1fafad',
@@ -61,11 +57,9 @@ describe('facia-models', () => {
 		const theRecipe = typedData.fronts['all-recipes'][0].items[0] as Recipe;
 		expect(theRecipe.recipe.id).toEqual('14129325');
 	});
-
 	it('should be able to validate real data from MEP', () => {
 		const data = loadFixture('real-curation-data.json');
 		const typedData = FeastAppCurationPayload.parse(data);
-
 		expect(typedData.length).toEqual(13);
 		expect(typedData[11].title).toEqual('Meet our cooks');
 		expect(typedData[11].items.length).toEqual(13);
