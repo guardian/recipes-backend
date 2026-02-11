@@ -2,12 +2,12 @@ import { GuApiLambda, GuScheduledLambda } from '@guardian/cdk';
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { Duration } from 'aws-cdk-lib';
 import { EndpointType } from 'aws-cdk-lib/aws-apigateway';
+import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { IBucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import type { DataStore } from './datastore';
-import { Schedule } from 'aws-cdk-lib/aws-events';
 
 interface RestEndpointsProps {
 	servingBucket: IBucket;

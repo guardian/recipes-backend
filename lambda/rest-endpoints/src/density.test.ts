@@ -1,5 +1,11 @@
 import { parseDensityCSV } from './density';
 
+jest.mock('./config', () => ({
+	StaticBucketName: 'test',
+	FastlyApiKey: 'fake-key',
+	Stage: 'TEST',
+}));
+
 describe('parseDensityCSV', () => {
 	it('should handle correctly formatted data', () => {
 		const content = `982,Almonds (ground),ground almond,0.83,./datasets/guardian-2.csv
