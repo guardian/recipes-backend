@@ -7,6 +7,14 @@ https://github.com/guardian/ios-feast can use.
 
 # Operations
 
+## Rotating CDN->AWS credentials
+
+See [doc/Rotating Credentials.md](doc/Rotating%20Credentials.md)
+
+## Update density data for US unit conversions
+
+See [doc/Updating density data.md](doc/Updating%20density%20data.md)
+
 ## Set up for local operations
 
 You need to have a large number of environment variables set for the tools to work. Fortunately there is a script to make setting them up easier.
