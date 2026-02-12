@@ -1,5 +1,6 @@
 import { parseDensityCSV } from './density';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return -- used for mocking not a real return value
 jest.mock('@recipes-api/lib/recipes-data', () => ({
 	...jest.requireActual('@recipes-api/lib/recipes-data'),
 	getFastlyApiKey: () => 'fake-api-key',
