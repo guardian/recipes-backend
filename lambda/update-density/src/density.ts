@@ -125,6 +125,7 @@ export async function publishDensityData(content: DensityJson) {
 			Bucket: StaticBucketName,
 			Key,
 			Body: JSON.stringify(content),
+			ContentType: 'application/json',
 		}),
 	);
 
