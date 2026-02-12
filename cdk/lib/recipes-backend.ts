@@ -426,6 +426,11 @@ export class RecipesBackend extends GuStack {
 				}),
 				new PolicyStatement({
 					effect: Effect.ALLOW,
+					actions: ['s3:ListBucket'],
+					resources: [serving.staticBucket.bucketArn],
+				}),
+				new PolicyStatement({
+					effect: Effect.ALLOW,
 					actions: ['s3:GetObject', 's3:DeleteObject'],
 					resources: [
 						`arn:aws:s3:::${configBucketParam.valueAsString}/densities/*`,
