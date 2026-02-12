@@ -197,7 +197,7 @@ export async function rollBackDensityData(prepared_at: Date) {
 		await s3Client.send(
 			new CopyObjectCommand({
 				Bucket: StaticBucketName,
-				CopySource: Key,
+				CopySource: StaticBucketName + '/' + Key,
 				Key: S3_LIVE_PATH,
 			}),
 		);
