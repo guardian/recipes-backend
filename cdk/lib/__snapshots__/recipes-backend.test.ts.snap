@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`The RecipesBackend stack matches the snapshot 1`] = `
 {
@@ -4911,21 +4911,6 @@ def sort_filter_rules(json_obj):
             ],
             "Projection": {
               "ProjectionType": "ALL",
-            },
-          },
-          {
-            "IndexName": "idxRecipeUID",
-            "KeySchema": [
-              {
-                "AttributeName": "recipeUID",
-                "KeyType": "HASH",
-              },
-            ],
-            "Projection": {
-              "NonKeyAttributes": [
-                "recipeVersion",
-              ],
-              "ProjectionType": "INCLUDE",
             },
           },
           {
