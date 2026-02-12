@@ -79,3 +79,12 @@ The tool will:
 - copy it over the "latest" revision
 - flush the CDN cache
 
+## Download
+
+You can download any revision of the data in CSV form.  Simply:
+
+```bash
+update-densities --out latest.csv --download latest
+```
+
+Alternatively use any timestamp from the output of "-list" to download that version.
