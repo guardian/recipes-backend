@@ -1,9 +1,9 @@
 import { parseDensityCSV } from './density';
 
-jest.mock('./config', () => ({
-	StaticBucketName: 'test',
-	FastlyApiKey: 'fake-key',
-	Stage: 'TEST',
+jest.mock('@recipes-api/lib/recipes-data', () => ({
+	...jest.requireActual('@recipes-api/lib/recipes-data'),
+	getFastlyApiKey: () => 'fake-api-key',
+	getStaticBucketName: () => 'test-bucket',
 }));
 
 describe('parseDensityCSV', () => {
@@ -24,8 +24,8 @@ describe('parseDensityCSV', () => {
 
 		const result = parseDensityCSV(content);
 		expect(result.length).toEqual(13);
-		expect(result[0].density).toEqual(0.83);
-		expect(result[0].normalised_name).toEqual('ground almond');
+		expect(result[0]?.density).toEqual(0.83);
+		expect(result[0]?.normalised_name).toEqual('ground almond');
 	});
 
 	it('should accept a header row', () => {
@@ -45,8 +45,8 @@ describe('parseDensityCSV', () => {
 994,"Cheese (cheddar, grated)",grated cheddar,1,./datasets/guardian-2.csv`;
 
 		const result = parseDensityCSV(content);
-		expect(result[0].density).toEqual(0.83);
-		expect(result[0].normalised_name).toEqual('ground almond');
+		expect(result[0]?.density).toEqual(0.83);
+		expect(result[0]?.normalised_name).toEqual('ground almond');
 
 		expect(result.length).toEqual(13);
 	});

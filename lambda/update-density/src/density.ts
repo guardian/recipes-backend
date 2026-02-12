@@ -11,11 +11,15 @@ import type { DensityJson } from '@recipes-api/lib/feast-models';
 import { DensityJsonSchema } from '@recipes-api/lib/feast-models';
 import {
 	getContentPrefix,
+	getFastlyApiKey,
+	getStaticBucketName,
 	sendFastlyPurgeRequestWithRetries,
 } from '@recipes-api/lib/recipes-data';
-import { FastlyApiKey, StaticBucketName } from './config';
 
 const s3Client = new S3Client({ region: process.env['AWS_REGION'] });
+
+const StaticBucketName = getStaticBucketName();
+const FastlyApiKey = getFastlyApiKey();
 
 const S3_BASE_PATH = 'densities';
 const S3_LIVE_PATH = 'densities/latest/densities.json';
@@ -88,7 +92,7 @@ export function parseDensityCSV(csvText: string, continueOnIncomplete = false) {
 	if (!continueOnIncomplete && failureCount > 0) {
 		throw new Error(`${failureCount} rows did not convert`);
 	}
-	return entries.filter((e) => !!e) as DensityEntry[];
+	return entries.filter((e) => !!e);
 }
 
 export function transformDensityData(entries: DensityEntry[]): DensityJson {
@@ -241,7 +245,7 @@ export async function listDensityDataRevisions(
 	const keys = (response.Contents?.map((obj) => obj.Key).filter((k) => !!k) ??
 		[]) as string[];
 
-	const options = keys.map(extract_density_path).filter((v) => !!v) as Date[];
+	const options = keys.map(extract_density_path).filter((v) => !!v);
 
 	try {
 		const currentData = await getExistingDensityData(latestS3Path());
