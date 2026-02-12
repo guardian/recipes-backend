@@ -5397,6 +5397,16 @@ def sort_filter_rules(json_obj):
               },
             },
             {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "staticstaticServing53194089",
+                  "Arn",
+                ],
+              },
+            },
+            {
               "Action": [
                 "s3:GetObject",
                 "s3:DeleteObject",
