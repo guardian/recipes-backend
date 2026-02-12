@@ -10,6 +10,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -59,6 +60,18 @@ func LoadDataFile(filename *string) ([]byte, error) {
 	return content, err
 }
 
+func GetBaseUrl(stage *string) string {
+	switch strings.ToUpper(*stage) {
+	case "CODE":
+		return "https://recipes.code.dev-guardianapis.com"
+	case "PROD":
+		return "https://recipes.guardianapis.com"
+	default:
+		log.Printf("STAGE should be CODE or PROD")
+		return ""
+	}
+}
+
 func main() {
 	listRequest := flag.Bool("list", false, "list available revisions of density data for rollback")
 	updateRequest := flag.String("update", "", "update the density data with this ")
@@ -79,16 +92,17 @@ func main() {
 		if err != nil {
 			log.Fatalf("%s", err)
 		}
-		log.Print(string(response))
 		var content ListResponse
 		err = json.Unmarshal(response, &content)
 		if err != nil {
 			log.Fatalf("Could not parse lambda response: %s", err)
 		}
 		fmt.Printf("The current version is %s (prepared %s)\n", content.Current.Format(time.RFC3339), content.Current.Format(time.RFC850))
+		baseUrl := GetBaseUrl(stage)
+		fmt.Printf("%s/densities/latest/densities.json\n\n", baseUrl)
 		fmt.Printf("Other versions uploaded are:\n")
 		for _, ts := range content.Revisions {
-			fmt.Printf("- %s\n", ts.Format(time.RFC3339Nano))
+			fmt.Printf("- %s %s/densities/%s/densities.json\n", ts.Format(time.RFC3339Nano), baseUrl, ts.Format(time.RFC3339Nano))
 		}
 	} else if *rollbackRequest != "" {
 		toDate, err := time.Parse(time.RFC3339, *rollbackRequest)
