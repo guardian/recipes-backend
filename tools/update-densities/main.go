@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/csv"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -9,10 +10,61 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 	"time"
 )
+
+func LoadDensityJson(url string) (*DensityJson, error) {
+	response, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+	content, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	if response.StatusCode == 200 {
+		var dj DensityJson
+		err = json.Unmarshal(content, &dj)
+		if err != nil {
+			return nil, err
+		}
+		return &dj, nil
+	} else {
+		return nil, fmt.Errorf("could not load json, server said %d", response.StatusCode)
+	}
+}
+
+func DensityToCSV(data *DensityJson, out io.Writer) error {
+	csvWriter := csv.NewWriter(out)
+
+	err := csvWriter.Write(data.Key)
+	if err != nil {
+		return err
+	}
+
+	for c, rawData := range data.Values {
+		row, err := ParseRow(rawData)
+		if err != nil {
+			log.Printf("Invalid data at row %d: %s", c, err)
+		} else {
+			err = csvWriter.Write([]string{
+				fmt.Sprintf("%d", row.ID),
+				row.Name,
+				row.NormalisedName,
+				fmt.Sprintf("%f", row.Density),
+			})
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
 
 func MakeRequest(ctx context.Context, lambdaClient *lambda.Client, stage *string, request any) ([]byte, error) {
 	requestPayload, err := json.Marshal(request)
@@ -76,6 +128,8 @@ func main() {
 	listRequest := flag.Bool("list", false, "list available revisions of density data for rollback")
 	updateRequest := flag.String("update", "", "update the density data with this ")
 	rollbackRequest := flag.String("rollback", "", "roll back current published data to this timestamp.  Use --list to find available timestamps")
+	download := flag.String("download", "latest", "download this version of data to CSV.  Specify either the timestamp or 'latest' to get the latest version")
+	outname := flag.String("out", "densities.csv", "name of the CSV file to write when downloading")
 	region := flag.String("region", "eu-west-1", "AWS region to target")
 	stage := flag.String("stage", "CODE", "whether to upload data to CODE or PROD")
 	flag.Parse()
@@ -159,6 +213,23 @@ func main() {
 				log.Printf("Publish failed without a reason. Consult lambda logs.")
 			}
 			os.Exit(1)
+		}
+	} else if *download != "" {
+		url := fmt.Sprintf("%s/densities/%s/densities.json", GetBaseUrl(stage), *download)
+		data, err := LoadDensityJson(url)
+		if err != nil {
+			log.Fatalf("Could not download data: %s", err)
+		}
+		f, err := os.OpenFile(*outname, os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Fatalf("Could not open %s: %s", *outname, err)
+		}
+		defer f.Close()
+		err = DensityToCSV(data, f)
+		if err != nil {
+			log.Fatalf("Could not write data: %s", err)
+		} else {
+			log.Printf("Data written to %s", *outname)
 		}
 	} else {
 		log.Fatalf("Unrecognised command.  Use --help to see how to use this app")
