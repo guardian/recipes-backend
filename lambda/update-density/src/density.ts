@@ -16,7 +16,7 @@ import {
 	sendFastlyPurgeRequestWithRetries,
 } from '@recipes-api/lib/recipes-data';
 
-const s3Client = new S3Client({ region: process.env['AWS_REGION'] });
+export const s3Client = new S3Client({ region: process.env['AWS_REGION'] });
 
 const StaticBucketName = getStaticBucketName();
 const FastlyApiKey = getFastlyApiKey();
@@ -63,7 +63,10 @@ class DensityEntry {
 	}
 }
 
-export function parseDensityCSV(csvText: string, continueOnIncomplete = false) {
+export function parseDensityCSV(
+	csvText: string,
+	continueOnIncomplete = false,
+): DensityEntry[] {
 	const records: string[][] = parse(csvText, {
 		relax_column_count: true,
 		trim: true,
@@ -92,7 +95,7 @@ export function parseDensityCSV(csvText: string, continueOnIncomplete = false) {
 	if (!continueOnIncomplete && failureCount > 0) {
 		throw new Error(`${failureCount} rows did not convert`);
 	}
-	return entries.filter((e) => !!e);
+	return entries.filter((e) => !!e) as DensityEntry[]; //casting is OK here as filter ensures that undefined values are dropped
 }
 
 export function transformDensityData(entries: DensityEntry[]): DensityJson {
@@ -245,13 +248,13 @@ export async function listDensityDataRevisions(
 	const keys = (response.Contents?.map((obj) => obj.Key).filter((k) => !!k) ??
 		[]) as string[];
 
-	const options = keys.map(extract_density_path).filter((v) => !!v);
+	const options = keys.map(extract_density_path).filter((v) => !!v) as Date[];
 
 	try {
 		const currentData = await getExistingDensityData(latestS3Path());
 
 		return {
-			current: currentData?.prepared_at ?? 'NOT_PRESENT',
+			current: currentData?.prepared_at,
 			options,
 			continuation: response.NextContinuationToken,
 		};
