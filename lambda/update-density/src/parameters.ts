@@ -25,7 +25,7 @@ export const ListDensityRequest = z.object({
 });
 export const RollbackDensityRequest = z.object({
 	mode: z.literal('rollback'),
-	toDate: z.date(),
+	toDate: z.coerce.date(), //parse string as date
 });
 
 export const UpdateRequest = z.union([

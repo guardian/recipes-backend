@@ -5268,6 +5268,7 @@ def sort_filter_rules(json_obj):
         "Environment": {
           "Variables": {
             "APP": "recipes-backend-update-densities",
+            "CONTENT_URL_BASE": "recipes.guardianapis.com",
             "FASTLY_API_KEY": {
               "Ref": "fastlyKey",
             },

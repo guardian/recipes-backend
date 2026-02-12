@@ -417,6 +417,7 @@ export class RecipesBackend extends GuStack {
 			environment: {
 				FASTLY_API_KEY: fastlyKeyParam.valueAsString,
 				STATIC_BUCKET: serving.staticBucket.bucketName,
+				CONTENT_URL_BASE: contentUrlBase,
 			},
 			initialPolicy: [
 				new PolicyStatement({
