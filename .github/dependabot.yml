@@ -1,0 +1,32 @@
+version: 2
+updates:
+  # Main repo (Javascript/Typescript)
+  # Updates are checked daily and bundled into a single PR
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+    labels:
+      - dependencies
+
+  # Go tools
+  # Checks for updates in the /tools directory
+  - package-ecosystem: "gomod"
+    directory: "/tools"
+    schedule:
+      interval: "daily"
+    labels:
+      - dependencies
+
+  # Printable Recipe Generator (Docker)
+  # Checks for updates in the /printable-recipe-generator directory
+  - package-ecosystem: "docker"
+    directory: "/printable-recipe-generator"
+    schedule:
+      interval: "daily"
+    labels:
+      - dependencies
