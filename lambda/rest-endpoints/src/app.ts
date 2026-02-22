@@ -6,7 +6,12 @@ import type { Request } from 'express';
 import type { RecipeV3 } from '@recipes-api/lib/feast-models';
 import { recipeByUID } from '@recipes-api/lib/recipes-data';
 import { checkTemplate } from './check-template';
-import { generateHybridFront } from './curation';
+import {
+	findRecentLocalisation,
+	generateHybridFront,
+	recipeFromContainer,
+	retrieveTodaysCuration,
+} from './curation';
 import { countryCodeFromCDN } from './geo_cdn';
 import { recursivelyGetIdList } from './helpers';
 
@@ -165,6 +170,84 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 				detail: `An error occurred at ${new Date().toISOString()}. See the server logs for details.`,
 			});
 		});
+});
+
+/** A separate endpoint for Most popular in your country*/
+router.get('/api/:region/:variant/localisation', (req, resp) => {
+	try {
+		const territoryParam =
+			(req.query['ter'] as string | undefined) ?? countryCodeFromCDN(req);
+
+		if (!territoryParam) {
+			resp.status(400).json({
+				status: 'error',
+				detail: 'No territory specified and unable to determine from request',
+			});
+			return;
+		}
+
+		retrieveTodaysCuration(req.params.region, req.params.variant)
+			.then((curatedFront) => {
+				const curatedRecipesSet = new Set(
+					curatedFront.flatMap((c) => c.items).flatMap(recipeFromContainer),
+				);
+
+				console.log(
+					'INFO on most popular container, curatedFront:',
+					JSON.stringify(curatedFront),
+				);
+				console.log(
+					'INFO on most popular container, Items after first flatMap:',
+					JSON.stringify(curatedFront.flatMap((c) => c.items)),
+				);
+				console.log(
+					'INFO on most popular container, Recipes after second flatMap:',
+					JSON.stringify(
+						curatedFront.flatMap((c) => c.items).flatMap(recipeFromContainer),
+					),
+				);
+
+				console.log(
+					'INFO on most popular container, curatedRecipesSet ',
+					JSON.stringify(Array.from(curatedRecipesSet)),
+				);
+
+				const maybeLocalisation = findRecentLocalisation(
+					territoryParam,
+					5,
+					new Date(),
+					curatedRecipesSet,
+					10,
+				);
+
+				console.log(
+					'INFO on most popular container, maybeLocalisation ',
+					JSON.stringify(maybeLocalisation),
+				);
+
+				resp
+					.status(200)
+					.set({
+						'Cache-Control': 'no-store, no-cache',
+					})
+					.json(maybeLocalisation);
+			})
+			.catch((err) => {
+				console.error("Error retrieving today's curation:", err);
+				resp.status(404).json({
+					status: `Error: No localisation available for ${req.params.region} / ${req.params.variant} in ${territoryParam}`,
+					detail:
+						'No Localisation could be found. See server logs for details.',
+				});
+			});
+	} catch (err) {
+		console.error(err);
+		resp.status(500).json({
+			status: 'error',
+			detail:
+				'An error occurred while fetching localisation. See server logs for details.',
+		});
+	}
 });
 
 router.post(

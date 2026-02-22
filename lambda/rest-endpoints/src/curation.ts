@@ -177,7 +177,7 @@ export async function findRecentLocalisation(
 	return undefined;
 }
 
-function recipeFromContainer(item: ContainerItem): string[] {
+export function recipeFromContainer(item: ContainerItem): string[] {
 	// eslint-disable-next-line no-prototype-builtins -- how else to do this?
 	if (item.hasOwnProperty('recipe')) {
 		const recipeItem = item as Recipe;
@@ -262,15 +262,15 @@ export async function generateHybridFront(
 		return curatedFront;
 	}
 
-	const curatedRecipesSet = new Set(
-		curatedFront.flatMap((c) => c.items).flatMap(recipeFromContainer),
-	);
-
 	if (!territory) {
 		//no territory given so we can't localise
 		console.error("no territory given so we can't localise ");
 		return curatedFront;
 	}
+
+	const curatedRecipesSet = new Set(
+		curatedFront.flatMap((c) => c.items).flatMap(recipeFromContainer),
+	);
 
 	const maybeLocalisation = await findRecentLocalisation(
 		territory,
