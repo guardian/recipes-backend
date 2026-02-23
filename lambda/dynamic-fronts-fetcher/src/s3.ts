@@ -26,3 +26,19 @@ export async function writeDynamicData(
 		}),
 	);
 }
+
+export async function writePersonalisedData(
+	Bucket: string,
+	content: FeastAppContainer,
+) {
+	const Body = JSON.stringify(content);
+	const Key = `personalised/curation/${content.identity_id}.json`;
+
+	return s3Client.send(
+		new PutObjectCommand({
+			Bucket,
+			Key,
+			Body,
+		}),
+	);
+}
