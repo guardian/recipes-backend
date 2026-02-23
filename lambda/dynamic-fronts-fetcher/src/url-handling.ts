@@ -1,6 +1,6 @@
 import type { File, Storage } from '@google-cloud/storage';
 import { consumeReadable } from '@recipes-api/lib/recipes-data';
-import { IncomingDataRow } from './models';
+import { IncomingDataRow, IncomingPersonalisedRow } from './models';
 
 export function breakDownUrl(from: string): {
 	gcpBucket: string;
@@ -66,4 +66,46 @@ export async function retrieveContent(file: File): Promise<IncomingDataRow[]> {
 			}
 		})
 		.filter((obj) => !!obj);
+}
+
+export async function retrievePersonalisedContent(
+	file: File,
+): Promise<IncomingPersonalisedRow[]> {
+	const content = await consumeReadable(file.createReadStream());
+	console.log(`debug: ${file.name} contents:`);
+	const objects = content.toString('utf-8').split('\n');
+
+	return objects
+		.map((str, ctr) => {
+			try {
+				if (IsEmpty.test(str)) return undefined;
+				const [identityId, ...rest] = str.split(/\s+/);
+				const totalAvailable = parseInt(rest.pop() || '0', 10);
+				const items = rest.filter((item) => item.trim() !== '');
+
+				const parsedRow = {
+					identity_id: identityId,
+					items,
+					total_available: totalAvailable,
+				};
+
+				const result = IncomingPersonalisedRow.safeParse(parsedRow);
+				if (result.success) {
+					return result.data;
+				} else {
+					console.warn(
+						`Data from line ${ctr} did not marshal: ${result.error.toString()}. Content was '${JSON.stringify(
+							parsedRow,
+						)}'.`,
+					);
+					return undefined;
+				}
+			} catch (err) {
+				console.warn(
+					`Unparseable content at line ${ctr} of ${file.bucket.name}:${file.name} - '${str}'`,
+				);
+				return undefined;
+			}
+		})
+		.filter((obj) => !!obj) as IncomingPersonalisedRow[];
 }
