@@ -1,7 +1,7 @@
 import { getName as getCountryName } from 'i18n-iso-countries';
 import { v4 as uuid } from 'uuid';
 import type { FeastAppContainer } from '@recipes-api/lib/facia';
-import type { IncomingDataRow } from './models';
+import type { IncomingDataRow, IncomingPersonalisedRow } from './models';
 
 function printableCountryName(isoCode: string): string {
 	const countryName = getCountryName(isoCode, 'en');
@@ -43,5 +43,26 @@ export function convertBQReport(
 		targetedRegions: [territory],
 		title: `Most popular ${printableCountryName(territory)}`,
 		items,
+	};
+}
+
+export function convertPersonalisedBQReport(
+	incoming: IncomingPersonalisedRow[],
+): FeastAppContainer {
+	const items = incoming.flatMap((r) =>
+		r.items.map((item) => ({
+			recipe: {
+				id: item,
+			},
+		})),
+	);
+
+	const id = uuid();
+
+	return {
+		id,
+		title: 'More recipes you will like',
+		items,
+		identity_id: incoming.find((item) => item.identity_id)?.identity_id,
 	};
 }
