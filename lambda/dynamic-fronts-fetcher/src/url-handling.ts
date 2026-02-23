@@ -80,7 +80,7 @@ export async function retrievePersonalisedContent(
 			try {
 				if (IsEmpty.test(str)) return undefined;
 				const [identityId, ...rest] = str.split(/\s+/);
-				const totalAvailable = parseInt(rest.pop() || '0', 10);
+				const totalAvailable = parseInt(rest.pop() ?? '0', 10);
 				const items = rest.filter((item) => item.trim() !== '');
 
 				const parsedRow = {
@@ -102,7 +102,7 @@ export async function retrievePersonalisedContent(
 				}
 			} catch (err) {
 				console.warn(
-					`Unparseable content at line ${ctr} of ${file.bucket.name}:${file.name} - '${str}'`,
+					`Unparseable content at line ${ctr} of ${file.bucket.name}:${file.name} - '${str}', error was ${err}`,
 				);
 				return undefined;
 			}

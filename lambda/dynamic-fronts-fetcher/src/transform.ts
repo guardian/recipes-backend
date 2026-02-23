@@ -47,15 +47,13 @@ export function convertBQReport(
 }
 
 export function convertPersonalisedBQReport(
-	incoming: IncomingPersonalisedRow[],
+	incoming: IncomingPersonalisedRow,
 ): FeastAppContainer {
-	const items = incoming.flatMap((r) =>
-		r.items.map((item) => ({
-			recipe: {
-				id: item,
-			},
-		})),
-	);
+	const items = incoming.items.map((item) => ({
+		recipe: {
+			id: item,
+		},
+	}));
 
 	const id = uuid();
 
@@ -63,6 +61,6 @@ export function convertPersonalisedBQReport(
 		id,
 		title: 'More recipes you will like',
 		items,
-		identity_id: incoming.find((item) => item.identity_id)?.identity_id,
+		identity_id: incoming.identity_id,
 	};
 }

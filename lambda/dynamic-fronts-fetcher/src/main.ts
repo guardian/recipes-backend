@@ -3,6 +3,7 @@ import type { Storage } from '@google-cloud/storage';
 import { registerMetric } from '@recipes-api/cwmetrics';
 import { loadConfig } from './config';
 import { getStorageClient } from './gcloud';
+import type { IncomingPersonalisedRow } from './models';
 import { InvokeEvent } from './models';
 import { writeDynamicData, writePersonalisedData } from './s3';
 import { convertBQReport, convertPersonalisedBQReport } from './transform';
@@ -47,21 +48,16 @@ export const handler = async (eventRaw: unknown) => {
 			storage,
 			pathToPersonalised,
 		);
-		console.log(`Got - ${personalisedFile.length} file`);
 
-		if (!personalisedFile || personalisedFile.length === 0) {
-			console.error(`No content found in personalised.json`);
-			await registerMetric('FailedPersonalisedContainer', 1);
-			throw new Error('No content found in personalised.json');
-		}
+		console.log(`Got - ${personalisedFile.length} file`);
 
 		const personalisedData = [
 			await retrievePersonalisedContent(personalisedFile[0]),
 		];
 		const allRows = personalisedData.flat();
 
-		const personalisedContainers = allRows.map((entry: any) =>
-			convertPersonalisedBQReport(entry),
+		const personalisedContainers = allRows.map(
+			(entry: IncomingPersonalisedRow) => convertPersonalisedBQReport(entry),
 		);
 
 		// Batch processing for large number of files
