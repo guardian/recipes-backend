@@ -669,20 +669,36 @@ def sort_filter_rules(json_obj):
                     "s3:GetObject",
                   ],
                   "Effect": "Allow",
-                  "Resource": {
-                    "Fn::Join": [
-                      "",
-                      [
-                        {
-                          "Fn::GetAtt": [
-                            "staticstaticServing53194089",
-                            "Arn",
-                          ],
-                        },
-                        "/dynamic/curation/*",
+                  "Resource": [
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Fn::GetAtt": [
+                              "staticstaticServing53194089",
+                              "Arn",
+                            ],
+                          },
+                          "/dynamic/curation/*",
+                        ],
                       ],
-                    ],
-                  },
+                    },
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Fn::GetAtt": [
+                              "staticstaticServing53194089",
+                              "Arn",
+                            ],
+                          },
+                          "/personalised/curation/*",
+                        ],
+                      ],
+                    },
+                  ],
                 },
               ],
               "Version": "2012-10-17",

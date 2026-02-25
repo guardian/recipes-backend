@@ -33,6 +33,7 @@ export class DynamicFronts extends Construct {
 		super(scope, name);
 
 		const base_path = 'dynamic/curation';
+		const personalised_base_path = 'personalised/curation';
 
 		const lambdaRole = new Role(this, 'FetcherRole', {
 			//The role name needs to be short for cross-cloud federation or you
@@ -50,7 +51,10 @@ export class DynamicFronts extends Construct {
 						new PolicyStatement({
 							effect: Effect.ALLOW,
 							actions: ['s3:PutObject', 's3:GetObject'],
-							resources: [`${props.destBucket.bucketArn}/${base_path}/*`],
+							resources: [
+								`${props.destBucket.bucketArn}/${base_path}/*`,
+								`${props.destBucket.bucketArn}/${personalised_base_path}/*`,
+							],
 						}),
 					],
 				}),
