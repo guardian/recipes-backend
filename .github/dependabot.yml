@@ -1,13 +1,26 @@
 version: 2
 updates:
+
   # Main repo (Javascript/Typescript)
   # Updates are checked daily and bundled into a single PR
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "daily"
+    rebase-strategy: "auto"
     groups:
-      dependencies:
+      # One PR per major (or at least majors kept separate from minors/patches)
+      npm-major:
+        update-types:
+          - "major"
+        patterns:
+          - "*"
+
+      # Bundle all minor+patch together (low noise)
+      npm-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
         patterns:
           - "*"
     labels:
@@ -17,6 +30,7 @@ updates:
   # Checks for updates in the /tools directory
   - package-ecosystem: "gomod"
     directory: "/tools"
+    rebase-strategy: "auto"
     schedule:
       interval: "daily"
     labels:
@@ -26,6 +40,7 @@ updates:
   # Checks for updates in the /printable-recipe-generator directory
   - package-ecosystem: "docker"
     directory: "/printable-recipe-generator"
+    rebase-strategy: "auto"
     schedule:
       interval: "daily"
     labels:
