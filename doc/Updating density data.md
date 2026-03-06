@@ -11,7 +11,8 @@ version of the Go tools.  Alternatively use one of the compiled binaries in that
 - Make sure you can run it: `chmod +x {downloaded-file-name}`
 - Make sure you have Feast account credentials from Janus
 - Set the profile: `export AWS_PROFILE=feast`
-- Now the tool will work.  Use `./update-densities --help` to see options.
+- Now the tool will work.  Use `./update-densities.<os-type> --help` to see options.  
+If you want to save some typing, copy the file `tools/update-densities.<os-type>` to `/usr/local/bin/update-densities` or `~/update-densities`
 - By default, the tool targets the **CODE** environment.  If you want to target PROD, simply append `--stage PROD` to target PROD instead
 - Remember, once you publish a release it's available to clients **immediately**.
 

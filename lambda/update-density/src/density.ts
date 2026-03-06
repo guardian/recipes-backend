@@ -56,7 +56,7 @@ class DensityEntry {
 		this.normalised_name = row[2];
 		this.density = Number.parseFloat(row[3]);
 		this.source = '';
-		if (isNaN(this.density))
+		if (isNaN(this.density) || this.density === 0)
 			throw new Error(
 				'row was not in the right format, density was not a number',
 			);

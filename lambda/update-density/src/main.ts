@@ -19,7 +19,7 @@ import type {
 import { UpdateRequest } from './parameters';
 
 async function loadDensityJson(c: ContentDescription): Promise<DensityJson> {
-	if (c.type == 's3') {
+	if (c.type === 's3') {
 		const response = await s3Client.send(
 			new GetObjectCommand({ Bucket: c.bucket, Key: c.path }),
 		);
@@ -31,7 +31,7 @@ async function loadDensityJson(c: ContentDescription): Promise<DensityJson> {
 			throw new Error(`No content returned for s3://${c.bucket}/${c.path}`);
 		}
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- it's not necessasry but clearer like this
-	} else if (c.type == 'inline') {
+	} else if (c.type === 'inline') {
 		const entries = parseDensityCSV(c.content);
 		return transformDensityData(entries);
 	} else {
