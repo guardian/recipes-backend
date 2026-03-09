@@ -77,7 +77,7 @@ export class DynamicFronts extends Construct {
 			runtime: Runtime.NODEJS_20_X,
 			app: 'dynamic-fronts-fetcher',
 			memorySize: 256,
-			timeout: Duration.seconds(60),
+			timeout: Duration.minutes(5), //Just for testing purposes, the actual fetcher should be faster than this
 			environment: {
 				BUCKET_NAME: props.destBucket.bucketName,
 				BASE_PATH: base_path,
