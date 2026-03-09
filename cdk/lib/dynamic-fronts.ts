@@ -77,7 +77,7 @@ export class DynamicFronts extends Construct {
 			runtime: Runtime.NODEJS_20_X,
 			app: 'dynamic-fronts-fetcher',
 			memorySize: 2048,
-			timeout: Duration.seconds(60), //back to 60 sec
+			timeout: Duration.minutes(5), //for testing as we are seeing time out after 1 minute and we just proceese 40k but we need to reach 121k
 			environment: {
 				BUCKET_NAME: props.destBucket.bucketName,
 				BASE_PATH: base_path,
