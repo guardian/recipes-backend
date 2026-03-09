@@ -627,7 +627,7 @@ def sort_filter_rules(json_obj):
             "Value": "TEST",
           },
         ],
-        "Timeout": 30,
+        "Timeout": 60,
       },
       "Type": "AWS::Lambda::Function",
     },
