@@ -76,7 +76,7 @@ export class DynamicFronts extends Construct {
 			functionName: `dynamic-fetcher-${scope.stage}`,
 			runtime: Runtime.NODEJS_20_X,
 			app: 'dynamic-fronts-fetcher',
-			memorySize: 256,
+			memorySize: 2048,
 			timeout: Duration.seconds(60), //back to 60 sec
 			environment: {
 				BUCKET_NAME: props.destBucket.bucketName,

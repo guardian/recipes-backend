@@ -597,7 +597,7 @@ def sort_filter_rules(json_obj):
         "LoggingConfig": {
           "LogFormat": "JSON",
         },
-        "MemorySize": 256,
+        "MemorySize": 2048,
         "Role": {
           "Fn::GetAtt": [
             "DynamicFrontsFetcherRole2FDB4150",
