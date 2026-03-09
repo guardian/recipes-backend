@@ -27,3 +27,33 @@ export async function consumeReadable(readable: Readable): Promise<Buffer> {
 		});
 	});
 }
+
+/**
+ * Consumes a readable stream and concatenates its chunks into a single buffer.
+ * This method is efficient for small data streams and ensures the entire content
+ * is read into memory.
+ * @param readable - The readable stream to consume.
+ * @returns A promise that resolves to a buffer containing the stream's content.
+ */
+//TODO - this is basically the same as consumeReadable, but more efficient.
+// We should probably just have one of these and rename it to something more generic?? Query to resolve with Andy.G
+
+export async function consumeReadable_dataToBuffer(
+	readable: Readable,
+): Promise<Buffer> {
+	return new Promise<Buffer>((resolve, reject) => {
+		const chunks: Buffer[] = [];
+
+		readable.on('data', (chunk: Buffer) => {
+			chunks.push(chunk);
+		});
+
+		readable.on('end', () => {
+			resolve(Buffer.concat(chunks));
+		});
+
+		readable.on('error', (err) => {
+			reject(err);
+		});
+	});
+}
