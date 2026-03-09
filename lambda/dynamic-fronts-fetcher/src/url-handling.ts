@@ -1,5 +1,8 @@
 import type { File, Storage } from '@google-cloud/storage';
-import { consumeReadable } from '@recipes-api/lib/recipes-data';
+import {
+	consumeReadable,
+	consumeReadable_dataToBuffer,
+} from '@recipes-api/lib/recipes-data';
 import { IncomingDataRow, IncomingPersonalisedRow } from './models';
 
 export function breakDownUrl(from: string): {
@@ -71,7 +74,9 @@ export async function retrieveContent(file: File): Promise<IncomingDataRow[]> {
 export async function retrievePersonalisedContent(
 	file: File,
 ): Promise<IncomingPersonalisedRow[]> {
-	const content = await consumeReadable(file.createReadStream());
+	console.log(`Incoming file: ${file.name}:`);
+	const content = await consumeReadable_dataToBuffer(file.createReadStream());
+
 	console.log(`debug: ${file.name} contents:`);
 	const objects = content.toString('utf-8').split('\n');
 
@@ -79,9 +84,10 @@ export async function retrievePersonalisedContent(
 		.map((str, ctr) => {
 			try {
 				if (IsEmpty.test(str)) return undefined;
-				const [identityId, ...rest] = str.split(/\s+/);
-				const totalAvailable = parseInt(rest.pop() ?? '0', 10);
-				const items = rest.filter((item) => item.trim() !== '');
+				const parsed = JSON.parse(str);
+				const identityId = parsed.identity_id;
+				const totalAvailable = parseInt(parsed.total_available, 10);
+				const items = parsed.items.map((item: { id: string }) => item.id);
 
 				const parsedRow = {
 					identity_id: identityId,
