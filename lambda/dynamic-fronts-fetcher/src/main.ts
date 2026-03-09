@@ -49,29 +49,35 @@ export const handler = async (eventRaw: unknown) => {
 			pathToPersonalised,
 		);
 
-		console.log(`Got - ${personalisedFile.length} file`);
+		console.log(`Got - ${personalisedFile.length} file, `);
 
 		const personalisedData = [
 			await retrievePersonalisedContent(personalisedFile[0]),
 		];
+
 		const allRows = personalisedData.flat();
+		console.log(`All rows:`, allRows);
 
 		const personalisedContainers = allRows.map(
 			(entry: IncomingPersonalisedRow) => convertPersonalisedBQReport(entry),
+		);
+
+		console.log(
+			`Personalised container's length:`,
+			personalisedContainers.length,
 		);
 
 		// Batch processing for large number of files
 		const batchSize = 1000;
 		for (let i = 0; i < personalisedContainers.length; i += batchSize) {
 			const batch = personalisedContainers.slice(i, i + batchSize);
+			if (i % 10 === 0) {
+				console.log(`Processing batch starting at index: ${i}`);
+			}
 			await Promise.all(
 				batch.map((entry) => writePersonalisedData(outputBucketName, entry)),
 			);
 		}
-
-		console.log(
-			`Processed ${personalisedContainers.length} personalised files`,
-		);
 	} else if (!!event.country_key && !!event.gcs_blob) {
 		// Existing logic for dynamic fronts
 		const pathToScan = breakDownUrl(event.gcs_blob);
