@@ -5,6 +5,15 @@
 This is a backend service that translates data from the Content API into a format that apps like
 https://github.com/guardian/ios-feast can use.
 
+From time to time, this repo has contained helper and migration scripts and tools but we are now trying to keep them seperate
+to avoid the dreaded dependency ladder.
+
+You can find tools in other repos:
+
+- https://github.com/guardian/feast-density-structuring-scripts - Python scripts used for building templating and density structuring
+- https://github.com/guardian/feast-density-tools - Rust tooling for running density coverage reports, cross-referencing ("grouping") ingredients
+and converting CSV formats
+
 # Operations
 
 ## Set up for local operations
