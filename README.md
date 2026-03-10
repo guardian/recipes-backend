@@ -5,7 +5,7 @@
 This is a backend service that translates data from the Content API into a format that apps like
 https://github.com/guardian/ios-feast can use.
 
-From time to time, this repo has contained helper and migration scripts and tools but we are now trying to keep them seperate
+From time to time, this repo has contained helper and migration scripts and tools but we are now trying to keep them separate
 to avoid the dreaded dependency ladder.
 
 You can find tools in other repos:
@@ -22,9 +22,7 @@ You need to have a large number of environment variables set for the tools to wo
 
 1. Get CAPI credentials from Janus. You'll need the AWS commandline, and `jq` utility, installed; but you should have these already.
 2. Run `STAGE=CODE ./get-local-config.sh` to generate the file `environ-CODE`. Substitute PROD for CODE to get setup for the Production environment (but be careful!)
-
-- I'd recommend deleting the file once you're done with it.
-
+   - I'd recommend deleting the file once you're done with it.
 3. It goes without saying that these environ files should NEVER be committed to the repo. They are gitignored, but still... don't do it.
 4. Once you have the file, run `source environ-CODE` to set up the environment variables you need to target the CODE environment.
 5. You can now run the tools outlined below.
@@ -216,10 +214,6 @@ library; these functions take in data structures defined by the Thrift models an
 ### tools/manual-takedown
 
 Runnable script that allows you to forcibly remove all recipes from a given article ID. This can be run from an npm script: `npm run manual-takedown`.
-
-### tools/fill-db
-
-Runnable script that fills the index table with junk data. This is from initial testing and will be removed, don't use it.
 
 ### Just in case if CI fails in dependabot PR(s)
 We haven't provided creds to Dependabot as of now so a push to the PR should work and re-run the CI
