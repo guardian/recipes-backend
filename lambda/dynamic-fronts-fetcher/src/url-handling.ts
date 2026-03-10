@@ -84,12 +84,20 @@ export async function retrievePersonalisedContent(
 		.map((str, ctr) => {
 			try {
 				if (IsEmpty.test(str)) return undefined;
-				const parsed = JSON.parse(str);
-				const identityId = parsed.identity_id;
-				const totalAvailable = parseInt(parsed.total_available, 10);
-				const items = parsed.items.map((item: { id: string }) => item.id);
+				const parsed = JSON.parse(str) as {
+					identity_id: string;
+					total_available: string;
+					items: Array<{ id: string }>;
+				};
+				const identityId: string = parsed.identity_id;
+				const totalAvailable: number = parseInt(parsed.total_available, 10);
+				const items: string[] = parsed.items.map((item) => item.id);
 
-				const parsedRow = {
+				const parsedRow: {
+					identity_id: string;
+					items: string[];
+					total_available: number;
+				} = {
 					identity_id: identityId,
 					items,
 					total_available: totalAvailable,
