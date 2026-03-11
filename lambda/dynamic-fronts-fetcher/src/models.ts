@@ -1,7 +1,8 @@
 import { z } from 'zod';
 
+const RECIPE_ID_REGEX = /^([A-Fa-f0-9]+)|(gu-recipe-[A-Fa-f0-9-]+)$/;
 export const IncomingDataRow = z.object({
-	recipe_id: z.string().regex(/^([A-Fa-f0-9]+)|(gu-recipe-[A-Fa-f0-9-]+)$/),
+	recipe_id: z.string().regex(RECIPE_ID_REGEX),
 	uniques: z.string().regex(/^\d+$/), //annoyingly BQ gives us this as a string :shrug:
 });
 
@@ -25,9 +26,7 @@ export const InvokeEvent = z.union([
 
 export const IncomingPersonalisedRow = z.object({
 	identity_id: z.string().regex(/^\d+$/),
-	items: z.array(
-		z.string().regex(/^([A-Fa-f0-9]+)|(gu-recipe-[A-Fa-f0-9-]+)$/),
-	),
+	items: z.array(z.string().regex(RECIPE_ID_REGEX)),
 	total_available: z.number(),
 });
 
