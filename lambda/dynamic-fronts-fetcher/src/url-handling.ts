@@ -1,8 +1,5 @@
 import type { File, Storage } from '@google-cloud/storage';
-import {
-	consumeReadable,
-	consumeReadable_dataToBuffer,
-} from '@recipes-api/lib/recipes-data';
+import { consumeReadable } from '@recipes-api/lib/recipes-data';
 import { IncomingDataRow, IncomingPersonalisedRow } from './models';
 
 export function breakDownUrl(from: string): {
@@ -75,7 +72,7 @@ export async function retrievePersonalisedContent(
 	file: File,
 ): Promise<IncomingPersonalisedRow[]> {
 	console.log(`Incoming file: ${file.name}:`);
-	const content = await consumeReadable_dataToBuffer(file.createReadStream());
+	const content = await consumeReadable(file.createReadStream());
 
 	console.log(`debug: ${file.name} contents:`);
 	const objects = content.toString('utf-8').split('\n');
