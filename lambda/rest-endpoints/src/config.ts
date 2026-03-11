@@ -5,7 +5,7 @@ export const FastlyApiKey = mandatoryParam('FASTLY_API_KEY');
 
 function mandatoryParam(paramName: string): string {
 	if (process.env[paramName]) {
-		return process.env[paramName] as string;
+		return process.env[paramName];
 	} else {
 		throw new Error(`You must specify ${paramName} in the environment`);
 	}

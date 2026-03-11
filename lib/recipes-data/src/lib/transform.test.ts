@@ -180,7 +180,7 @@ describe('Recipe transforms', () => {
 			);
 		});
 		it('should attempt to extract a crop from the original URL if the preview image is missing a cropId', () => {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructure
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-non-null-assertion -- destructure
 			const { cropId, ...previewImage } = recipes[0].previewImage!;
 			const recipeWithPreviewImageWithoutCropId = {
 				...recipes[0],
@@ -199,7 +199,7 @@ describe('Recipe transforms', () => {
 			);
 		});
 		it('should not attempt to extract a crop from the original URL if the featured image URL is not a guim URL', () => {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructure
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-non-null-assertion -- destructure
 			const { cropId, ...previewImage } = recipes[0].previewImage!;
 			const recipeWithPreviewImageWithoutCropId = {
 				...recipes[0],
