@@ -32,7 +32,7 @@ export async function writePersonalisedData(
 	content: FeastAppContainer,
 ) {
 	const Body = JSON.stringify(content);
-	const Key = `personalised/curation/${content.identity_id}.json`;
+	const Key = `dynamic/personalised/${content.identity_id}.json`;
 
 	return s3Client.send(
 		new PutObjectCommand({

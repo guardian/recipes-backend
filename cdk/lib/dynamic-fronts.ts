@@ -33,7 +33,7 @@ export class DynamicFronts extends Construct {
 		super(scope, name);
 
 		const base_path = 'dynamic/curation';
-		const personalised_base_path = 'personalised/curation';
+		const personalised_base_path = 'dynamic/personalised';
 
 		const lambdaRole = new Role(this, 'FetcherRole', {
 			//The role name needs to be short for cross-cloud federation or you

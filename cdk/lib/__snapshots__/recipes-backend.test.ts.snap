@@ -694,7 +694,7 @@ def sort_filter_rules(json_obj):
                               "Arn",
                             ],
                           },
-                          "/personalised/curation/*",
+                          "/dynamic/personalised/*",
                         ],
                       ],
                     },
