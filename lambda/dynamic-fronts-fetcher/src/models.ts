@@ -8,15 +8,20 @@ export const IncomingDataRow = z.object({
 export type IncomingDataRow = z.infer<typeof IncomingDataRow>;
 
 //TBD, need to get the right format for these
-// export const InvokeEvent = z.object({
-// 	gcs_blob: z.string(),
-// 	country_key: z.string(),
-// });
-export const InvokeEvent = z.object({
-	country_key: z.string().optional(),
-	gcs_blob: z.string().optional(),
-	personalised: z.boolean().optional(), // Add this flag
+export const InvokeEventCountry = z.object({
+	gcs_blob: z.string(),
+	country_key: z.string(),
 });
+
+export const InvokeEventPersonalised = z.object({
+	gcs_blob: z.string(),
+	personalised: z.boolean(),
+});
+
+export const InvokeEvent = z.union([
+	InvokeEventPersonalised,
+	InvokeEventCountry,
+]);
 
 export const IncomingPersonalisedRow = z.object({
 	identity_id: z.string().regex(/^\d+$/),
