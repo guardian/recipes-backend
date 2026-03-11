@@ -60,9 +60,7 @@ async function handleS3Event(
 		}
 	});
 
-	const promises = toWaitFor.filter((maybePromise) => !!maybePromise) as Array<
-		Promise<void>
-	>;
+	const promises = toWaitFor.filter((maybePromise) => !!maybePromise);
 	await Promise.all(promises);
 }
 

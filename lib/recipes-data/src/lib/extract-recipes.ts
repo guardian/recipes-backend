@@ -43,7 +43,7 @@ export async function extractAllRecipesFromArticle(
 		await registerMetric('FailedRecipes', failureCount);
 		const successfulCount = recipes.length - failureCount;
 		await registerMetric('SuccessfulRecipes', successfulCount);
-		return recipes.filter((recp) => !!recp) as CAPIRecipeReference[];
+		return recipes.filter((recp) => !!recp);
 	} else {
 		return Array<CAPIRecipeReference>();
 	}

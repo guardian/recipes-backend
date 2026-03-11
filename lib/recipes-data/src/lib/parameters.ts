@@ -1,7 +1,7 @@
 export function createGetMandatoryParameter(name: string): () => string {
 	return (): string => {
 		if (process.env[name]) {
-			return process.env[name] as string;
+			return process.env[name];
 		}
 		if (process.env['CI']) {
 			return 'test';
@@ -18,7 +18,6 @@ export function createGetMandatoryNumberParameter(name: string) {
 		const param = getMandatoryParam();
 		try {
 			return parseInt(param);
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars -- we need a parameter here
 		} catch (e) {
 			throw new Error(
 				`Could not parse param ${name} with value ${param} as integer`,

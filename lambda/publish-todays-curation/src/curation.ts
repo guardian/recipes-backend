@@ -57,7 +57,7 @@ export async function validateAllCuration(
 	);
 
 	const allCurations = await Promise.all(promises);
-	return allCurations.filter((c) => !!c) as CurationPath[];
+	return allCurations.filter((c) => !!c);
 }
 
 export function generatePath(region: string, variant: string, date: Date) {
