@@ -71,9 +71,7 @@ export async function retrieveContent(file: File): Promise<IncomingDataRow[]> {
 export async function retrievePersonalisedContent(
 	file: File,
 ): Promise<IncomingPersonalisedRow[]> {
-	console.log(`Incoming file: ${file.name}:`);
 	const content = await consumeReadable(file.createReadStream());
-
 	console.log(`debug: ${file.name} contents:`);
 	const objects = content.toString('utf-8').split('\n');
 

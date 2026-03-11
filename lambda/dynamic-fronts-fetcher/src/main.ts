@@ -30,6 +30,61 @@ loadConfig()
 
 const outputBucketName = process.env['BUCKET_NAME'] ?? 'set-bucketname-env-var';
 
+async function handlePersonalised(
+	storage: Storage,
+	gcsBlob: string,
+): Promise<void> {
+	const pathToPersonalised = breakDownUrl(gcsBlob);
+	const personalisedFile = await findMatchingFiles(storage, pathToPersonalised);
+
+	console.log(`Got - ${personalisedFile.length} file, `);
+
+	const personalisedData = [
+		await retrievePersonalisedContent(personalisedFile[0]),
+	];
+
+	const allRows = personalisedData.flat();
+
+	const personalisedContainers = allRows.map((entry: IncomingPersonalisedRow) =>
+		convertPersonalisedBQReport(entry),
+	);
+
+	console.log(
+		`Number of personalised containers to write: `,
+		personalisedContainers.length,
+	);
+
+	// Batch processing for large number of files
+	const batchSize = 1000;
+	for (let i = 0; i < personalisedContainers.length; i += batchSize) {
+		const batch = personalisedContainers.slice(i, i + batchSize);
+		if (i % 10000 === 0) {
+			//to have less number of logs, we log every 10k entries, will remove this once tested once again end to end.
+			console.log(`Processing batch starting at index: ${i}`);
+		}
+		await Promise.all(
+			batch.map((entry) => writePersonalisedData(outputBucketName, entry)),
+		);
+	}
+}
+
+async function handleCountry(
+	storage: Storage,
+	gcsBlob: string,
+	country_key: string,
+): Promise<void> {
+	const pathToScan = breakDownUrl(gcsBlob);
+	const files = await findMatchingFiles(storage, pathToScan);
+	console.log(`Got ${files.length} files`);
+
+	const results = await Promise.all(files.map(retrieveContent));
+	const allRows = results.flat();
+
+	const container = convertBQReport(country_key, allRows);
+	await writeDynamicData(outputBucketName, new Date(), country_key, container);
+	console.log(`Completed`);
+}
+
 export const handler = async (eventRaw: unknown) => {
 	console.log(`Incoming data: ${JSON.stringify(eventRaw)}`);
 
@@ -41,60 +96,10 @@ export const handler = async (eventRaw: unknown) => {
 
 	const event = InvokeEvent.parse(eventRaw); // Let It Crash (TM)
 
-	if (event.personalised && !!event.gcs_blob) {
-		// Handle personalised.json processing
-		const pathToPersonalised = breakDownUrl(event.gcs_blob);
-		const personalisedFile = await findMatchingFiles(
-			storage,
-			pathToPersonalised,
-		);
-
-		console.log(`Got - ${personalisedFile.length} file, `);
-
-		const personalisedData = [
-			await retrievePersonalisedContent(personalisedFile[0]),
-		];
-
-		const allRows = personalisedData.flat();
-		console.log(`All rows:`, allRows);
-
-		const personalisedContainers = allRows.map(
-			(entry: IncomingPersonalisedRow) => convertPersonalisedBQReport(entry),
-		);
-
-		console.log(
-			`Personalised container's length:`,
-			personalisedContainers.length,
-		);
-
-		// Batch processing for large number of files
-		const batchSize = 1000;
-		for (let i = 0; i < personalisedContainers.length; i += batchSize) {
-			const batch = personalisedContainers.slice(i, i + batchSize);
-			if (i % 10 === 0) {
-				console.log(`Processing batch starting at index: ${i}`);
-			}
-			await Promise.all(
-				batch.map((entry) => writePersonalisedData(outputBucketName, entry)),
-			);
-		}
-	} else if (!!event.country_key && !!event.gcs_blob) {
-		// Existing logic for dynamic fronts
-		const pathToScan = breakDownUrl(event.gcs_blob);
-		const files = await findMatchingFiles(storage, pathToScan);
-		console.log(`Got ${files.length} files`);
-
-		const results = await Promise.all(files.map(retrieveContent));
-		const allRows = results.flat();
-
-		const container = convertBQReport(event.country_key, allRows);
-		await writeDynamicData(
-			outputBucketName,
-			new Date(),
-			event.country_key,
-			container,
-		);
-		console.log(`Completed`);
+	if ('personalised' in event && !!event.gcs_blob) {
+		await handlePersonalised(storage, event.gcs_blob);
+	} else if ('country_key' in event && !!event.gcs_blob) {
+		await handleCountry(storage, event.gcs_blob, event.country_key);
 	} else {
 		console.error(
 			`Invalid invoke data, missing either country key or GCS path. Got ${JSON.stringify(
