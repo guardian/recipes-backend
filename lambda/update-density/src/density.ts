@@ -95,7 +95,7 @@ export function parseDensityCSV(
 	if (!continueOnIncomplete && failureCount > 0) {
 		throw new Error(`${failureCount} rows did not convert`);
 	}
-	return entries.filter((e) => !!e) as DensityEntry[]; //casting is OK here as filter ensures that undefined values are dropped
+	return entries.filter((e) => !!e);
 }
 
 export function transformDensityData(entries: DensityEntry[]): DensityJson {
@@ -249,7 +249,7 @@ export async function listDensityDataRevisions(
 	const keys = (response.Contents?.map((obj) => obj.Key).filter((k) => !!k) ??
 		[]) as string[];
 
-	const options = keys.map(extract_density_path).filter((v) => !!v) as Date[];
+	const options = keys.map(extract_density_path).filter((v) => !!v);
 
 	try {
 		const currentData = await getExistingDensityData(latestS3Path());
