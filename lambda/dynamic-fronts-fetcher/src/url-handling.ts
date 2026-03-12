@@ -79,7 +79,7 @@ export async function retrievePersonalisedContent(
 		.map((str, ctr) => {
 			try {
 				if (IsEmpty.test(str)) return undefined;
-				const parsed = JSON.parse(str) as IncomingPersonalisedRow;
+				const parsed = JSON.parse(str) as unknown;
 
 				const result = IncomingPersonalisedRow.safeParse(parsed);
 				if (result.success) {
