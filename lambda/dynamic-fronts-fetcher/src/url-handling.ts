@@ -65,7 +65,7 @@ export async function retrieveContent(file: File): Promise<IncomingDataRow[]> {
 				return undefined;
 			}
 		})
-		.filter((obj) => !!obj);
+		.filter((obj): obj is IncomingDataRow => !!obj);
 }
 
 export async function retrievePersonalisedContent(
@@ -95,5 +95,5 @@ export async function retrievePersonalisedContent(
 				return undefined;
 			}
 		})
-		.filter((obj) => !!obj);
+		.filter((obj): obj is IncomingPersonalisedRow => !!obj);
 }
