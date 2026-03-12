@@ -72,7 +72,6 @@ export async function retrievePersonalisedContent(
 	file: File,
 ): Promise<IncomingPersonalisedRow[]> {
 	const content = await consumeReadable(file.createReadStream());
-	console.log(`debug: ${file.name} contents:`);
 	const objects = content.toString('utf-8').split('\n');
 
 	return objects
@@ -81,11 +80,11 @@ export async function retrievePersonalisedContent(
 				if (IsEmpty.test(str)) return undefined;
 				const parsed = JSON.parse(str) as {
 					identity_id: string;
-					total_available: string;
+					total_available: number;
 					items: Array<{ id: string }>;
 				};
 				const identityId: string = parsed.identity_id;
-				const totalAvailable: number = parseInt(parsed.total_available, 10);
+				const totalAvailable: number = parsed.total_available;
 				const items: string[] = parsed.items.map((item) => item.id);
 
 				const parsedRow: {
