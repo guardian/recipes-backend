@@ -142,6 +142,13 @@ export class RecipesBackend extends GuStack {
 				'The time to wait between sending batches of reindex messages',
 		});
 
+		const configBucketParam = new GuParameter(this, 'configBucketParam', {
+			default: '/account/services/private.config.bucket',
+			fromSSM: true,
+			type: 'String',
+			description: 'Location of the private config bucket',
+		});
+
 		const contentUrlBase =
 			this.stage === 'CODE'
 				? 'recipes.code.dev-guardianapis.com'
@@ -399,5 +406,40 @@ export class RecipesBackend extends GuStack {
 		});
 
 		new PrintableRecipeGenerator(this, 'PrintableRecipes', { eventBus });
+
+		new GuLambdaFunction(this, 'update-densities-lambda', {
+			app: 'recipes-backend-update-densities',
+			functionName: `update-density-data-${this.stage}`,
+			fileName: 'update-density.zip',
+			handler: 'main.handler',
+			runtime: Runtime.NODEJS_22_X,
+			architecture: Architecture.ARM_64,
+			environment: {
+				FASTLY_API_KEY: fastlyKeyParam.valueAsString,
+				STATIC_BUCKET: serving.staticBucket.bucketName,
+				CONTENT_URL_BASE: contentUrlBase,
+			},
+			initialPolicy: [
+				new PolicyStatement({
+					effect: Effect.ALLOW,
+					actions: ['s3:PutObject', 's3:GetObject', 's3:DeleteObject'],
+					resources: [serving.staticBucket.bucketArn + '/densities/*'],
+				}),
+				new PolicyStatement({
+					effect: Effect.ALLOW,
+					actions: ['s3:ListBucket'],
+					resources: [serving.staticBucket.bucketArn],
+				}),
+				new PolicyStatement({
+					effect: Effect.ALLOW,
+					actions: ['s3:GetObject', 's3:DeleteObject'],
+					resources: [
+						`arn:aws:s3:::${configBucketParam.valueAsString}/densities/*`,
+					],
+				}),
+			],
+			memorySize: 256,
+			timeout: Duration.seconds(10),
+		});
 	}
 }

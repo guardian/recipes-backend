@@ -110,3 +110,5 @@ jobs:
               - dist/lambda/dynamic-fronts-fetcher.zip
             recipes-publish-contributor-information:
               - dist/lambda/profile-cache-rebuild.zip
+            recipes-backend-update-densities:
+              - dist/lambda/update-density.zip
