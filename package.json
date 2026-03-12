@@ -88,7 +88,6 @@
 		"@nx/js": "22.5.4",
 		"@nx/node": "22.5.4",
 		"@nx/workspace": "22.5.4",
-    "@swc-node/register": "~1.9.1",
 		"@swc/core": "1.15.8",
 		"@types/aws-lambda": "^8.10.125",
 		"@types/body-parser": "^1.19.5",
