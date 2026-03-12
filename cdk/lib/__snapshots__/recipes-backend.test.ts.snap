@@ -597,7 +597,7 @@ def sort_filter_rules(json_obj):
         "LoggingConfig": {
           "LogFormat": "JSON",
         },
-        "MemorySize": 256,
+        "MemorySize": 2048,
         "Role": {
           "Fn::GetAtt": [
             "DynamicFrontsFetcherRole2FDB4150",
@@ -627,7 +627,7 @@ def sort_filter_rules(json_obj):
             "Value": "TEST",
           },
         ],
-        "Timeout": 30,
+        "Timeout": 600,
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -669,20 +669,36 @@ def sort_filter_rules(json_obj):
                     "s3:GetObject",
                   ],
                   "Effect": "Allow",
-                  "Resource": {
-                    "Fn::Join": [
-                      "",
-                      [
-                        {
-                          "Fn::GetAtt": [
-                            "staticstaticServing53194089",
-                            "Arn",
-                          ],
-                        },
-                        "/dynamic/curation/*",
+                  "Resource": [
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Fn::GetAtt": [
+                              "staticstaticServing53194089",
+                              "Arn",
+                            ],
+                          },
+                          "/dynamic/curation/*",
+                        ],
                       ],
-                    ],
-                  },
+                    },
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Fn::GetAtt": [
+                              "staticstaticServing53194089",
+                              "Arn",
+                            ],
+                          },
+                          "/dynamic/personalised/*",
+                        ],
+                      ],
+                    },
+                  ],
                 },
               ],
               "Version": "2012-10-17",

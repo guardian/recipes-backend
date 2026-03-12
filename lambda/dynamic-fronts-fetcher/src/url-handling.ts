@@ -1,6 +1,6 @@
 import type { File, Storage } from '@google-cloud/storage';
 import { consumeReadable } from '@recipes-api/lib/recipes-data';
-import { IncomingDataRow } from './models';
+import { IncomingDataRow, IncomingPersonalisedRow } from './models';
 
 export function breakDownUrl(from: string): {
 	gcpBucket: string;
@@ -65,5 +65,35 @@ export async function retrieveContent(file: File): Promise<IncomingDataRow[]> {
 				return undefined;
 			}
 		})
-		.filter((obj) => !!obj);
+		.filter((obj): obj is IncomingDataRow => !!obj);
+}
+
+export async function retrievePersonalisedContent(
+	file: File,
+): Promise<IncomingPersonalisedRow[]> {
+	const content = await consumeReadable(file.createReadStream());
+	const objects = content.toString('utf-8').split('\n');
+
+	return objects
+		.map((str, ctr) => {
+			try {
+				if (IsEmpty.test(str)) return undefined;
+				const result = IncomingPersonalisedRow.safeParse(JSON.parse(str));
+
+				if (result.success) {
+					return result.data;
+				} else {
+					console.warn(
+						`Data from line ${ctr} did not marshal: ${result.error.toString()}. Content was '${str}'.`,
+					);
+					return undefined;
+				}
+			} catch (err) {
+				console.warn(
+					`Unparseable content at line ${ctr} of ${file.bucket.name}:${file.name} - '${str}', error was ${err}`,
+				);
+				return undefined;
+			}
+		})
+		.filter((obj): obj is IncomingPersonalisedRow => !!obj);
 }

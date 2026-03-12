@@ -33,6 +33,7 @@ export class DynamicFronts extends Construct {
 		super(scope, name);
 
 		const base_path = 'dynamic/curation';
+		const personalised_base_path = 'dynamic/personalised';
 
 		const lambdaRole = new Role(this, 'FetcherRole', {
 			//The role name needs to be short for cross-cloud federation or you
@@ -50,7 +51,10 @@ export class DynamicFronts extends Construct {
 						new PolicyStatement({
 							effect: Effect.ALLOW,
 							actions: ['s3:PutObject', 's3:GetObject'],
-							resources: [`${props.destBucket.bucketArn}/${base_path}/*`],
+							resources: [
+								`${props.destBucket.bucketArn}/${base_path}/*`,
+								`${props.destBucket.bucketArn}/${personalised_base_path}/*`,
+							],
 						}),
 					],
 				}),
@@ -72,7 +76,8 @@ export class DynamicFronts extends Construct {
 			functionName: `dynamic-fetcher-${scope.stage}`,
 			runtime: Runtime.NODEJS_20_X,
 			app: 'dynamic-fronts-fetcher',
-			memorySize: 256,
+			memorySize: 2048,
+			timeout: Duration.minutes(10), //for testing as we are seeing time out after 1 minute and we just proceese 40k but we need to reach 121k
 			environment: {
 				BUCKET_NAME: props.destBucket.bucketName,
 				BASE_PATH: base_path,
