@@ -78,32 +78,13 @@ export async function retrievePersonalisedContent(
 		.map((str, ctr) => {
 			try {
 				if (IsEmpty.test(str)) return undefined;
-				const parsed = JSON.parse(str) as {
-					identity_id: string;
-					total_available: number;
-					items: Array<{ id: string }>;
-				};
-				const identityId: string = parsed.identity_id;
-				const totalAvailable: number = parsed.total_available;
-				const items: string[] = parsed.items.map((item) => item.id);
+				const result = IncomingPersonalisedRow.safeParse(JSON.parse(str));
 
-				const parsedRow: {
-					identity_id: string;
-					items: string[];
-					total_available: number;
-				} = {
-					identity_id: identityId,
-					items,
-					total_available: totalAvailable,
-				};
-				const result = IncomingPersonalisedRow.safeParse(parsedRow);
 				if (result.success) {
 					return result.data;
 				} else {
 					console.warn(
-						`Data from line ${ctr} did not marshal: ${result.error.toString()}. Content was '${JSON.stringify(
-							parsedRow,
-						)}'.`,
+						`Data from line ${ctr} did not marshal: ${result.error.toString()}. Content was '${str}'.`,
 					);
 					return undefined;
 				}
@@ -114,5 +95,5 @@ export async function retrievePersonalisedContent(
 				return undefined;
 			}
 		})
-		.filter((obj) => !!obj) as IncomingPersonalisedRow[];
+		.filter((obj) => !!obj);
 }
