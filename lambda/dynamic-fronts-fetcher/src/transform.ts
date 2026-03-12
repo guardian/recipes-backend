@@ -51,7 +51,7 @@ export function convertPersonalisedBQReport(
 ): FeastAppContainer {
 	const items = incoming.items.map((item) => ({
 		recipe: {
-			id: item,
+			id: item.id,
 		},
 	}));
 

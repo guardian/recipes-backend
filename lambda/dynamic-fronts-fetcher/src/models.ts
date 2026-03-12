@@ -26,8 +26,12 @@ export const InvokeEvent = z.union([
 
 export const IncomingPersonalisedRow = z.object({
 	identity_id: z.string().regex(/^\d+$/),
-	items: z.array(z.string().regex(RECIPE_ID_REGEX)),
-	total_available: z.number(),
+	items: z.array(
+		z.object({
+			id: z.string().regex(RECIPE_ID_REGEX),
+		}),
+	),
+	total_available: z.coerce.number(),
 });
 
 export type IncomingPersonalisedRow = z.infer<typeof IncomingPersonalisedRow>;
