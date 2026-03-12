@@ -79,15 +79,31 @@ export async function retrievePersonalisedContent(
 		.map((str, ctr) => {
 			try {
 				if (IsEmpty.test(str)) return undefined;
-				const parsed = JSON.parse(str) as unknown;
+				const parsed = JSON.parse(str) as {
+					identity_id: string;
+					total_available: string;
+					items: Array<{ id: string }>;
+				};
+				const identityId: string = parsed.identity_id;
+				const totalAvailable: number = parseInt(parsed.total_available, 10);
+				const items: string[] = parsed.items.map((item) => item.id);
 
-				const result = IncomingPersonalisedRow.safeParse(parsed);
+				const parsedRow: {
+					identity_id: string;
+					items: string[];
+					total_available: number;
+				} = {
+					identity_id: identityId,
+					items,
+					total_available: totalAvailable,
+				};
+				const result = IncomingPersonalisedRow.safeParse(parsedRow);
 				if (result.success) {
 					return result.data;
 				} else {
 					console.warn(
 						`Data from line ${ctr} did not marshal: ${result.error.toString()}. Content was '${JSON.stringify(
-							parsed,
+							parsedRow,
 						)}'.`,
 					);
 					return undefined;
