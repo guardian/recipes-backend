@@ -252,6 +252,7 @@ export async function generateHybridFront(
 	region: string,
 	variant: string,
 	territory: string | undefined,
+	personalisedInsertionPoint: number,
 	localisationInsertionPoint: number,
 	authToken?: string,
 	overrideDate?: Date,
@@ -289,28 +290,29 @@ export async function generateHybridFront(
 	const personalisedContainer = await getPersonalisedContainer(authToken);
 
 	if (!personalisedContainer) {
-		console.info(`No Personanlised data is available for the user`);
+		console.info(`No Personalised data is available for the user`);
 	}
 
-	const injectedContainers: FeastAppContainer[] = [];
-
-	if (maybeLocalisation) {
-		injectedContainers.push(maybeLocalisation);
-	}
-
-	if (personalisedContainer && personalisedContainer.items.length > 1) {
-		injectedContainers.push(personalisedContainer);
-	}
-
-	if (curatedFront.length < localisationInsertionPoint) {
+	if (
+		curatedFront.length <
+		Math.max(personalisedInsertionPoint, localisationInsertionPoint)
+	) {
+		const injectedContainers: FeastAppContainer[] = [];
+		if (personalisedContainer && personalisedContainer.items.length > 1) {
+			injectedContainers.push(personalisedContainer);
+		}
+		if (maybeLocalisation && maybeLocalisation.items.length > 1) {
+			injectedContainers.push(maybeLocalisation);
+		}
 		curatedFront.push(...injectedContainers);
-		return curatedFront;
 	} else {
-		return curatedFront
-			.slice(0, localisationInsertionPoint)
-			.concat(
-				injectedContainers,
-				...curatedFront.slice(localisationInsertionPoint),
-			);
+		if (personalisedContainer && personalisedContainer.items.length > 1) {
+			curatedFront.splice(personalisedInsertionPoint, 0, personalisedContainer);
+		}
+		if (maybeLocalisation && maybeLocalisation.items.length > 1) {
+			curatedFront.splice(localisationInsertionPoint, 0, maybeLocalisation);
+		}
 	}
+
+	return curatedFront;
 }

@@ -139,7 +139,8 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 		req.params.region,
 		req.params.variant,
 		territoryParam,
-		2,
+		3,
+		7,
 		authToken,
 		undefined,
 	)
