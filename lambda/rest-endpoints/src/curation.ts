@@ -253,7 +253,6 @@ export async function generateHybridFront(
 	variant: string,
 	territory: string | undefined,
 	personalisedInsertionPoint: number,
-	localisationInsertionPoint: number,
 	authToken?: string,
 	overrideDate?: Date,
 ): Promise<FeastAppContainer[]> {
@@ -293,10 +292,7 @@ export async function generateHybridFront(
 		console.info(`No Personalised data is available for the user`);
 	}
 
-	if (
-		curatedFront.length <
-		Math.max(personalisedInsertionPoint, localisationInsertionPoint)
-	) {
+	if (curatedFront.length < personalisedInsertionPoint) {
 		const injectedContainers: FeastAppContainer[] = [];
 		if (personalisedContainer && personalisedContainer.items.length > 1) {
 			injectedContainers.push(personalisedContainer);
@@ -309,8 +305,12 @@ export async function generateHybridFront(
 		if (personalisedContainer && personalisedContainer.items.length > 1) {
 			curatedFront.splice(personalisedInsertionPoint, 0, personalisedContainer);
 		}
-		if (maybeLocalisation && maybeLocalisation.items.length > 1) {
-			curatedFront.splice(localisationInsertionPoint, 0, maybeLocalisation);
+		if (
+			maybeLocalisation &&
+			maybeLocalisation.items.length > 1 &&
+			curatedFront.length > 1
+		) {
+			curatedFront.splice(curatedFront.length - 1, 0, maybeLocalisation);
 		}
 	}
 
