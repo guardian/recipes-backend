@@ -252,6 +252,7 @@ export async function generateHybridFront(
 	region: string,
 	variant: string,
 	territory: string | undefined,
+	personalisedInsertionPoint: number,
 	localisationInsertionPoint: number,
 	authToken?: string,
 	overrideDate?: Date,
@@ -289,28 +290,28 @@ export async function generateHybridFront(
 	const personalisedContainer = await getPersonalisedContainer(authToken);
 
 	if (!personalisedContainer) {
-		console.info(`No Personanlised data is available for the user`);
+		console.info(`No Personalised data is available for the user`);
 	}
 
-	const injectedContainers: FeastAppContainer[] = [];
-
-	if (maybeLocalisation) {
-		injectedContainers.push(maybeLocalisation);
-	}
-
-	if (personalisedContainer && personalisedContainer.items.length > 1) {
-		injectedContainers.push(personalisedContainer);
-	}
-
-	if (curatedFront.length < localisationInsertionPoint) {
-		curatedFront.push(...injectedContainers);
-		return curatedFront;
+	if (
+		curatedFront.length <
+		Math.max(personalisedInsertionPoint, localisationInsertionPoint)
+	) {
+		[personalisedContainer, maybeLocalisation].forEach((container) => {
+			if (container && container.items.length > 1) {
+				curatedFront.push(container);
+			}
+		});
 	} else {
-		return curatedFront
-			.slice(0, localisationInsertionPoint)
-			.concat(
-				injectedContainers,
-				...curatedFront.slice(localisationInsertionPoint),
-			);
+		[
+			{ container: personalisedContainer, index: personalisedInsertionPoint },
+			{ container: maybeLocalisation, index: localisationInsertionPoint },
+		].forEach(({ container, index }) => {
+			if (container && container.items.length > 1) {
+				curatedFront.splice(index, 0, container);
+			}
+		});
 	}
+
+	return curatedFront;
 }
