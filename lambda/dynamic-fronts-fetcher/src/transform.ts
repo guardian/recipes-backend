@@ -59,7 +59,7 @@ export function convertPersonalisedBQReport(
 
 	return {
 		id,
-		title: 'More recipes you might like',
+		title: 'More recipes you may like',
 		items,
 		identity_id: incoming.identity_id,
 	};
