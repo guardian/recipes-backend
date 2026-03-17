@@ -297,21 +297,20 @@ export async function generateHybridFront(
 		curatedFront.length <
 		Math.max(personalisedInsertionPoint, localisationInsertionPoint)
 	) {
-		const injectedContainers: FeastAppContainer[] = [];
-		if (personalisedContainer && personalisedContainer.items.length > 1) {
-			injectedContainers.push(personalisedContainer);
-		}
-		if (maybeLocalisation && maybeLocalisation.items.length > 1) {
-			injectedContainers.push(maybeLocalisation);
-		}
-		curatedFront.push(...injectedContainers);
+		[personalisedContainer, maybeLocalisation].forEach((container) => {
+			if (container && container.items.length > 1) {
+				curatedFront.push(container);
+			}
+		});
 	} else {
-		if (personalisedContainer && personalisedContainer.items.length > 1) {
-			curatedFront.splice(personalisedInsertionPoint, 0, personalisedContainer);
-		}
-		if (maybeLocalisation && maybeLocalisation.items.length > 1) {
-			curatedFront.splice(localisationInsertionPoint, 0, maybeLocalisation);
-		}
+		[
+			{ container: personalisedContainer, index: personalisedInsertionPoint },
+			{ container: maybeLocalisation, index: localisationInsertionPoint },
+		].forEach(({ container, index }) => {
+			if (container && container.items.length > 1) {
+				curatedFront.splice(index, 0, container);
+			}
+		});
 	}
 
 	return curatedFront;
