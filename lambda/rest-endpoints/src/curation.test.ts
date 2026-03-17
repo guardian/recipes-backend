@@ -41,6 +41,18 @@ describe('generateHybridFront', () => {
 			{ recipe: { id: 'recipe-9' } },
 		],
 	};
+	const mockInsertPersonalisedCurationData: FeastAppContainer = {
+		title: 'inserted personalised container',
+		items: [
+			{ recipe: { id: 'recipe-10' } },
+			{ recipe: { id: 'recipe-11' } },
+			{ recipe: { id: 'recipe-12' } },
+			{ recipe: { id: 'recipe-1c' } },
+			{ recipe: { id: 'recipe-13' } },
+			{ recipe: { id: 'recipe-14' } },
+		],
+	};
+
 	it('should retrieve both the curated front and inserts and combine them', async () => {
 		const mainCurationBody = Readable.from(
 			Buffer.from(JSON.stringify(mockMainCurationData)),
@@ -73,6 +85,7 @@ describe('generateHybridFront', () => {
 			'northern',
 			'all-recipes',
 			'fr',
+			1,
 			2,
 			undefined,
 			new Date(2025, 0, 2),
@@ -116,6 +129,7 @@ describe('generateHybridFront', () => {
 			'all-recipes',
 			'fr',
 			100,
+			101,
 			undefined,
 			new Date(2025, 0, 2),
 		);
@@ -158,6 +172,7 @@ describe('generateHybridFront', () => {
 			'meat-free',
 			'fr',
 			2,
+			3,
 			undefined,
 			new Date(2025, 0, 2),
 		);
@@ -198,6 +213,7 @@ describe('generateHybridFront', () => {
 			'northern',
 			'all-recipes',
 			'fr',
+			1,
 			2,
 			undefined,
 			new Date(2025, 0, 2),
@@ -249,6 +265,7 @@ describe('generateHybridFront', () => {
 			'meat-free',
 			'fr',
 			2,
+			3,
 			undefined,
 			new Date(2025, 0, 2),
 		);
@@ -284,6 +301,7 @@ describe('generateHybridFront', () => {
 			'meat-free',
 			'fr',
 			2,
+			3,
 			undefined,
 			new Date(2025, 0, 2),
 		);
@@ -298,6 +316,9 @@ describe('generateHybridFront', () => {
 		);
 		const insertBody = Readable.from(
 			Buffer.from(JSON.stringify(mockInsertCurationData)),
+		);
+		const insertPersonalisedBody = Readable.from(
+			Buffer.from(JSON.stringify(mockInsertPersonalisedCurationData)),
 		);
 		s3Mock.callsFake((input: GetObjectCommandInput) => {
 			console.log(JSON.stringify(input));
@@ -358,24 +379,34 @@ describe('generateHybridFront', () => {
 			)
 			.onAnyCommand({
 				Bucket: 'test',
+				Key: `dynamic/personalised/101.json`,
+			})
+			.resolves({
+				//@ts-ignore
+				Body: insertPersonalisedBody,
+			})
+			.onAnyCommand({
+				Bucket: 'test',
 				Key: `dynamic/curation/2025-01-02/FR.json`,
 			})
 			.resolves({
 				//@ts-ignore
 				Body: insertBody,
 			});
+
 		const result = await generateHybridFront(
 			'northern',
 			'all-recipes',
 			'fr',
 			2,
+			3,
 			undefined,
 			new Date(2025, 0, 5),
 		);
 		expect(result[0].title).toEqual('container 1');
 		expect(result[1].title).toEqual('container 2');
-		expect(result[2].title).toEqual('inserted container');
-		expect(result[3].title).toEqual('container 3');
+		expect(result[2].title).toEqual('container 3');
+		expect(result[3].title).toEqual('inserted container');
 		expect(result[4].title).toEqual('container 4');
 	});
 });
