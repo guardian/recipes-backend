@@ -1,6 +1,7 @@
 import * as process from 'process';
 import {
 	DeleteObjectCommand,
+	GetObjectCommand,
 	HeadObjectCommand,
 	NoSuchKey,
 	NotFound,
@@ -275,6 +276,26 @@ export async function writeIndexData({
 		contentPrefix,
 	});
 	console.log('Done.');
+}
+
+/**
+ * Retrieves the whole index from S3- more efficient than loading everything from Dynamo, if you don't need
+ * up-to-the-second accuracy
+ * @param Key
+ * @param Bucket
+ */
+export async function readIndexDataS3(Key: string, Bucket: string) {
+	const req = new GetObjectCommand({
+		Bucket,
+		Key,
+	});
+
+	const response = await s3Client.send(req);
+	if (!response.Body) {
+		throw new Error(`No content was returned for s3://${Bucket}/${Key}`);
+	}
+	const content = await response.Body.transformToString();
+	return JSON.parse(content) as RecipeIndex; //FIXME: need to remodel RecipeIndex as Zod to ensure type safety
 }
 
 export async function writeChefData({

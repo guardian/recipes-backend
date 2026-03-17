@@ -7,6 +7,7 @@ import {
 import type { NodeJsRuntimeStreamingBlobTypes } from '@smithy/types/dist-types/streaming-payload/streaming-blob-common-types';
 import axios from 'axios';
 import { format as formatDate, subDays } from 'date-fns';
+import { v4 as uuidv4 } from 'uuid';
 import { registerMetric } from '@recipes-api/cwmetrics';
 import type {
 	ContainerItem,
@@ -17,7 +18,9 @@ import { FeastAppContainer } from '@recipes-api/lib/facia';
 import {
 	AwsRegion,
 	consumeReadable,
+	getApiBase,
 	getStaticBucketName,
+	SearchResponseJson,
 } from '@recipes-api/lib/recipes-data';
 
 const s3Client = new S3Client({
@@ -248,6 +251,34 @@ export async function getPersonalisedContainer(
 	}
 }
 
+async function generateMostRecent(
+	Limit: number,
+): Promise<FeastAppContainer | undefined> {
+	const apiBase = getApiBase();
+
+	try {
+		const url = `${apiBase}/search?nostats&limit=${Limit}`;
+		const searchResponse = await fetch(url);
+		if (searchResponse.status == 200) {
+			const content = SearchResponseJson.parse(await searchResponse.json());
+			const recipeIds = content.results.map((r) => r.uuid);
+			return {
+				id: uuidv4(),
+				title: 'Our recent recipes',
+				items: recipeIds.map((id) => ({ recipe: { id } })),
+			};
+		} else {
+			const error = await searchResponse.text();
+			console.error(
+				`The search endpoint returned ${searchResponse.status}: ${error}`,
+			);
+			return undefined;
+		}
+	} catch (err) {
+		console.error(`Unable to retrieve most recent recipes: `, err);
+	}
+}
+
 export async function generateHybridFront(
 	region: string,
 	variant: string,
@@ -256,7 +287,13 @@ export async function generateHybridFront(
 	authToken?: string,
 	overrideDate?: Date,
 ): Promise<FeastAppContainer[]> {
-	const curatedFront = await retrieveTodaysCuration(region, variant);
+	const fetches = await Promise.all([
+		retrieveTodaysCuration(region, variant),
+		getPersonalisedContainer(authToken),
+		generateMostRecent(5),
+	]);
+
+	const curatedFront = fetches[0];
 	if (variant == 'meat-free') {
 		//we don't currently support localisation for meat-free
 		return curatedFront;
@@ -286,11 +323,13 @@ export async function generateHybridFront(
 		);
 	}
 
-	const personalisedContainer = await getPersonalisedContainer(authToken);
+	const personalisedContainer = fetches[1];
 
 	if (!personalisedContainer) {
 		console.info(`No Personanlised data is available for the user`);
 	}
+
+	const mostRecentContainer = fetches[2];
 
 	const injectedContainers: FeastAppContainer[] = [];
 
@@ -300,6 +339,9 @@ export async function generateHybridFront(
 
 	if (personalisedContainer && personalisedContainer.items.length > 1) {
 		injectedContainers.push(personalisedContainer);
+	}
+	if (mostRecentContainer && mostRecentContainer.items.length > 1) {
+		injectedContainers.push(mostRecentContainer);
 	}
 
 	if (curatedFront.length < localisationInsertionPoint) {

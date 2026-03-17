@@ -58,3 +58,6 @@ export const ImageDpr = process.env['IMAGE_DPR']
 //Used by eventbus
 export const getOutgoingEventBus =
 	createGetMandatoryParameter('OUTGOING_EVENT_BUS');
+
+//Used by REST endpoints
+export const getApiBase = createGetMandatoryParameter('RECIPE_API_BASE');
