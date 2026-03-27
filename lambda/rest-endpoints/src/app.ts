@@ -223,10 +223,7 @@ router.get('/api/:region/:variant/container-by-title', (req, resp) => {
 				resp.status(200).json(containersWithTitle);
 			})
 			.catch((err) => {
-				console.error(
-					`Error generating hybrid front for ${req.params.region} / ${req.params.variant}: `,
-					err,
-				);
+				console.error('Error generating curation by title', err);
 				resp.status(500).json({
 					status: 'internal_error',
 					detail: `An error occurred while fetching curation by title. See server logs for details.`,
