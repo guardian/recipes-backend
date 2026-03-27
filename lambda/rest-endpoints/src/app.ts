@@ -6,12 +6,7 @@ import type { Request } from 'express';
 import type { RecipeV3 } from '@recipes-api/lib/feast-models';
 import { recipeByUID } from '@recipes-api/lib/recipes-data';
 import { checkTemplate } from './check-template';
-import {
-	findRecentLocalisation,
-	generateHybridFront,
-	recipeFromContainer,
-	retrieveTodaysCuration,
-} from './curation';
+import { generateHybridFront } from './curation';
 import { countryCodeFromCDN } from './geo_cdn';
 import { recursivelyGetIdList } from './helpers';
 
@@ -215,7 +210,7 @@ router.get('/api/:region/:variant/container-by-title', (req, resp) => {
 					console.log('No containers found with the provided title(s):', title);
 					resp.status(404).json({
 						status: 'not_found',
-						detail: `No container found with title: ${title}`,
+						detail: 'No containers found. Please try again.',
 					});
 					return;
 				}
