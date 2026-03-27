@@ -172,80 +172,71 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 		});
 });
 
-/** A separate endpoint for Most popular in your country*/
-router.get('/api/:region/:variant/localisation', (req, resp) => {
+/** A separate endpoint for any of the container to get extracted based on title */
+router.get('/api/:region/:variant/container-by-title', (req, resp) => {
 	try {
-		const territoryParam =
-			(req.query['ter'] as string | undefined) ?? countryCodeFromCDN(req);
-
-		if (!territoryParam) {
+		const { title } = req.query;
+		if (!title) {
 			resp.status(400).json({
 				status: 'error',
-				detail: 'No territory specified and unable to determine from request',
+				detail: 'You must specify a title to query',
 			});
 			return;
 		}
 
-		retrieveTodaysCuration(req.params.region, req.params.variant)
+		const territoryParam =
+			(req.query['ter'] as string | undefined) ?? countryCodeFromCDN(req);
+		const authToken = req.headers['authorization'];
+
+		generateHybridFront(
+			req.params.region,
+			req.params.variant,
+			territoryParam,
+			3,
+			7,
+			authToken,
+			undefined,
+		)
 			.then((curatedFront) => {
-				const curatedRecipesSet = new Set(
-					curatedFront.flatMap((c) => c.items).flatMap(recipeFromContainer),
+				console.log('Curated front length:', curatedFront.length);
+				console.log('Incoming title(s):', title);
+				const containersWithTitle = curatedFront.filter((container) => {
+					if (Array.isArray(title)) {
+						return title.includes(container.title);
+					}
+					return container.title === title;
+				});
+				console.log(
+					'containersWithTitle front length:',
+					containersWithTitle.length,
 				);
 
-				console.log(
-					'INFO on most popular container, curatedFront:',
-					JSON.stringify(curatedFront),
-				);
-				console.log(
-					'INFO on most popular container, Items after first flatMap:',
-					JSON.stringify(curatedFront.flatMap((c) => c.items)),
-				);
-				console.log(
-					'INFO on most popular container, Recipes after second flatMap:',
-					JSON.stringify(
-						curatedFront.flatMap((c) => c.items).flatMap(recipeFromContainer),
-					),
-				);
+				if (containersWithTitle.length === 0) {
+					console.log('No containers found with the provided title(s):', title);
+					resp.status(404).json({
+						status: 'not_found',
+						detail: `No container found with title: ${title}`,
+					});
+					return;
+				}
 
-				console.log(
-					'INFO on most popular container, curatedRecipesSet ',
-					JSON.stringify(Array.from(curatedRecipesSet)),
-				);
-
-				const maybeLocalisation = findRecentLocalisation(
-					territoryParam,
-					5,
-					new Date(),
-					curatedRecipesSet,
-					10,
-				);
-
-				console.log(
-					'INFO on most popular container, maybeLocalisation ',
-					JSON.stringify(maybeLocalisation),
-				);
-
-				resp
-					.status(200)
-					.set({
-						'Cache-Control': 'no-store, no-cache',
-					})
-					.json(maybeLocalisation);
+				resp.status(200).json(containersWithTitle);
 			})
 			.catch((err) => {
-				console.error("Error retrieving today's curation:", err);
-				resp.status(404).json({
-					status: `Error: No localisation available for ${req.params.region} / ${req.params.variant} in ${territoryParam}`,
-					detail:
-						'No Localisation could be found. See server logs for details.',
+				console.error(
+					`Error generating hybrid front for ${req.params.region} / ${req.params.variant}: `,
+					err,
+				);
+				resp.status(500).json({
+					status: 'internal_error',
+					detail: `An error occurred while fetching curation by title. See server logs for details.`,
 				});
 			});
 	} catch (err) {
 		console.error(err);
 		resp.status(500).json({
 			status: 'error',
-			detail:
-				'An error occurred while fetching localisation. See server logs for details.',
+			detail: 'An unexpected error occurred. See server logs for details.',
 		});
 	}
 });
