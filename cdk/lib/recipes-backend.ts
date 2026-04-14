@@ -79,9 +79,7 @@ export class RecipesBackend extends GuStack {
 
 		const telemetryTopic = new GuParameter(this, 'TelemetryTopic', {
 			fromSSM: true,
-			//This will migrate to /CODE/feast/recipe-structuriser/Telemetry/topicArn once
-			// https://github.com/guardian/data-science-recipes/pull/182 is deployed
-			default: `/${this.stage}/feast/recipe-structuriser/telemetryTopic`,
+			default: `/${this.stage}/feast/recipe-structuriser/Telemetry/topicArn`,
 			description:
 				'ARN of the SNS topic to use for data submissions (shared with structuriser)',
 		});
