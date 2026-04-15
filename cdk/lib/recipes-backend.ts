@@ -79,7 +79,7 @@ export class RecipesBackend extends GuStack {
 
 		const telemetryTopic = new GuParameter(this, 'TelemetryTopic', {
 			fromSSM: true,
-			default: `/${this.stage}/feast/recipe-structuriser/Telemetry/topicArn`,
+			default: `/${this.stage}/feast/recipe-structuriser/Telemetry/topicArn-TEST`,
 			description:
 				'ARN of the SNS topic to use for data submissions (shared with structuriser)',
 		});

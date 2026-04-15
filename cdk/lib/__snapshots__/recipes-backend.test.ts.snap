@@ -120,7 +120,7 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "TelemetryTopic": {
-      "Default": "/TEST/feast/recipe-structuriser/Telemetry/topicArn",
+      "Default": "/TEST/feast/recipe-structuriser/Telemetry/topicArn-TEST",
       "Description": "ARN of the SNS topic to use for data submissions (shared with structuriser)",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
