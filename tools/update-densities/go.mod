@@ -4,7 +4,7 @@ go 1.24.5
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.32.7
-	github.com/aws/aws-sdk-go-v2/service/lambda v1.88.0
+	github.com/aws/aws-sdk-go-v2/service/lambda v1.88.5
 )
 
 require (
