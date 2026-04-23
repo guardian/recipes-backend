@@ -168,13 +168,13 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 });
 
 /** A separate endpoint for any of the container to get extracted based on title */
-router.get('/api/:region/:variant/container-by-title', (req, resp) => {
+router.post('/api/:region/:variant/container-by-title', (req, resp) => {
 	try {
-		const { title } = req.query;
+		const { title } = req.body;
 		if (!title) {
 			resp.status(400).json({
 				status: 'error',
-				detail: 'You must specify a title to query',
+				detail: 'You must specify a title in the request body',
 			});
 			return;
 		}
