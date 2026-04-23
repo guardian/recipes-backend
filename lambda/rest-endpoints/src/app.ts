@@ -26,6 +26,10 @@ interface RecipeIdParams {
 	recipeUID: string;
 }
 
+interface ContainerRequestBody {
+	title: string;
+}
+
 function validateComposerParams(params: RecipeIdParams) {
 	const checker = /^[\w\d]+$/;
 
@@ -170,7 +174,7 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 /** A separate endpoint for any of the container to get extracted based on title */
 router.post('/api/:region/:variant/container-by-title', (req, resp) => {
 	try {
-		const { title } = req.body;
+		const { title } = req.body as ContainerRequestBody;
 		if (!title) {
 			resp.status(400).json({
 				status: 'error',
