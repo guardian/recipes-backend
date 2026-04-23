@@ -206,6 +206,23 @@ router.post('/api/:region/:variant/container-by-title', (req, resp) => {
 					containersWithTitle.length,
 				);
 
+				//Extra Smart layer to indicate generated containers are very few or too many, before user tells us!
+				if (containersWithTitle.length < 2) {
+					console.warn(
+						'Generated containers are very few:',
+						containersWithTitle.length,
+					);
+					// Need to add alarm here
+				}
+
+				if (containersWithTitle.length > 20) {
+					console.warn(
+						'Generated containers are too many:',
+						containersWithTitle.length,
+					);
+					// Need to add alarm here
+				}
+
 				if (containersWithTitle.length === 0) {
 					console.log('No containers found with the provided title(s):', title);
 					resp.status(404).json({
