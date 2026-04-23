@@ -4148,6 +4148,80 @@ def sort_filter_rules(json_obj):
       },
       "Type": "AWS::Lambda::Permission",
     },
+    "RestEndpointsNoneOrTooLessContainersAlarmABCBAEE6": {
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "externalsnonurgentalarmarnParameter3CDDBCA7",
+          },
+        ],
+        "AlarmDescription": "Raised if the NoneOrTooLessContainers metric is recorded in an hour",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "EvaluationPeriods": 1,
+        "MetricName": "NoneOrTooLessContainers",
+        "Namespace": "RecipeBackend",
+        "Period": 3600,
+        "Statistic": "Sum",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "feast",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "RestEndpointsTooManyContainersAlarm424091C2": {
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "externalsnonurgentalarmarnParameter3CDDBCA7",
+          },
+        ],
+        "AlarmDescription": "Raised if the TooManyContainers metric is recorded in an hour",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "EvaluationPeriods": 1,
+        "MetricName": "TooManyContainers",
+        "Namespace": "RecipeBackend",
+        "Period": 3600,
+        "Statistic": "Sum",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/recipes-backend",
+          },
+          {
+            "Key": "Stack",
+            "Value": "feast",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
     "SnapshotRecipeIndexLambdaA94048E1": {
       "DependsOn": [
         "SnapshotRecipeIndexLambdaServiceRoleDefaultPolicy189EC0D5",

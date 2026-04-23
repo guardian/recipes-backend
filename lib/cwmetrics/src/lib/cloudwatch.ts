@@ -14,7 +14,9 @@ export type KnownMetric =
 	| 'FailedAnnouncements'
 	| 'FailedDynamicContainer'
 	| 'FailedPersonalisedContainer'
-	| 'BackendContainerRequests';
+	| 'BackendContainerRequests'
+	| 'NoneOrTooLessContainers'
+	| 'TooManyContainers';
 
 export async function registerMetric(metricName: KnownMetric, value: number) {
 	const req = new PutMetricDataCommand({

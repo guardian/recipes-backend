@@ -3,6 +3,7 @@ import { formatISO } from 'date-fns';
 import { renderFile as ejs } from 'ejs';
 import express, { Router } from 'express';
 import type { Request } from 'express';
+import { registerMetric } from '@recipes-api/cwmetrics';
 import type { RecipeV3 } from '@recipes-api/lib/feast-models';
 import { recipeByUID } from '@recipes-api/lib/recipes-data';
 import { checkTemplate } from './check-template';
@@ -211,20 +212,20 @@ router.post('/api/:region/:variant/container-by-title', (req, resp) => {
 				);
 
 				//Extra Smart layer to indicate generated containers are very few or too many, before user tells us!
-				if (containersWithTitle.length < 2) {
+				if (curatedFront.length < 2) {
 					console.warn(
 						'Generated containers are very few:',
-						containersWithTitle.length,
+						curatedFront.length,
 					);
-					// Need to add alarm here
+					await registerMetric('NoneOrTooLessContainers', 1);
 				}
 
-				if (containersWithTitle.length > 20) {
+				if (curatedFront.length > 20) {
 					console.warn(
 						'Generated containers are too many:',
-						containersWithTitle.length,
+						curatedFront.length,
 					);
-					// Need to add alarm here
+					await registerMetric('TooManyContainers', 1);
 				}
 
 				if (containersWithTitle.length === 0) {
