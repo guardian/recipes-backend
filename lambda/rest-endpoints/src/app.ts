@@ -30,6 +30,7 @@ interface RecipeIdParams {
 
 interface ContainerRequestBody {
 	title: string;
+	date: string;
 }
 
 function validateComposerParams(params: RecipeIdParams) {
@@ -176,7 +177,8 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 /** A separate endpoint for any of the container to get extracted based on title */
 router.post('/api/:region/:variant/container-by-title', (async (req, resp) => {
 	try {
-		const { title } = req.body as ContainerRequestBody;
+		const { title, date } = req.body as ContainerRequestBody;
+
 		if (!title) {
 			resp.status(400).json({
 				status: 'error',
@@ -197,7 +199,7 @@ router.post('/api/:region/:variant/container-by-title', (async (req, resp) => {
 				3,
 				7,
 				authToken,
-				undefined,
+				date ? new Date(date) : undefined,
 			);
 
 			console.log('Curated front length:', curatedFront.length);
