@@ -199,7 +199,7 @@ router.post('/api/:region/:variant/container-by-title', (async (req, resp) => {
 				3,
 				7,
 				authToken,
-				date ? new Date(date) : undefined,
+				date ? date : undefined,
 			);
 
 			console.log('Curated front length:', curatedFront.length);
