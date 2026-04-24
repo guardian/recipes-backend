@@ -1,7 +1,8 @@
 import bodyParser from 'body-parser';
 import { formatISO } from 'date-fns';
 import { renderFile as ejs } from 'ejs';
-import express, { Router } from 'express';
+import 'express-async-errors'; // This patches Express 4 to handle async
+import express, { type RequestHandler, Router } from 'express';
 import type { Request } from 'express';
 import { registerMetric } from '@recipes-api/cwmetrics';
 import type { RecipeV3 } from '@recipes-api/lib/feast-models';
@@ -173,7 +174,7 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 });
 
 /** A separate endpoint for any of the container to get extracted based on title */
-router.post('/api/:region/:variant/container-by-title', async (req, resp) => {
+router.post('/api/:region/container', (async (req, resp) => {
 	try {
 		const { title } = req.body as ContainerRequestBody;
 		if (!title) {
@@ -249,7 +250,7 @@ router.post('/api/:region/:variant/container-by-title', async (req, resp) => {
 			detail: 'An unexpected error occurred. See server logs for details.',
 		});
 	}
-});
+}) as RequestHandler);
 
 router.post(
 	'/api/check-template',
