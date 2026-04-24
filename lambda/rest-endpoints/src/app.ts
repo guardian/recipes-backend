@@ -174,7 +174,7 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 });
 
 /** A separate endpoint for any of the container to get extracted based on title */
-router.post('/api/:region/container', (async (req, resp) => {
+router.post('/api/:region/:variant/container-by-title', (async (req, resp) => {
 	try {
 		const { title } = req.body as ContainerRequestBody;
 		if (!title) {
