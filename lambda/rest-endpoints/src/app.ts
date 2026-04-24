@@ -173,7 +173,7 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 });
 
 /** A separate endpoint for any of the container to get extracted based on title */
-router.post('/api/:region/:variant/container-by-title', (req, resp) => {
+router.post('/api/:region/:variant/container-by-title', async (req, resp) => {
 	try {
 		const { title } = req.body as ContainerRequestBody;
 		if (!title) {
@@ -188,64 +188,60 @@ router.post('/api/:region/:variant/container-by-title', (req, resp) => {
 			(req.query['ter'] as string | undefined) ?? countryCodeFromCDN(req);
 		const authToken = req.headers['authorization'];
 
-		generateHybridFront(
-			req.params.region,
-			req.params.variant,
-			territoryParam,
-			3,
-			7,
-			authToken,
-			undefined,
-		)
-			.then((curatedFront) => {
-				console.log('Curated front length:', curatedFront.length);
-				console.log('Incoming title(s):', title);
-				const containersWithTitle = curatedFront.filter((container) => {
-					if (Array.isArray(title)) {
-						return title.includes(container.title);
-					}
-					return container.title === title;
-				});
-				console.log(
-					'containersWithTitle front length:',
-					containersWithTitle.length,
-				);
+		try {
+			const curatedFront = await generateHybridFront(
+				req.params.region,
+				req.params.variant,
+				territoryParam,
+				3,
+				7,
+				authToken,
+				undefined,
+			);
 
-				//Extra Smart layer to indicate generated containers are very few or too many, before user tells us!
-				if (curatedFront.length < 2) {
-					console.warn(
-						'Generated containers are very few:',
-						curatedFront.length,
-					);
-					await registerMetric('NoneOrTooLessContainers', 1);
+			console.log('Curated front length:', curatedFront.length);
+			console.log('Incoming title(s):', title);
+
+			const containersWithTitle = curatedFront.filter((container) => {
+				if (Array.isArray(title)) {
+					return title.includes(container.title);
 				}
-
-				if (curatedFront.length > 20) {
-					console.warn(
-						'Generated containers are too many:',
-						curatedFront.length,
-					);
-					await registerMetric('TooManyContainers', 1);
-				}
-
-				if (containersWithTitle.length === 0) {
-					console.log('No containers found with the provided title(s):', title);
-					resp.status(404).json({
-						status: 'not_found',
-						detail: 'No containers found. Please try again.',
-					});
-					return;
-				}
-
-				resp.status(200).json(containersWithTitle);
-			})
-			.catch((err) => {
-				console.error('Error generating curation by title', err);
-				resp.status(500).json({
-					status: 'internal_error',
-					detail: `An error occurred while fetching curation by title. See server logs for details.`,
-				});
+				return container.title === title;
 			});
+
+			console.log(
+				'containersWithTitle front length:',
+				containersWithTitle.length,
+			);
+
+			// Extra Smart layer to indicate generated containers are very few or too many, before user tells us!
+			if (curatedFront.length < 2) {
+				console.warn('Generated containers are very few:', curatedFront.length);
+				await registerMetric('NoneOrTooLessContainers', 1);
+			}
+
+			if (curatedFront.length > 20) {
+				console.warn('Generated containers are too many:', curatedFront.length);
+				await registerMetric('TooManyContainers', 1);
+			}
+
+			if (containersWithTitle.length === 0) {
+				console.log('No containers found with the provided title(s):', title);
+				resp.status(404).json({
+					status: 'not_found',
+					detail: 'No containers found. Please try again.',
+				});
+				return;
+			}
+
+			resp.status(200).json(containersWithTitle);
+		} catch (err) {
+			console.error('Error generating curation by title', err);
+			resp.status(500).json({
+				status: 'internal_error',
+				detail: `An error occurred while fetching curation by title. See server logs for details.`,
+			});
+		}
 	} catch (err) {
 		console.error(err);
 		resp.status(500).json({
