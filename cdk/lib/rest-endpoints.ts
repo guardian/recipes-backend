@@ -1,18 +1,27 @@
 import { GuApiLambda } from '@guardian/cdk';
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
-import { Duration } from 'aws-cdk-lib';
+import { aws_sns, Duration } from 'aws-cdk-lib';
 import { EndpointType } from 'aws-cdk-lib/aws-apigateway';
+import {
+	Alarm,
+	ComparisonOperator,
+	Metric,
+	TreatMissingData,
+} from 'aws-cdk-lib/aws-cloudwatch';
+import { SnsAction } from 'aws-cdk-lib/aws-cloudwatch-actions';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { IBucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import type { DataStore } from './datastore';
+import type { ExternalParameters } from './external_parameters';
 
 interface RestEndpointsProps {
 	servingBucket: IBucket;
 	fastlyKey: string;
 	contentUrlBase: string;
 	dataStore: DataStore;
+	externalParameters: ExternalParameters;
 }
 
 export class RestEndpoints extends Construct {
@@ -74,5 +83,54 @@ export class RestEndpoints extends Construct {
 				},
 			],
 		});
+
+		const nonUrgentAlarmTopic = aws_sns.Topic.fromTopicArn(
+			this,
+			'nonurgent-alarm',
+			props.externalParameters.nonUrgentAlarmTopicArn.stringValue,
+		);
+
+		const noneOrTooLessContainersMetric = new Metric({
+			namespace: 'RecipeBackend',
+			metricName: 'NoneOrTooLessContainers',
+			statistic: 'Sum',
+			period: Duration.hours(1),
+		});
+		const noneOrTooLessContainersAlarm = new Alarm(
+			this,
+			'NoneOrTooLessContainersAlarm',
+			{
+				metric: noneOrTooLessContainersMetric,
+				threshold: 1,
+				evaluationPeriods: 1,
+				comparisonOperator:
+					ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+				alarmDescription:
+					'Raised if the NoneOrTooLessContainers metric is recorded in an hour',
+				treatMissingData: TreatMissingData.NOT_BREACHING,
+			},
+		);
+
+		noneOrTooLessContainersAlarm.addAlarmAction(
+			new SnsAction(nonUrgentAlarmTopic),
+		);
+
+		const tooManyContainersMetric = new Metric({
+			namespace: 'RecipeBackend',
+			metricName: 'TooManyContainers',
+			statistic: 'Sum',
+			period: Duration.hours(1),
+		});
+		const tooManyContainersAlarm = new Alarm(this, 'TooManyContainersAlarm', {
+			metric: tooManyContainersMetric,
+			threshold: 1,
+			evaluationPeriods: 1,
+			comparisonOperator: ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+			alarmDescription:
+				'Raised if the TooManyContainers metric is recorded in an hour',
+			treatMissingData: TreatMissingData.NOT_BREACHING,
+		});
+
+		tooManyContainersAlarm.addAlarmAction(new SnsAction(nonUrgentAlarmTopic));
 	}
 }

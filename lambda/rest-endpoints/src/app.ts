@@ -1,8 +1,10 @@
 import bodyParser from 'body-parser';
 import { formatISO } from 'date-fns';
 import { renderFile as ejs } from 'ejs';
-import express, { Router } from 'express';
+import 'express-async-errors'; // This patches Express 4 to handle async
+import express, { type RequestHandler, Router } from 'express';
 import type { Request } from 'express';
+import { registerMetric } from '@recipes-api/cwmetrics';
 import type { RecipeV3 } from '@recipes-api/lib/feast-models';
 import { recipeByUID } from '@recipes-api/lib/recipes-data';
 import { checkTemplate } from './check-template';
@@ -24,6 +26,11 @@ router.use(
 
 interface RecipeIdParams {
 	recipeUID: string;
+}
+
+interface ContainerRequestBody {
+	title: string;
+	date: string;
 }
 
 function validateComposerParams(params: RecipeIdParams) {
@@ -166,6 +173,86 @@ router.get('/api/:region/:variant/hybrid-curation.json', (req, resp) => {
 			});
 		});
 });
+
+/** A separate endpoint for any of the container to get extracted based on title */
+router.post('/api/:region/:variant/container-by-title', (async (req, resp) => {
+	try {
+		const { title, date } = req.body as ContainerRequestBody;
+
+		if (!title) {
+			resp.status(400).json({
+				status: 'error',
+				detail: 'You must specify a title in the request body',
+			});
+			return;
+		}
+
+		const territoryParam =
+			(req.query['ter'] as string | undefined) ?? countryCodeFromCDN(req);
+		const authToken = req.headers['authorization'];
+
+		try {
+			const curatedFront = await generateHybridFront(
+				req.params.region,
+				req.params.variant,
+				territoryParam,
+				3,
+				7,
+				authToken,
+				date ? date : undefined,
+			);
+
+			console.log('Curated front length:', curatedFront.length);
+			console.log('Incoming title(s):', title);
+
+			const containersWithTitle = curatedFront.filter((container) => {
+				if (Array.isArray(title)) {
+					return title.includes(container.title);
+				}
+				return container.title === title;
+			});
+
+			console.log(
+				'containersWithTitle front length:',
+				containersWithTitle.length,
+			);
+
+			// Extra Smart layer to indicate generated containers are very few or too many, before user tells us!
+			if (curatedFront.length < 2) {
+				console.warn('Generated containers are very few:', curatedFront.length);
+				await registerMetric('NoneOrTooLessContainers', 1);
+			}
+
+			if (curatedFront.length > 20) {
+				console.warn('Generated containers are too many:', curatedFront.length);
+				await registerMetric('TooManyContainers', 1);
+			}
+
+			if (containersWithTitle.length === 0) {
+				console.log('No containers found with the provided title(s):', title);
+				resp.status(404).json({
+					status: 'not_found',
+					detail: 'No containers found. Please try again.',
+				});
+				return;
+			}
+
+			resp.status(200).json(containersWithTitle);
+		} catch (err) {
+			console.error('Error generating curation by title', err);
+			resp.status(500).json({
+				status: 'internal_error',
+				detail: `An error occurred while fetching curation by title. See server logs for details.`,
+			});
+		}
+	} catch (err) {
+		console.error(err);
+		resp.status(500).json({
+			status: 'error',
+			detail: 'An unexpected error occurred. See server logs for details.',
+		});
+	}
+}) as RequestHandler);
 
 router.post(
 	'/api/check-template',

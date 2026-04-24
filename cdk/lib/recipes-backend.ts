@@ -277,6 +277,7 @@ export class RecipesBackend extends GuStack {
 			fastlyKey: fastlyKeyParam.valueAsString,
 			contentUrlBase,
 			dataStore: store,
+			externalParameters,
 		});
 
 		new RecipesReindex(this, 'RecipeReindex', {

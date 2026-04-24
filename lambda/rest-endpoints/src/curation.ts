@@ -24,26 +24,31 @@ const s3Client = new S3Client({
 	region: AwsRegion ?? 'eu-west-1',
 });
 
-async function rawCurationDataForToday(
+async function rawCurationData(
 	region: string,
 	variant: string,
+	dateString?: string,
 ): Promise<GetObjectOutput> {
 	try {
 		return await s3Client.send(
 			new GetObjectCommand({
 				Bucket: getStaticBucketName(),
-				Key: `${region}/${variant}/curation.json`,
+				Key: dateString
+					? `${region}/${variant}/${dateString}/curation.json`
+					: `${region}/${variant}/curation.json`,
 			}),
 		);
 	} catch (err) {
 		if (err instanceof S3ServiceException) {
 			if (err.name == 'NotFound') {
-				const today = formatDate(new Date(), 'yyyy-MM-dd');
+				const date = dateString
+					? formatDate(new Date(dateString), 'yyyy-MM-dd')
+					: formatDate(new Date(), 'yyyy-MM-dd');
 
 				return await s3Client.send(
 					new GetObjectCommand({
 						Bucket: getStaticBucketName(),
-						Key: `${region}/${variant}/${today}/curation.json`,
+						Key: `${region}/${variant}/${date}/curation.json`,
 					}),
 				);
 			} else {
@@ -57,11 +62,12 @@ async function rawCurationDataForToday(
 	}
 }
 
-export async function retrieveTodaysCuration(
+export async function retrieveCuration(
 	region: string,
 	variant: string,
+	dateString?: string,
 ): Promise<FeastAppContainer[]> {
-	const s3response = await rawCurationDataForToday(region, variant);
+	const s3response = await rawCurationData(region, variant, dateString); //rawCurationDataForToday
 	if (s3response.Body) {
 		const rawData = await consumeReadable(
 			s3response.Body as NodeJsRuntimeStreamingBlobTypes,
@@ -177,7 +183,7 @@ export async function findRecentLocalisation(
 	return undefined;
 }
 
-function recipeFromContainer(item: ContainerItem): string[] {
+export function recipeFromContainer(item: ContainerItem): string[] {
 	// eslint-disable-next-line no-prototype-builtins -- how else to do this?
 	if (item.hasOwnProperty('recipe')) {
 		const recipeItem = item as Recipe;
@@ -255,17 +261,13 @@ export async function generateHybridFront(
 	personalisedInsertionPoint: number,
 	localisationInsertionPoint: number,
 	authToken?: string,
-	overrideDate?: Date,
+	dateString?: string,
 ): Promise<FeastAppContainer[]> {
-	const curatedFront = await retrieveTodaysCuration(region, variant);
+	const curatedFront = await retrieveCuration(region, variant, dateString); //retrieveTodaysCuration
 	if (variant == 'meat-free') {
 		//we don't currently support localisation for meat-free
 		return curatedFront;
 	}
-
-	const curatedRecipesSet = new Set(
-		curatedFront.flatMap((c) => c.items).flatMap(recipeFromContainer),
-	);
 
 	if (!territory) {
 		//no territory given so we can't localise
@@ -273,10 +275,14 @@ export async function generateHybridFront(
 		return curatedFront;
 	}
 
+	const curatedRecipesSet = new Set(
+		curatedFront.flatMap((c) => c.items).flatMap(recipeFromContainer),
+	);
+
 	const maybeLocalisation = await findRecentLocalisation(
 		territory,
 		5,
-		overrideDate ?? new Date(),
+		dateString ? new Date(dateString) : new Date(),
 		curatedRecipesSet,
 		10,
 	);

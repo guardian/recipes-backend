@@ -66,7 +66,7 @@ describe('generateHybridFront', () => {
 		s3Mock
 			.onAnyCommand({
 				Bucket: 'test',
-				Key: `northern/all-recipes/curation.json`,
+				Key: `northern/all-recipes/2025-01-02/curation.json`,
 			})
 			.resolves({
 				// @ts-ignore
@@ -88,7 +88,7 @@ describe('generateHybridFront', () => {
 			1,
 			2,
 			undefined,
-			new Date(2025, 0, 2),
+			'2025-01-02',
 		);
 		expect(result[0].title).toEqual('container 1');
 		expect(result[1].title).toEqual('container 2');
@@ -109,7 +109,7 @@ describe('generateHybridFront', () => {
 		s3Mock
 			.onAnyCommand({
 				Bucket: 'test',
-				Key: `northern/all-recipes/curation.json`,
+				Key: `northern/all-recipes/2025-01-02/curation.json`,
 			})
 			.resolves({
 				// @ts-ignore
@@ -131,7 +131,7 @@ describe('generateHybridFront', () => {
 			100,
 			101,
 			undefined,
-			new Date(2025, 0, 2),
+			'2025-01-02',
 		);
 		expect(result[0].title).toEqual('container 1');
 		expect(result[1].title).toEqual('container 2');
@@ -152,7 +152,7 @@ describe('generateHybridFront', () => {
 		s3Mock
 			.onAnyCommand({
 				Bucket: 'test',
-				Key: `northern/meat-free/curation.json`,
+				Key: `northern/meat-free/2025-01-02/curation.json`,
 			})
 			.resolves({
 				// @ts-ignore
@@ -174,7 +174,7 @@ describe('generateHybridFront', () => {
 			2,
 			3,
 			undefined,
-			new Date(2025, 0, 2),
+			'2025-01-02',
 		);
 		expect(result[0].title).toEqual('container 1');
 		expect(result[1].title).toEqual('container 2');
@@ -194,7 +194,7 @@ describe('generateHybridFront', () => {
 		s3Mock
 			.onAnyCommand({
 				Bucket: 'test',
-				Key: `northern/all-recipes/curation.json`,
+				Key: `northern/all-recipes/2025-01-02/curation.json`,
 			})
 			.resolves({
 				// @ts-ignore
@@ -216,7 +216,7 @@ describe('generateHybridFront', () => {
 			1,
 			2,
 			undefined,
-			new Date(2025, 0, 2),
+			'2025-01-02',
 		);
 		expect(result[0].title).toEqual('container 1');
 		expect(result[1].title).toEqual('container 2');
@@ -242,7 +242,7 @@ describe('generateHybridFront', () => {
 		s3Mock
 			.onAnyCommand({
 				Bucket: 'test',
-				Key: `northern/meat-free/curation.json`,
+				Key: `northern/meat-free/2025-01-02/curation.json`,
 			})
 			.resolves({
 				// @ts-ignore
@@ -267,7 +267,7 @@ describe('generateHybridFront', () => {
 			2,
 			3,
 			undefined,
-			new Date(2025, 0, 2),
+			'2025-01-02',
 		);
 		expect(result[0].title).toEqual('container 1');
 		expect(result[1].title).toEqual('container 2');
@@ -284,7 +284,7 @@ describe('generateHybridFront', () => {
 		s3Mock
 			.onAnyCommand({
 				Bucket: 'test',
-				Key: `northern/meat-free/curation.json`,
+				Key: `northern/meat-free/2025-01-02/curation.json`,
 			})
 			.resolves({
 				// @ts-ignore
@@ -303,7 +303,7 @@ describe('generateHybridFront', () => {
 			2,
 			3,
 			undefined,
-			new Date(2025, 0, 2),
+			'2025-01-02',
 		);
 		expect(result[0].title).toEqual('container 1');
 		expect(result[1].title).toEqual('container 2');
@@ -326,7 +326,7 @@ describe('generateHybridFront', () => {
 		s3Mock
 			.onAnyCommand({
 				Bucket: 'test',
-				Key: `northern/all-recipes/curation.json`,
+				Key: `northern/all-recipes/2025-01-02/curation.json`,
 			})
 			.resolves({
 				// @ts-ignore
@@ -401,7 +401,7 @@ describe('generateHybridFront', () => {
 			2,
 			3,
 			undefined,
-			new Date(2025, 0, 5),
+			'2025-01-02',
 		);
 		expect(result[0].title).toEqual('container 1');
 		expect(result[1].title).toEqual('container 2');
