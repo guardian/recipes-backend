@@ -10,13 +10,13 @@
 * We are recommending up to 20 unseen recipes matching their top cuisine that are 
 
 * There is no minimum number of recipes opened required for this container to appear, so not enforcing a minimum threshold. If a user has opened fewer than 20 recipes or as long as they have at least one recipe interaction.  
-* ![][image1]
+* ![how to view this][image1]
 
 ####  GCS bucket
 
 Regarding GCS bucket access which is present at the Data tech team side, we have been granted access for both Personalised code & prod GCS bucket. We can modify the code bucket files but not prod which is what we wanted.
 
-#### Personalised container architecture:  ![][image2]
+#### Personalised container architecture:  ![diagram][image2]
 
 #### References of associated repos for backend, personalised API and data platform ecosystem:
 
