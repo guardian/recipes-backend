@@ -1,2 +1,3 @@
 nodejs 22.17.1
 aqua:aws/aws-cli latest
+golang 1.24.13
