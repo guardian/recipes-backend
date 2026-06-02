@@ -224,5 +224,5 @@ library; these functions take in data structures defined by the Thrift models an
 Runnable script that allows you to forcibly remove all recipes from a given article ID. This can be run from an npm script: `npm run manual-takedown`.
 
 ### Just in case if CI fails in dependabot PR(s)
-We haven't provided creds to Dependabot as of now so a push to the PR should work and re-run the CI
+We haven't provided credentials to Dependabot as of now so a push to the PR should work and re-run the CI
 We will look into this for longer run.
