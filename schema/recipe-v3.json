@@ -9,8 +9,8 @@
   ],
   "properties": {
     "appExclusiveBranding": {
-      "type": ["boolean", "null"],
-      "description": "If set, render the recipe with app-exclusive branding and styling. If not present, must be treated as false."
+      "type": "boolean",
+      "description": "If true, render the recipe with app-exclusive branding and styling. If not present, must be treated as false."
     },
     "isAppReady": {
       "type": "boolean",
