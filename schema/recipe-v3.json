@@ -8,6 +8,10 @@
     "id"
   ],
   "properties": {
+    "appExclusiveBranding": {
+      "type": ["boolean", "null"],
+      "description": "If set, render the recipe with app-exclusive branding and styling. If not present, must be treated as false."
+    },
     "isAppReady": {
       "type": "boolean",
       "description": "Whether the recipe is ready for app display"
