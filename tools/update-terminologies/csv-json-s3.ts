@@ -34,18 +34,13 @@ import {
 	CopyObjectCommand,
 } from '@aws-sdk/client-s3';
 
-// ---------------------------------------------------------------------------
-// Config — map each stage to its bucket. Edit to your real bucket names.
-// ---------------------------------------------------------------------------
-type Stage = 'CODE' | 'PROD';
+const stage = process.env['STAGE'] ?? 'CODE';
 
-const BUCKETS: Record<Stage, string> = {
-	CODE: 'feast-recipes-static-code',
-	PROD: 'feast-recipes-static-prod',
-};
+const bucket = process.env['BUCKET'] ?? 'feast-recipes-static-code';
 
-const REGION = process.env.AWS_REGION ?? 'eu-west-1';
-const s3 = new S3Client({ region: REGION });
+const region = process.env['REGION'] ?? 'eu-west-1';
+
+const s3 = new S3Client({ region: region });
 
 // Fixed S3 paths.
 const ARCHIVE_PREFIX = 'terminologies/'; // dated copies live here
@@ -54,14 +49,6 @@ const LIVE_KEY = 'terminologies/latest/terminologies.json';
 
 // The JSON key array, exactly as the consuming library expects.
 const KEYS = ['id', 'ukTerm', 'usTerm'] as const;
-
-function resolveStage(value: string): Stage {
-	const s = value.toUpperCase();
-	if (s !== 'CODE' && s !== 'PROD') {
-		throw new Error(`Invalid stage "${value}". Use CODE or PROD.`);
-	}
-	return s as Stage;
-}
 
 function archiveKey(stamp: string): string {
 	return `${ARCHIVE_PREFIX}${stamp}/terminologies.json`;
@@ -76,9 +63,7 @@ function toId(raw: string): number | string {
 // ---------------------------------------------------------------------------
 // update: CSV -> JSON, write a dated archive + overwrite the live file
 // ---------------------------------------------------------------------------
-async function update(stage: Stage, file: string): Promise<void> {
-	const bucket = BUCKETS[stage];
-
+async function update(stage: string, file: string): Promise<void> {
 	const records: Array<Record<string, string>> = parse(readFileSync(file), {
 		columns: (header: string[]) => header.map((h) => h.trim()),
 		skip_empty_lines: true,
@@ -165,8 +150,7 @@ async function listArchives(bucket: string): Promise<Archive[]> {
 // ---------------------------------------------------------------------------
 // list: show the dated archives in the terminologies folder
 // ---------------------------------------------------------------------------
-async function list(stage: Stage): Promise<void> {
-	const bucket = BUCKETS[stage];
+async function list(stage: string): Promise<void> {
 	const archives = await listArchives(bucket);
 
 	if (archives.length === 0) {
@@ -188,8 +172,7 @@ async function list(stage: Stage): Promise<void> {
 // ---------------------------------------------------------------------------
 // rollback: copy a chosen dated archive back over the live file
 // ---------------------------------------------------------------------------
-async function rollback(stage: Stage, datetime: string): Promise<void> {
-	const bucket = BUCKETS[stage];
+async function rollback(stage: string, datetime: string): Promise<void> {
 	const archives = await listArchives(bucket);
 
 	// Match archives whose stamp contains the supplied date/time string,
@@ -238,14 +221,14 @@ program
 	.requiredOption('--stage <stage>', 'CODE or PROD')
 	.requiredOption('--file <path>', 'path to the terminologies CSV file')
 	.action(async (opts) => {
-		await update(resolveStage(opts.stage), opts.file);
+		await update(stage, opts.file);
 	});
 
 program
 	.command('list')
 	.requiredOption('--stage <stage>', 'CODE or PROD')
 	.action(async (opts) => {
-		await list(resolveStage(opts.stage));
+		await list(stage);
 	});
 
 program
@@ -256,7 +239,7 @@ program
 		'archive date/time to restore (see `list`)',
 	)
 	.action(async (opts) => {
-		await rollback(resolveStage(opts.stage), opts.datetime);
+		await rollback(stage, opts.datetime);
 	});
 
 program.parseAsync().catch((err) => {
