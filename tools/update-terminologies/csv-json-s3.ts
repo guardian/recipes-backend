@@ -34,10 +34,6 @@ import {
 	CopyObjectCommand,
 } from '@aws-sdk/client-s3';
 
-const stage = process.env['STAGE'] ?? 'CODE';
-
-const bucket = process.env['BUCKET'] ?? 'feast-recipes-static-code';
-
 const region = process.env['REGION'] ?? 'eu-west-1';
 
 const s3 = new S3Client({ region: region });
@@ -64,6 +60,7 @@ function toId(raw: string): number | string {
 // update: CSV -> JSON, write a dated archive + overwrite the live file
 // ---------------------------------------------------------------------------
 async function update(stage: string, file: string): Promise<void> {
+	const bucket = `feast-recipes-static-${stage.toLowerCase()}`;
 	const records: Array<Record<string, string>> = parse(readFileSync(file), {
 		columns: (header: string[]) => header.map((h) => h.trim()),
 		skip_empty_lines: true,
@@ -117,7 +114,8 @@ interface Archive {
 	lastModified?: Date;
 }
 
-async function listArchives(bucket: string): Promise<Archive[]> {
+async function listArchives(stage: string): Promise<Archive[]> {
+	const bucket = `feast-recipes-static-${stage.toLowerCase()}`;
 	const out: Archive[] = [];
 	let token: string | undefined;
 
@@ -151,7 +149,8 @@ async function listArchives(bucket: string): Promise<Archive[]> {
 // list: show the dated archives in the terminologies folder
 // ---------------------------------------------------------------------------
 async function list(stage: string): Promise<void> {
-	const archives = await listArchives(bucket);
+	const bucket = `feast-recipes-static-${stage.toLowerCase()}`;
+	const archives = await listArchives(stage);
 
 	if (archives.length === 0) {
 		console.log(
@@ -173,7 +172,8 @@ async function list(stage: string): Promise<void> {
 // rollback: copy a chosen dated archive back over the live file
 // ---------------------------------------------------------------------------
 async function rollback(stage: string, datetime: string): Promise<void> {
-	const archives = await listArchives(bucket);
+	const bucket = `feast-recipes-static-${stage.toLowerCase()}`;
+	const archives = await listArchives(stage);
 
 	// Match archives whose stamp contains the supplied date/time string,
 	// so the user can pass a full stamp or a unique prefix like "2026-06-02".
@@ -221,14 +221,14 @@ program
 	.requiredOption('--stage <stage>', 'CODE or PROD')
 	.requiredOption('--file <path>', 'path to the terminologies CSV file')
 	.action(async (opts) => {
-		await update(stage, opts.file);
+		await update(opts.stage, opts.file);
 	});
 
 program
 	.command('list')
 	.requiredOption('--stage <stage>', 'CODE or PROD')
 	.action(async (opts) => {
-		await list(stage);
+		await list(opts.stage);
 	});
 
 program
@@ -239,7 +239,7 @@ program
 		'archive date/time to restore (see `list`)',
 	)
 	.action(async (opts) => {
-		await rollback(stage, opts.datetime);
+		await rollback(opts.stage, opts.datetime);
 	});
 
 program.parseAsync().catch((err) => {
