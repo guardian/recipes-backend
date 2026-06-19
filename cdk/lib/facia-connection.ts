@@ -109,6 +109,13 @@ export class FaciaConnection extends Construct {
 					actions: ['sts:AssumeRole'],
 					resources: [faciaPublishStatusSNSRole.roleArn],
 				}),
+				new PolicyStatement({
+					effect: Effect.ALLOW,
+					actions: ['ssm:GetParameter'],
+					resources: [
+						`arn:aws:ssm:${scope.region}:${scope.account}:parameter/${scope.stage}/${scope.stack}/facia-responder/*`,
+					],
+				}),
 			],
 			memorySize: 256,
 			runtime: Runtime.NODEJS_20_X,

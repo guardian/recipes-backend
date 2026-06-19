@@ -1,3 +1,4 @@
+import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 import type { SNSMessage, SQSHandler, SQSRecord } from 'aws-lambda';
 import format from 'date-fns/format';
 import type { SafeParseReturnType } from 'zod';
@@ -15,6 +16,8 @@ import {
 import { notifyFaciaTool } from './facia-notifications';
 import { generateTargetedRegionFronts } from './targeted-regions';
 import { generatePublicationMessage, getErrorMessage } from './util';
+
+const ssmClient = new SSMClient({ region: process.env.AWS_REGION });
 
 function getMessageBodyAsObject(from: SQSRecord): unknown {
 	const parsedSNSMessage = JSON.parse(from.body) as SNSMessage; // will throw if the content is not valid;
@@ -60,12 +63,42 @@ async function deployCuration(
 	}
 }
 
+async function getOptionalParameterValue(
+	name: string,
+): Promise<string | undefined> {
+	try {
+		const result = await ssmClient.send(
+			new GetParameterCommand({
+				Name: `/${process.env.STAGE}/${process.env.STACK}/facia-responder/${name}`,
+				WithDecryption: false,
+			}),
+		);
+		return result.Parameter?.Value;
+	} catch (error) {
+		if (error instanceof Error && error.name === 'ParameterNotFound') {
+			return undefined;
+		}
+		throw error;
+	}
+}
+
+async function getOptionalBooleanParameter(
+	name: string,
+): Promise<boolean | undefined> {
+	const value = await getOptionalParameterValue(name);
+	return value ? value.toLowerCase() === 'true' : undefined;
+}
+
 export const handler: SQSHandler = async (event) => {
 	const staticBucketName = getStaticBucketName();
 	const fastlyApiKey = getFastlyApiKey();
 	const contentPrefix = getContentPrefix();
 	const faciaPublicationStatusTopicArn = getFaciaPublicationStatusTopicArn();
 	const faciaPublicationStatusRoleArn = getFaciaPublicationStatusRoleArn();
+
+	const disableUSRegionalisation = await getOptionalBooleanParameter(
+		'disable-us-regionalisation',
+	);
 
 	for (const rec of event.Records) {
 		console.log(
@@ -110,9 +143,11 @@ export const handler: SQSHandler = async (event) => {
 			);
 		}
 
-		for (const regionalisedFronts of generateTargetedRegionFronts(
-			maybeFronts.data,
-		)) {
+		const fronts = disableUSRegionalisation
+			? [maybeFronts.data]
+			: generateTargetedRegionFronts(maybeFronts.data);
+
+		for (const regionalisedFronts of fronts) {
 			try {
 				await deployCuration(regionalisedFronts, {
 					staticBucketName,
