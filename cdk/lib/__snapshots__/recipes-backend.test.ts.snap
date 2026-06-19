@@ -896,6 +896,26 @@ def sort_filter_rules(json_obj):
             },
             "PolicyName": "invokeFetcher",
           },
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "s3:GetObject",
+                    "s3:ListBucket",
+                    "s3:PutObject",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": [
+                    "arn:aws:s3:::feast-unifiedapi-datatransfer-test",
+                    "arn:aws:s3:::feast-unifiedapi-datatransfer-test/*",
+                  ],
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "unifiedApiData",
+          },
         ],
         "Tags": [
           {
