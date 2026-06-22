@@ -115,6 +115,10 @@
         "$ref": "ingredients-list.json"
       }
     },
+    "originalMeasuringSystem": {
+      "enum": ["metric", "us", "aus-cup", "imperial"],
+      "description": "The original measuring system used in the recipe. This is a view hint for conversion and should not be taken as a strict source of truth."
+    },
     "celebrationIds": {
       "type": [
         "array",
