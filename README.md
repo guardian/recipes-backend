@@ -183,6 +183,12 @@ Endpoints which require authentication use [API Gateway API keys](https://eu-wes
 
 ## What's in the box?
 
+### lambda/dynamic-fronts-fetcher
+
+This lambda function is triggered by Airflow after the data is ingested into the Google GCS system. The data we are aggregating in GCS is “Most popular in your country” and “More recipes you may like container.”
+Initially, this function was implemented to create localised container content. However, recently, we have modified it to utilise the same lambda to incorporate personalised containers as well.
+Further details about personalised containers can be referred to in the documentation: docs/Personalised container - readme.md
+
 ### lambda/recipes-responder
 
 This is the lambda function which listens to Kinesis updates from crier. It is responsible for all of the processing and extraction logic, although
