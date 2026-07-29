@@ -131,6 +131,14 @@ describe('extractCropIdFromGuimUrl', () => {
 			4259,
 			'png',
 		],
+		[
+			//This specific URL form was causing problems since the last number was too long, so we've added a test case to ensure it doesn't regress
+			'https://media.guim.co.uk/6a4de89b071368602094005335a3266910a36f0a/675_755_9267_11585/1600.jpg',
+			'6a4de89b071368602094005335a3266910a36f0a',
+			'675_755_9267_11585',
+			9267,
+			'jpg',
+		],
 	] as const;
 	cropDataToAssert.forEach(([url, mediaId, cropId, width, extension]) => {
 		it(`should find a crop id for ${url}`, () => {
