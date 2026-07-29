@@ -49,7 +49,7 @@ export const extractCropDataFromGuimUrl = (
 	| undefined => {
 	// Some capturing groups here are not needed – they're added to make the regex a bit more comprehensible.
 	const match = url.match(
-		/https:\/\/.*\/(?<mediaId>.*?)\/(?<cropId>\d{1,4}_\d{1,4}_(?<width>\d{1,4})_\d{1,4})\/(?<fileName>.*?)\.(?<extension>.*?)(?<queryParams>\?.*)?$/,
+		/https:\/\/.*\/(?<mediaId>.*?)\/(?<cropId>\d{1,6}_\d{1,6}_(?<width>\d{1,6})_\d{1,6})\/(?<fileName>.*?)\.(?<extension>.*?)(?<queryParams>\?.*)?$/,
 	);
 
 	if (!match?.groups) {
