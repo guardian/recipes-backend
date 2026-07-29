@@ -2,7 +2,7 @@
 /**
  * terminologies tool — convert a UK/US terminologies CSV to JSON and manage it in S3.
  *
- * CSV input has 3 columns: id, ukTerm, usTerm, block
+ * CSV input has 3 columns: id, ukTerm, usTerm, block, ukGuidance, usGuidance
  *
  * Produces JSON of the shape:
  *   {
@@ -44,7 +44,14 @@ const LIVE_PREFIX = 'terminologies/latest/'; // subfolder for the live file
 const LIVE_KEY = 'terminologies/latest/terminologies.json';
 
 // The JSON key array, exactly as the consuming library expects.
-const KEYS = ['id', 'ukTerm', 'usTerm', 'block'] as const;
+const KEYS = [
+	'id',
+	'ukTerm',
+	'usTerm',
+	'block',
+	'ukGuidance',
+	'usGuidance',
+] as const;
 
 function archiveKey(stamp: string): string {
 	return `${ARCHIVE_PREFIX}${stamp}/terminologies.json`;
@@ -79,6 +86,8 @@ async function update(stage: string, file: string): Promise<void> {
 			r.ukTerm,
 			r.usTerm,
 			r.block ? r.block.split(',').map((b) => b.trim()) : [],
+			r.ukGuidance ?? '',
+			r.usGuidance ?? '',
 		]),
 	};
 
