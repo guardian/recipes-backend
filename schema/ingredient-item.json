@@ -57,7 +57,22 @@
     "template": {
       "$ref": "string-template.json",
       "description": "The template representation of the ingredient"
+    },
+    "ukGuidance": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Guidance notes for any UK term to highlight the context"
+    },
+    "usGuidance": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Guidance notes for any US term to highlight the context"
     }
+
   },
   "required": [
     "name"
