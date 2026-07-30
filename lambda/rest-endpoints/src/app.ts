@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import { formatISO } from 'date-fns';
 import { renderFile as ejs } from 'ejs';
 import express, { Router } from 'express';
@@ -14,6 +15,13 @@ export const app = express();
 app.set('view engine', 'ejs');
 // eslint-disable-next-line @typescript-eslint/no-misused-promises -- required part of Express setup
 app.engine('.ejs', ejs);
+
+const allowedOrigins = (process.env['CORS_ALLOWED_ORIGINS'] ?? '')
+	.split(',')
+	.map((o) => o.trim())
+	.filter((o) => o.length > 0);
+
+app.use(cors({ origin: allowedOrigins }));
 
 const router = Router();
 router.use(

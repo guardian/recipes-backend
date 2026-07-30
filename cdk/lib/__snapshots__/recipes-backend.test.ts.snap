@@ -911,6 +911,7 @@ def sort_filter_rules(json_obj):
           "Variables": {
             "APP": "recipes-backend-rest-endpoints",
             "CONTENT_URL_BASE": "recipes.guardianapis.com",
+            "CORS_ALLOWED_ORIGINS": "https://www.theguardian.com",
             "FASTLY_API_KEY": {
               "Ref": "fastlyKey",
             },
@@ -1390,11 +1391,13 @@ def sort_filter_rules(json_obj):
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "LambdarecipesbackendTESTDeploymentE6FBC51C911fdca484973e916ba458ced070b790": {
+    "LambdarecipesbackendTESTDeploymentE6FBC51C7b088ed7c06d7d004524e9ce5d622c42": {
       "DependsOn": [
         "LambdarecipesbackendTESTproxyANYB2172EAF",
+        "LambdarecipesbackendTESTproxyOPTIONS82A7E0D6",
         "LambdarecipesbackendTESTproxyE7B5C009",
         "LambdarecipesbackendTESTANY6672F729",
+        "LambdarecipesbackendTESTOPTIONS23069898",
       ],
       "Metadata": {
         "aws:cdk:do-not-refactor": true,
@@ -1413,7 +1416,7 @@ def sort_filter_rules(json_obj):
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "LambdarecipesbackendTESTDeploymentE6FBC51C911fdca484973e916ba458ced070b790",
+          "Ref": "LambdarecipesbackendTESTDeploymentE6FBC51C7b088ed7c06d7d004524e9ce5d622c42",
         },
         "RestApiId": {
           "Ref": "LambdarecipesbackendTEST4B1DC1BE",
@@ -1443,6 +1446,51 @@ def sort_filter_rules(json_obj):
         ],
       },
       "Type": "AWS::ApiGateway::Stage",
+    },
+    "LambdarecipesbackendTESTOPTIONS23069898": {
+      "Properties": {
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "Integration": {
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                "method.response.header.Access-Control-Allow-Origin": "'https://www.theguardian.com'",
+                "method.response.header.Vary": "'Origin'",
+              },
+              "StatusCode": "204",
+            },
+          ],
+          "RequestTemplates": {
+            "application/json": "{ statusCode: 200 }",
+          },
+          "Type": "MOCK",
+        },
+        "MethodResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Vary": true,
+            },
+            "StatusCode": "204",
+          },
+        ],
+        "ResourceId": {
+          "Fn::GetAtt": [
+            "LambdarecipesbackendTEST4B1DC1BE",
+            "RootResourceId",
+          ],
+        },
+        "RestApiId": {
+          "Ref": "LambdarecipesbackendTEST4B1DC1BE",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
     },
     "LambdarecipesbackendTESTUsagePlan03DEBC29": {
       "Properties": {
@@ -1616,6 +1664,48 @@ def sort_filter_rules(json_obj):
         },
       },
       "Type": "AWS::ApiGateway::Resource",
+    },
+    "LambdarecipesbackendTESTproxyOPTIONS82A7E0D6": {
+      "Properties": {
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "Integration": {
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                "method.response.header.Access-Control-Allow-Origin": "'https://www.theguardian.com'",
+                "method.response.header.Vary": "'Origin'",
+              },
+              "StatusCode": "204",
+            },
+          ],
+          "RequestTemplates": {
+            "application/json": "{ statusCode: 200 }",
+          },
+          "Type": "MOCK",
+        },
+        "MethodResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Vary": true,
+            },
+            "StatusCode": "204",
+          },
+        ],
+        "ResourceId": {
+          "Ref": "LambdarecipesbackendTESTproxyE7B5C009",
+        },
+        "RestApiId": {
+          "Ref": "LambdarecipesbackendTEST4B1DC1BE",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
     },
     "PersonalisedFrontsFailedPersonalisedContainerAlarmC52A32C0": {
       "Properties": {

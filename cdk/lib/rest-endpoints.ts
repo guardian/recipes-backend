@@ -1,7 +1,7 @@
 import { GuApiLambda } from '@guardian/cdk';
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { Duration } from 'aws-cdk-lib';
-import { EndpointType } from 'aws-cdk-lib/aws-apigateway';
+import { Cors, EndpointType } from 'aws-cdk-lib/aws-apigateway';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { IBucket } from 'aws-cdk-lib/aws-s3';
@@ -12,6 +12,7 @@ interface RestEndpointsProps {
 	servingBucket: IBucket;
 	fastlyKey: string;
 	contentUrlBase: string;
+	corsAllowedOrigins: string[];
 	dataStore: DataStore;
 }
 
@@ -19,12 +20,23 @@ export class RestEndpoints extends Construct {
 	constructor(scope: GuStack, id: string, props: RestEndpointsProps) {
 		super(scope, id);
 
-		const { servingBucket, fastlyKey, contentUrlBase, dataStore } = props;
+		const {
+			servingBucket,
+			fastlyKey,
+			contentUrlBase,
+			corsAllowedOrigins,
+			dataStore,
+		} = props;
 
 		const apiConstruct = new GuApiLambda(scope, 'Lambda', {
 			api: {
 				id: `recipes-backend-${scope.stage}`,
 				endpointTypes: [EndpointType.REGIONAL],
+				defaultCorsPreflightOptions: {
+					allowOrigins: corsAllowedOrigins,
+					allowMethods: Cors.ALL_METHODS,
+					allowHeaders: Cors.DEFAULT_HEADERS,
+				},
 			},
 			app: 'recipes-backend-rest-endpoints',
 			architecture: Architecture.ARM_64,
@@ -33,6 +45,7 @@ export class RestEndpoints extends Construct {
 				STATIC_BUCKET: servingBucket.bucketName,
 				FASTLY_API_KEY: fastlyKey,
 				CONTENT_URL_BASE: contentUrlBase,
+				CORS_ALLOWED_ORIGINS: corsAllowedOrigins.join(','),
 				INDEX_TABLE: dataStore.table.tableName,
 			},
 			fileName: 'rest-endpoints.zip',

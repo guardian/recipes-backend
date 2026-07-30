@@ -154,6 +154,15 @@ export class RecipesBackend extends GuStack {
 				? 'recipes.code.dev-guardianapis.com'
 				: 'recipes.guardianapis.com';
 
+		const corsAllowedOrigins =
+			this.stage === 'CODE'
+				? [
+						'https://r.thegulocal.com',
+						'https://code.dev-theguardian.com',
+						'https://m.code.dev-theguardian.com',
+					]
+				: ['https://www.theguardian.com'];
+
 		const capiUrlBase =
 			this.stage === 'CODE'
 				? 'content.code.dev-guardianapis.com'
@@ -276,6 +285,7 @@ export class RecipesBackend extends GuStack {
 			servingBucket: serving.staticBucket,
 			fastlyKey: fastlyKeyParam.valueAsString,
 			contentUrlBase,
+			corsAllowedOrigins,
 			dataStore: store,
 		});
 
