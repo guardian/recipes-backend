@@ -2,7 +2,7 @@
 /**
  * terminologies tool — convert a UK/US terminologies CSV to JSON and manage it in S3.
  *
- * CSV input has 3 columns: id, ukTerm, usTerm, block, ukGuidance, usGuidance
+ * CSV input has 6 columns: id, ukTerm, usTerm, block, ukGuidance, usGuidance
  *
  * Produces JSON of the shape:
  *   {
