@@ -1391,7 +1391,7 @@ def sort_filter_rules(json_obj):
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "LambdarecipesbackendTESTDeploymentE6FBC51C7b088ed7c06d7d004524e9ce5d622c42": {
+    "LambdarecipesbackendTESTDeploymentE6FBC51C79b6296e2ad59643ec7aa99b9edacf50": {
       "DependsOn": [
         "LambdarecipesbackendTESTproxyANYB2172EAF",
         "LambdarecipesbackendTESTproxyOPTIONS82A7E0D6",
@@ -1416,7 +1416,7 @@ def sort_filter_rules(json_obj):
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "LambdarecipesbackendTESTDeploymentE6FBC51C7b088ed7c06d7d004524e9ce5d622c42",
+          "Ref": "LambdarecipesbackendTESTDeploymentE6FBC51C79b6296e2ad59643ec7aa99b9edacf50",
         },
         "RestApiId": {
           "Ref": "LambdarecipesbackendTEST4B1DC1BE",
@@ -1458,8 +1458,7 @@ def sort_filter_rules(json_obj):
               "ResponseParameters": {
                 "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
                 "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
-                "method.response.header.Access-Control-Allow-Origin": "'https://www.theguardian.com'",
-                "method.response.header.Vary": "'Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
               },
               "StatusCode": "204",
             },
@@ -1475,7 +1474,6 @@ def sort_filter_rules(json_obj):
               "method.response.header.Access-Control-Allow-Headers": true,
               "method.response.header.Access-Control-Allow-Methods": true,
               "method.response.header.Access-Control-Allow-Origin": true,
-              "method.response.header.Vary": true,
             },
             "StatusCode": "204",
           },
@@ -1676,8 +1674,7 @@ def sort_filter_rules(json_obj):
               "ResponseParameters": {
                 "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
                 "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
-                "method.response.header.Access-Control-Allow-Origin": "'https://www.theguardian.com'",
-                "method.response.header.Vary": "'Origin'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
               },
               "StatusCode": "204",
             },
@@ -1693,7 +1690,6 @@ def sort_filter_rules(json_obj):
               "method.response.header.Access-Control-Allow-Headers": true,
               "method.response.header.Access-Control-Allow-Methods": true,
               "method.response.header.Access-Control-Allow-Origin": true,
-              "method.response.header.Vary": true,
             },
             "StatusCode": "204",
           },

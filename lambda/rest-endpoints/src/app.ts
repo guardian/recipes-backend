@@ -93,6 +93,39 @@ router.get(
 	},
 );
 
+router.get('/saved-from-web', (req, resp) => {
+	const idListParam = req.query['ids'] as string | undefined;
+	if (!idListParam) {
+		resp
+			.status(400)
+			.json({ status: 'error', detail: 'you need to specify a list of ids' });
+		return;
+	}
+
+	const idList = idListParam.split(',');
+	recursivelyGetIdList(idList, [], 3, false)
+		.then((results) => {
+			resp
+				.status(200)
+				.setHeader('Cache-Control', 'max-age=300, stale-while-revalidate=60')
+				.json({
+					status: 'ok',
+					resolved: results.length,
+					requested: idList.length,
+					results: results,
+				});
+		})
+		.catch((err) => {
+			console.error(err);
+
+			const timestamp = formatISO(new Date());
+			resp.status(500).json({
+				status: 'internal_error',
+				detail: `An error occurred at ${timestamp}. See the server logs for details.`,
+			});
+		});
+});
+
 router.get('/api/content/by-uid', (req, resp) => {
 	const idListParam = req.query['ids'] as string | undefined;
 	if (!idListParam) {

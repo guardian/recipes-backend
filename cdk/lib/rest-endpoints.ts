@@ -33,7 +33,7 @@ export class RestEndpoints extends Construct {
 				id: `recipes-backend-${scope.stage}`,
 				endpointTypes: [EndpointType.REGIONAL],
 				defaultCorsPreflightOptions: {
-					allowOrigins: corsAllowedOrigins,
+					allowOrigins: Cors.ALL_ORIGINS,
 					allowMethods: Cors.ALL_METHODS,
 					allowHeaders: Cors.DEFAULT_HEADERS,
 				},
