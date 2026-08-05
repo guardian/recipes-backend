@@ -92,14 +92,9 @@
           "endIndex": {
             "type": "integer",
             "description": "The end index of the matched term"
-          },
-          "termType": {
-            "type": "string",
-            "enum": ["ukTerm", "usTerm"],
-            "description": "The type of term (e.g., UK or US)"
           }
         },
-        "required": ["matchedTerm", "startIndex", "endIndex", "termType"]
+        "required": ["matchedTerm", "startIndex", "endIndex"]
       }
     }
 
