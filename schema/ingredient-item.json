@@ -71,33 +71,7 @@
         "null"
       ],
       "description": "Guidance notes for any US term to highlight the context"
-    },
-    "highlights": {
-      "type": [
-        "array",
-        "null"
-      ],
-      "description": "Highlights for matched terms in the ingredient, we want to underline them in the App side of UI",
-      "items": {
-        "type": "object",
-        "properties": {
-          "matchedTerm": {
-            "type": "string",
-            "description": "The term that was matched"
-          },
-          "startIndex": {
-            "type": "integer",
-            "description": "The start index of the matched term"
-          },
-          "endIndex": {
-            "type": "integer",
-            "description": "The end index of the matched term"
-          }
-        },
-        "required": ["matchedTerm", "startIndex", "endIndex"]
-      }
     }
-
   },
   "required": [
     "name"
