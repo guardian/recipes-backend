@@ -34,3 +34,12 @@ if [ "$?" != "0" ]; then
 fi
 echo "Recipe PDF is uploaded to S3 bucket at $RECIPE_PDF_S3_OUTPUT"
 
+echo "Copy recipe.pdf file to S3 with V2 checksum now"
+RECIPE_PDF_S3_OUTPUT="s3://${BUCKET}/content/${RECIPEV2_CSID}.pdf"
+aws s3 cp "$RECIPE_PDF_OUTPUT" "$RECIPE_PDF_S3_OUTPUT" --cache-control "max-age=7200, stale-while-revalidate=300, stale-if-error=14400"
+if [ "$?" != "0" ]; then
+  echo ERROR Could not write to S3!
+  exit 2
+fi
+echo "Recipe PDF is uploaded to S3 bucket at $RECIPE_PDF_S3_OUTPUT"
+
