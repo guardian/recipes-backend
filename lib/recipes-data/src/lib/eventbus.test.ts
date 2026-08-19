@@ -87,28 +87,18 @@ describe('announce_new_recipe', () => {
 		expect(mockEbClient.commandCalls(PutEventsCommand).length).toEqual(1);
 		const putCmd = mockEbClient.commandCalls(PutEventsCommand)[0]
 			.firstArg as PutEventsCommand;
-		expect(putCmd.input.Entries?.length).toEqual(5);
+		expect(putCmd.input.Entries?.length).toEqual(3);
 		const firstEntry = putCmd.input.Entries ? putCmd.input.Entries[0] : {};
 		expect(firstEntry.DetailType).toEqual('recipe-update');
 		expect(firstEntry.Detail).toEqual(
-			`{"blob":"recep-1-content","uid":"recep-1-uid","checksum":"recep-1-cs2"}`,
+			`{"blob":"recep-1-content","uid":"recep-1-uid","checksum":"recep-1-cs3","checksumV2":"recep-1-cs2"}`,
 		);
-		const secondEntry = putCmd.input.Entries ? putCmd.input.Entries[1] : {};
-		expect(secondEntry.DetailType).toEqual('recipe-update');
-		expect(secondEntry.Detail).toEqual(
-			`{"blob":"recep-1-content","uid":"recep-1-uid","checksum":"recep-1-cs3"}`,
-		);
-		const thirdEntry = putCmd.input.Entries ? putCmd.input.Entries[2] : {};
+		const thirdEntry = putCmd.input.Entries ? putCmd.input.Entries[1] : {};
 		expect(thirdEntry.DetailType).toEqual('recipe-update');
 		expect(thirdEntry.Detail).toEqual(
-			`{"blob":"recep-2-content","uid":"recep-2-uid","checksum":"recep-2-cs2-updated"}`,
+			`{"blob":"recep-2-content","uid":"recep-2-uid","checksum":"recep-2-cs3-updated","checksumV2":"recep-2-cs2-updated"}`,
 		);
-		const fourthEntry = putCmd.input.Entries ? putCmd.input.Entries[3] : {};
-		expect(fourthEntry.DetailType).toEqual('recipe-update');
-		expect(fourthEntry.Detail).toEqual(
-			`{"blob":"recep-2-content","uid":"recep-2-uid","checksum":"recep-2-cs3-updated"}`,
-		);
-		const fifthEntry = putCmd.input.Entries ? putCmd.input.Entries[4] : {};
+		const fifthEntry = putCmd.input.Entries ? putCmd.input.Entries[2] : {};
 		expect(fifthEntry.DetailType).toEqual('recipe-delete');
 		expect(fifthEntry.Detail).toEqual(
 			`{"checksum":"recep-3-cs","uid":"recep-3-uid"}`,
