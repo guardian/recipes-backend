@@ -30,6 +30,34 @@
         }
       ],
       "description": "Array of image URLs or identifiers for this step"
+    },
+    "ingredientIndexes": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Array of indexes referring to ingredients used in this step"
+    },
+    "formattedIngredients": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Array of formatted ingredient strings for this step (provided by runtime library)"
     }
   },
   "required": [
