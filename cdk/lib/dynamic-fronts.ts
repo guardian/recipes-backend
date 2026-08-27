@@ -102,6 +102,19 @@ export class DynamicFronts extends Construct {
 						}),
 					],
 				}),
+				unifiedApiData: new PolicyDocument({
+					statements: [
+						// Extra bucket for unified API data transfer
+						new PolicyStatement({
+							effect: Effect.ALLOW,
+							resources: [
+								`arn:aws:s3:::feast-unifiedapi-datatransfer-${scope.stage.toLowerCase()}`,
+								`arn:aws:s3:::feast-unifiedapi-datatransfer-${scope.stage.toLowerCase()}/*`,
+							],
+							actions: ['s3:GetObject', 's3:ListBucket', 's3:PutObject'],
+						}),
+					],
+				}),
 			},
 			assumedBy: new AccountPrincipal(dataTechAcctParam.valueAsString),
 		});
