@@ -127,7 +127,7 @@
 		"jest-util": "30.3.0",
 		"nx": "22.7.6",
 		"prettier": "~3.6.2",
-		"quicktype": "^23.2.6",
+		"quicktype": "^26.0.0",
 		"source-map-support": "^0.5.20",
 		"ts-jest": "29.4.6",
 		"ts-node": "10.9.1",
