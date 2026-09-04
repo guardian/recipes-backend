@@ -13,7 +13,6 @@ import { SnsAction } from 'aws-cdk-lib/aws-cloudwatch-actions';
 import { EventBus, Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
-import { LambdaDestination } from 'aws-cdk-lib/aws-s3-notifications';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { DataStore } from './datastore';
 import { DynamicFronts } from './dynamic-fronts';
@@ -22,7 +21,6 @@ import { FaciaConnection } from './facia-connection';
 import { PersonalisedFronts } from './personalised-fronts';
 import { PrintableRecipeGenerator } from './printable-recipe-generator';
 import { RecipesReindex } from './recipes-reindex';
-import { RestEndpoints } from './rest-endpoints';
 import { StaticServing } from './static-serving';
 
 export class RecipesBackend extends GuStack {
@@ -272,13 +270,6 @@ export class RecipesBackend extends GuStack {
 			contentUrlBase,
 		});
 
-		new RestEndpoints(this, 'RestEndpoints', {
-			servingBucket: serving.staticBucket,
-			fastlyKey: fastlyKeyParam.valueAsString,
-			contentUrlBase,
-			dataStore: store,
-		});
-
 		new RecipesReindex(this, 'RecipeReindex', {
 			dataStore: store,
 			contentUrlBase,
@@ -303,57 +294,6 @@ export class RecipesBackend extends GuStack {
 		});
 
 		durationAlarm.addAlarmAction(new SnsAction(nonUrgentAlarmTopic));
-
-		const publishTodaysCurationLambda = new GuScheduledLambda(
-			this,
-			'PublishTodaysCuration',
-			{
-				app: 'recipes-publish-todays-curation',
-				architecture: Architecture.ARM_64,
-				fileName: 'publish-todays-curation.zip',
-				functionName: `PublishTodaysCuration-${props.stage}`,
-				handler: 'main.handler',
-				initialPolicy: [
-					new PolicyStatement({
-						effect: Effect.DENY,
-						actions: ['*'],
-						resources: [serving.staticBucket.bucketArn + '/content/*'],
-					}),
-					new PolicyStatement({
-						effect: Effect.ALLOW,
-						actions: ['s3:PutObject', 's3:GetObject'],
-						resources: [serving.staticBucket.bucketArn + '/*'],
-					}),
-					new PolicyStatement({
-						effect: Effect.ALLOW,
-						actions: ['s3:ListBucket'],
-						resources: [serving.staticBucket.bucketArn],
-					}),
-				],
-				memorySize: 256,
-				monitoringConfiguration: {
-					noMonitoring: true,
-				},
-				rules: [
-					{
-						schedule: Schedule.cron({ hour: '0', minute: '1' }),
-						description: 'Update Feast app daily curation at midnight',
-					},
-				],
-				runtime: Runtime.NODEJS_20_X,
-				timeout: Duration.seconds(10),
-				environment: {
-					STATIC_BUCKET: serving.staticBucket.bucketName,
-					FASTLY_API_KEY: fastlyKeyParam.valueAsString,
-					CONTENT_URL_BASE: contentUrlBase,
-				},
-			},
-		);
-
-		serving.staticBucket.addObjectCreatedNotification(
-			new LambdaDestination(publishTodaysCurationLambda),
-			{ suffix: 'curation.json' },
-		);
 
 		new GuScheduledLambda(this, 'PublishContributors', {
 			app: 'recipes-publish-contributor-information',
