@@ -33,31 +33,6 @@ export class RecipesBackend extends GuStack {
 
 		const lambdaTimeout = Duration.seconds(30);
 
-		new GuLambdaFunction(this, 'testIndexLambda', {
-			fileName: 'test-indexbuild-lambda.zip',
-			runtime: Runtime.NODEJS_20_X,
-			architecture: Architecture.ARM_64,
-			app: 'recipes-backend-testindex',
-			handler: 'main.handler',
-			timeout: lambdaTimeout,
-			environment: {
-				STATIC_BUCKET: serving.staticBucket.bucketName,
-				INDEX_TABLE: store.table.tableName,
-				LAST_UPDATED_INDEX: store.lastUpdatedIndexName,
-			},
-			initialPolicy: [
-				new PolicyStatement({
-					effect: Effect.ALLOW,
-					actions: ['s3:PutObject', 's3:DeleteObject'],
-					resources: [serving.staticBucket.bucketArn + '/*'],
-				}),
-				new PolicyStatement({
-					effect: Effect.ALLOW,
-					actions: ['dynamodb:Scan', 'dynamodb:Query'],
-					resources: [store.table.tableArn, store.table.tableArn + '/index/*'],
-				}),
-			],
-		});
 		const externalParameters = new ExternalParameters(this, 'externals');
 		const nonUrgentAlarmTopic = aws_sns.Topic.fromTopicArn(
 			this,
