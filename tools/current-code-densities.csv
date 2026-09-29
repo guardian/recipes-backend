@@ -1,0 +1,1556 @@
+id,name,normalised_name,density
+1,sugar,sugar,0.845351
+2,ricotta,ricotta,1.014422
+3,breadcrumb,breadcrumb,0.253605
+4,pea,pea,0.612880
+5,self-raising flour,self-raising flour,0.528345
+6,light brown sugar,light brown sugar,0.781950
+7,flaked almond,flaked almond,0.422676
+8,spinach,spinach,0.126803
+9,grated ginger,grated ginger,0.541025
+10,diced potato,diced potato,0.634014
+11,chopped ginger,chopped ginger,0.486077
+12,chopped dark chocolate,chopped dark chocolate,0.676281
+13,chopped pistachio,chopped pistachio,0.549478
+14,soft brown sugar,soft brown sugar,0.781950
+15,chopped walnut,chopped walnut,0.549478
+16,golden syrup,golden syrup,1.479365
+17,dark brown sugar,dark brown sugar,0.781950
+18,pumpkin seed,pumpkin seed,0.634014
+19,broad bean,broad bean,0.634014
+20,wholemeal flour,wholemeal flour,0.549478
+21,coconut oil,coconut oil,0.908753
+22,mayonnaise,mayonnaise,1.014422
+23,chopped peanut,chopped peanut,0.549478
+24,greek yoghurt,greek yoghurt,1.014422
+25,grated gruyere,grated gruyere,0.422676
+26,light muscovado sugar,light muscovado sugar,0.781950
+27,chopped almond,chopped almond,0.549478
+28,chopped hazelnut,chopped hazelnut,0.549478
+29,soft light brown sugar,soft light brown sugar,0.781950
+30,water,water,0.997515
+31,blueberry,blueberry,0.634014
+32,grated pecorino,grated pecorino,0.359274
+33,flour,flour,0.528345
+34,chickpea flour,chickpea flour,0.528345
+35,sliced potato,sliced potato,0.739682
+36,frozen pea,frozen pea,0.612880
+37,chopped tarragon,chopped tarragon,0.126803
+38,pearl barley,pearl barley,0.845351
+39,rice flour,rice flour,0.612880
+40,golden caster sugar,golden caster sugar,0.845351
+41,crumbled feta,crumbled feta,0.549478
+42,chopped pecan,chopped pecan,0.549478
+43,oat,oat,0.380408
+44,sliced radish,sliced radish,0.486077
+45,dark muscovado sugar,dark muscovado sugar,0.781950
+46,strong white flour,strong white flour,0.528345
+47,grated cheese,grated cheese,0.422676
+48,red lentil,red lentil,0.845351
+49,sliced leek,sliced leek,0.380408
+50,beansprout,beansprout,0.317007
+51,porridge oat,porridge oat,0.380408
+52,dried porcini,dried porcini,0.147936
+53,semolina,semolina,0.739682
+54,rocket,rocket,0.084535
+55,green lentil,green lentil,0.845351
+56,arborio rice,arborio rice,0.845351
+57,chopped kale,chopped kale,0.169070
+58,condensed milk,condensed milk,1.310295
+59,diced pumpkin,diced pumpkin,0.634014
+60,dried apricot,dried apricot,0.634014
+61,brown lentil,brown lentil,0.845351
+62,sliced carrot,sliced carrot,0.549478
+63,chopped date,chopped date,0.697415
+64,diced tofu,diced tofu,0.697415
+65,chopped herbs,chopped herbs,0.147936
+66,baby spinach,baby spinach,0.126803
+67,kale,kale,0.126803
+68,bread flour,bread flour,0.528345
+69,passata,passata,1.035555
+70,silken tofu,silken tofu,0.887619
+71,palm sugar,palm sugar,0.845351
+72,ground pistachio,ground pistachio,0.507211
+73,marmalade,marmalade,1.268027
+74,tomato puree,tomato puree,1.098957
+75,grated carrot,grated carrot,0.380408
+76,pomegranate seed,pomegranate seed,0.676281
+77,watercress,watercress,0.105669
+78,blackberry,blackberry,0.570612
+79,egg white,egg white,1.014422
+80,white spelt flour,white spelt flour,0.549478
+81,wholemeal spelt flour,wholemeal spelt flour,0.549478
+82,chopped chestnut,chopped chestnut,0.676281
+83,coconut cream,coconut cream,1.014422
+84,sliced courgette,sliced courgette,0.464943
+85,white miso,white miso,1.098957
+86,muscovado sugar,muscovado sugar,0.781950
+87,diced onion,diced onion,0.612880
+88,chopped cherry tomato,chopped cherry tomato,0.760816
+89,puy lentil,puy lentil,0.845351
+90,buttermilk,buttermilk,1.056689
+91,jumbo oat,jumbo oat,0.317007
+92,sliced chestnut mushroom,sliced chestnut mushroom,0.317007
+93,black treacle,black treacle,1.479365
+94,crushed peanut,crushed peanut,0.549478
+95,kimchi,kimchi,0.760816
+96,poppy seed,poppy seed,0.591746
+97,cranberry,cranberry,0.422676
+98,chopped white chocolate,chopped white chocolate,0.676281
+99,chopped potato,chopped potato,0.634014
+100,cornmeal,cornmeal,0.739682
+101,chopped dried apricot,chopped dried apricot,0.612880
+102,chopped spring onion,chopped spring onion,0.380408
+103,coconut flake,coconut flake,0.211338
+104,coconut yoghurt,coconut yoghurt,1.014422
+105,grated beetroot,grated beetroot,0.380408
+106,prune,prune,0.634014
+107,sliced cucumber,sliced cucumber,0.507211
+108,chopped pine nut,chopped pine nut,0.549478
+109,ground hazelnut,ground hazelnut,0.507211
+110,dried cranberry,dried cranberry,0.612880
+111,strong bread flour,strong bread flour,0.528345
+112,rice,rice,0.845351
+113,chopped spinach,chopped spinach,0.169070
+114,diced chorizo,diced chorizo,0.549478
+115,grated courgette,grated courgette,0.422676
+116,jasmine rice,jasmine rice,0.845351
+117,chopped olive,chopped olive,0.528345
+118,lemon curd,lemon curd,1.268027
+119,chard,chard,0.126803
+120,miso paste,miso paste,1.098957
+121,pudding rice,pudding rice,0.845351
+122,risotto rice,risotto rice,0.845351
+123,self raising flour,self raising flour,0.528345
+124,baking powder,baking powder,0.507211
+125,caper,caper,0.612880
+126,chopped carrot,chopped carrot,0.570612
+127,chopped green bean,chopped green bean,0.528345
+128,chopped kimchi,chopped kimchi,0.760816
+129,shredded red cabbage,shredded red cabbage,0.295873
+130,sliced runner bean,sliced runner bean,0.422676
+131,chopped chestnut mushroom,chopped chestnut mushroom,0.359274
+132,diced tomato,diced tomato,0.760816
+133,diced butternut squash,diced butternut squash,0.634014
+134,chopped chocolate,chopped chocolate,0.676281
+135,grated pecorino romano,grated pecorino romano,0.359274
+136,sliced strawberry,sliced strawberry,0.634014
+137,chopped garlic,chopped garlic,0.549478
+138,cocoa,cocoa,0.401542
+139,cream,cream,1.014422
+140,diced aubergine,diced aubergine,0.338141
+141,dijon mustard,dijon mustard,1.014422
+142,fine semolina,fine semolina,0.739682
+143,sauerkraut,sauerkraut,0.591746
+144,chopped oregano,chopped oregano,0.147936
+145,chopped black olive,chopped black olive,0.528345
+146,dried fruit,dried fruit,0.634014
+147,fine polenta,fine polenta,0.739682
+148,chana dal,chana dal,0.845351
+149,chopped strawberry,chopped strawberry,0.634014
+150,chopped caper,chopped caper,0.634014
+151,malt extract,malt extract,1.479365
+152,tomato passata,tomato passata,1.035555
+153,walnut,walnut,0.422676
+154,brown rice,brown rice,0.781950
+155,light brown muscovado sugar,light brown muscovado sugar,0.781950
+156,light brown soft sugar,light brown soft sugar,0.781950
+157,dried chickpea,dried chickpea,0.845351
+158,grated manchego,grated manchego,0.422676
+159,jam sugar,jam sugar,0.845351
+160,salad leaf,salad leaf,0.084535
+161,mixed seed,mixed seed,0.634014
+162,nutritional yeast,nutritional yeast,0.211338
+163,sliced shallot,sliced shallot,0.464943
+164,black rice,black rice,0.803084
+165,chopped cavolo nero,chopped cavolo nero,0.169070
+166,chopped kalamata olive,chopped kalamata olive,0.528345
+167,diced sweet potato,diced sweet potato,0.591746
+168,yellow split pea,yellow split pea,0.845351
+169,dark chocolate chip,dark chocolate chip,0.739682
+170,chopped nut,chopped nut,0.549478
+171,unrefined sugar,unrefined sugar,0.845351
+172,white sugar,white sugar,0.845351
+173,raspberry jam,raspberry jam,1.268027
+174,rapeseed oil,rapeseed oil,0.908753
+175,freekeh,freekeh,0.845351
+176,pearled spelt,pearled spelt,0.845351
+177,semolina flour,semolina flour,0.739682
+178,shredded basil,shredded basil,0.147936
+179,shredded mint,shredded mint,0.147936
+180,shredded cavolo nero,shredded cavolo nero,0.147936
+181,shredded kale,shredded kale,0.147936
+182,sliced cavolo nero,sliced cavolo nero,0.147936
+183,strong flour,strong flour,0.528345
+184,chopped watercress,chopped watercress,0.147936
+185,grated turmeric,grated turmeric,0.541025
+186,mixed berry,mixed berry,0.570612
+187,shredded cabbage,shredded cabbage,0.295873
+188,sliced beetroot,sliced beetroot,0.507211
+189,berry,berry,0.570612
+190,chopped herb,chopped herb,0.147936
+191,sliced tomato,sliced tomato,0.760816
+192,mung bean,mung bean,0.803084
+193,aquafaba,aquafaba,1.014422
+194,chopped cashew,chopped cashew,0.549478
+195,gooseberry,gooseberry,0.655147
+196,grape,grape,0.655147
+197,grated horseradish,grated horseradish,0.541025
+198,minced ginger,minced ginger,0.541025
+199,grated hard cheese,grated hard cheese,0.422676
+200,miso,miso,1.098957
+201,dried cherry,dried cherry,0.612880
+202,black sesame seed,black sesame seed,0.591746
+203,carnaroli rice,carnaroli rice,0.845351
+204,molasses,molasses,1.479365
+205,treacle,treacle,1.479365
+206,sticky rice,sticky rice,0.845351
+207,chestnut,chestnut,0.760816
+208,chopped leek,chopped leek,0.422676
+209,chopped pumpkin,chopped pumpkin,0.634014
+210,diced carrot,diced carrot,0.570612
+211,goat curd,goat curd,1.014422
+212,kefir,kefir,1.056689
+213,labneh,labneh,1.014422
+214,whipping cream,whipping cream,1.014422
+215,white miso paste,white miso paste,1.098957
+216,wholemeal rye flour,wholemeal rye flour,0.549478
+217,dark brown soft sugar,dark brown soft sugar,0.781950
+218,light soft brown sugar,light soft brown sugar,0.781950
+219,soft dark brown sugar,soft dark brown sugar,0.781950
+220,chopped plum tomato,chopped plum tomato,0.760816
+221,dried fig,dried fig,0.634014
+222,dried mushroom,dried mushroom,0.147936
+223,crushed pistachio,crushed pistachio,0.549478
+224,apricot jam,apricot jam,1.268027
+225,cherry jam,cherry jam,1.268027
+226,tomato ketchup,tomato ketchup,1.056689
+227,basil leaf,basil leaf,0.063401
+228,cavolo nero,cavolo nero,0.126803
+229,lentil,lentil,0.845351
+230,yellow lentil,yellow lentil,0.845351
+231,oil,oil,0.908753
+232,dried sour cherry,dried sour cherry,0.612880
+233,short grain brown rice,short grain brown rice,0.845351
+234,gluten-free flour,gluten-free flour,0.528345
+235,gluten-free self-raising flour,gluten-free self-raising flour,0.528345
+236,chopped beetroot,chopped beetroot,0.549478
+237,chopped chorizo,chopped chorizo,0.549478
+238,chopped courgette,chopped courgette,0.507211
+239,chopped galangal,chopped galangal,0.486077
+240,chopped green olive,chopped green olive,0.528345
+241,chopped prune,chopped prune,0.697415
+242,chopped rocket,chopped rocket,0.126803
+243,cottage cheese,cottage cheese,1.014422
+244,cracked freekeh,cracked freekeh,0.845351
+245,crispy shallot,crispy shallot,0.317007
+246,dark chocolate,dark chocolate,0.676281
+247,diced rhubarb,diced rhubarb,0.591746
+248,english mustard,english mustard,1.014422
+249,grated comte,grated comte,0.422676
+250,pea shoot,pea shoot,0.105669
+251,redcurrant jelly,redcurrant jelly,1.268027
+252,sliced cabbage,sliced cabbage,0.295873
+253,chopped turmeric,chopped turmeric,0.486077
+254,chopped mixed herb,chopped mixed herb,0.147936
+255,chopped rosemary,chopped rosemary,0.147936
+256,chopped chard,chopped chard,0.169070
+257,sliced sweet potato,sliced sweet potato,0.570612
+258,quartered tomato,quartered tomato,0.760816
+259,coarse polenta,coarse polenta,0.739682
+260,potato flour,potato flour,0.549478
+261,toor dal,toor dal,0.845351
+262,dried shiitake mushroom,dried shiitake mushroom,0.147936
+263,chopped macadamia nut,chopped macadamia nut,0.549478
+264,chopped mixed nut,chopped mixed nut,0.549478
+265,grated grana padano,grated grana padano,0.359274
+266,crushed walnut,crushed walnut,0.549478
+267,jam,jam,1.268027
+268,ketchup,ketchup,1.056689
+269,mint leaf,mint leaf,0.063401
+270,split red lentil,split red lentil,0.845351
+271,whole milk,whole milk,1.014422
+272,crunchy peanut butter,crunchy peanut butter,1.056689
+273,golden raisin,golden raisin,0.612880
+274,mixed dried fruit,mixed dried fruit,0.634014
+275,glutinous rice,glutinous rice,0.845351
+276,paella rice,paella rice,0.845351
+277,blanched almond,blanched almond,0.634014
+278,diced beetroot,diced beetroot,0.549478
+279,mango chutney,mango chutney,1.268027
+280,shredded white cabbage,shredded white cabbage,0.295873
+281,spinach leaf,spinach leaf,0.126803
+282,brown long grain rice,brown long grain rice,0.781950
+283,chopped coriander stem,chopped coriander stem,0.147936
+284,polenta flour,polenta flour,0.739682
+285,dried wild mushroom,dried wild mushroom,0.147936
+286,porcini,porcini,0.147936
+287,flaked coconut,flaked coconut,0.211338
+288,grated caerphilly,grated caerphilly,0.422676
+289,grated cheddar cheese,grated cheddar cheese,0.422676
+290,ground peanut,ground peanut,0.507211
+291,ground walnut,ground walnut,0.507211
+292,strawberry jam,strawberry jam,1.268027
+293,orange curd,orange curd,1.268027
+294,rainbow chard,rainbow chard,0.126803
+295,spring green,spring green,0.126803
+296,mung dal,mung dal,0.845351
+297,agave syrup,agave syrup,1.310295
+298,oat milk,oat milk,1.014422
+299,almond butter,almond butter,1.056689
+300,barley,barley,0.845351
+301,chopped dried fruit,chopped dried fruit,0.697415
+302,dried currant,dried currant,0.612880
+303,white rice flour,white rice flour,0.612880
+304,seed,seed,0.634014
+305,sushi rice,sushi rice,0.845351
+306,sliced coriander,sliced coriander,0.147936
+307,shredded green,shredded green,0.147936
+308,shredded spring green,shredded spring green,0.147936
+309,gluten-free plain flour,gluten-free plain flour,0.528345
+310,white bread flour,white bread flour,0.528345
+311,white rice,white rice,0.845351
+312,bicarbonate of soda,bicarbonate of soda,0.507211
+313,chopped butternut squash,chopped butternut squash,0.634014
+314,crushed hazelnut,crushed hazelnut,0.549478
+315,ginger paste,ginger paste,0.541025
+316,grated chocolate,grated chocolate,0.507211
+317,labne,labne,1.014422
+318,shredded chinese cabbage,shredded chinese cabbage,0.295873
+319,shredded spinach,shredded spinach,0.169070
+320,sliced almond,sliced almond,0.422676
+321,sliced spinach,sliced spinach,0.169070
+322,sliced white cabbage,sliced white cabbage,0.295873
+323,thai red curry paste,thai red curry paste,1.098957
+324,chapati flour,chapati flour,0.549478
+325,red rice,red rice,0.781950
+326,light muscovado,light muscovado,0.781950
+327,rapadura sugar,rapadura sugar,0.781950
+328,cardamom sugar,cardamom sugar,0.845351
+329,chopped turmeric root,chopped turmeric root,0.486077
+330,chopped dried chilli,chopped dried chilli,0.147936
+331,chopped swiss chard,chopped swiss chard,0.169070
+332,diced waxy potato,diced waxy potato,0.634014
+333,sliced new potato,sliced new potato,0.591746
+334,sliced waxy potato,sliced waxy potato,0.634014
+335,chopped green tomato,chopped green tomato,0.760816
+336,diced cherry tomato,diced cherry tomato,0.760816
+337,sliced beef tomato,sliced beef tomato,0.760816
+338,quick cook polenta,quick cook polenta,0.739682
+339,dried bean,dried bean,0.803084
+340,dried fava bean,dried fava bean,0.803084
+341,dried flageolet bean,dried flageolet bean,0.803084
+342,dried kidney bean,dried kidney bean,0.803084
+343,dried white bean,dried white bean,0.803084
+344,dried porcini mushroom,dried porcini mushroom,0.147936
+345,barberry,barberry,0.612880
+346,chopped cashew nut,chopped cashew nut,0.549478
+347,crushed flaked almond,crushed flaked almond,0.549478
+348,flaked pistachio,flaked pistachio,0.422676
+349,brown breadcrumb,brown breadcrumb,0.253605
+350,grated paneer,grated paneer,0.422676
+351,orange marmalade,orange marmalade,1.268027
+352,passion fruit curd,passion fruit curd,1.268027
+353,pizza sauce,pizza sauce,1.056689
+354,sriracha,sriracha,1.056689
+355,coriander leaf,coriander leaf,0.063401
+356,baby leaf spinach,baby leaf spinach,0.126803
+357,beetroot leaf,beetroot leaf,0.126803
+358,beluga lentil,beluga lentil,0.845351
+359,black lentil,black lentil,0.845351
+360,dried green lentil,dried green lentil,0.845351
+361,moong dal,moong dal,0.845351
+362,urad dal,urad dal,0.845351
+363,plant milk,plant milk,1.014422
+364,nut butter,nut butter,1.056689
+365,chilli oil,chilli oil,0.908753
+366,neutral oil,neutral oil,0.908753
+367,farro,farro,0.845351
+368,dried blueberry,dried blueberry,0.612880
+369,shredded coriander,shredded coriander,0.147936
+370,shredded chard,shredded chard,0.147936
+371,sliced chard,sliced chard,0.147936
+372,sliced kale,sliced kale,0.147936
+373,sliced spring green,sliced spring green,0.147936
+374,sliced swiss chard,sliced swiss chard,0.147936
+375,shredded thai basil,shredded thai basil,0.147936
+376,sliced basil,sliced basil,0.147936
+377,cake flour,cake flour,0.528345
+378,chopped apricot,chopped apricot,0.697415
+379,date,date,0.634014
+380,diced courgette,diced courgette,0.507211
+381,dried cep,dried cep,0.147936
+382,fromage frais,fromage frais,1.014422
+383,grated butternut squash,grated butternut squash,0.401542
+384,grated pumpkin,grated pumpkin,0.401542
+385,quark,quark,1.014422
+386,roasted peanut,roasted peanut,0.634014
+387,sliced butternut squash,sliced butternut squash,0.591746
+388,sliced kimchi,sliced kimchi,0.760816
+389,sliced red cabbage,sliced red cabbage,0.295873
+390,split green pea,split green pea,0.845351
+391,split yellow pea,split yellow pea,0.845351
+392,sponge flour,sponge flour,0.528345
+393,plain wholemeal flour,plain wholemeal flour,0.549478
+394,strong wheat flour,strong wheat flour,0.549478
+395,wholemeal plain flour,wholemeal plain flour,0.549478
+396,granulated brown sugar,granulated brown sugar,0.781950
+397,light brown caster sugar,light brown caster sugar,0.781950
+398,light brown muscovado,light brown muscovado,0.781950
+399,panela sugar,panela sugar,0.781950
+400,unrefined caster sugar,unrefined caster sugar,0.845351
+401,chopped chervil,chopped chervil,0.147936
+402,chopped coriander leaf,chopped coriander leaf,0.169070
+403,chopped coriander stalk,chopped coriander stalk,0.169070
+404,chopped fennel top,chopped fennel top,0.147936
+405,chopped makrut lime leaf,chopped makrut lime leaf,0.147936
+406,chopped mint leaf,chopped mint leaf,0.147936
+407,chopped parsley leaf,chopped parsley leaf,0.147936
+408,chopped collard green,chopped collard green,0.169070
+409,chopped mustard green,chopped mustard green,0.169070
+410,chopped rainbow chard,chopped rainbow chard,0.169070
+411,torn swiss chard,torn swiss chard,0.169070
+412,chopped blanched almond,chopped blanched almond,0.549478
+413,diced green olive,diced green olive,0.528345
+414,chopped sweet potato,chopped sweet potato,0.591746
+415,chunked potato,chunked potato,0.634014
+416,diced baking potato,diced baking potato,0.634014
+417,diced floury potato,diced floury potato,0.634014
+418,diced new potato,diced new potato,0.634014
+419,sliced pink fir potato,sliced pink fir potato,0.739682
+420,chopped vine tomato,chopped vine tomato,0.760816
+421,diced plum tomato,diced plum tomato,0.760816
+422,quartered cherry tomato,quartered cherry tomato,0.760816
+423,sliced cherry tomato,sliced cherry tomato,0.760816
+424,sliced heirloom tomato,sliced heirloom tomato,0.760816
+425,quick polenta,quick polenta,0.739682
+426,dried black turtle bean,dried black turtle bean,0.803084
+427,dried black-eyed bean,dried black-eyed bean,0.803084
+428,dried borlotti bean,dried borlotti bean,0.803084
+429,dried broad bean,dried broad bean,0.803084
+430,dried butter bean,dried butter bean,0.803084
+431,dried cannellini bean,dried cannellini bean,0.803084
+432,dried haricot bean,dried haricot bean,0.803084
+433,split fava bean,split fava bean,0.803084
+434,panko,panko,0.359274
+435,panko crumb,panko crumb,0.359274
+436,channa dal,channa dal,0.845351
+437,dried lentil,dried lentil,0.845351
+438,yellow mung dal,yellow mung dal,0.845351
+439,dried sliced wood ear mushroom,dried sliced wood ear mushroom,0.147936
+440,sliced dried mushroom,sliced dried mushroom,0.147936
+441,sliced porcini,sliced porcini,0.147936
+442,chopped dried cranberry,chopped dried cranberry,0.697415
+443,dried barberry,dried barberry,0.612880
+444,chopped macadamia,chopped macadamia,0.549478
+445,slivered pistachio,slivered pistachio,0.422676
+446,coarse breadcrumb,coarse breadcrumb,0.253605
+447,plain breadcrumb,plain breadcrumb,0.253605
+448,sourdough breadcrumb,sourdough breadcrumb,0.253605
+449,white breadcrumb,white breadcrumb,0.253605
+450,preserving sugar,preserving sugar,0.845351
+451,unrefined cane sugar,unrefined cane sugar,0.845351
+452,red grape,red grape,0.655147
+453,grated red cabbage,grated red cabbage,0.295873
+454,grated white cabbage,grated white cabbage,0.295873
+455,grated galangal,grated galangal,0.541025
+456,grated caerphilly cheese,grated caerphilly cheese,0.422676
+457,grated coolea,grated coolea,0.422676
+458,grated fontina,grated fontina,0.422676
+459,grated goat cheese,grated goat cheese,0.422676
+460,grated kasseri cheese,grated kasseri cheese,0.422676
+461,grated kefalotyri,grated kefalotyri,0.422676
+462,grated lancashire cheese,grated lancashire cheese,0.422676
+463,grated monterey jack,grated monterey jack,0.422676
+464,grated queso anejo,grated queso anejo,0.422676
+465,ground cashew,ground cashew,0.507211
+466,golden icing sugar,golden icing sugar,0.570612
+467,blackberry jam,blackberry jam,1.268027
+468,blackcurrant jam,blackcurrant jam,1.268027
+469,blueberry and whisky jam,blueberry and whisky jam,1.268027
+470,guava jam,guava jam,1.268027
+471,plum jam,plum jam,1.268027
+472,quince jam,quince jam,1.268027
+473,ube jam,ube jam,1.268027
+474,banana ketchup,banana ketchup,1.056689
+475,black bean sauce,black bean sauce,1.056689
+476,tomato sauce,tomato sauce,1.056689
+477,mixed herb,mixed herb,0.063401
+478,thai basil,thai basil,0.063401
+479,baby spinach leaf,baby spinach leaf,0.126803
+480,chard leaf,chard leaf,0.126803
+481,chard stem,chard stem,0.169070
+482,curly kale,curly kale,0.126803
+483,mixed leafy green,mixed leafy green,0.126803
+484,mustard green,mustard green,0.126803
+485,swiss chard,swiss chard,0.126803
+486,winter green,winter green,0.126803
+487,black urad dal,black urad dal,0.845351
+488,dried brown lentil,dried brown lentil,0.845351
+489,pardina lentil,pardina lentil,0.845351
+490,split lentil,split lentil,0.845351
+491,split urad lentil,split urad lentil,0.845351
+492,aioli,aioli,1.014422
+493,almond milk,almond milk,1.014422
+494,plant-based milk,plant-based milk,1.014422
+495,soy milk,soy milk,1.014422
+496,soya milk,soya milk,1.014422
+497,biscoff spread,biscoff spread,1.056689
+498,pecan butter,pecan butter,1.056689
+499,pistachio butter,pistachio butter,1.056689
+500,smooth peanut butter,smooth peanut butter,1.056689
+501,gluten-free oat,gluten-free oat,0.380408
+502,extra-virgin olive oil,extra-virgin olive oil,0.908753
+503,peanut oil,peanut oil,0.908753
+504,sunflower oil,sunflower oil,0.908753
+505,pearled farro,pearled farro,0.845351
+506,chopped raisin,chopped raisin,0.612880
+507,dried berry,dried berry,0.612880
+508,dried gooseberry,dried gooseberry,0.612880
+509,golden sultana,golden sultana,0.612880
+510,white sesame seed,white sesame seed,0.591746
+511,calasparra rice,calasparra rice,0.845351
+512,wholegrain risotto rice,wholegrain risotto rice,0.845351
+513,sliced mint,sliced mint,0.147936
+514,shredded swiss chard,shredded swiss chard,0.147936
+515,sliced green leaf,sliced green leaf,0.147936
+516,sliced rainbow chard,sliced rainbow chard,0.147936
+517,sliced black olive,sliced black olive,0.528345
+518,sliced green olive,sliced green olive,0.528345
+519,sliced olive,sliced olive,0.528345
+520,cooked white bean,cooked white bean,0.781950
+521,black strap molasses,black strap molasses,1.479365
+522,gluten free flour,gluten free flour,0.528345
+523,gluten free plain flour,gluten free plain flour,0.528345
+524,gluten free self raising flour,gluten free self raising flour,0.528345
+525,plain white stone ground flour,plain white stone ground flour,0.528345
+526,strong plain flour,strong plain flour,0.528345
+527,strong white plain flour,strong white plain flour,0.528345
+528,black glutinous rice,black glutinous rice,0.803084
+529,black venus rice,black venus rice,0.803084
+530,brown rice flour,brown rice flour,0.612880
+531,butternut squash,butternut squash,0.634014
+532,camargue red rice,camargue red rice,0.781950
+533,chia seed,chia seed,0.591746
+534,chopped mixed dried fruit,chopped mixed dried fruit,0.697415
+535,coarse cornmeal,coarse cornmeal,0.739682
+536,cooked chestnut,cooked chestnut,0.760816
+537,crumbled chestnut,crumbled chestnut,0.612880
+538,crumbled queso fresco,crumbled queso fresco,0.549478
+539,crumbled white cheese,crumbled white cheese,0.549478
+540,crushed cashew,crushed cashew,0.549478
+541,crushed ginger,crushed ginger,0.541025
+542,green split pea,green split pea,0.845351
+543,ground semolina flour,ground semolina flour,0.739682
+544,long grain brown rice,long grain brown rice,0.781950
+545,malted brown flour,malted brown flour,0.549478
+546,mashed chickpea,mashed chickpea,0.676281
+547,mixed salad leaf,mixed salad leaf,0.084535
+548,plain spelt flour,plain spelt flour,0.549478
+549,quartered grape,quartered grape,0.697415
+550,raw peanut,raw peanut,0.634014
+551,red miso,red miso,1.098957
+552,salted peanut,salted peanut,0.634014
+553,salted roasted peanut,salted roasted peanut,0.634014
+554,shaved cabbage,shaved cabbage,0.295873
+555,shredded ginger,shredded ginger,0.486077
+556,shredded hispi cabbage,shredded hispi cabbage,0.295873
+557,shredded kimchi,shredded kimchi,0.760816
+558,shredded leek top,shredded leek top,0.380408
+559,shredded rocket,shredded rocket,0.126803
+560,shredded savoy cabbage,shredded savoy cabbage,0.295873
+561,sliced chestnut,sliced chestnut,0.634014
+562,sliced grape,sliced grape,0.697415
+563,sliced leek green,sliced leek green,0.380408
+564,sliced sweetheart cabbage,sliced sweetheart cabbage,0.295873
+565,sliced watercress,sliced watercress,0.147936
+566,soft dried date,soft dried date,0.634014
+567,soft goat cheese,soft goat cheese,0.845351
+568,soya yoghurt,soya yoghurt,1.014422
+569,split pea,split pea,0.845351
+570,teff flour,teff flour,0.549478
+571,tzatziki,tzatziki,1.014422
+572,vegan mayonnaise,vegan mayonnaise,1.014422
+573,vegan soft cheese,vegan soft cheese,1.014422
+574,vegan whipping cream,vegan whipping cream,1.014422
+575,vegan yoghurt,vegan yoghurt,1.014422
+576,wholegrain mustard,wholegrain mustard,1.014422
+577,wholegrain spelt flour,wholegrain spelt flour,0.549478
+578,wild rocket,wild rocket,0.084535
+579,caster sugar,caster sugar,0.845351
+580,olive oil,olive oil,0.908753
+581,plain flour,plain flour,0.528345
+582,double cream,double cream,1.014422
+583,milk,milk,1.014422
+584,yoghurt,yoghurt,1.014422
+585,honey,honey,1.479365
+586,icing sugar,icing sugar,0.570612
+587,sour cream,sour cream,1.014422
+588,cornflour,cornflour,0.612880
+589,chopped onion,chopped onion,0.612880
+590,maple syrup,maple syrup,1.479365
+591,grated parmesan,grated parmesan,0.359274
+592,sliced onion,sliced onion,0.612880
+593,tahini,tahini,1.056689
+594,vegetable oil,vegetable oil,0.908753
+595,sliced spring onion,sliced spring onion,0.380408
+596,chopped parsley,chopped parsley,0.147936
+597,vegetable stock,vegetable stock,0.997515
+598,ground turmeric,ground turmeric,0.541025
+599,chopped coriander,chopped coriander,0.147936
+600,ground almond,ground almond,0.549478
+601,long grain rice,long grain rice,0.845351
+602,tomato paste,tomato paste,1.098957
+603,sesame seed,sesame seed,0.634014
+604,coconut milk,coconut milk,1.014422
+605,cocoa powder,cocoa powder,0.401542
+606,demerara sugar,demerara sugar,0.845351
+607,cream cheese,cream cheese,1.014422
+608,chopped tomato,chopped tomato,0.760816
+609,brown sugar,brown sugar,0.781950
+610,desiccated coconut,desiccated coconut,0.211338
+611,crushed garlic,crushed garlic,0.549478
+612,cherry tomato,cherry tomato,0.760816
+613,grated cheddar,grated cheddar,0.422676
+614,mascarpone,mascarpone,1.014422
+615,sesame oil,sesame oil,0.908753
+616,ground ginger,ground ginger,0.541025
+617,minced garlic,minced garlic,0.549478
+618,raisin,raisin,0.612880
+619,coriander,coriander,0.063401
+620,chopped chive,chopped chive,0.147936
+621,rolled oat,rolled oat,0.380408
+622,granulated sugar,granulated sugar,0.845351
+623,panko breadcrumb,panko breadcrumb,0.359274
+624,chopped shallot,chopped shallot,0.464943
+625,cumin seed,cumin seed,0.591746
+626,turmeric,turmeric,0.541025
+627,feta,feta,0.549478
+628,peanut butter,peanut butter,1.056689
+629,fennel seed,fennel seed,0.591746
+630,raspberry,raspberry,0.570612
+631,extra virgin olive oil,extra virgin olive oil,0.908753
+632,strong white bread flour,strong white bread flour,0.528345
+633,chickpea,chickpea,0.845351
+634,sultana,sultana,0.612880
+635,polenta,polenta,0.739682
+636,sliced garlic,sliced garlic,0.549478
+637,tomato,tomato,0.760816
+638,harissa,harissa,1.098957
+639,00 flour,00 flour,0.528345
+640,mustard,mustard,1.014422
+641,currant,currant,0.612880
+642,basil,basil,0.063401
+643,parsley,parsley,0.147936
+644,groundnut oil,groundnut oil,0.908753
+645,single cream,single cream,1.014422
+646,chopped mint,chopped mint,0.147936
+647,thyme leaf,thyme leaf,0.147936
+648,diced celery,diced celery,0.380408
+649,gochujang,gochujang,1.098957
+650,short grain rice,short grain rice,0.845351
+651,gram flour,gram flour,0.528345
+652,oregano,oregano,0.147936
+653,sliced mushroom,sliced mushroom,0.317007
+654,parmesan,parmesan,0.359274
+655,chopped celery,chopped celery,0.507211
+656,grated mozzarella,grated mozzarella,0.422676
+657,black mustard seed,black mustard seed,0.634014
+658,grain mustard,grain mustard,1.014422
+659,nigella seed,nigella seed,0.591746
+660,orange blossom water,orange blossom water,0.997515
+661,mint,mint,0.063401
+662,grated tomato,grated tomato,0.760816
+663,diced shallot,diced shallot,0.464943
+664,grated coconut,grated coconut,0.211338
+665,couscous,couscous,0.739682
+666,caraway seed,caraway seed,0.591746
+667,grated garlic,grated garlic,0.549478
+668,marmite,marmite,1.479365
+669,bulgur wheat,bulgur wheat,0.845351
+670,chopped thyme,chopped thyme,0.147936
+671,black olive,black olive,0.528345
+672,grated onion,grated onion,0.612880
+673,spelt flour,spelt flour,0.549478
+674,onion,onion,0.612880
+675,olive,olive,0.528345
+676,butter bean,butter bean,0.634014
+677,ghee,ghee,0.908753
+678,green bean,green bean,0.528345
+679,strawberry,strawberry,0.634014
+680,mustard seed,mustard seed,0.634014
+681,buckwheat flour,buckwheat flour,0.528345
+682,sunflower seed,sunflower seed,0.634014
+683,dried breadcrumb,dried breadcrumb,0.253605
+684,carrot,carrot,0.549478
+685,chopped mushroom,chopped mushroom,0.359274
+686,harissa paste,harissa paste,1.098957
+687,chopped dill,chopped dill,0.147936
+688,jaggery,jaggery,0.845351
+689,brown rice syrup,brown rice syrup,1.479365
+690,chilli sauce,chilli sauce,1.056689
+691,green olive,green olive,0.528345
+692,pine nut,pine nut,0.549478
+693,sun-dried tomato paste,sun-dried tomato paste,1.098957
+694,liquid glucose,liquid glucose,1.479365
+695,feta cheese,feta cheese,0.549478
+696,evaporated milk,evaporated milk,1.310295
+697,garlic paste,garlic paste,0.541025
+698,turmeric powder,turmeric powder,0.401542
+699,pumpkin,pumpkin,0.634014
+700,toasted sesame seed,toasted sesame seed,0.591746
+701,sliced celery,sliced celery,0.380408
+702,tamarind concentrate,tamarind concentrate,1.479365
+703,chipotle paste,chipotle paste,1.098957
+704,diced cucumber,diced cucumber,0.507211
+705,date syrup,date syrup,1.479365
+706,cucumber,cucumber,0.507211
+707,iced water,iced water,0.997515
+708,custard powder,custard powder,0.528345
+709,chopped basil,chopped basil,0.147936
+710,potato starch,potato starch,0.528345
+711,diced celeriac,diced celeriac,0.634014
+712,boiling water,boiling water,0.997515
+713,quinoa,quinoa,0.845351
+714,grated potato,grated potato,0.634014
+715,grated apple,grated apple,0.380408
+716,cannellini bean,cannellini bean,0.803084
+717,cooking oil,cooking oil,0.908753
+718,chopped bell pepper,chopped bell pepper,0.612880
+719,sliced shiitake mushroom,sliced shiitake mushroom,0.317007
+720,pumpkin puree,pumpkin puree,0.634014
+721,chopped lemongrass,chopped lemongrass,0.380408
+722,petit pois,petit pois,0.612880
+723,horseradish sauce,horseradish sauce,1.014422
+724,baking soda,baking soda,0.507211
+725,rye flour,rye flour,0.549478
+726,clotted cream,clotted cream,1.014422
+727,minced parsley,minced parsley,0.147936
+728,fried shallot,fried shallot,0.317007
+729,tapioca flour,tapioca flour,0.612880
+730,sliced fennel,sliced fennel,0.380408
+731,black bean,black bean,0.634014
+732,sweet potato,sweet potato,0.591746
+733,chopped stem ginger,chopped stem ginger,0.486077
+734,cranberry sauce,cranberry sauce,1.268027
+735,quick-cook polenta,quick-cook polenta,0.739682
+736,chopped shiitake mushroom,chopped shiitake mushroom,0.359274
+737,tapioca starch,tapioca starch,0.612880
+738,tarragon,tarragon,0.147936
+739,oatmeal,oatmeal,0.380408
+740,broccoli,broccoli,0.612880
+741,sambal oelek,sambal oelek,1.056689
+742,glutinous rice flour,glutinous rice flour,0.845351
+743,sesame paste,sesame paste,1.098957
+744,cooked rice,cooked rice,0.845351
+745,ginger syrup,ginger syrup,1.479365
+746,creme fraiche,creme fraiche,1.014422
+747,julienned carrot,julienned carrot,0.549478
+748,rhubarb,rhubarb,0.591746
+749,brown rice miso,brown rice miso,1.098957
+750,peanut,peanut,0.549478
+751,crushed tomato,crushed tomato,0.760816
+752,beetroot,beetroot,0.507211
+753,plum tomato,plum tomato,0.760816
+754,shallot,shallot,0.464943
+755,dried chilli,dried chilli,0.147936
+756,grated sweet potato,grated sweet potato,0.380408
+757,stem ginger syrup,stem ginger syrup,1.479365
+758,white cabbage,white cabbage,0.295873
+759,chopped sage,chopped sage,0.147936
+760,cherry,cherry,0.634014
+761,sugar snap pea,sugar snap pea,0.612880
+762,coconut sugar,coconut sugar,0.845351
+763,quartered onion,quartered onion,0.612880
+764,ricotta cheese,ricotta cheese,1.014422
+765,rosemary,rosemary,0.147936
+766,dulce de leche,dulce de leche,1.310295
+767,sliced red chilli,sliced red chilli,0.486077
+768,sourdough bread,sourdough bread,0.253605
+769,goat cheese,goat cheese,0.845351
+770,corn flour,corn flour,0.739682
+771,button mushroom,button mushroom,0.317007
+772,non-dairy milk,non-dairy milk,1.014422
+773,shredded lettuce,shredded lettuce,0.295873
+774,chestnut puree,chestnut puree,1.098957
+775,galangal paste,galangal paste,0.541025
+776,sichuan chilli bean paste,sichuan chilli bean paste,1.056689
+777,spring onion,spring onion,0.380408
+778,butter,butter,0.908753
+779,yeast,yeast,0.211338
+780,grated parsnip,grated parsnip,0.380408
+781,minced onion,minced onion,0.612880
+782,yellow mustard seed,yellow mustard seed,0.634014
+783,blackcurrant,blackcurrant,0.570612
+784,crispy chilli in oil,crispy chilli in oil,0.908753
+785,pistachio paste,pistachio paste,0.507211
+786,parsley leaf,parsley leaf,0.147936
+787,borlotti bean,borlotti bean,0.803084
+788,sun-dried tomato,sun-dried tomato,0.634014
+789,hummus,hummus,1.098957
+790,chilli paste,chilli paste,1.098957
+791,shredded brussels sprout,shredded brussels sprout,0.295873
+792,white bean,white bean,0.781950
+793,english mustard powder,english mustard powder,0.507211
+794,wholewheat flour,wholewheat flour,0.549478
+795,custard,custard,1.014422
+796,pecan,pecan,0.549478
+797,blue cheese,blue cheese,0.549478
+798,mozzarella,mozzarella,1.014422
+799,cooked long grain rice,cooked long grain rice,0.845351
+800,medjool date,medjool date,0.634014
+801,sliced brussels sprout,sliced brussels sprout,0.295873
+802,greens,greens,0.126803
+803,bulgur,bulgur,0.845351
+804,chestnut mushroom,chestnut mushroom,0.317007
+805,red cabbage,red cabbage,0.295873
+806,shredded coconut,shredded coconut,0.211338
+807,grated cucumber,grated cucumber,0.507211
+808,ice water,ice water,0.997515
+809,masa harina,masa harina,0.739682
+810,light olive oil,light olive oil,0.908753
+811,dark rye flour,dark rye flour,0.549478
+812,pine kernel,pine kernel,0.549478
+813,brewed coffee,brewed coffee,0.997515
+814,crushed coriander seed,crushed coriander seed,0.591746
+815,edamame bean,edamame bean,0.612880
+816,parsnip,parsnip,0.634014
+817,glucose,glucose,1.479365
+818,sliced portobello mushroom,sliced portobello mushroom,0.317007
+819,halved cherry tomato,halved cherry tomato,0.760816
+820,cheddar,cheddar,0.422676
+821,cooked quinoa,cooked quinoa,0.845351
+822,tomato concentrate,tomato concentrate,1.098957
+823,dried prune,dried prune,0.634014
+824,date molasses,date molasses,1.479365
+825,shredded pak choi,shredded pak choi,0.295873
+826,black-eyed bean,black-eyed bean,0.803084
+827,chopped sun-dried tomato,chopped sun-dried tomato,0.528345
+828,gochujang paste,gochujang paste,1.098957
+829,sparkling water,sparkling water,0.997515
+830,grated celeriac,grated celeriac,0.380408
+831,squash,squash,0.634014
+832,shelled pistachio,shelled pistachio,0.549478
+833,grated plum tomato,grated plum tomato,0.760816
+834,quartered mushroom,quartered mushroom,0.317007
+835,ginger,ginger,0.541025
+836,oat flour,oat flour,0.528345
+837,frozen sweetcorn,frozen sweetcorn,0.612880
+838,quartered potato,quartered potato,0.634014
+839,radicchio,radicchio,0.084535
+840,buckwheat,buckwheat,0.845351
+841,horseradish,horseradish,0.541025
+842,crumbled blue cheese,crumbled blue cheese,0.549478
+843,cabbage,cabbage,0.295873
+844,raw sugar,raw sugar,0.845351
+845,nutella,nutella,1.056689
+846,cress,cress,0.105669
+847,grated daikon,grated daikon,0.380408
+848,candied orange peel,candied orange peel,0.697415
+849,diced leek,diced leek,0.380408
+850,crispy onion,crispy onion,0.317007
+851,giant couscous,giant couscous,0.845351
+852,kewpie mayonnaise,kewpie mayonnaise,1.014422
+853,red curry paste,red curry paste,1.098957
+854,garlic oil,garlic oil,0.908753
+855,swede,swede,0.634014
+856,pecorino,pecorino,0.359274
+857,green,green,0.126803
+858,brown miso,brown miso,1.098957
+859,shredded carrot,shredded carrot,0.380408
+860,chopped flat-leaf parsley,chopped flat-leaf parsley,0.147936
+861,podded pea,podded pea,0.612880
+862,pistachio,pistachio,0.549478
+863,cooked chickpea,cooked chickpea,0.781950
+864,diced bramley apple,diced bramley apple,0.570612
+865,aubergine,aubergine,0.338141
+866,turnip,turnip,0.634014
+867,grated halloumi,grated halloumi,0.422676
+868,diced bread,diced bread,0.253605
+869,diced garlic,diced garlic,0.549478
+870,coconut,coconut,0.211338
+871,sprouted mung bean,sprouted mung bean,0.317007
+872,grainy mustard,grainy mustard,1.014422
+873,sprouted seed,sprouted seed,0.317007
+874,chopped cornichon,chopped cornichon,0.634014
+875,glucose syrup,glucose syrup,1.479365
+876,plum,plum,0.655147
+877,diced swede,diced swede,0.634014
+878,milled flax seed,milled flax seed,0.634014
+879,sliced jalapeno,sliced jalapeno,0.528345
+880,chopped rhubarb,chopped rhubarb,0.591746
+881,chutney,chutney,1.268027
+882,fermented black bean,fermented black bean,1.098957
+883,kidney bean,kidney bean,0.803084
+884,herb,herb,0.147936
+885,pureed pea,pureed pea,0.676281
+886,vegan double cream,vegan double cream,1.014422
+887,chopped banana shallot,chopped banana shallot,0.464943
+888,chopped gherkin,chopped gherkin,0.507211
+889,julienned cucumber,julienned cucumber,0.507211
+890,oyster mushroom,oyster mushroom,0.317007
+891,dark agave syrup,dark agave syrup,1.310295
+892,sliced celeriac,sliced celeriac,0.549478
+893,rose harissa paste,rose harissa paste,1.098957
+894,toasted pine nut,toasted pine nut,0.549478
+895,chopped broccoli,chopped broccoli,0.169070
+896,frozen cherry,frozen cherry,0.422676
+897,syrup,syrup,1.479365
+898,garden pea,garden pea,0.612880
+899,white rye flour,white rye flour,0.549478
+900,crushed cornflake,crushed cornflake,0.211338
+901,sliced aubergine,sliced aubergine,0.338141
+902,instant polenta,instant polenta,0.739682
+903,runner bean,runner bean,0.422676
+904,chopped parsnip,chopped parsnip,0.570612
+905,chopped glace cherry,chopped glace cherry,0.612880
+906,pureed tomato,pureed tomato,1.035555
+907,chopped medjool date,chopped medjool date,0.697415
+908,crushed biscuit,crushed biscuit,0.253605
+909,crisp shallot,crisp shallot,0.317007
+910,datterini tomato,datterini tomato,0.760816
+911,walnut piece,walnut piece,0.422676
+912,chopped water chestnut,chopped water chestnut,0.676281
+913,jelly,jelly,1.268027
+914,diced fennel,diced fennel,0.507211
+915,ground rice,ground rice,0.612880
+916,sliced sugar snap pea,sliced sugar snap pea,0.612880
+917,dry breadcrumb,dry breadcrumb,0.253605
+918,chilli jam,chilli jam,1.268027
+919,sliced button mushroom,sliced button mushroom,0.317007
+920,coconut chip,coconut chip,0.211338
+921,ginger and garlic paste,ginger and garlic paste,0.541025
+922,black olive tapenade,black olive tapenade,1.098957
+923,strong wholemeal flour,strong wholemeal flour,0.549478
+924,shiro miso,shiro miso,1.098957
+925,cheese,cheese,0.422676
+926,chopped pickled cucumber,chopped pickled cucumber,0.507211
+927,pitted green olive,pitted green olive,0.528345
+928,chopped celery leaf,chopped celery leaf,0.147936
+929,fine bulgur wheat,fine bulgur wheat,0.845351
+930,fried onion,fried onion,0.317007
+931,fruit jelly,fruit jelly,1.268027
+932,banana shallot,banana shallot,0.612880
+933,crushed caraway seed,crushed caraway seed,0.591746
+934,wild garlic leaf,wild garlic leaf,0.126803
+935,parmesan cheese,parmesan cheese,0.359274
+936,egg,egg,1.014422
+937,light-brown sugar,light-brown sugar,0.781950
+938,crushed chilli flake,crushed chilli flake,0.422676
+939,cooked bean,cooked bean,0.781950
+940,haricot bean,haricot bean,0.803084
+941,leek,leek,0.380408
+942,chopped mango,chopped mango,0.634014
+943,sliced savoy cabbage,sliced savoy cabbage,0.295873
+944,garlic,garlic,0.549478
+945,waxy potato,waxy potato,0.634014
+946,chopped roasted peanut,chopped roasted peanut,0.549478
+947,puffed rice,puffed rice,0.359274
+948,ground flaxseed,ground flaxseed,0.211338
+949,chocolate hazelnut spread,chocolate hazelnut spread,1.056689
+950,shredded mozzarella,shredded mozzarella,0.422676
+951,monosodium glutamate,monosodium glutamate,0.211338
+952,makrut lime zest,makrut lime zest,0.541025
+953,chopped roasted almond,chopped roasted almond,0.549478
+954,grated palm sugar,grated palm sugar,0.845351
+955,dried herb,dried herb,0.147936
+956,golden granulated sugar,golden granulated sugar,0.845351
+957,coconut palm sugar,coconut palm sugar,0.845351
+958,cashew nut,cashew nut,0.549478
+959,toasted sunflower seed,toasted sunflower seed,0.634014
+960,pitted cherry,pitted cherry,0.634014
+961,banana chip,banana chip,0.612880
+962,pickled cherry,pickled cherry,1.268027
+963,sambal belacan,sambal belacan,1.056689
+964,frozen berry,frozen berry,0.570612
+965,shredded spring onion,shredded spring onion,0.380408
+966,grated parmigiano reggiano,grated parmigiano reggiano,0.359274
+967,mashed swede,mashed swede,0.676281
+968,sliced mangetout,sliced mangetout,0.422676
+969,shredded sage,shredded sage,0.147936
+970,coarse semolina,coarse semolina,0.739682
+971,glace cherry,glace cherry,0.634014
+972,jumbo rolled oat,jumbo rolled oat,0.317007
+973,fresh breadcrumb,fresh breadcrumb,0.253605
+974,chocolate chip,chocolate chip,0.676281
+975,medium grain rice,medium grain rice,0.845351
+976,mixed leaf,mixed leaf,0.084535
+977,flat-leaf parsley,flat-leaf parsley,0.147936
+978,curry leaf,curry leaf,0.147936
+979,savoy cabbage,savoy cabbage,0.295873
+980,mixed green,mixed green,0.126803
+981,frozen raspberry,frozen raspberry,1.268027
+982,rock sugar,rock sugar,0.845351
+983,garlic-infused oil,garlic-infused oil,0.908753
+984,sliced wild mushroom,sliced wild mushroom,0.147936
+985,crushed digestive biscuit,crushed digestive biscuit,0.253605
+986,diced mushroom,diced mushroom,0.359274
+987,french bean,french bean,0.528345
+988,grape molasses,grape molasses,1.479365
+989,chicken or vegetable stock,chicken or vegetable stock,0.997515
+990,vine tomato,vine tomato,0.760816
+991,pitted date,pitted date,0.634014
+992,chopped lime leaf,chopped lime leaf,0.147936
+993,coconut water,coconut water,0.997515
+994,dark brown muscovado sugar,dark brown muscovado sugar,0.781950
+995,roasted sesame seed,roasted sesame seed,0.591746
+996,grated swede,grated swede,0.380408
+997,wild rice,wild rice,0.845351
+998,halved cherry,halved cherry,0.422676
+999,chopped golden raisin,chopped golden raisin,0.612880
+1000,crumbled tempeh,crumbled tempeh,0.697415
+1001,mangetout,mangetout,0.422676
+1002,gherkin brine,gherkin brine,1.014422
+1003,anchovy oil,anchovy oil,0.908753
+1004,lettuce,lettuce,0.084535
+1005,crumbled goat cheese,crumbled goat cheese,0.845351
+1006,chopped candied citrus peel,chopped candied citrus peel,0.697415
+1007,malt powder,malt powder,1.479365
+1008,toasted flaked almond,toasted flaked almond,0.422676
+1009,grated mooli,grated mooli,0.380408
+1010,chopped dried fig,chopped dried fig,0.634014
+1011,creamed coconut,creamed coconut,1.014422
+1012,brown miso paste,brown miso paste,1.098957
+1013,frozen spinach,frozen spinach,0.126803
+1014,chopped pickled walnut,chopped pickled walnut,0.528345
+1015,sliced lettuce,sliced lettuce,0.147936
+1016,chopped portobello mushroom,chopped portobello mushroom,0.359274
+1017,leafy green,leafy green,0.126803
+1018,black onion seed,black onion seed,0.591746
+1019,quince paste,quince paste,1.098957
+1020,sunflower spread,sunflower spread,0.908753
+1021,chickpea liquid,chickpea liquid,1.014422
+1022,fennel frond,fennel frond,0.147936
+1023,mixed nut,mixed nut,0.549478
+1024,quartered strawberry,quartered strawberry,0.634014
+1025,amaranth seed,amaranth seed,0.591746
+1026,soft herb,soft herb,0.147936
+1027,walnut oil,walnut oil,0.908753
+1028,mint sauce,mint sauce,1.014422
+1029,chopped oyster mushroom,chopped oyster mushroom,0.359274
+1030,sliced dried apricot,sliced dried apricot,0.634014
+1031,vegetable broth,vegetable broth,0.997515
+1032,candied fruit,candied fruit,0.634014
+1033,chocolate,chocolate,0.676281
+1034,pitted black olive,pitted black olive,0.528345
+1035,chickpea cooking water,chickpea cooking water,1.014422
+1036,water chestnut,water chestnut,0.486077
+1037,white shiro miso,white shiro miso,1.098957
+1038,corn starch,corn starch,0.507211
+1039,sliced date,sliced date,0.697415
+1040,sorrel,sorrel,0.084535
+1041,malt syrup,malt syrup,1.479365
+1042,cardamom seed,cardamom seed,0.591746
+1043,pinhead oatmeal,pinhead oatmeal,0.380408
+1044,linseed,linseed,0.634014
+1045,shio koji,shio koji,1.098957
+1046,smoked water,smoked water,0.997515
+1047,frozen blueberry,frozen blueberry,0.634014
+1048,sliced radicchio,sliced radicchio,0.486077
+1049,chopped bacon,chopped bacon,0.549478
+1050,pearl sugar,pearl sugar,0.845351
+1051,chopped mixed candied peel,chopped mixed candied peel,1.268027
+1052,chopped choi sum,chopped choi sum,0.169070
+1053,celery leaf,celery leaf,0.147936
+1054,dried marjoram,dried marjoram,0.063401
+1055,pickled onion,pickled onion,0.612880
+1056,chopped cucumber,chopped cucumber,0.507211
+1057,halved strawberry,halved strawberry,0.634014
+1058,sliced sage,sliced sage,0.147936
+1059,carrot leaf,carrot leaf,0.126803
+1060,coarse bulgur wheat,coarse bulgur wheat,0.845351
+1061,vegan cheese,vegan cheese,1.014422
+1062,vegan creme fraiche,vegan creme fraiche,1.014422
+1063,sliced hispi cabbage,sliced hispi cabbage,0.295873
+1064,grated jaggery,grated jaggery,0.845351
+1065,mixed dried herb,mixed dried herb,0.147936
+1066,strained yoghurt,strained yoghurt,1.014422
+1067,herbes de provence,herbes de provence,0.147936
+1068,grapeseed oil,grapeseed oil,0.908753
+1069,chopped palm sugar,chopped palm sugar,0.845351
+1070,chopped coriander root,chopped coriander root,0.486077
+1071,sliced pak choi,sliced pak choi,0.380408
+1072,pitted medjool date,pitted medjool date,0.634014
+1073,dark miso,dark miso,1.098957
+1074,american mustard,american mustard,1.014422
+1075,mexican oregano,mexican oregano,0.147936
+1076,crushed pea,crushed pea,0.612880
+1077,minced herb,minced herb,0.147936
+1078,cooked short grain rice,cooked short grain rice,0.845351
+1079,crispy chilli oil,crispy chilli oil,0.908753
+1080,frozen mixed berry,frozen mixed berry,0.570612
+1081,dried chestnut,dried chestnut,0.760816
+1082,chopped romaine lettuce,chopped romaine lettuce,0.147936
+1083,baby tomato,baby tomato,0.760816
+1084,garlic and ginger paste,garlic and ginger paste,0.541025
+1085,sliced rhubarb,sliced rhubarb,0.591746
+1086,mild curry paste,mild curry paste,1.098957
+1087,chopped candied ginger,chopped candied ginger,0.486077
+1088,chopped blanched hazelnut,chopped blanched hazelnut,0.549478
+1089,fig jam,fig jam,1.268027
+1090,non-dairy butter,non-dairy butter,0.908753
+1091,cashew,cashew,0.422676
+1092,vegan cream cheese,vegan cream cheese,1.014422
+1093,curry paste,curry paste,1.098957
+1094,chopped garlic chive,chopped garlic chive,0.147936
+1095,chopped coconut,chopped coconut,0.211338
+1096,shelled pea,shelled pea,0.612880
+1097,vanilla custard,vanilla custard,1.268027
+1098,cornstarch,cornstarch,0.612880
+1099,shredded wild garlic leaf,shredded wild garlic leaf,0.147936
+1100,cooked buckwheat,cooked buckwheat,0.845351
+1101,brown mustard seed,brown mustard seed,0.634014
+1102,toasted coconut flake,toasted coconut flake,0.211338
+1103,vanilla sugar,vanilla sugar,0.845351
+1104,red kidney bean,red kidney bean,0.803084
+1105,summer berry,summer berry,0.570612
+1106,toasted almond,toasted almond,0.422676
+1107,chopped pumpkin seed,chopped pumpkin seed,0.634014
+1108,wholemeal wheat flour,wholemeal wheat flour,0.549478
+1109,mustard oil,mustard oil,0.908753
+1110,vegan mayo,vegan mayo,1.014422
+1111,gluten-free baking powder,gluten-free baking powder,0.507211
+1112,frozen petit pois,frozen petit pois,0.612880
+1113,barbecue sauce,barbecue sauce,1.056689
+1114,hot coffee,hot coffee,0.997515
+1115,agave nectar,agave nectar,1.310295
+1116,toasted sesame oil,toasted sesame oil,0.908753
+1117,shredded makrut lime leaf,shredded makrut lime leaf,0.147936
+1118,sliced parsley,sliced parsley,0.147936
+1119,roughly chopped carrot,roughly chopped carrot,0.570612
+1120,cooked brown rice,cooked brown rice,0.781950
+1121,buckwheat groat,buckwheat groat,0.845351
+1122,spelt,spelt,0.845351
+1123,baby plum tomato,baby plum tomato,0.760816
+1124,sliced kohlrabi,sliced kohlrabi,0.464943
+1125,cashew butter,cashew butter,1.056689
+1126,red thai curry paste,red thai curry paste,1.098957
+1127,chervil leaf,chervil leaf,0.147936
+1128,gochujang chilli paste,gochujang chilli paste,1.098957
+1129,raw cacao,raw cacao,0.401542
+1130,condensed coconut milk,condensed coconut milk,1.310295
+1131,diced squash,diced squash,0.634014
+1132,black bean paste,black bean paste,1.056689
+1133,frozen petit poi,frozen petit poi,0.612880
+1134,black-eyed pea,black-eyed pea,0.803084
+1135,minced shallot,minced shallot,0.612880
+1136,shredded radicchio,shredded radicchio,0.295873
+1137,lemon thyme leaf,lemon thyme leaf,0.147936
+1138,sesame sauce,sesame sauce,1.056689
+1139,chopped pak choi,chopped pak choi,0.295873
+1140,bulgar wheat,bulgar wheat,0.845351
+1141,white flour,white flour,0.528345
+1142,salted ricotta,salted ricotta,1.014422
+1143,dark soft brown sugar,dark soft brown sugar,0.781950
+1144,diced mozzarella,diced mozzarella,0.697415
+1145,gruyere,gruyere,0.422676
+1146,fresh white breadcrumb,fresh white breadcrumb,0.253605
+1147,edamame,edamame,0.612880
+1148,whipped cream,whipped cream,1.014422
+1149,kalamata olive,kalamata olive,0.528345
+1150,apricot,apricot,0.697415
+1151,rye flake,rye flake,0.380408
+1152,ground linseed,ground linseed,0.634014
+1153,chopped candied peel,chopped candied peel,1.268027
+1154,sliced romaine lettuce,sliced romaine lettuce,0.084535
+1155,chopped crystallised ginger,chopped crystallised ginger,0.697415
+1156,crumbled stilton,crumbled stilton,0.549478
+1157,creamed horseradish,creamed horseradish,1.014422
+1158,sliced ginger,sliced ginger,0.541025
+1159,sprout,sprout,0.317007
+1160,strong wholemeal bread flour,strong wholemeal bread flour,0.528345
+1161,dill seed,dill seed,0.591746
+1162,redcurrant,redcurrant,0.422676
+1163,diced parsnip,diced parsnip,0.634014
+1164,chopped squash,chopped squash,0.634014
+1165,lettuce leaf,lettuce leaf,0.084535
+1166,salted caper,salted caper,0.612880
+1167,crystallised ginger,crystallised ginger,0.697415
+1168,crisp onion,crisp onion,0.317007
+1169,radish,radish,0.486077
+1170,chestnut flour,chestnut flour,0.549478
+1171,neutral cooking oil,neutral cooking oil,0.908753
+1172,stilton,stilton,0.549478
+1173,chopped radicchio,chopped radicchio,0.295873
+1174,ice cube,ice cube,0.997515
+1175,goat's milk,goat's milk,1.014422
+1176,diced pancetta,diced pancetta,0.549478
+1177,marjoram leaf,marjoram leaf,0.147936
+1178,sour cherry syrup,sour cherry syrup,1.268027
+1179,chickpea water,chickpea water,1.014422
+1180,mushroom ketchup,mushroom ketchup,1.056689
+1181,grated fennel,grated fennel,0.380408
+1182,crushed crisp,crushed crisp,0.253605
+1183,extra-fine sponge flour,extra-fine sponge flour,0.528345
+1184,crispy chilli oil sediment,crispy chilli oil sediment,0.908753
+1185,sprouted mung sunflower and radish seed,sprouted mung sunflower and radish seed,0.317007
+1186,sliced basil leaf,sliced basil leaf,0.063401
+1187,sweet white miso,sweet white miso,1.098957
+1188,green curry paste,green curry paste,1.098957
+1189,diced beef tomato,diced beef tomato,0.760816
+1190,plant cream,plant cream,1.014422
+1191,fava bean,fava bean,0.634014
+1192,pickled red cabbage,pickled red cabbage,0.295873
+1193,grated chestnut,grated chestnut,0.612880
+1194,roasted macadamia,roasted macadamia,0.549478
+1195,chopped seasonal green,chopped seasonal green,0.147936
+1196,blitzed pistachio,blitzed pistachio,0.507211
+1197,stem ginger in syrup,stem ginger in syrup,1.479365
+1198,chana dhal,chana dhal,0.845351
+1199,alioli,alioli,1.014422
+1200,dolcelatte,dolcelatte,0.422676
+1201,beanshoot,beanshoot,0.317007
+1202,grated ricotta,grated ricotta,1.014422
+1203,sliced kaffir lime leaf,sliced kaffir lime leaf,0.147936
+1204,pot barley,pot barley,0.845351
+1205,pixian chilli bean paste,pixian chilli bean paste,1.056689
+1206,sliced cornichon,sliced cornichon,0.507211
+1207,ground candlenut,ground candlenut,0.507211
+1208,sourdough crumb,sourdough crumb,0.253605
+1209,soft cheese,soft cheese,0.845351
+1210,salad,salad,0.084535
+1211,sparkling mineral water,sparkling mineral water,0.997515
+1212,sliced stem ginger,sliced stem ginger,0.486077
+1213,grated panela sugar,grated panela sugar,0.781950
+1214,frozen strawberry,frozen strawberry,0.634014
+1215,shredded bok choy,shredded bok choy,0.295873
+1216,white chocolate chip,white chocolate chip,0.676281
+1217,diced stem ginger,diced stem ginger,0.486077
+1218,coriander and mint leaf,coriander and mint leaf,0.147936
+1219,urid dal,urid dal,0.845351
+1220,shredded green cabbage,shredded green cabbage,0.295873
+1221,soya bean,soya bean,0.845351
+1222,chopped mozzarella,chopped mozzarella,0.549478
+1223,bitter leaf,bitter leaf,0.084535
+1224,shredded spring cabbage,shredded spring cabbage,0.295873
+1225,chopped red turmeric,chopped red turmeric,0.486077
+1226,goat's cheese,goat's cheese,0.845351
+1227,chilli crisp oil,chilli crisp oil,0.908753
+1228,wholewheat giant couscous,wholewheat giant couscous,0.845351
+1229,barley malt,barley malt,1.479365
+1230,gelato,gelato,1.014422
+1231,mixed sprouting herb,mixed sprouting herb,0.126803
+1232,gingko nut,gingko nut,0.549478
+1233,crouton,crouton,0.253605
+1234,set honey,set honey,1.479365
+1235,mixed sprouted seed,mixed sprouted seed,0.317007
+1236,grated emmental,grated emmental,0.422676
+1237,lao gan ma crispy chilli oil,lao gan ma crispy chilli oil,0.908753
+1238,coriander stalk,coriander stalk,0.169070
+1239,grated jerusalem artichoke,grated jerusalem artichoke,0.380408
+1240,raw cane sugar,raw cane sugar,0.845351
+1241,red chicory leaf,red chicory leaf,0.084535
+1242,tomato salsa,tomato salsa,0.760816
+1243,ground oat,ground oat,0.380408
+1244,firm cheese,firm cheese,0.422676
+1245,tahini sauce,tahini sauce,1.056689
+1246,lotus biscoff spread,lotus biscoff spread,1.056689
+1247,brown chestnut mushroom,brown chestnut mushroom,0.317007
+1248,chopped smoked tofu,chopped smoked tofu,0.697415
+1249,candied citrus peel,candied citrus peel,0.634014
+1250,chilli jelly,chilli jelly,1.268027
+1251,toasted nut,toasted nut,0.549478
+1252,chopped mint and parsley,chopped mint and parsley,0.147936
+1253,frying oil,frying oil,0.908753
+1254,julienned courgette,julienned courgette,0.464943
+1255,chopped choy sum,chopped choy sum,0.169070
+1256,ground caraway seed,ground caraway seed,0.634014
+1257,quartered brussels sprout,quartered brussels sprout,0.612880
+1258,podded broad bean,podded broad bean,0.634014
+1259,dried mung bean,dried mung bean,0.803084
+1260,fried crispy onion,fried crispy onion,0.317007
+1261,fermented black soybean,fermented black soybean,1.056689
+1262,baby rocket,baby rocket,0.084535
+1263,freeze dried raspberry,freeze dried raspberry,0.612880
+1264,ciabatta crumb,ciabatta crumb,0.253605
+1265,sushi ginger,sushi ginger,0.541025
+1266,chinese cabbage,chinese cabbage,0.295873
+1267,chopped chinese leaf,chopped chinese leaf,0.295873
+1268,baileys,baileys,1.014422
+1269,peanut in chilli oil,peanut in chilli oil,0.908753
+1270,pickled blackberry,pickled blackberry,0.570612
+1271,sliced shiitake,sliced shiitake,0.317007
+1272,cooked cannellini bean,cooked cannellini bean,0.781950
+1273,smoked cheddar,smoked cheddar,0.422676
+1274,bean shoot,bean shoot,0.317007
+1275,green tomato,green tomato,0.760816
+1276,condensed milk caramel,condensed milk caramel,1.310295
+1277,diced candied lemon peel,diced candied lemon peel,0.697415
+1278,toasted cashew,toasted cashew,0.549478
+1279,sardine oil,sardine oil,0.908753
+1280,sliced bok choy,sliced bok choy,0.295873
+1281,apple butter,apple butter,1.056689
+1282,thai basil leaf,thai basil leaf,0.063401
+1283,sweetened chestnut spread,sweetened chestnut spread,1.268027
+1284,iceberg lettuce leaf,iceberg lettuce leaf,0.084535
+1285,round grain rice,round grain rice,0.845351
+1286,piloncillo,piloncillo,0.781950
+1287,diced red cabbage,diced red cabbage,0.295873
+1288,diced silken tofu,diced silken tofu,0.887619
+1289,minced jalapeno,minced jalapeno,0.760816
+1290,microgreen,microgreen,0.105669
+1291,chopped dry roasted peanut,chopped dry roasted peanut,0.549478
+1292,sliced fig,sliced fig,0.634014
+1293,chopped roasted hazelnut,chopped roasted hazelnut,0.549478
+1294,chopped green,chopped green,0.147936
+1295,biscuit crumb,biscuit crumb,0.253605
+1296,wholemeal bread flour,wholemeal bread flour,0.528345
+1297,chinese toasted sesame paste,chinese toasted sesame paste,1.056689
+1298,chopped mixed soft herb,chopped mixed soft herb,0.147936
+1299,pinto bean,pinto bean,0.803084
+1300,cabbage leaf,cabbage leaf,0.295873
+1301,plain chocolate chip,plain chocolate chip,0.739682
+1302,chopped cooking apple,chopped cooking apple,0.697415
+1303,dried coconut flake,dried coconut flake,0.211338
+1304,grated dark chocolate,grated dark chocolate,0.676281
+1305,liquid,liquid,0.997515
+1306,daikon matchstick,daikon matchstick,0.317007
+1307,pickled carrot,pickled carrot,0.760816
+1308,split urad dal,split urad dal,0.845351
+1309,fermented chilli bean paste,fermented chilli bean paste,1.098957
+1310,peanut chilli oil,peanut chilli oil,0.908753
+1311,chopped frisee lettuce,chopped frisee lettuce,0.084535
+1312,roasted sesame seed oil,roasted sesame seed oil,0.908753
+1313,black poppy seed,black poppy seed,0.591746
+1314,tupelo honey,tupelo honey,1.479365
+1315,red miso paste,red miso paste,1.098957
+1316,heirloom tomato,heirloom tomato,0.760816
+1317,chopped sorrel,chopped sorrel,0.147936
+1318,torn iceberg lettuce,torn iceberg lettuce,0.084535
+1319,grated vegan cheddar,grated vegan cheddar,0.422676
+1320,grenadine syrup,grenadine syrup,1.479365
+1321,snipped chive,snipped chive,0.147936
+1322,kale leaf,kale leaf,0.126803
+1323,egg yolk,egg yolk,1.310295
+1324,grape tomato,grape tomato,0.760816
+1325,chopped white cabbage,chopped white cabbage,0.295873
+1326,spelt flake,spelt flake,0.380408
+1327,goat milk,goat milk,1.014422
+1328,mixed wild rice,mixed wild rice,0.845351
+1329,sweetened chestnut puree,sweetened chestnut puree,1.268027
+1330,thyme leaves,thyme leaves,0.147936
+1331,grated berkswell cheese,grated berkswell cheese,0.422676
+1332,chopped chinese mushroom,chopped chinese mushroom,0.147936
+1333,leek top,leek top,0.380408
+1334,baby kale,baby kale,0.126803
+1335,cauliflower leaf,cauliflower leaf,0.126803
+1336,black quinoa,black quinoa,0.803084
+1337,fine oatmeal,fine oatmeal,0.380408
+1338,lard,lard,0.908753
+1339,chopped smoked almond,chopped smoked almond,0.549478
+1340,grated parmigiano-reggiano,grated parmigiano-reggiano,0.359274
+1341,durum wheat semolina flour,durum wheat semolina flour,0.739682
+1342,chopped gruyere,chopped gruyere,0.422676
+1343,sliced feta,sliced feta,0.549478
+1344,grated green chilli,grated green chilli,0.541025
+1345,kaymak,kaymak,1.014422
+1346,chilli garlic condiment,chilli garlic condiment,1.056689
+1347,atta flour,atta flour,0.549478
+1348,agave,agave,1.310295
+1349,milo chocolate malt drink,milo chocolate malt drink,0.401542
+1350,vegan thousand island dressing,vegan thousand island dressing,1.014422
+1351,shredded chinese leaf,shredded chinese leaf,0.295873
+1352,chinese chilli crisp,chinese chilli crisp,1.056689
+1353,tomato and chilli pasta sauce,tomato and chilli pasta sauce,1.056689
+1354,shredded gem lettuce,shredded gem lettuce,0.295873
+1355,semola,semola,0.739682
+1356,hazelnut butter,hazelnut butter,1.056689
+1357,crumbled tofu,crumbled tofu,0.697415
+1358,garlic mayonnaise,garlic mayonnaise,1.014422
+1359,shredded iceberg lettuce,shredded iceberg lettuce,0.295873
+1360,dried date,dried date,0.697415
+1361,millet grain,millet grain,0.845351
+1362,halved black grape,halved black grape,0.655147
+1363,chopped dried sour plum,chopped dried sour plum,0.697415
+1364,black garlic paste,black garlic paste,0.541025
+1365,mozzarella ball,mozzarella ball,1.014422
+1366,spiced apple butter,spiced apple butter,1.268027
+1367,chopped stilton,chopped stilton,0.549478
+1368,grated hard sheep cheese,grated hard sheep cheese,0.359274
+1369,dried coconut slice,dried coconut slice,0.211338
+1370,grated monterey jack cheese,grated monterey jack cheese,0.422676
+1371,brown sushi rice,brown sushi rice,0.845351
+1372,soya bean paste,soya bean paste,1.098957
+1373,roasted flaked almond,roasted flaked almond,0.422676
+1374,chopped oat,chopped oat,0.380408
+1375,minced lemongrass,minced lemongrass,0.486077
+1376,broken walnut,broken walnut,0.422676
+1377,fine bulgur,fine bulgur,0.845351
+1378,chestnut spread,chestnut spread,1.056689
+1379,light spelt flour,light spelt flour,0.549478
+1380,oat cream,oat cream,1.014422
+1381,pickled mustard green,pickled mustard green,0.760816
+1382,cooking chocolate,cooking chocolate,0.676281
+1383,wild sea kale,wild sea kale,0.126803
+1384,pistachio cream,pistachio cream,1.014422
+1385,morello cherry jam,morello cherry jam,1.268027
+1386,brine,brine,1.014422
+1387,diced quince paste,diced quince paste,0.634014
+1388,shelled broad bean,shelled broad bean,0.634014
+1389,black split urad dal,black split urad dal,0.845351
+1390,self-raising white flour,self-raising white flour,0.528345
+1391,minced tofu,minced tofu,0.697415
+1392,chopped red cabbage,chopped red cabbage,0.295873
+1393,yellow split mung lentil,yellow split mung lentil,0.845351
+1394,spicy chilli oil,spicy chilli oil,0.908753
+1395,poaching syrup,poaching syrup,1.479365
+1396,blackcurrant jelly,blackcurrant jelly,1.268027
+1397,carrot strip,carrot strip,0.549478
+1398,tomato and pepper paste,tomato and pepper paste,1.098957
+1399,wholegrain rye flour,wholegrain rye flour,0.549478
+1400,chopped digestive biscuit,chopped digestive biscuit,0.253605
+1401,rocket leaf,rocket leaf,0.084535
+1402,steel-cut oat,steel-cut oat,0.380408
+1403,peanut flour,peanut flour,0.528345
+1404,double plant cream,double plant cream,1.014422
+1405,crumbled cheese,crumbled cheese,0.422676
+1406,vanilla yoghurt,vanilla yoghurt,1.014422
+1407,hot chilli sauce,hot chilli sauce,1.056689
+1408,julienned radish,julienned radish,0.486077
+1409,chopped parsley stem,chopped parsley stem,0.147936
+1410,green thai curry paste,green thai curry paste,1.098957
+1411,seeded mustard,seeded mustard,1.014422
+1412,chopped chilli peanut,chopped chilli peanut,0.549478
+1413,sliced chive,sliced chive,0.147936
+1414,sliced cauliflower,sliced cauliflower,0.464943
+1415,frozen fruit,frozen fruit,0.570612
+1416,stoned date,stoned date,0.634014
+1417,bean sprout,bean sprout,0.317007
+1418,torn radicchio,torn radicchio,0.084535
+1419,leftover cooking syrup,leftover cooking syrup,1.479365
+1420,plain chocolate,plain chocolate,0.676281
+1421,new potato,new potato,0.591746
+1422,crisp-fried onion,crisp-fried onion,0.317007
+1423,sliced thai basil,sliced thai basil,0.147936
+1424,nduja paste,nduja paste,1.098957
+1425,sliced broccoli,sliced broccoli,0.549478
+1426,pitted olive,pitted olive,0.528345
+1427,crisp chilli oil,crisp chilli oil,0.908753
+1428,mexican queso fresco,mexican queso fresco,0.549478
+1429,oat single cream,oat single cream,1.014422
+1430,sliced dill pickle,sliced dill pickle,0.612880
+1431,amaranth,amaranth,0.845351
+1432,sesame seed oil,sesame seed oil,0.908753
+1433,torn basil leaf,torn basil leaf,0.063401
+1434,plant-based whipping cream,plant-based whipping cream,1.014422
+1435,cooked orzo,cooked orzo,0.845351
+1436,mirepoix kimchi,mirepoix kimchi,0.760816
+1437,grated cassava,grated cassava,0.634014
+1438,chopped preserved radish,chopped preserved radish,0.760816
+1439,thai basil and coriander,thai basil and coriander,0.063401
+1440,chopped fig,chopped fig,0.634014
+1441,chopped marzipan,chopped marzipan,1.056689
+1442,torn mint,torn mint,0.147936
+1443,wholewheat instant couscous,wholewheat instant couscous,0.845351
+1444,chopped mixed fruit,chopped mixed fruit,0.634014
+1445,parmesan rind,parmesan rind,0.359274
+1446,green olive tapenade,green olive tapenade,1.014422
+1447,crumbled feta cheese,crumbled feta cheese,0.549478
+1448,chopped cabbage kimchi,chopped cabbage kimchi,0.760816
+1449,sour cherry jam,sour cherry jam,1.268027
+1450,soft curd cheese,soft curd cheese,1.014422
+1451,mixed frozen berry,mixed frozen berry,0.570612
+1452,shiitake mushroom,shiitake mushroom,0.147936
+1453,thai white rice flour,thai white rice flour,0.612880
+1454,cane sugar,cane sugar,0.845351
+1455,dried mulberry,dried mulberry,0.612880
+1456,walnut half,walnut half,0.422676
+1457,chopped dried sausage,chopped dried sausage,0.549478
+1458,minced turmeric,minced turmeric,0.541025
+1459,rice powder,rice powder,0.612880
+1460,shredded leek,shredded leek,0.380408
+1461,delicata squash,delicata squash,0.634014
+1462,massaman curry paste,massaman curry paste,1.098957
+1463,grated lincolnshire poacher,grated lincolnshire poacher,0.422676
+1464,roast garlic puree,roast garlic puree,0.549478
+1465,fine-ground burghul,fine-ground burghul,0.845351
+1466,horseradish cream,horseradish cream,1.014422
+1467,chopped watercress leaf,chopped watercress leaf,0.147936
+1468,oat or rice syrup,oat or rice syrup,1.479365
+1469,grated teifi,grated teifi,0.422676
+1470,shelled hemp seed,shelled hemp seed,0.634014
+1471,crispy fried shallot,crispy fried shallot,0.317007
+1472,choi sum,choi sum,0.126803
+1473,celery seed,celery seed,0.634014
+1474,strong wholegrain bread flour,strong wholegrain bread flour,0.528345
+1475,masoor dal,masoor dal,0.845351
+1476,candied orange,candied orange,1.268027
+1477,red quinoa,red quinoa,0.845351
+1478,smoked rapeseed oil,smoked rapeseed oil,0.908753
+1479,sweetened chestnut paste,sweetened chestnut paste,1.056689
+1480,sliced swede,sliced swede,0.549478
+1481,garlicky confit oil,garlicky confit oil,0.908753
+1482,purple kale,purple kale,0.126803
+1483,radish leaf,radish leaf,0.084535
+1484,fine cornmeal,fine cornmeal,0.739682
+1485,millet flour,millet flour,0.612880
+1486,lao gan ma crispy chilli in oil,lao gan ma crispy chilli in oil,0.908753
+1487,crumbled lancashire,crumbled lancashire,0.422676
+1488,dried apple,dried apple,0.634014
+1489,hot water,hot water,0.997515
+1490,micro green,micro green,0.105669
+1491,quartered turnip,quartered turnip,0.634014
+1492,butternut,butternut,0.634014
+1493,roasted tomato puree,roasted tomato puree,1.098957
+1494,blanched whole almond,blanched whole almond,0.634014
+1495,diced date,diced date,0.697415
+1496,celeriac matchstick,celeriac matchstick,0.634014
+1497,green mung bean,green mung bean,0.803084
+1498,ground cashew nut,ground cashew nut,0.507211
+1499,toasted pumpkin seed,toasted pumpkin seed,0.634014
+1500,thickened cream,thickened cream,1.014422
+1501,shaved coconut,shaved coconut,0.211338
+1502,blanched hazelnut,blanched hazelnut,0.549478
+1503,light miso paste,light miso paste,1.098957
+1504,chilli miso,chilli miso,1.098957
+1505,sliced oyster mushroom,sliced oyster mushroom,0.317007
+1506,pinhead oat,pinhead oat,0.380408
+1507,pea in pod,pea in pod,0.612880
+1508,gorgonzola,gorgonzola,0.422676
+1509,shredded jackfruit,shredded jackfruit,0.295873
+1510,dried rosemary,dried rosemary,0.063401
+1511,tempura flour,tempura flour,0.612880
+1512,chopped collard,chopped collard,0.169070
+1513,hulled strawberry,hulled strawberry,0.634014
+1514,coconut condensed milk,coconut condensed milk,1.310295
+1515,chilli sediment and oil,chilli sediment and oil,0.908753
+1516,large eggs,large eggs,1.014422
+1517,chopped thai basil,chopped thai basil,0.147936
+1518,shelled pecan,shelled pecan,0.549478
+1519,sliced turmeric,sliced turmeric,0.541025
+1520,chopped biscuit,chopped biscuit,0.253605
+1521,mixed herb and green,mixed herb and green,0.126803
+1522,chopped curly leaf lettuce,chopped curly leaf lettuce,0.169070
+1523,sage leaf,sage leaf,0.063401
+1524,crumbled walnut,crumbled walnut,0.549478
+1525,mixed dried fruit and peel,mixed dried fruit and peel,0.634014
+1526,cooked spinach,cooked spinach,0.169070
+1527,roasted salted peanut,roasted salted peanut,0.634014
+1528,sheep yoghurt,sheep yoghurt,1.014422
+1529,julienned beetroot,julienned beetroot,0.380408
+1530,shortening,shortening,0.908753
+1531,pork lard,pork lard,0.908753
+1532,sichuan roasted chilli oil,sichuan roasted chilli oil,0.908753
+1533,orange syrup,orange syrup,1.479365
+1534,soft brown caster sugar,soft brown caster sugar,0.845351
+1535,fast-action instant yeast,fast-action instant yeast,0.211338
+1536,ryazhanka,ryazhanka,1.056689
+1537,drained sour cherry,drained sour cherry,0.612880
+1538,cocoa chocolate chip,cocoa chocolate chip,0.676281
+1539,chilli olive oil,chilli olive oil,0.908753
+1540,oven-dried gooseberry,oven-dried gooseberry,0.612880
+1541,chopped pickled sweet pepper,chopped pickled sweet pepper,0.528345
+1542,crumbled sheep cheese,crumbled sheep cheese,0.549478
+1543,goji berry,goji berry,0.612880
+1544,red onion chutney,red onion chutney,1.268027
+1545,grated fresh horseradish,grated fresh horseradish,0.541025
+1546,chestnut paste,chestnut paste,1.056689
+1547,chopped purple sprouting broccoli,chopped purple sprouting broccoli,0.126803
+1548,short grain white rice,short grain white rice,0.845351
+1549,plant-based double cream,plant-based double cream,1.014422
+1550,kohlrabi top,kohlrabi top,0.169070
+1551,herb leaf,herb leaf,0.147936
+1552,maltose,maltose,1.479365
+1553,smashed peanut,smashed peanut,0.549478
+1554,chopped daikon,chopped daikon,0.570612
+1555,self-raising wholemeal flour,self-raising wholemeal flour,0.549478

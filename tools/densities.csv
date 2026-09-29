@@ -1,0 +1,93 @@
+id,name,normalised_name,density
+982,Almonds (ground),ground almond,0.830000
+983,Almonds (whole),almond,0.710000
+984,"Basil (whole, inc stalk)",basil,3.330000
+985,Basil (whole leaves),basil,6.670000
+986,Basil (chopped),chopped basil,2.500000
+987,Breadcrumbs (dried),dried breadcrumb,1.180000
+988,Breadcrumbs (fresh),fresh breadcrumb,1.670000
+989,Buckwheat flour,buckwheat flour,0.740000
+990,Bulgur wheat,bulgur wheat,0.500000
+991,Butter (cubed),diced butter,0.670000
+992,Butter (softened or melted),butter,0.440000
+993,Cashews (whole),cashew,0.740000
+994,"Cheese (cheddar, grated)",grated cheddar,1.000000
+995,"Cheese (feta, broken into chunks)",diced feta,0.670000
+996,"Cheese (mozzarella, grated)",grated mozzarella,0.800000
+997,"Cheese (parmesan, grated)",grated parmesan,1.180000
+998,Cherry tomatoes (whole),cherry tomato,0.670000
+999,Chickpea (gram) flour,gram flour,0.800000
+1000,Chives (chopped),chopped chive,2.500000
+1001,Chives (whole),chive,3.330000
+1002,Chocolate (broken into chunks),diced chocolate,0.630000
+1003,Chocolate chips,chocolate chip,0.570000
+1004,Cocoa powder (Dutch-processed),cocoa powder,1.050000
+1005,Coconut (desiccated),desiccated coconut,1.330000
+1006,Coconut chips,coconut chip,2.000000
+1007,Coconut milk,coconut milk,0.440000
+1008,Coriander (chopped),chopped coriander,2.500000
+1009,"Coriander (whole, inc stalk)",coriander,3.330000
+1010,Coriander (whole leaves),coriander,6.670000
+1011,Corn kernels (defrosted/canned),sweetcorn kernel,0.570000
+1012,Cornmeal (fine),fine cornmeal,0.670000
+1013,Cornstarch,cornflour,0.770000
+1014,Couscous,couscous,0.610000
+1015,Cream (clotted),clotted cream,0.440000
+1016,Cream (double),double cream,0.420000
+1017,Cream (single),single cream,0.420000
+1018,Cream cheese,cream cheese,0.420000
+1019,Creme fraiche,sour cream,0.420000
+1020,Currants,currant,0.670000
+1021,Dill (chopped),chopped dill,3.330000
+1022,Dill (whole leaves),dill,6.670000
+1023,"Dill (whole, inc stalk)",dill,5.000000
+1024,Flour (all-purpose/plain),plain flour,0.800000
+1025,Flour (00 pizza),00 flour,0.690000
+1026,Flour (rye),rye flour,0.770000
+1027,Flour (spelt),spelt flour,0.770000
+1028,Flour (strong white bread),strong white bread flour,0.800000
+1029,Ghee (melted or softened),ghee,0.450000
+1030,"Ginger (fresh, sliced)",sliced ginger,0.910000
+1031,Hazelnuts,hazelnut,0.670000
+1032,Honey,honey,0.300000
+1033,Lemon juice,lemon juice,0.420000
+1034,Maple syrup,maple syrup,0.320000
+1035,Mascarpone,mascarpone,0.440000
+1036,Milk,milk,0.420000
+1037,"Mint (whole, inc stalk)",mint,4.000000
+1038,Mint (chopped),chopped mint,3.330000
+1039,Mint (whole leaves),mint,6.670000
+1040,Mushrooms (chopped),chopped mushroom,1.180000
+1041,Mushrooms (sliced),sliced mushroom,1.330000
+1042,Mushrooms (whole),mushroom,1.000000
+1043,Oil (sunflower and vegetable),vegetable oil,0.470000
+1044,Olive oil,olive oil,0.470000
+1045,"Olives (whole, pitted)",pitted olive,0.690000
+1046,Olives (whole),olive,0.570000
+1047,Onions (sliced),sliced onion,0.910000
+1048,Onions (chopped),chopped onion,0.690000
+1049,Panko breadcrumbs,panko breadcrumb,1.180000
+1050,"Parsley (whole, inc stalk)",parsley,3.330000
+1051,Parsley (chopped),chopped parsley,2.500000
+1052,Parsley (whole leaves),parsley,6.670000
+1053,Peanut butter,peanut butter,0.400000
+1054,Peanuts (shelled),peanut,0.670000
+1055,Pine nuts,pine nut,0.670000
+1056,Pistachios (shelled),pistachio,0.710000
+1057,Polenta,polenta,0.570000
+1058,Quinoa,quinoa,0.570000
+1059,Raisins,raisin,0.690000
+1060,Raspberries,raspberry,0.710000
+1061,Rhubarb (chopped into chunks),chopped rhubarb,0.710000
+1062,"Rice (long-grain, uncooked)",long grain rice,0.510000
+1063,"Rice (bomba paella, uncooked)",bomba rice,0.500000
+1064,"Rice (short-grain, uncooked)",short grain rice,0.500000
+1065,Rolled oats,rolled oat,1.050000
+1066,"Sage (whole, inc stalk)",sage,3.330000
+1067,Sage (whole leaves),sage,5.000000
+1068,Sage (chopped),chopped sage,4.000000
+1069,Salt (flaky sea salt),salt,0.710000
+1070,Salt (fine sea salt),salt,0.360000
+1071,"Scallions (spring onions, sliced/chopped)",sliced spring onion,1.110000
+1072,Sesame seeds,sesame seed,0.670000
+1073,So
