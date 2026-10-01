@@ -17,7 +17,6 @@ import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { DataStore } from './datastore';
 import { DynamicFronts } from './dynamic-fronts';
 import { ExternalParameters } from './external_parameters';
-import { FaciaConnection } from './facia-connection';
 import { PersonalisedFronts } from './personalised-fronts';
 import { PrintableRecipeGenerator } from './printable-recipe-generator';
 import { RecipesReindex } from './recipes-reindex';
@@ -61,37 +60,6 @@ export class RecipesBackend extends GuStack {
 			fromSSM: true,
 			default: `/${this.stage}/feast/feast-shared-infra/crier-event-bus`,
 		});
-
-		const faciaSNSTopicARNParam = new GuParameter(this, 'faciaSNSTopicParam', {
-			default: `/${this.stage}/${this.stack}/${app}/facia-sns-topic-arn`,
-			fromSSM: true,
-			description:
-				'The ARN of the facia-tool SNS topic that emits curation notifications',
-		});
-
-		const faciaPublishStatusSNSTopicParam = new GuParameter(
-			this,
-			'faciaPublishStatusSNSTopicParam',
-			{
-				default: `/${this.stage}/${this.stack}/${app}/facia-status-sns-topic-arn`,
-				fromSSM: true,
-				type: 'String',
-				description:
-					'The ARN of the facia-tool SNS topic that receives publication status messages',
-			},
-		);
-
-		const faciaPublishStatusSNSRoleARNParam = new GuParameter(
-			this,
-			'faciaPublishStatusSNSTopicRoleParam',
-			{
-				default: `/${this.stage}/${this.stack}/${app}/facia-status-sns-topic-role-arn`,
-				fromSSM: true,
-				type: 'String',
-				description:
-					'The ARN of role that permits us to write to faciaPublishStatusSNSTopic',
-			},
-		);
 
 		const shouldPublishV2Param = new GuParameter(this, 'ShouldPublishV2', {
 			fromSSM: true,
@@ -231,18 +199,6 @@ export class RecipesBackend extends GuStack {
 					retryAttempts: 5,
 				}),
 			],
-		});
-
-		new FaciaConnection(this, 'RecipesFacia', {
-			fastlyKeyParam,
-			serving,
-			externalParameters,
-			faciaPublishSNSTopicARN: faciaSNSTopicARNParam.valueAsString,
-			faciaPublishStatusSNSTopicARN:
-				faciaPublishStatusSNSTopicParam.valueAsString,
-			faciaPublishStatusSNSRoleARN:
-				faciaPublishStatusSNSRoleARNParam.valueAsString,
-			contentUrlBase,
 		});
 
 		new RecipesReindex(this, 'RecipeReindex', {
