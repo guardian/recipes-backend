@@ -17,13 +17,9 @@ describe('The RecipesBackend stack', () => {
 		{
 			stage: 'CODE',
 			policyName: 'feast-unifiedapi-datatransfer-code-s3-write',
-			bucketName: 'feast-unified-api-bqsearchterms-code',
+			bucketName: 'feast-unifiedapi-datatransfer-code',
 		},
-		{
-			stage: 'PROD',
-			policyName: 'feast-unified-api-bqsearchterms-prod-s3-write',
-			bucketName: 'feast-unified-api-bqsearchterms-prod',
-		},
+		{ stage: 'PROD', policyName: undefined, bucketName: undefined },
 		{ stage: 'TEST', policyName: undefined, bucketName: undefined },
 	])(
 		'manages the stage-specific search-term export policy ($stage)',
