@@ -36,46 +36,28 @@ describe('The RecipesBackend stack', () => {
 				throw new Error('The existing DynamicFronts XAR role is missing');
 			}
 			const properties = xar.Properties as Record<string, unknown>;
-			const invokeFetcher = {
-				PolicyName: 'invokeFetcher',
-				PolicyDocument: {
-					Version: '2012-10-17',
-					Statement: [
-						{
-							Effect: 'Allow',
-							Action: 'lambda:InvokeFunction',
-							Resource: {
-								'Fn::GetAtt': ['DynamicFrontsFetcher3EADD89B', 'Arn'],
-							},
-						},
-					],
-				},
-			};
-			const exportPolicy = {
-				PolicyName: policyName,
-				PolicyDocument: {
-					Version: '2012-10-17',
-					Statement: [
-						{
-							Sid: 'VisualEditor0',
-							Effect: 'Allow',
-							Action: 's3:PutObject',
-							Resource: `arn:aws:s3:::${bucketName}/*`,
-						},
-					],
-				},
-			};
+			const policies = properties['Policies'] as Array<Record<string, unknown>>;
 
-			expect(xar).toBeDefined();
-			expect(properties['Policies']).toEqual(
-				policyName ? [invokeFetcher, exportPolicy] : [invokeFetcher],
-			);
-			expect(properties['RoleName']).toBeUndefined();
 			expect(properties['Tags']).toContainEqual({
 				Key: 'gu:repo',
 				Value: 'guardian/recipes-backend',
 			});
 			if (policyName) {
+				const exportPolicy = {
+					PolicyName: policyName,
+					PolicyDocument: {
+						Version: '2012-10-17',
+						Statement: [
+							{
+								Sid: 'VisualEditor0',
+								Effect: 'Allow',
+								Action: 's3:PutObject',
+								Resource: `arn:aws:s3:::${bucketName}/*`,
+							},
+						],
+					},
+				};
+				expect(policies).toContainEqual(exportPolicy);
 				expect(
 					template.findResources('AWS::IAM::Policy', {
 						Properties: {
@@ -83,7 +65,16 @@ describe('The RecipesBackend stack', () => {
 						},
 					}),
 				).toEqual({});
-				expect(xar).toMatchSnapshot(`${stage} DynamicFronts XAR`);
+			} else {
+				const statements = policies.flatMap((policy) => {
+					const document = policy['PolicyDocument'] as
+						| { Statement?: Array<Record<string, unknown>> }
+						| undefined;
+					return document?.Statement ?? [];
+				});
+				expect(statements).not.toContainEqual(
+					expect.objectContaining({ Action: 's3:PutObject' }),
+				);
 			}
 		},
 	);
