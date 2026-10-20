@@ -3,6 +3,18 @@ import { Template } from 'aws-cdk-lib/assertions';
 import { RecipesBackend } from './recipes-backend';
 
 describe('The RecipesBackend stack', () => {
+	it('retains the existing Facia queues', () => {
+		const app = new App();
+		const stack = new RecipesBackend(app, 'RecipesBackend', {
+			stack: 'feast',
+			stage: 'TEST',
+		});
+		const queues = Template.fromStack(stack).findResources('AWS::SQS::Queue');
+
+		expect(queues).toHaveProperty('RecipesFaciaDLQA0FC5B46');
+		expect(queues).toHaveProperty('RecipesFaciaConnection04952500');
+	});
+
 	it('matches the snapshot', () => {
 		const app = new App();
 		const stack = new RecipesBackend(app, 'RecipesBackend', {
