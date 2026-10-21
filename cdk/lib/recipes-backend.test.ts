@@ -28,8 +28,8 @@ describe('The RecipesBackend stack', () => {
 	it.each([
 		{
 			stage: 'CODE',
-			policyName: 'feast-unifiedapi-datatransfer-code-s3-write',
-			bucketName: 'feast-unifiedapi-datatransfer-code',
+			policyName: 'feast-unified-api-bqsearchterms-code-s3-write',
+			bucketName: 'feast-unified-api-bqsearchterms-code',
 		},
 		{ stage: 'PROD', policyName: undefined, bucketName: undefined },
 		{ stage: 'TEST', policyName: undefined, bucketName: undefined },

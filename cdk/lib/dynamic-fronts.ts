@@ -96,8 +96,8 @@ export class DynamicFronts extends Construct {
 			{ policyName: string; bucketName: string }
 		> = {
 			CODE: {
-				policyName: 'feast-unifiedapi-datatransfer-code-s3-write',
-				bucketName: 'feast-unifiedapi-datatransfer-code',
+				policyName: 'feast-unified-api-bqsearchterms-code-s3-write',
+				bucketName: 'feast-unified-api-bqsearchterms-code',
 			},
 		};
 		const searchTermExport = searchTermExportConfig[scope.stage];
