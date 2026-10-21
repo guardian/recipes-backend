@@ -91,16 +91,7 @@ export class DynamicFronts extends Construct {
 			type: 'String',
 		});
 
-		const searchTermExportConfig: Record<
-			string,
-			{ policyName: string; bucketName: string }
-		> = {
-			CODE: {
-				policyName: 'feast-unified-api-bqsearchterms-code-s3-write',
-				bucketName: 'feast-unified-api-bqsearchterms-code',
-			},
-		};
-		const searchTermExport = searchTermExportConfig[scope.stage];
+		const searchTermExportBucketName = `feast-unifiedapi-datatransfer-${scope.stage.toLowerCase()}`;
 
 		const xar = new Role(this, 'XAR', {
 			inlinePolicies: {
@@ -113,22 +104,16 @@ export class DynamicFronts extends Construct {
 						}),
 					],
 				}),
-				...(searchTermExport
-					? {
-							[searchTermExport.policyName]: new PolicyDocument({
-								statements: [
-									new PolicyStatement({
-										sid: 'VisualEditor0',
-										effect: Effect.ALLOW,
-										actions: ['s3:PutObject'],
-										resources: [
-											`arn:aws:s3:::${searchTermExport.bucketName}/*`,
-										],
-									}),
-								],
-							}),
-						}
-					: {}),
+				[`${searchTermExportBucketName}-s3-write`]: new PolicyDocument({
+					statements: [
+						new PolicyStatement({
+							sid: 'VisualEditor0',
+							effect: Effect.ALLOW,
+							actions: ['s3:PutObject'],
+							resources: [`arn:aws:s3:::${searchTermExportBucketName}/*`],
+						}),
+					],
+				}),
 			},
 			assumedBy: new AccountPrincipal(dataTechAcctParam.valueAsString),
 		});

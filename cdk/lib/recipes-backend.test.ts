@@ -16,11 +16,19 @@ describe('The RecipesBackend stack', () => {
 	it.each([
 		{
 			stage: 'CODE',
-			policyName: 'feast-unified-api-bqsearchterms-code-s3-write',
-			bucketName: 'feast-unified-api-bqsearchterms-code',
+			policyName: 'feast-unifiedapi-datatransfer-code-s3-write',
+			bucketName: 'feast-unifiedapi-datatransfer-code',
 		},
-		{ stage: 'PROD', policyName: undefined, bucketName: undefined },
-		{ stage: 'TEST', policyName: undefined, bucketName: undefined },
+		{
+			stage: 'PROD',
+			policyName: 'feast-unifiedapi-datatransfer-prod-s3-write',
+			bucketName: 'feast-unifiedapi-datatransfer-prod',
+		},
+		{
+			stage: 'TEST',
+			policyName: 'feast-unifiedapi-datatransfer-test-s3-write',
+			bucketName: 'feast-unifiedapi-datatransfer-test',
+		},
 	])(
 		'manages the stage-specific search-term export policy ($stage)',
 		({ stage, policyName, bucketName }) => {
@@ -42,40 +50,28 @@ describe('The RecipesBackend stack', () => {
 				Key: 'gu:repo',
 				Value: 'guardian/recipes-backend',
 			});
-			if (policyName) {
-				const exportPolicy = {
-					PolicyName: policyName,
-					PolicyDocument: {
-						Version: '2012-10-17',
-						Statement: [
-							{
-								Sid: 'VisualEditor0',
-								Effect: 'Allow',
-								Action: 's3:PutObject',
-								Resource: `arn:aws:s3:::${bucketName}/*`,
-							},
-						],
-					},
-				};
-				expect(policies).toContainEqual(exportPolicy);
-				expect(
-					template.findResources('AWS::IAM::Policy', {
-						Properties: {
-							PolicyName: exportPolicy.PolicyName,
+			const exportPolicy = {
+				PolicyName: policyName,
+				PolicyDocument: {
+					Version: '2012-10-17',
+					Statement: [
+						{
+							Sid: 'VisualEditor0',
+							Effect: 'Allow',
+							Action: 's3:PutObject',
+							Resource: `arn:aws:s3:::${bucketName}/*`,
 						},
-					}),
-				).toEqual({});
-			} else {
-				const statements = policies.flatMap((policy) => {
-					const document = policy['PolicyDocument'] as
-						| { Statement?: Array<Record<string, unknown>> }
-						| undefined;
-					return document?.Statement ?? [];
-				});
-				expect(statements).not.toContainEqual(
-					expect.objectContaining({ Action: 's3:PutObject' }),
-				);
-			}
+					],
+				},
+			};
+			expect(policies).toContainEqual(exportPolicy);
+			expect(
+				template.findResources('AWS::IAM::Policy', {
+					Properties: {
+						PolicyName: exportPolicy.PolicyName,
+					},
+				}),
+			).toEqual({});
 		},
 	);
 });
