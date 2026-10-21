@@ -14,7 +14,6 @@ import { EventBus, Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
-import { Construct } from 'constructs';
 import { DataStore } from './datastore';
 import { DynamicFronts } from './dynamic-fronts';
 import { ExternalParameters } from './external_parameters';
@@ -167,16 +166,6 @@ export class RecipesBackend extends GuStack {
 
 		const responderDLQ = new Queue(this, 'RecipeResponderDLQ', {
 			queueName: `recipe-responder-${this.stage}-DLQ`,
-		});
-
-		const faciaQueues = new Construct(this, 'RecipesFacia');
-		const faciaDLQ = new Queue(faciaQueues, 'DLQ');
-		new Queue(faciaQueues, 'Connection', {
-			enforceSSL: true,
-			deadLetterQueue: {
-				queue: faciaDLQ,
-				maxReceiveCount: 1,
-			},
 		});
 
 		new Rule(this, 'CrierConnection', {
