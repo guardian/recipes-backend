@@ -91,6 +91,8 @@ export class DynamicFronts extends Construct {
 			type: 'String',
 		});
 
+		const searchTermExportBucketName = `feast-unified-api-data-transfer-${scope.stage.toLowerCase()}`;
+
 		const xar = new Role(this, 'XAR', {
 			inlinePolicies: {
 				invokeFetcher: new PolicyDocument({
@@ -99,6 +101,16 @@ export class DynamicFronts extends Construct {
 							effect: Effect.ALLOW,
 							resources: [fetcher.functionArn],
 							actions: ['lambda:InvokeFunction'],
+						}),
+					],
+				}),
+				[`${searchTermExportBucketName}-s3-write`]: new PolicyDocument({
+					statements: [
+						new PolicyStatement({
+							sid: 'VisualEditor0',
+							effect: Effect.ALLOW,
+							actions: ['s3:PutObject'],
+							resources: [`arn:aws:s3:::${searchTermExportBucketName}/*`],
 						}),
 					],
 				}),
