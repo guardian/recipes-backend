@@ -16,18 +16,18 @@ describe('The RecipesBackend stack', () => {
 	it.each([
 		{
 			stage: 'CODE',
-			policyName: 'feast-unifiedapi-datatransfer-code-s3-write',
-			bucketName: 'feast-unifiedapi-datatransfer-code',
+			policyName: 'feast-unified-api-data-transfer-code-s3-write',
+			bucketName: 'feast-unified-api-data-transfer-code',
 		},
 		{
 			stage: 'PROD',
-			policyName: 'feast-unifiedapi-datatransfer-prod-s3-write',
-			bucketName: 'feast-unifiedapi-datatransfer-prod',
+			policyName: 'feast-unified-api-data-transfer-prod-s3-write',
+			bucketName: 'feast-unified-api-data-transfer-prod',
 		},
 		{
 			stage: 'TEST',
-			policyName: 'feast-unifiedapi-datatransfer-test-s3-write',
-			bucketName: 'feast-unifiedapi-datatransfer-test',
+			policyName: 'feast-unified-api-data-transfer-test-s3-write',
+			bucketName: 'feast-unified-api-data-transfer-test',
 		},
 	])(
 		'manages the stage-specific search-term export policy ($stage)',

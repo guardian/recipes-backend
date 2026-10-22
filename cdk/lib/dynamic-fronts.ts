@@ -91,7 +91,7 @@ export class DynamicFronts extends Construct {
 			type: 'String',
 		});
 
-		const searchTermExportBucketName = `feast-unifiedapi-datatransfer-${scope.stage.toLowerCase()}`;
+		const searchTermExportBucketName = `feast-unified-api-data-transfer-${scope.stage.toLowerCase()}`;
 
 		const xar = new Role(this, 'XAR', {
 			inlinePolicies: {

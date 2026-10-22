@@ -629,13 +629,13 @@ exports[`The RecipesBackend stack matches the snapshot 1`] = `
                 {
                   "Action": "s3:PutObject",
                   "Effect": "Allow",
-                  "Resource": "arn:aws:s3:::feast-unifiedapi-datatransfer-test/*",
+                  "Resource": "arn:aws:s3:::feast-unified-api-data-transfer-test/*",
                   "Sid": "VisualEditor0",
                 },
               ],
               "Version": "2012-10-17",
             },
-            "PolicyName": "feast-unifiedapi-datatransfer-test-s3-write",
+            "PolicyName": "feast-unified-api-data-transfer-test-s3-write",
           },
         ],
         "Tags": [
