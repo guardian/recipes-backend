@@ -107,7 +107,7 @@ export class DynamicFronts extends Construct {
 				[`${searchTermExportBucketName}-s3-write`]: new PolicyDocument({
 					statements: [
 						new PolicyStatement({
-							sid: 'VisualEditor0',
+							sid: 'AllowSearchTermWriteToS3',
 							effect: Effect.ALLOW,
 							actions: ['s3:PutObject'],
 							resources: [`arn:aws:s3:::${searchTermExportBucketName}/*`],
