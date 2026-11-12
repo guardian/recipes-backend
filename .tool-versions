@@ -1,3 +1,4 @@
 nodejs 22.23.4
 aqua:aws/aws-cli latest
 golang 1.24.13
+github:guardian/devenv 20261111-131338
