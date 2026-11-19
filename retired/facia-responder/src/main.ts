@@ -1,7 +1,6 @@
 import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 import type { SNSMessage, SQSHandler, SQSRecord } from 'aws-lambda';
 import format from 'date-fns/format';
-import type { SafeParseReturnType } from 'zod';
 import * as facia from '@recipes-api/lib/facia';
 import {
 	deployCurationData,
@@ -25,15 +24,11 @@ function getMessageBodyAsObject(from: SQSRecord): unknown {
 	return parsedBody;
 }
 
-function parseFeastCurationEnvelope(
-	message: unknown,
-): SafeParseReturnType<unknown, facia.FeastCurationEnvelope> {
+function parseFeastCurationEnvelope(message: unknown) {
 	return facia.FeastCurationEnvelope.safeParse(message);
 }
 
-function parseFeastCuration(
-	message: unknown,
-): SafeParseReturnType<unknown, facia.FeastCuration> {
+function parseFeastCuration(message: unknown) {
 	return facia.FeastCuration.safeParse(message);
 }
 
